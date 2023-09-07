@@ -1,4 +1,13 @@
 # iOS_Group_Assignment
 
-Trong quá trình làm việc ae tạo tên branch ý nghĩa tí nha. Ví dụ làm UI profile view thì đặt tên UI_ProfileView    
-Branch chính của mình sẽ có tên là main nhé ae. Trước khi làm thì pull code trên production về trước nhé
+## Quy tắc đặt tên Branch
+
+Trong quá trình làm việc, mọi người vui lòng đặt tên cho các nhánh (branches) một cách ý nghĩa để dễ dàng theo dõi và hiểu rõ mục tiêu của nhánh đó. 
+
+Ví dụ: Nếu đang làm UI cho Profile View, thì đặt tên branch là "UI_ProfileView".
+
+## Nhánh Chính (main)
+
+Branch "main" sẽ là branch cuối cùng nhất nha ae (Tuyệt đối không push hay tự ý merge vào main branch). Trước khi bắt đầu làm thì pull code từ branch main về để có phiên bản mới nhất.  
+
+Anh e làm xong feature trên branch nào thì sẽ tạo merge request vào main branch rồi ping t nha.
