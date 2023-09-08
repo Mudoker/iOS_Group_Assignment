@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct Login: View {
+struct SignUp: View {
     // Responsive
     @State var titleFont: CGFloat = 40
     @State var logoImageSize: CGFloat = 0
@@ -22,6 +22,7 @@ struct Login: View {
     // Control state
     @State var accountText = ""
     @State var passwordText = ""
+    @State var confrimPasswordText = ""
     @State var isDarkMode = false
     @State private var gradientColorsDark: [Color] = [Color(red: 0.27, green: 1.00, blue: 0.79), Color(red: 0.59, green: 1.00, blue: 0.96), Color(red: 0.44, green: 0.57, blue: 0.96)]
     @State private var gradientColorsLight: [Color] = [Color(red: 0.96, green: 0.51, blue: 0.65), Color(red: 0.95, green: 0.00, blue: 0.53), Color(red: 0.44, green: 0.10, blue: 0.46)]
@@ -31,11 +32,11 @@ struct Login: View {
         GeometryReader { proxy in
             VStack (alignment: .center) {
                 // Title
-                Text ("Log in")
+                Text ("Sign Up")
                     .font(.system(size: titleFont))
                     .bold()
                 
-                Text("Please sign in to continue")
+                Text("Create a new profile")
                     .font(captionFont)
                     .bold()
                     .opacity(0.7)
@@ -49,67 +50,45 @@ struct Login: View {
                 
                 CustomTextField(text: $passwordText, textFieldTitle: "Password", testFieldPlaceHolder: "Password", titleFont: $textFieldTitleFont, textFieldSizeHeight: $textFieldSizeHeight, textFieldCorner: $textFieldCorner, textFieldBorderWidth: $textFieldBorderWidth, isPassword: .constant(true))
                 
-                Spacer()
-                // Login button
-                Button(action: {
-                    // Add your login action here
-                }) {
-                    Text("Login")
-                        .foregroundColor(.white)
-                        .font(.headline)
-                        .padding()
-                        .frame(maxWidth: .infinity)
-                        .background(
-                            RoundedRectangle(cornerRadius: 10)
-                                .fill(Color.blue)
-                        )
-                        .padding(.horizontal)
-                }
-                
                 HStack {
-                    Button(action: {
-                        // Add your login action here
-                    }) {
-                        Text("Forgot Password?")
-                            .foregroundColor(.black)
-                            .font(.headline)
-                            .padding()
-                            .padding(.horizontal)
-                    }
+                    Text("At least 8 characters and not contain special symbols")
+                        .font(.caption)
+                        .padding(.bottom, 5)
+                        .opacity(0.7)
                     
                     Spacer()
+                }
+                .padding(.horizontal)
+                
+                CustomTextField(text: $confrimPasswordText, textFieldTitle: "Confirm Password", testFieldPlaceHolder: "Password", titleFont: $textFieldTitleFont, textFieldSizeHeight: $textFieldSizeHeight, textFieldCorner: $textFieldCorner, textFieldBorderWidth: $textFieldBorderWidth, isPassword: .constant(true))
+                
+                HStack {
+                    Text("Re-enter your password")
+                        .font(.caption)
+                        .padding(.bottom, 5)
+                        .opacity(0.7)
                     
+                    Spacer()
+                }
+                .padding(.horizontal)
+                VStack {
+                    // Login button
                     Button(action: {
                         // Add your login action here
                     }) {
                         Text("Sign Up")
-                            .foregroundColor(.black)
+                            .foregroundColor(.white)
                             .font(.headline)
                             .padding()
+                            .frame(maxWidth: .infinity)
+                            .background(
+                                RoundedRectangle(cornerRadius: 10)
+                                    .fill(Color.blue)
+                            )
                             .padding(.horizontal)
                     }
                 }
                 
-                HStack {
-                    Spacer()
-                    VStack {
-                        Text("Sign in with")
-                            .bold()
-                            .opacity(0.4)
-                        
-                        Button(action: {
-                            // Add your login action here
-                        }) {
-                            Image(systemName: "faceid")
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                                .frame(width: faceIdImageSize)
-                        }
-                        
-                    }
-                    Spacer()
-                }
-                .padding(.top)
                 
                 // Push view
                 Spacer()
@@ -126,9 +105,9 @@ struct Login: View {
     }
 }
 
-struct Login_Previews: PreviewProvider {
+struct SignUp_Previews: PreviewProvider {
     static var previews: some View {
-        Login()
+        SignUp()
     }
 }
 
