@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		2FF0ACC42AAAFA3C0033AEEB /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FF0ACC32AAAFA3C0033AEEB /* ProfileView.swift */; };
+		2FF0ACC62AAB05120033AEEB /* ProfileToolBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FF0ACC52AAB05120033AEEB /* ProfileToolBar.swift */; };
 		E10C0E252AAAEDBC00AEB220 /* PrismmApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10C0E242AAAEDBC00AEB220 /* PrismmApp.swift */; };
 		E10C0E272AAAEDBC00AEB220 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10C0E262AAAEDBC00AEB220 /* ContentView.swift */; };
 		E10C0E292AAAEDBD00AEB220 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E10C0E282AAAEDBD00AEB220 /* Assets.xcassets */; };
@@ -20,6 +21,7 @@
 
 /* Begin PBXFileReference section */
 		2FF0ACC32AAAFA3C0033AEEB /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
+		2FF0ACC52AAB05120033AEEB /* ProfileToolBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileToolBar.swift; sourceTree = "<group>"; };
 		E10C0E212AAAEDBC00AEB220 /* Prismm.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Prismm.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E10C0E242AAAEDBC00AEB220 /* PrismmApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrismmApp.swift; sourceTree = "<group>"; };
 		E10C0E262AAAEDBC00AEB220 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -118,6 +120,7 @@
 			children = (
 				E10C0E3A2AAAF02400AEB220 /* test2.swift */,
 				2FF0ACC32AAAFA3C0033AEEB /* ProfileView.swift */,
+				2FF0ACC52AAB05120033AEEB /* ProfileToolBar.swift */,
 			);
 			path = Screens;
 			sourceTree = "<group>";
@@ -203,6 +206,7 @@
 				E10C0E3B2AAAF02400AEB220 /* test2.swift in Sources */,
 				E10C0E3F2AAAF03400AEB220 /* test4.swift in Sources */,
 				E10C0E272AAAEDBC00AEB220 /* ContentView.swift in Sources */,
+				2FF0ACC62AAB05120033AEEB /* ProfileToolBar.swift in Sources */,
 				E10C0E392AAAF01C00AEB220 /* test1.swift in Sources */,
 				E10C0E252AAAEDBC00AEB220 /* PrismmApp.swift in Sources */,
 				2FF0ACC42AAAFA3C0033AEEB /* ProfileView.swift in Sources */,
