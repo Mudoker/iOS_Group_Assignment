@@ -13,8 +13,10 @@
 		E10C0E2C2AAAEDBD00AEB220 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E10C0E2B2AAAEDBD00AEB220 /* Preview Assets.xcassets */; };
 		E10C0E392AAAF01C00AEB220 /* test1.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10C0E382AAAF01C00AEB220 /* test1.swift */; };
 		E10C0E3B2AAAF02400AEB220 /* test2.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10C0E3A2AAAF02400AEB220 /* test2.swift */; };
-		E10C0E3D2AAAF02C00AEB220 /* test3.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10C0E3C2AAAF02C00AEB220 /* test3.swift */; };
+		E10C0E3D2AAAF02C00AEB220 /* test4.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10C0E3C2AAAF02C00AEB220 /* test4.swift */; };
 		E10C0E3F2AAAF03400AEB220 /* test3.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10C0E3E2AAAF03400AEB220 /* test3.swift */; };
+		E10C0E412AAAF53E00AEB220 /* CustomTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10C0E402AAAF53E00AEB220 /* CustomTextField.swift */; };
+		E10C0E432AAAFFA300AEB220 /* Login.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10C0E422AAAFFA300AEB220 /* Login.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -25,8 +27,10 @@
 		E10C0E2B2AAAEDBD00AEB220 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		E10C0E382AAAF01C00AEB220 /* test1.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = test1.swift; sourceTree = "<group>"; };
 		E10C0E3A2AAAF02400AEB220 /* test2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = test2.swift; sourceTree = "<group>"; };
-		E10C0E3C2AAAF02C00AEB220 /* test3.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = test3.swift; sourceTree = "<group>"; };
+		E10C0E3C2AAAF02C00AEB220 /* test4.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = test4.swift; sourceTree = "<group>"; };
 		E10C0E3E2AAAF03400AEB220 /* test3.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = test3.swift; sourceTree = "<group>"; };
+		E10C0E402AAAF53E00AEB220 /* CustomTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTextField.swift; sourceTree = "<group>"; };
+		E10C0E422AAAFFA300AEB220 /* Login.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Login.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -98,7 +102,7 @@
 		E10C0E342AAAEF5900AEB220 /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
-				E10C0E3C2AAAF02C00AEB220 /* test3.swift */,
+				E10C0E3C2AAAF02C00AEB220 /* test4.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -115,6 +119,7 @@
 			isa = PBXGroup;
 			children = (
 				E10C0E3A2AAAF02400AEB220 /* test2.swift */,
+				E10C0E422AAAFFA300AEB220 /* Login.swift */,
 			);
 			path = Screens;
 			sourceTree = "<group>";
@@ -123,6 +128,7 @@
 			isa = PBXGroup;
 			children = (
 				E10C0E382AAAF01C00AEB220 /* test1.swift */,
+				E10C0E402AAAF53E00AEB220 /* CustomTextField.swift */,
 			);
 			path = Items;
 			sourceTree = "<group>";
@@ -197,12 +203,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E10C0E412AAAF53E00AEB220 /* CustomTextField.swift in Sources */,
 				E10C0E3B2AAAF02400AEB220 /* test2.swift in Sources */,
 				E10C0E3F2AAAF03400AEB220 /* test3.swift in Sources */,
 				E10C0E272AAAEDBC00AEB220 /* ContentView.swift in Sources */,
 				E10C0E392AAAF01C00AEB220 /* test1.swift in Sources */,
 				E10C0E252AAAEDBC00AEB220 /* PrismmApp.swift in Sources */,
-				E10C0E3D2AAAF02C00AEB220 /* test3.swift in Sources */,
+				E10C0E3D2AAAF02C00AEB220 /* test4.swift in Sources */,
+				E10C0E432AAAFFA300AEB220 /* Login.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
