@@ -1,0 +1,80 @@
+//
+//  SplashScreen.swift
+//  Prismm
+//
+//  Created by Tran Vu Quang Anh  on 08/09/2023.
+//
+
+import Foundation
+import SwiftUI
+
+struct SplashScreen: View {
+    @State private var isActive = false
+    @State private var size = 0.8
+    @State private var opacity = 0.5
+    @State private var isText = false
+    @State private var isDarMode = false
+    var body: some View {
+        NavigationStack{
+            GeometryReader{ geometry in
+                if isActive {
+                    
+                }
+                else{
+                    ZStack{
+                        Color(.white)
+                            .ignoresSafeArea()
+                        ZStack{
+                            HStack(spacing: 0){
+                                VStack(alignment: .trailing){
+                                    Image("logoNoText")
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fill)
+                                    
+                                }
+                                .frame(width: 200, height: 200,alignment: .trailing)
+                                .scaleEffect(size)
+                                .opacity(opacity)
+                                .onAppear{
+                                    withAnimation(.easeIn(duration: 1.2)){
+                                        self.size = 0.9
+                                        self.opacity = 1.0
+                                    }
+                                }
+//                                .background(.yellow)
+                                .position(x: isText ? geometry.size.width / 2 - 90 : geometry.size.width / 2, y: geometry.size.height / 2)
+                                
+                                VStack{
+                                    Text("Prism")
+                                        .font(.custom("Junegull-Regular", size: geometry.size.width >=  834 ? 30 : 40 ))
+                                    Text("Through your lens")
+                                        .font(.custom("Junegull-Regular", size: geometry.size.width >=  834 ? 30 : 15 ))
+                                }
+//                                .background(.yellow)
+                                .position(x : geometry.size.width / 2 - 160, y : geometry.size.height / 2)
+                                .opacity(isText ? 1 : 0)
+                            }
+                        }
+                        .onAppear{
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 2.0){
+                                //                            self.isAcdtive = true
+                                withAnimation(){
+                                    self.isText = true
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+struct SplashScreen_Previews: PreviewProvider {
+    static var previews: some View {
+        SplashScreen()
+            .previewDevice("iPhone 14 Pro")
+        SplashScreen()
+            .previewDevice("iPhone 14 Pro Max")
+    }
+}

@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		340FBBC72AAAF69500966EA8 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 340FBBC62AAAF69500966EA8 /* Launch Screen.storyboard */; };
+		3426AC7C2AAB02E600D69D63 /* progressBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3426AC7B2AAB02E600D69D63 /* progressBarController.swift */; };
+		3426AC802AAB0F8A00D69D63 /* SplashScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3426AC7F2AAB0F8A00D69D63 /* SplashScreen.swift */; };
+		3426AC832AAB228800D69D63 /* junegull rg.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3426AC822AAB228800D69D63 /* junegull rg.ttf */; };
 		E10C0E252AAAEDBC00AEB220 /* PrismmApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10C0E242AAAEDBC00AEB220 /* PrismmApp.swift */; };
 		E10C0E272AAAEDBC00AEB220 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10C0E262AAAEDBC00AEB220 /* ContentView.swift */; };
 		E10C0E292AAAEDBD00AEB220 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E10C0E282AAAEDBD00AEB220 /* Assets.xcassets */; };
@@ -14,10 +18,15 @@
 		E10C0E392AAAF01C00AEB220 /* test1.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10C0E382AAAF01C00AEB220 /* test1.swift */; };
 		E10C0E3B2AAAF02400AEB220 /* test2.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10C0E3A2AAAF02400AEB220 /* test2.swift */; };
 		E10C0E3D2AAAF02C00AEB220 /* test3.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10C0E3C2AAAF02C00AEB220 /* test3.swift */; };
-		E10C0E3F2AAAF03400AEB220 /* test3.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10C0E3E2AAAF03400AEB220 /* test3.swift */; };
+		E10C0E3F2AAAF03400AEB220 /* testView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10C0E3E2AAAF03400AEB220 /* testView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		340FBBC62AAAF69500966EA8 /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
+		3426AC7B2AAB02E600D69D63 /* progressBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = progressBarController.swift; sourceTree = "<group>"; };
+		3426AC7F2AAB0F8A00D69D63 /* SplashScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashScreen.swift; sourceTree = "<group>"; };
+		3426AC822AAB228800D69D63 /* junegull rg.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "junegull rg.ttf"; sourceTree = "<group>"; };
+		3426AC842AAB23DC00D69D63 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		E10C0E212AAAEDBC00AEB220 /* Prismm.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Prismm.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E10C0E242AAAEDBC00AEB220 /* PrismmApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrismmApp.swift; sourceTree = "<group>"; };
 		E10C0E262AAAEDBC00AEB220 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -26,7 +35,7 @@
 		E10C0E382AAAF01C00AEB220 /* test1.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = test1.swift; sourceTree = "<group>"; };
 		E10C0E3A2AAAF02400AEB220 /* test2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = test2.swift; sourceTree = "<group>"; };
 		E10C0E3C2AAAF02C00AEB220 /* test3.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = test3.swift; sourceTree = "<group>"; };
-		E10C0E3E2AAAF03400AEB220 /* test3.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = test3.swift; sourceTree = "<group>"; };
+		E10C0E3E2AAAF03400AEB220 /* testView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = testView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -40,6 +49,31 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		3426AC7D2AAB0F6900D69D63 /* LaunchScreen */ = {
+			isa = PBXGroup;
+			children = (
+				340FBBC62AAAF69500966EA8 /* Launch Screen.storyboard */,
+				3426AC7B2AAB02E600D69D63 /* progressBarController.swift */,
+			);
+			path = LaunchScreen;
+			sourceTree = "<group>";
+		};
+		3426AC7E2AAB0F7B00D69D63 /* SplashScreen */ = {
+			isa = PBXGroup;
+			children = (
+				3426AC7F2AAB0F8A00D69D63 /* SplashScreen.swift */,
+			);
+			path = SplashScreen;
+			sourceTree = "<group>";
+		};
+		3426AC812AAB222B00D69D63 /* Font */ = {
+			isa = PBXGroup;
+			children = (
+				3426AC822AAB228800D69D63 /* junegull rg.ttf */,
+			);
+			path = Font;
+			sourceTree = "<group>";
+		};
 		E10C0E182AAAEDBC00AEB220 = {
 			isa = PBXGroup;
 			children = (
@@ -59,6 +93,8 @@
 		E10C0E232AAAEDBC00AEB220 /* Prismm */ = {
 			isa = PBXGroup;
 			children = (
+				3426AC842AAB23DC00D69D63 /* Info.plist */,
+				3426AC812AAB222B00D69D63 /* Font */,
 				E10C0E352AAAEF6500AEB220 /* Test */,
 				E10C0E342AAAEF5900AEB220 /* Utilities */,
 				E10C0E332AAAEF4400AEB220 /* Components */,
@@ -106,7 +142,7 @@
 		E10C0E352AAAEF6500AEB220 /* Test */ = {
 			isa = PBXGroup;
 			children = (
-				E10C0E3E2AAAF03400AEB220 /* test3.swift */,
+				E10C0E3E2AAAF03400AEB220 /* testView.swift */,
 			);
 			path = Test;
 			sourceTree = "<group>";
@@ -114,6 +150,8 @@
 		E10C0E362AAAEF6E00AEB220 /* Screens */ = {
 			isa = PBXGroup;
 			children = (
+				3426AC7E2AAB0F7B00D69D63 /* SplashScreen */,
+				3426AC7D2AAB0F6900D69D63 /* LaunchScreen */,
 				E10C0E3A2AAAF02400AEB220 /* test2.swift */,
 			);
 			path = Screens;
@@ -185,7 +223,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				340FBBC72AAAF69500966EA8 /* Launch Screen.storyboard in Resources */,
 				E10C0E2C2AAAEDBD00AEB220 /* Preview Assets.xcassets in Resources */,
+				3426AC832AAB228800D69D63 /* junegull rg.ttf in Resources */,
 				E10C0E292AAAEDBD00AEB220 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -197,9 +237,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3426AC802AAB0F8A00D69D63 /* SplashScreen.swift in Sources */,
 				E10C0E3B2AAAF02400AEB220 /* test2.swift in Sources */,
-				E10C0E3F2AAAF03400AEB220 /* test3.swift in Sources */,
+				E10C0E3F2AAAF03400AEB220 /* testView.swift in Sources */,
 				E10C0E272AAAEDBC00AEB220 /* ContentView.swift in Sources */,
+				3426AC7C2AAB02E600D69D63 /* progressBarController.swift in Sources */,
 				E10C0E392AAAF01C00AEB220 /* test1.swift in Sources */,
 				E10C0E252AAAEDBC00AEB220 /* PrismmApp.swift in Sources */,
 				E10C0E3D2AAAF02C00AEB220 /* test3.swift in Sources */,
@@ -328,14 +370,17 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Prismm/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Prismm/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = "Launch Screen.storyboard";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -356,14 +401,17 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Prismm/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Prismm/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = "Launch Screen.storyboard";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (
