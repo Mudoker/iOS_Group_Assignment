@@ -52,7 +52,7 @@ struct SignUp: View {
                 Spacer()
                 
                 // Logo
-                Image(isDarkMode ? "logodark" : "logolight")
+                Image(isDarkMode ? Constants.darkThemeAppLogo : Constants.lightThemeAppLogo)
                     .resizable()
                     .aspectRatio(contentMode: .fill)
                     .frame(width: logoImageSize, height: 0)
