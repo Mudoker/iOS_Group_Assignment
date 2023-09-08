@@ -11,6 +11,10 @@
 		E10C0E272AAAEDBC00AEB220 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10C0E262AAAEDBC00AEB220 /* ContentView.swift */; };
 		E10C0E292AAAEDBD00AEB220 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E10C0E282AAAEDBD00AEB220 /* Assets.xcassets */; };
 		E10C0E2C2AAAEDBD00AEB220 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E10C0E2B2AAAEDBD00AEB220 /* Preview Assets.xcassets */; };
+		E10C0E392AAAF01C00AEB220 /* test1.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10C0E382AAAF01C00AEB220 /* test1.swift */; };
+		E10C0E3B2AAAF02400AEB220 /* test2.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10C0E3A2AAAF02400AEB220 /* test2.swift */; };
+		E10C0E3D2AAAF02C00AEB220 /* test3.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10C0E3C2AAAF02C00AEB220 /* test3.swift */; };
+		E10C0E3F2AAAF03400AEB220 /* test3.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10C0E3E2AAAF03400AEB220 /* test3.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -19,6 +23,10 @@
 		E10C0E262AAAEDBC00AEB220 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		E10C0E282AAAEDBD00AEB220 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E10C0E2B2AAAEDBD00AEB220 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		E10C0E382AAAF01C00AEB220 /* test1.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = test1.swift; sourceTree = "<group>"; };
+		E10C0E3A2AAAF02400AEB220 /* test2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = test2.swift; sourceTree = "<group>"; };
+		E10C0E3C2AAAF02C00AEB220 /* test3.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = test3.swift; sourceTree = "<group>"; };
+		E10C0E3E2AAAF03400AEB220 /* test3.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = test3.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -90,6 +98,7 @@
 		E10C0E342AAAEF5900AEB220 /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				E10C0E3C2AAAF02C00AEB220 /* test3.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -97,6 +106,7 @@
 		E10C0E352AAAEF6500AEB220 /* Test */ = {
 			isa = PBXGroup;
 			children = (
+				E10C0E3E2AAAF03400AEB220 /* test3.swift */,
 			);
 			path = Test;
 			sourceTree = "<group>";
@@ -104,6 +114,7 @@
 		E10C0E362AAAEF6E00AEB220 /* Screens */ = {
 			isa = PBXGroup;
 			children = (
+				E10C0E3A2AAAF02400AEB220 /* test2.swift */,
 			);
 			path = Screens;
 			sourceTree = "<group>";
@@ -111,6 +122,7 @@
 		E10C0E372AAAEF7C00AEB220 /* Items */ = {
 			isa = PBXGroup;
 			children = (
+				E10C0E382AAAF01C00AEB220 /* test1.swift */,
 			);
 			path = Items;
 			sourceTree = "<group>";
@@ -185,8 +197,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E10C0E3B2AAAF02400AEB220 /* test2.swift in Sources */,
+				E10C0E3F2AAAF03400AEB220 /* test3.swift in Sources */,
 				E10C0E272AAAEDBC00AEB220 /* ContentView.swift in Sources */,
+				E10C0E392AAAF01C00AEB220 /* test1.swift in Sources */,
 				E10C0E252AAAEDBC00AEB220 /* PrismmApp.swift in Sources */,
+				E10C0E3D2AAAF02C00AEB220 /* test3.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
