@@ -51,9 +51,12 @@
 		E10C0E232AAAEDBC00AEB220 /* Prismm */ = {
 			isa = PBXGroup;
 			children = (
+				E10C0E352AAAEF6500AEB220 /* Test */,
+				E10C0E342AAAEF5900AEB220 /* Utilities */,
+				E10C0E332AAAEF4400AEB220 /* Components */,
+				E10C0E322AAAEF3000AEB220 /* Assets */,
 				E10C0E242AAAEDBC00AEB220 /* PrismmApp.swift */,
 				E10C0E262AAAEDBC00AEB220 /* ContentView.swift */,
-				E10C0E282AAAEDBD00AEB220 /* Assets.xcassets */,
 				E10C0E2A2AAAEDBD00AEB220 /* Preview Content */,
 			);
 			path = Prismm;
@@ -65,6 +68,51 @@
 				E10C0E2B2AAAEDBD00AEB220 /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		E10C0E322AAAEF3000AEB220 /* Assets */ = {
+			isa = PBXGroup;
+			children = (
+				E10C0E282AAAEDBD00AEB220 /* Assets.xcassets */,
+			);
+			path = Assets;
+			sourceTree = "<group>";
+		};
+		E10C0E332AAAEF4400AEB220 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				E10C0E372AAAEF7C00AEB220 /* Items */,
+				E10C0E362AAAEF6E00AEB220 /* Screens */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		E10C0E342AAAEF5900AEB220 /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Utilities;
+			sourceTree = "<group>";
+		};
+		E10C0E352AAAEF6500AEB220 /* Test */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Test;
+			sourceTree = "<group>";
+		};
+		E10C0E362AAAEF6E00AEB220 /* Screens */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Screens;
+			sourceTree = "<group>";
+		};
+		E10C0E372AAAEF7C00AEB220 /* Items */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Items;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
