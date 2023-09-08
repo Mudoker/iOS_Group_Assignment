@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import LocalAuthentication
 
 struct Login: View {
     // Responsive
@@ -23,13 +24,22 @@ struct Login: View {
     @State var accountText = ""
     @State var passwordText = ""
     @State var isDarkMode = false
-    @State private var gradientColorsDark: [Color] = [Color(red: 0.27, green: 1.00, blue: 0.79), Color(red: 0.59, green: 1.00, blue: 0.96), Color(red: 0.44, green: 0.57, blue: 0.96)]
-    @State private var gradientColorsLight: [Color] = [Color(red: 0.96, green: 0.51, blue: 0.65), Color(red: 0.95, green: 0.00, blue: 0.53), Color(red: 0.44, green: 0.10, blue: 0.46)]
     @State private var isPasswordVisible: Bool = false
-    
+    @State var isUnlocked = false
+
     var body: some View {
         GeometryReader { proxy in
             VStack (alignment: .center) {
+                // Push view
+                Spacer()
+                
+                //Logo
+                Image(isDarkMode ? "logodark" : "logolight")
+                    .resizable()
+                    .aspectRatio(contentMode: .fill)
+                    .frame(width: logoImageSize, height: 0)
+                    .padding(.vertical)
+                
                 // Title
                 Text ("Log in")
                     .font(.system(size: titleFont))
@@ -39,20 +49,17 @@ struct Login: View {
                     .font(captionFont)
                     .bold()
                     .opacity(0.7)
+                    .padding(.bottom)
                 
-                Image("applogo")
-                    .resizable()
-                    .aspectRatio(contentMode: .fill)
-                    .frame(width: logoImageSize, height: logoImageSize)
+                //Text field
+                CustomTextField(text: $accountText, textFieldTitle: "Username", isDarkMode: $isDarkMode, testFieldPlaceHolder: "Username or Account", titleFont: $textFieldTitleFont, textFieldSizeHeight: $textFieldSizeHeight, textFieldCorner: $textFieldCorner, textFieldBorderWidth: $textFieldBorderWidth, isPassword: .constant(false))
+                    .padding(.bottom)
                 
-                CustomTextField(text: $accountText, textFieldTitle: "Username", testFieldPlaceHolder: "Username or Account", titleFont: $textFieldTitleFont, textFieldSizeHeight: $textFieldSizeHeight, textFieldCorner: $textFieldCorner, textFieldBorderWidth: $textFieldBorderWidth, isPassword: .constant(false))
+                CustomTextField(text: $passwordText, textFieldTitle: "Password", isDarkMode: $isDarkMode, testFieldPlaceHolder: "Password", titleFont: $textFieldTitleFont, textFieldSizeHeight: $textFieldSizeHeight, textFieldCorner: $textFieldCorner, textFieldBorderWidth: $textFieldBorderWidth, isPassword: .constant(true))
+                    .padding(.bottom)
                 
-                CustomTextField(text: $passwordText, textFieldTitle: "Password", testFieldPlaceHolder: "Password", titleFont: $textFieldTitleFont, textFieldSizeHeight: $textFieldSizeHeight, textFieldCorner: $textFieldCorner, textFieldBorderWidth: $textFieldBorderWidth, isPassword: .constant(true))
-                
-                Spacer()
                 // Login button
                 Button(action: {
-                    // Add your login action here
                 }) {
                     Text("Login")
                         .foregroundColor(.white)
@@ -61,7 +68,7 @@ struct Login: View {
                         .frame(maxWidth: .infinity)
                         .background(
                             RoundedRectangle(cornerRadius: 10)
-                                .fill(Color.blue)
+                                .fill(isDarkMode ? Constants.darkThemeColor : Constants.lightThemeColor)
                         )
                         .padding(.horizontal)
                 }
@@ -71,10 +78,10 @@ struct Login: View {
                         // Add your login action here
                     }) {
                         Text("Forgot Password?")
-                            .foregroundColor(.black)
                             .font(.headline)
                             .padding()
                             .padding(.horizontal)
+                            .opacity(0.8)
                     }
                     
                     Spacer()
@@ -83,10 +90,10 @@ struct Login: View {
                         // Add your login action here
                     }) {
                         Text("Sign Up")
-                            .foregroundColor(.black)
                             .font(.headline)
                             .padding()
                             .padding(.horizontal)
+                            .opacity(0.8)
                     }
                 }
                 
@@ -95,15 +102,16 @@ struct Login: View {
                     VStack {
                         Text("Sign in with")
                             .bold()
-                            .opacity(0.4)
+                            .opacity(0.8)
                         
                         Button(action: {
-                            // Add your login action here
+                            bioMetricAuthenticate()
                         }) {
                             Image(systemName: "faceid")
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
                                 .frame(width: faceIdImageSize)
+                                .foregroundColor(isDarkMode ? Constants.darkThemeColor : Constants.lightThemeColor)
                         }
                         
                     }
@@ -114,15 +122,51 @@ struct Login: View {
                 // Push view
                 Spacer()
             }
+            .foregroundColor(isDarkMode ? .white : .black)
             .padding(.horizontal)
             .onAppear {
-                logoImageSize = proxy.size.width/2
+                logoImageSize = proxy.size.width/2.2
                 textFieldSizeHeight = proxy.size.width/7
                 textFieldCorner = proxy.size.width/50
                 faceIdImageSize = proxy.size.width/10
             }
         }
-        //        .background(.black)
+        .background(isDarkMode ? .black : .white)
+    }
+    
+    func bioMetricAuthenticate() {
+        let context = LAContext()
+        var error: NSError?
+        
+        if context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error) {
+            context.evaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, localizedReason: "Account Autofill") { success, authenticationError in
+                DispatchQueue.main.async {
+                    if success {
+                        // Biometric authentication was successful
+                        isUnlocked = true
+                    } else {
+                        // Biometric authentication failed or was canceled
+                        if let error = authenticationError {
+                            // Handle the specific error
+                            print("Biometric authentication failed: \(error.localizedDescription)")
+                            
+                        } else {
+                            // Handle the case where authentication was canceled or failed without an error
+                            print("Biometric authentication failed.")
+                        }
+                    }
+                }
+            }
+        } else {
+            // Handle the case where biometric authentication is not available or supported
+            if let error = error {
+                // Handle the error
+                print("Biometric authentication not available: \(error.localizedDescription)")
+            } else {
+                // Handle the case where biometric authentication is not supported
+                print("Biometric authentication not supported on this device.")
+            }
+        }
     }
 }
 

@@ -13,9 +13,7 @@ struct CustomTextField: View {
 
     // Control state
     @State var textFieldTitle: String
-    @State private var gradientColorsDark: [Color] = [Color(red: 0.27, green: 1.00, blue: 0.79), Color(red: 0.59, green: 1.00, blue: 0.96), Color(red: 0.44, green: 0.57, blue: 0.96)]
-    @State private var gradientColorsLight: [Color] = [Color(red: 0.96, green: 0.51, blue: 0.65), Color(red: 0.95, green: 0.00, blue: 0.53), Color(red: 0.44, green: 0.10, blue: 0.46)]
-    @State var isDarkMode = false
+    @Binding var isDarkMode: Bool
     @State var testFieldPlaceHolder: String
     @State private var isPasswordVisible: Bool = false
 
@@ -46,7 +44,7 @@ struct CustomTextField: View {
                 ZStack {
                     RoundedRectangle(cornerRadius: textFieldCorner)
                         .stroke(LinearGradient(
-                            gradient: Gradient(colors: isDarkMode ? gradientColorsDark : gradientColorsLight),
+                            gradient: Gradient(colors: isDarkMode ? Constants.buttonGradientColorDark : Constants.buttonGradientColorLight),
                             startPoint: .topLeading,
                             endPoint: .bottomTrailing
                         ), lineWidth: textFieldBorderWidth)
@@ -57,7 +55,7 @@ struct CustomTextField: View {
                         // Hide or show password
                         if isPasswordVisible {
                             HStack {
-                                TextField("", text: $text, prompt:  Text(testFieldPlaceHolder).foregroundColor(.black.opacity(0.5)))
+                                TextField("", text: $text, prompt:  Text(testFieldPlaceHolder).foregroundColor(isDarkMode ? .white.opacity(0.5) : .black.opacity(0.5)))
                                     .padding(.horizontal)
 
                                 Button(action: {
@@ -70,8 +68,8 @@ struct CustomTextField: View {
                             }
                         } else {
                             HStack {
-                                SecureField("", text: $text, prompt:  Text(testFieldPlaceHolder).foregroundColor(.black.opacity(0.5))
-                                )
+                                SecureField("", text: $text, prompt:  Text(testFieldPlaceHolder).foregroundColor(isDarkMode ? .white.opacity(0.5) : .black.opacity(0.5)))
+                                
                                 .padding(.horizontal)
 
                                 Button(action: {
@@ -86,12 +84,13 @@ struct CustomTextField: View {
                     } else {
                         // Username field
                         HStack {
-                            TextField("", text: $text, prompt:  Text(testFieldPlaceHolder).foregroundColor(.black.opacity(0.5)))
+                            TextField("", text: $text, prompt:  Text(testFieldPlaceHolder).foregroundColor(isDarkMode ? .white.opacity(0.5) : .black.opacity(0.5)))
                                 .padding(.horizontal)
                         }
                     }
                 }
             }
+            .foregroundColor(isDarkMode ? .white : .black)
             .padding(.horizontal)
             .onAppear {
                 textFieldSizeHeight = textFieldSizeHeight
@@ -103,7 +102,7 @@ struct CustomTextField: View {
 struct CustomTextField_Previews: PreviewProvider {
     static var previews: some View {
         CustomTextField(
-            text: .constant("Preview Text"), textFieldTitle: "username",
+            text: .constant("Preview Text"), textFieldTitle: "username", isDarkMode: .constant(true),
             testFieldPlaceHolder: "Username or email", titleFont: .constant(.headline),
             textFieldSizeHeight: .constant(40.0),
             textFieldCorner: .constant(10.0),
