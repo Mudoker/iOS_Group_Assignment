@@ -22,6 +22,7 @@
 		E12FA0362AAC2EE3007890A3 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E12FA0352AAC2EE3007890A3 /* HomeView.swift */; };
 		E12FA0382AAC2EEE007890A3 /* PostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E12FA0372AAC2EEE007890A3 /* PostView.swift */; };
 		E12FA03A2AAC2EFB007890A3 /* StoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E12FA0392AAC2EFB007890A3 /* StoryView.swift */; };
+		E17E8CDB2AAC496F00EF5EFB /* CustomAlertView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E17E8CDA2AAC496F00EF5EFB /* CustomAlertView.swift */; };
 		E19D96832AAB2C0000E2CFAC /* Extension+String.swift in Sources */ = {isa = PBXBuildFile; fileRef = E19D96822AAB2C0000E2CFAC /* Extension+String.swift */; };
 		E1CED5132AAB42BB00F7F94E /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1CED5122AAB42BB00F7F94E /* Constants.swift */; };
 /* End PBXBuildFile section */
@@ -44,6 +45,7 @@
 		E12FA0372AAC2EEE007890A3 /* PostView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostView.swift; sourceTree = "<group>"; };
 		E12FA0392AAC2EFB007890A3 /* StoryView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StoryView.swift; sourceTree = "<group>"; };
 		E17CBF572AAB25DA004A97E7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		E17E8CDA2AAC496F00EF5EFB /* CustomAlertView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomAlertView.swift; sourceTree = "<group>"; };
 		E19D96822AAB2C0000E2CFAC /* Extension+String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extension+String.swift"; sourceTree = "<group>"; };
 		E1CED5122AAB42BB00F7F94E /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -138,6 +140,7 @@
 			isa = PBXGroup;
 			children = (
 				E10C0E402AAAF53E00AEB220 /* CustomTextField.swift */,
+				E17E8CDA2AAC496F00EF5EFB /* CustomAlertView.swift */,
 			);
 			path = Custom;
 			sourceTree = "<group>";
@@ -146,8 +149,8 @@
 			isa = PBXGroup;
 			children = (
 				E12FA0282AAC2963007890A3 /* User.swift */,
-				E12FA02A2AAC296D007890A3 /* Post.swift */,
 				E12FA02C2AAC2976007890A3 /* Message.swift */,
+				E12FA02A2AAC296D007890A3 /* Post.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -288,6 +291,7 @@
 				2FF0ACC62AAB05120033AEEB /* ProfileToolBar.swift in Sources */,
 				E12FA02D2AAC2976007890A3 /* Message.swift in Sources */,
 				E12FA0292AAC2963007890A3 /* User.swift in Sources */,
+				E17E8CDB2AAC496F00EF5EFB /* CustomAlertView.swift in Sources */,
 				2FF0ACC42AAAFA3C0033AEEB /* ProfileView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -7,23 +7,45 @@
 
 import Foundation
 import LocalAuthentication
+import SwiftUI
 
 class AuthenticationViewModel: ObservableObject {
     @Published var isUnlocked = false
     @Published var isDarkMode = false
-    
+
+    // Responsive
+    @Published var titleFont: CGFloat = 40
+    @Published var logoImageSize: CGFloat = 0
+    @Published var captionFont: Font = .caption
+    @Published var textFieldTitleFont: Font = .body
+    @Published var textFieldSizeHeight: CGFloat = 0
+    @Published var textFieldCorner: CGFloat = 0
+    @Published var textFieldBorderWidth: CGFloat = 2.5
+    @Published var faceIdImageSize: CGFloat = 0
+    @Published var imagePaddingVertical: CGFloat = 16
+    @Published var loginButtonSizeHeight: CGFloat = 60
+    @Published var conentFont: Font = .body
+    @Published var loginTextFont: Font = .title3
+    @Published var textFieldPlaceHolderFont: Font = .body
+    @Published var isLoading = false
+
     // Validate username
-    func validateUsername() -> Bool{
+    func validateUsername(_ username: String) -> Bool{
         return true
     }
     
     // Validate password
-    func validatePassword() -> Bool{
+    func validatePassword(_ password: String) -> Bool{
+        return true
+    }
+    
+    // Validate username (check for duplicates)
+    func validateUsernameSignUp(_ username: String) -> Bool {
         return true
     }
     
     // Validate password (at least 8 characters + not contating special symbols)
-    func validatePassword(_ password: String) -> Bool {
+    func validatePasswordSignUp(_ password: String) -> Bool {
         if password.count >= 8 && !password.containsSpecialSymbols() {
             return false
         } else {
@@ -36,6 +58,15 @@ class AuthenticationViewModel: ObservableObject {
             return true
         } else {
             return false
+        }
+    }
+    
+    // Fetch userdata from Firebase
+    func fetchUserData() {
+        // Simulate fetching data with a delay
+        isLoading = true
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+            self.isLoading = false
         }
     }
     

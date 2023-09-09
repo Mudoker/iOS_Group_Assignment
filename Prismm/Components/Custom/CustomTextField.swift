@@ -13,7 +13,6 @@ struct CustomTextField: View {
 
     // Control state
     @State var textFieldTitle: String
-    @Binding var isDarkMode: Bool
     @State var testFieldPlaceHolder: String
     @State private var isPasswordVisible: Bool = false
 
@@ -23,7 +22,7 @@ struct CustomTextField: View {
     @Binding var textFieldCorner: CGFloat
     @Binding var textFieldBorderWidth: CGFloat
     @Binding var isPassword: Bool
-    @State var isValidText = false
+    @Binding var textFieldPlaceHolderFont: Font
     
     // ViewModel
     @ObservedObject var authenticationViewModel = AuthenticationViewModel()
@@ -39,7 +38,7 @@ struct CustomTextField: View {
                 ZStack {
                     RoundedRectangle(cornerRadius: textFieldCorner)
                         .stroke(LinearGradient(
-                            gradient: Gradient(colors: isDarkMode ? Constants.buttonGradientColorDark : Constants.buttonGradientColorLight),
+                            gradient: Gradient(colors: authenticationViewModel.isDarkMode ? Constants.buttonGradientColorDark : Constants.buttonGradientColorLight),
                             startPoint: .topLeading,
                             endPoint: .bottomTrailing
                         ), lineWidth: textFieldBorderWidth)
@@ -50,7 +49,9 @@ struct CustomTextField: View {
                         // Hide or show password
                         if isPasswordVisible {
                             HStack {
-                                TextField("", text: $text, prompt:  Text(testFieldPlaceHolder).foregroundColor(isDarkMode ? .white.opacity(0.5) : .black.opacity(0.5)))
+                                TextField("", text: $text, prompt:  Text(testFieldPlaceHolder)
+                                    .foregroundColor(authenticationViewModel.isDarkMode ? .white.opacity(0.5) : .black.opacity(0.5)))
+                                    .font(textFieldPlaceHolderFont)
                                     .padding(.horizontal)
 
                                 Button(action: {
@@ -58,13 +59,15 @@ struct CustomTextField: View {
                                 }) {
                                     Image(systemName: isPasswordVisible ? "eye.slash.fill" : "eye.fill")
                                         .foregroundColor(.gray)
+                                        .font(textFieldPlaceHolderFont)
                                 }
                                 .padding(.trailing)
                             }
                         } else {
                             HStack {
-                                SecureField("", text: $text, prompt:  Text(testFieldPlaceHolder).foregroundColor(isDarkMode ? .white.opacity(0.5) : .black.opacity(0.5)))
-                                
+                                SecureField("", text: $text, prompt:  Text(testFieldPlaceHolder).foregroundColor(authenticationViewModel.isDarkMode ? .white.opacity(0.5) : .black.opacity(0.5)))
+                                    .font(textFieldPlaceHolderFont)
+
                                 .padding(.horizontal)
 
                                 Button(action: {
@@ -72,6 +75,7 @@ struct CustomTextField: View {
                                 }) {
                                     Image(systemName: isPasswordVisible ? "eye.slash.fill" : "eye.fill")
                                         .foregroundColor(.gray)
+                                        .font(textFieldPlaceHolderFont)
                                 }
                                 .padding(.trailing)
                             }
@@ -79,13 +83,15 @@ struct CustomTextField: View {
                     } else {
                         // Username field
                         HStack {
-                            TextField("", text: $text, prompt:  Text(testFieldPlaceHolder).foregroundColor(isDarkMode ? .white.opacity(0.5) : .black.opacity(0.5)))
-                                .padding(.horizontal)
+                            TextField("", text: $text, prompt:  Text(testFieldPlaceHolder).foregroundColor(authenticationViewModel.isDarkMode ? .white.opacity(0.5) : .black.opacity(0.5))
+                                .font(textFieldPlaceHolderFont)
+                            )
+                            .padding(.horizontal)
                         }
                     }
                 }
             }
-            .foregroundColor(isDarkMode ? .white : .black)
+            .foregroundColor(authenticationViewModel.isDarkMode ? .white : .black)
             .padding(.horizontal)
             .onAppear {
                 textFieldSizeHeight = textFieldSizeHeight
@@ -97,11 +103,11 @@ struct CustomTextField: View {
 struct CustomTextField_Previews: PreviewProvider {
     static var previews: some View {
         CustomTextField(
-            text: .constant("Preview Text"), textFieldTitle: "username", isDarkMode: .constant(true),
+            text: .constant("Preview Text"), textFieldTitle: "username",
             testFieldPlaceHolder: "Username or email", titleFont: .constant(.headline),
             textFieldSizeHeight: .constant(40.0),
             textFieldCorner: .constant(10.0),
-            textFieldBorderWidth: .constant(2.0), isPassword: .constant(true)
+            textFieldBorderWidth: .constant(2.0), isPassword: .constant(true), textFieldPlaceHolderFont: .constant(Font.body)
         )
     }
 }
