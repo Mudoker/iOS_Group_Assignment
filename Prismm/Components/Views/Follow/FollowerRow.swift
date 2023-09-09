@@ -9,6 +9,8 @@ import SwiftUI
 
 struct FollowerRow: View {
     
+    @ObservedObject var fvm: FollowViewModel
+    
     var body: some View {
         HStack{
             Image("testAvt")
@@ -19,7 +21,10 @@ struct FollowerRow: View {
             
             VStack(alignment: .leading){
                 Text("UserName")
+                    .font(.system(size: CGFloat(fvm.rowUserNameFontSize)))
                 Text("bio")
+                    .font(.system(size: CGFloat(fvm.rowBioFontSize)))
+                    .opacity(0.4)
             }
             
             Spacer()
@@ -28,6 +33,8 @@ struct FollowerRow: View {
                 
             } label: {
                 Text("Remove")
+                    .font(.system(size: CGFloat(fvm.rowButtonFontSize)))
+                    .fontWeight(.bold)
                     .foregroundColor(.black)
                     .frame(width: UIScreen.main.bounds.width/4,height: UIScreen.main.bounds.height/(UIDevice.current.userInterfaceIdiom == .phone ? 25 : 30))
                     .background{
@@ -45,8 +52,8 @@ struct FollowerRow: View {
 
 struct RowView_Previews: PreviewProvider {
     static var previews: some View {
-        FollowerRow()
+        FollowerRow(fvm: FollowViewModel())
         
-        FollowerRow().previewDevice("iPad Pro (11-inch) (4th generation)")
+        FollowerRow(fvm: FollowViewModel()).previewDevice("iPad Pro (11-inch) (4th generation)")
     }
 }

@@ -8,37 +8,47 @@
 import SwiftUI
 
 struct FollowView: View {
-    @ObservedObject var fvm = FollowViewModel()
+    @StateObject var fvm = FollowViewModel()
+    
     
     var body: some View {
         VStack(alignment: .center) {
             
             //Navigation and Username
             HStack{
-                
+                Text("Username")
+                    .font(.system(size: CGFloat(fvm.userNameFontSize)))
+                    .fontWeight(.bold)
             }
+            .padding(.bottom,10)
             
             HStack{
                 Button {
                     fvm.trueIsShowing()
+                    
+                    
                 } label: {
                     Text(LocalizedStringKey("0 Followers"))
-                        .opacity(fvm.isShowing == true ? 1 : 0.5)
+                        .font(.system(size: CGFloat(fvm.tabNameFontSize)))
+                        .opacity(fvm.tabSelection == 1 ? 1 : 0.5)
                     
                 }
                 .frame(width: UIScreen.main.bounds.width/2)
                 
                 Button {
                     fvm.falseIsShowing()
+                    
                 } label: {
                     Text(LocalizedStringKey("0 Following"))
-                        .opacity(fvm.isShowing == true ? 0.5 : 1)
+                        .font(.system(size: CGFloat(fvm.tabNameFontSize)))
+                        .opacity(fvm.tabSelection == 2 ? 1 : 0.5)
                     
                 }
                 .frame(width: UIScreen.main.bounds.width/2)
                 
             }
             .foregroundColor(.black)
+            
             ZStack{
                 Divider()
                 
@@ -47,23 +57,22 @@ struct FollowView: View {
                     .overlay {
                         Color.black
                     }
-                    .offset(x: fvm.isShowing ?  -(UIScreen.main.bounds.width/4) : (UIScreen.main.bounds.width/4))
+                    .offset(x: fvm.indicatorOffset)
             } //divider
             
-            List {
-                ForEach(fvm.followerList.indices) { _ in
-                    FollowerRow()
-                        
-                       
-                }
-                .listRowBackground(Color.clear)
-                .listRowSeparator(SwiftUI.Visibility.hidden, edges: .bottom)
+            
+            TabView(selection: $fvm.tabSelection) {
+                FollowerList(fvm: fvm)
+                    .tag(1)
+                
+                FollowingList(fvm: fvm)
+                    .tag(2)
             }
-            .listStyle(PlainListStyle())
-            .scrollContentBackground(.hidden)
-            .background{
-                Color.clear
-            }
+            .animation(.easeInOut, value: fvm.tabSelection)
+            .tabViewStyle(PageTabViewStyle())
+            
+            
+
             Spacer()
         }
     }
