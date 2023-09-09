@@ -26,6 +26,7 @@ struct FollowerRow: View {
                     .font(.system(size: CGFloat(fvm.rowBioFontSize)))
                     .opacity(0.4)
             }
+            .foregroundColor(fvm.isDarkMode ? .white : .black)
             
             Spacer()
             
@@ -35,11 +36,10 @@ struct FollowerRow: View {
                 Text("Remove")
                     .font(.system(size: CGFloat(fvm.rowButtonFontSize)))
                     .fontWeight(.bold)
-                    .foregroundColor(.black)
+                    .foregroundColor(fvm.colorTheme)
                     .frame(width: UIScreen.main.bounds.width/4,height: UIScreen.main.bounds.height/(UIDevice.current.userInterfaceIdiom == .phone ? 25 : 30))
                     .background{
-                        Color.black
-                            .opacity(0.2)
+                        fvm.isDarkMode ? Color.white.opacity(0.2) : Color.black.opacity(0.2)
                     }
                     .clipShape(RoundedRectangle(cornerRadius: 5))
             }

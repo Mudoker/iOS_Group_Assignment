@@ -12,11 +12,11 @@ struct FollowingList: View {
     
     var body: some View {
         ScrollView{
-            TextField("", text: $fvm.searchText, prompt: Text("Search").font(.system(size: CGFloat(fvm.searchTextFontSize))))
+            TextField("", text: $fvm.searchText, prompt: Text("Search").font(.system(size: CGFloat(fvm.searchTextFontSize))).foregroundColor(fvm.isDarkMode ? .white : .black)).opacity(0.3)
                 .frame(height: UIScreen.main.bounds.height/25)
                 .background{
-                    Color.black
-                        .opacity(0.1)
+                    fvm.isDarkMode ? Color.white.opacity(0.1) : Color.black.opacity(0.1)
+
                 }
                 .clipShape(RoundedRectangle(cornerRadius:8))
                 .padding(.bottom, 20)

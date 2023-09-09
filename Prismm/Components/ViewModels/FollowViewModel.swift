@@ -33,7 +33,7 @@ class FollowViewModel: ObservableObject{
     }
     
     @Published var indicatorOffset = -(UIScreen.main.bounds.width/4)
-    @Published var isDarkMode = false{
+    @Published var isDarkMode = true{
         didSet{
             if isDarkMode {
                 colorTheme = Constants.darkThemeColor
@@ -44,7 +44,7 @@ class FollowViewModel: ObservableObject{
     }
     
     
-    @Published var colorTheme = Constants.lightThemeColor
+    @Published var colorTheme = Constants.darkThemeColor
     let userNameFontSize = UIDevice.current.userInterfaceIdiom == .phone ? 20 : 32
     let tabNameFontSize = UIDevice.current.userInterfaceIdiom == .phone ? 18 : 24
     let searchTextFontSize = UIDevice.current.userInterfaceIdiom == .phone ? 20 : 24

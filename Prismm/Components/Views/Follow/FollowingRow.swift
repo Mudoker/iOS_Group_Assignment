@@ -25,6 +25,7 @@ struct FollowingRow: View {
                     .font(.system(size: CGFloat(fvm.rowBioFontSize)))
                     .opacity(0.4)
             }
+            .foregroundColor(fvm.isDarkMode ? .white : .black)
             
             Spacer()
             
@@ -36,10 +37,10 @@ struct FollowingRow: View {
                     Text("Following")
                         .font(.system(size: CGFloat(fvm.rowButtonFontSize)))
                         .fontWeight(.bold)
+                        .foregroundColor(fvm.colorTheme)
                         .frame(width: UIScreen.main.bounds.width/4,height: UIScreen.main.bounds.height/(UIDevice.current.userInterfaceIdiom == .phone ? 25 : 30))
                         .background{
-                            Color.black
-                                .opacity(0.2)
+                            fvm.isDarkMode ? Color.white.opacity(0.2) : Color.black.opacity(0.2)
                         }
                         .clipShape(RoundedRectangle(cornerRadius: 5))
                 }
@@ -54,7 +55,7 @@ struct FollowingRow: View {
                         .frame(width: UIDevice().userInterfaceIdiom == .phone ? 20 : 30)
                 }
             }
-            .foregroundColor(.black)
+            .foregroundColor(fvm.isDarkMode ? .white : .black)
             
 
 

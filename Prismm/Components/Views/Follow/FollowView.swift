@@ -20,6 +20,7 @@ struct FollowView: View {
                     .font(.system(size: CGFloat(fvm.userNameFontSize)))
                     .fontWeight(.bold)
             }
+            .foregroundColor(fvm.isDarkMode ? .white : .black)
             .padding(.bottom,10)
             
             HStack{
@@ -47,15 +48,18 @@ struct FollowView: View {
                 .frame(width: UIScreen.main.bounds.width/2)
                 
             }
-            .foregroundColor(.black)
+            .foregroundColor(fvm.isDarkMode ? .white : .black)
             
             ZStack{
                 Divider()
+                    .overlay {
+                        fvm.isDarkMode ? Color.white : Color.black
+                    }
                 
                 Divider()
                     .frame(width: UIScreen.main.bounds.width/2,height: 1)
                     .overlay {
-                        Color.black
+                        fvm.isDarkMode ? Color.white : Color.black
                     }
                     .offset(x: fvm.indicatorOffset)
             } //divider
@@ -74,6 +78,9 @@ struct FollowView: View {
             
 
             Spacer()
+        }
+        .background{
+            fvm.isDarkMode ? Color.black : Color.white
         }
     }
 }
