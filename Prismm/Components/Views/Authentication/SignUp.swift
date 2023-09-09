@@ -12,7 +12,6 @@ struct SignUp: View {
     @State var accountText = ""
     @State var passwordText = ""
     @State var confrimPasswordText = ""
-    @State var isDarkMode = true
     @State private var isPasswordVisible: Bool = false
     @State var isValidPassword = false
     @State var isValidReEnterPassword = false

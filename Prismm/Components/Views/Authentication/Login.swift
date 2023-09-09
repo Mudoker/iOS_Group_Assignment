@@ -12,13 +12,11 @@ struct Login: View {
     // Control state
     @State var accountText = ""
     @State var passwordText = ""
-    @State var isDarkMode = false
     @State private var isPasswordVisible: Bool = false
-    @State var isUnlocked = false
     @State var isValidUserName = false
     @State var isValidPassword = false
     @State private var showAlert = false
-    
+    @State var isForgotPassword = false
     
     // View Model
     @StateObject var authenticationViewModel = AuthenticationViewModel()
@@ -78,7 +76,11 @@ struct Login: View {
                     // Login button
                     Button(action: {
                         authenticationViewModel.fetchUserData()
-                        showAlert.toggle()
+                        if authenticationViewModel.validateUsername(accountText) && authenticationViewModel.validatePassword(passwordText) {
+                            print("ok")
+                        } else {
+                            showAlert.toggle()
+                        }
                     }) {
                         Text("Login")
                             .foregroundColor(.white)
@@ -93,17 +95,17 @@ struct Login: View {
                             )
                             .padding(.horizontal)
                     }
-                    //                    .alert(isPresented: $showAlert) {
-                    //                        Alert(
-                    //                            title: Text("Login Failed"),
-                    //                            message: Text("Invalid username or password.\nPlease check again"),
-                    //                            dismissButton: .default(Text("Close"))
-                    //                        )
-                    //                    }
-                    
+                    .alert(isPresented: $showAlert) {
+                        Alert(
+                            title: Text("Login Failed"),
+                            message: Text("Invalid username or password.\nPlease check again"),
+                            dismissButton: .default(Text("Close"))
+                        )
+                    }
+
+                    // Helpers
                     HStack {
                         Button(action: {
-                            // Add your login action here
                         }) {
                             Text("Forgot Password?")
                                 .bold()
@@ -111,6 +113,13 @@ struct Login: View {
                                 .padding()
                                 .padding(.horizontal)
                                 .opacity(0.8)
+                        }
+                        .alert(isPresented: $showAlert) {
+                            Alert(
+                                title: Text("Login Failed"),
+                                message: Text("Invalid username or password.\nPlease check again"),
+                                dismissButton: .default(Text("Close"))
+                            )
                         }
                         
                         Spacer()
@@ -129,6 +138,7 @@ struct Login: View {
                     
                     HStack {
                         Spacer()
+                        
                         VStack {
                             Text("Sign in with")
                                 .bold()
@@ -146,6 +156,7 @@ struct Login: View {
                             }
                             
                         }
+                        
                         Spacer()
                     }
                     .padding(.top)
@@ -162,8 +173,6 @@ struct Login: View {
                         authenticationViewModel.textFieldCorner = proxy.size.width/50
                         authenticationViewModel.faceIdImageSize = proxy.size.width/10
                         authenticationViewModel.loginButtonSizeHeight = authenticationViewModel.textFieldSizeHeight
-                        //                    authenticationViewModel.loginTextFont = .body
-                        
                     } else {
                         authenticationViewModel.logoImageSize = proxy.size.width/2.8
                         authenticationViewModel.textFieldSizeHeight = proxy.size.width/9
@@ -186,6 +195,7 @@ struct Login: View {
                 .onChange(of: passwordText) { newValue in
                     isValidPassword = authenticationViewModel.validatePassword(newValue)
                 }
+                
                 if authenticationViewModel.isLoading {
                     Color.gray.opacity(0.3).ignoresSafeArea()
                     ProgressView("Fetching Data...")

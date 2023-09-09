@@ -12,7 +12,17 @@ import SwiftUI
 class AuthenticationViewModel: ObservableObject {
     @Published var isUnlocked = false
     @Published var isDarkMode = false
-
+    @Published var userToken: String {
+        didSet {
+            UserDefaults.standard.set(userToken, forKey: "userToken")
+        }
+    }
+    
+    // set user token for bio metric login
+    init() {
+        self.userToken = UserDefaults.standard.string(forKey: "userToken") ?? ""
+    }
+    
     // Responsive
     @Published var titleFont: CGFloat = 40
     @Published var logoImageSize: CGFloat = 0
@@ -31,11 +41,13 @@ class AuthenticationViewModel: ObservableObject {
 
     // Validate username
     func validateUsername(_ username: String) -> Bool{
+        isUnlocked = true
         return true
     }
     
     // Validate password
     func validatePassword(_ password: String) -> Bool{
+        isUnlocked = true
         return true
     }
     
@@ -76,7 +88,7 @@ class AuthenticationViewModel: ObservableObject {
         var error: NSError?
         
         if context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error) {
-            context.evaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, localizedReason: "Account Autofill") { success, authenticationError in
+            context.evaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, localizedReason: "Login with FaceId") { success, authenticationError in
                 DispatchQueue.main.async {
                     if success {
                         // Biometric authentication was successful
