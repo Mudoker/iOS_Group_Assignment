@@ -10,24 +10,27 @@ import SwiftUI
 
 struct PostView: View {
     @State private var commentContent = ""
+    
+    // View model
+    @ObservedObject var homeViewModel = HomeViewModel()
+    
     var body: some View {
-        GeometryReader {reader in
+        GeometryReader {proxy in
             VStack {
                 //Post info.
                 HStack {
-                    Image("ProfileImage")
+                    Image("test")
                         .resizable()
                         .scaledToFit()
-                        .frame(width: min(reader.size.width, reader.size.height) * 0.12) // Set the desired width and height for your circular image
+                        .frame(width: homeViewModel.profileImageSize) // Set the desired width and height for your circular image
                         .clipShape(Circle()) // Apply a circular clipping shape
-                        .padding(.leading, reader.size.width * 0.001)
                     
-                    VStack (alignment: .leading, spacing: reader.size.height * 0.01) {
+                    VStack (alignment: .leading, spacing: proxy.size.height * 0.01) {
                         Text("FELIX")
-                            .font(Font.system(size: 14, weight: .semibold))
+                            .font(Font.system(size: homeViewModel.usernameFont, weight: .semibold))
                         
                         Text("8th September ")
-                            .font(Font.system(size: 14, weight: .medium))
+                            .font(Font.system(size: homeViewModel.usernameFont, weight: .medium))
                             .opacity(0.3)
                     }
                     
@@ -36,83 +39,90 @@ struct PostView: View {
                     Image(systemName: "ellipsis")
                         .resizable()
                         .scaledToFit()
-                        .frame(width: reader.size.width * 0.04, height: reader.size.height * 0.01)
-                        .padding(.trailing, reader.size.width * 0.02)
+                        .frame(width: homeViewModel.seeMoreButtonSize)
+                        .padding(.trailing, proxy.size.width * 0.02)
                 }
-                .padding(.horizontal, reader.size.width * 0.02)
+                .padding(.horizontal)
                 
                 
                 //Caption
                 HStack {
                     Text("New to the app")
+                        .font(homeViewModel.captionFont)
+                    
                     Spacer()
-                }.padding(.horizontal, reader.size.width * 0.02)
-                    .padding(.vertical, reader.size.height * 0.008)
+                }
+                .padding(.horizontal)
+                .padding(.vertical, proxy.size.width * 0.008)
                 
                 
                 //Image.
-                Image("ProfileImage")
+                Image("test")
                     .resizable()
                     .scaledToFill()
-                    .frame(width: reader.size.width)
-                    .clipped()
-                    .padding(.bottom, reader.size.height * 0.01)
+                    .frame(width: proxy.size.width)
                 
                 //Operations menu.
-                HStack (spacing: reader.size.width * 0.08) {
+                HStack (spacing: proxy.size.width * 0.08) {
                     HStack {
                         Image(systemName: "hand.thumbsup")
                             .resizable()
-                            .frame(width: reader.size.width * 0.06, height: reader.size.height * 0.03)
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: homeViewModel.postStatsImageSize)
                         
                         Text("102")
-                            .font(Font.system(size: reader.size.width * 0.05, weight: .medium))
+                            .font(Font.system(size: homeViewModel.postStatsFontSize, weight: .light))
                             .opacity(0.6)
                     }
-                    .padding(.leading, reader.size.width * 0.04)
+                    .padding(.leading, proxy.size.width * 0.04)
                     
                     HStack {
                         Image(systemName: "bubble.right")
                             .resizable()
-                            .frame(width: reader.size.width * 0.06, height: reader.size.height * 0.03)
-                        
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: homeViewModel.postStatsImageSize)
+
                         Text("15")
-                            .font(Font.system(size: reader.size.width * 0.05, weight: .medium))
+                            .font(Font.system(size: homeViewModel.postStatsFontSize, weight: .light))
                             .opacity(0.6)
                     }
-                    .padding(.leading, reader.size.width * 0.04)
     
                     Spacer()
+                    
                     Image(systemName: "heart")
                         .resizable()
-                        .frame(width: reader.size.width * 0.06, height: reader.size.height * 0.03)
-                        .padding(.trailing, reader.size.width * 0.04)
-                }.padding(.bottom, reader.size.height * 0.015)
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: homeViewModel.postStatsImageSize)
+                        .padding(.trailing)
+
+                }
+                .padding(.vertical)
                 
                 HStack{
-                    //            user image
-                    Image("ProfileImage")
+                    //user image
+                    Image("test")
                         .resizable()
                         .scaledToFit()
-                        .frame(width: min(reader.size.width, reader.size.height) * 0.1) // Set the desired width and height for your circular image
+                        .frame(width: homeViewModel.commentProfileImage) // Set the desired width and height for your circular image
                         .clipShape(Circle()) // Apply a circular clipping shape      input area
+                    
                     TextField("Comment..", text: $commentContent)
-                        .font(.system(size: reader.size.width * 0.04))
-                        .padding(.horizontal, 10) // Add horizontal padding to the text field
+                        .font(homeViewModel.commentTextFiledFont)
+                        .padding(.horizontal) // Add horizontal padding to the text field
                                 .background(
-                                    RoundedRectangle(cornerRadius: 15) // Adjust the corner radius as needed
+                                    RoundedRectangle(cornerRadius: homeViewModel.commentTextFieldRoundedCorner) // Adjust the corner radius as needed
                                         .fill(Color.gray.opacity(0.1)) // Customize the background color
-                                        .frame(height: reader.size.height * 0.05)
+                                        .frame(height: homeViewModel.commentTextFieldSizeHeight)
                                 )
                 }
-                .padding(.horizontal, reader.size.width * 0.03)
+                .padding(.horizontal)
                 
                 VStack{
                     Rectangle()
-                        .frame(height: reader.size.height * 0.002)
-                        .foregroundColor(Color.gray)
+                        .frame(height: proxy.size.height * 0.0005)
+                        .foregroundColor(Color.gray.opacity(0.5))
                 }
-                .padding(.vertical, reader.size.height * 0.01)
+                .padding(.vertical)
             }
         }
     }

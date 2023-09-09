@@ -25,6 +25,7 @@
 		E17E8CE32AAC6B5200EF5EFB /* PostModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E17E8CE22AAC6B5200EF5EFB /* PostModel.swift */; };
 		E17E8CE52AAC6C5800EF5EFB /* CommentModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E17E8CE42AAC6C5800EF5EFB /* CommentModel.swift */; };
 		E17E8CE72AAC6CA400EF5EFB /* StoryModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E17E8CE62AAC6CA400EF5EFB /* StoryModel.swift */; };
+		E17E8CE92AAC6F1A00EF5EFB /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E17E8CE82AAC6F1A00EF5EFB /* HomeViewModel.swift */; };
 		E19D96832AAB2C0000E2CFAC /* Extension+String.swift in Sources */ = {isa = PBXBuildFile; fileRef = E19D96822AAB2C0000E2CFAC /* Extension+String.swift */; };
 		E1CED5132AAB42BB00F7F94E /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1CED5122AAB42BB00F7F94E /* Constants.swift */; };
 /* End PBXBuildFile section */
@@ -50,6 +51,7 @@
 		E17E8CE22AAC6B5200EF5EFB /* PostModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostModel.swift; sourceTree = "<group>"; };
 		E17E8CE42AAC6C5800EF5EFB /* CommentModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentModel.swift; sourceTree = "<group>"; };
 		E17E8CE62AAC6CA400EF5EFB /* StoryModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoryModel.swift; sourceTree = "<group>"; };
+		E17E8CE82AAC6F1A00EF5EFB /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
 		E19D96822AAB2C0000E2CFAC /* Extension+String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extension+String.swift"; sourceTree = "<group>"; };
 		E1CED5122AAB42BB00F7F94E /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -165,6 +167,7 @@
 			isa = PBXGroup;
 			children = (
 				E12FA02F2AAC29A0007890A3 /* AuthenticationViewModel.swift */,
+				E17E8CE82AAC6F1A00EF5EFB /* HomeViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -283,6 +286,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E17E8CE92AAC6F1A00EF5EFB /* HomeViewModel.swift in Sources */,
 				E12FA0262AAC2915007890A3 /* Main.swift in Sources */,
 				E17E8CE32AAC6B5200EF5EFB /* PostModel.swift in Sources */,
 				E10C0E412AAAF53E00AEB220 /* CustomTextField.swift in Sources */,
