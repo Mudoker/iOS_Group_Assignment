@@ -28,6 +28,8 @@
 		E17E8CE32AAC6B5200EF5EFB /* PostModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E17E8CE22AAC6B5200EF5EFB /* PostModel.swift */; };
 		E17E8CE52AAC6C5800EF5EFB /* CommentModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E17E8CE42AAC6C5800EF5EFB /* CommentModel.swift */; };
 		E17E8CE72AAC6CA400EF5EFB /* StoryModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E17E8CE62AAC6CA400EF5EFB /* StoryModel.swift */; };
+		E17E8CF82AAC85E500EF5EFB /* ProfileInfoBlock.swift in Sources */ = {isa = PBXBuildFile; fileRef = E17E8CF62AAC85E500EF5EFB /* ProfileInfoBlock.swift */; };
+		E17E8CF92AAC85E500EF5EFB /* PostGridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E17E8CF72AAC85E500EF5EFB /* PostGridView.swift */; };
 		E19D96832AAB2C0000E2CFAC /* Extension+String.swift in Sources */ = {isa = PBXBuildFile; fileRef = E19D96822AAB2C0000E2CFAC /* Extension+String.swift */; };
 		E1CED5132AAB42BB00F7F94E /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1CED5122AAB42BB00F7F94E /* Constants.swift */; };
 /* End PBXBuildFile section */
@@ -56,6 +58,8 @@
 		E17E8CE22AAC6B5200EF5EFB /* PostModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostModel.swift; sourceTree = "<group>"; };
 		E17E8CE42AAC6C5800EF5EFB /* CommentModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentModel.swift; sourceTree = "<group>"; };
 		E17E8CE62AAC6CA400EF5EFB /* StoryModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoryModel.swift; sourceTree = "<group>"; };
+		E17E8CF62AAC85E500EF5EFB /* ProfileInfoBlock.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileInfoBlock.swift; sourceTree = "<group>"; };
+		E17E8CF72AAC85E500EF5EFB /* PostGridView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostGridView.swift; sourceTree = "<group>"; };
 		E19D96822AAB2C0000E2CFAC /* Extension+String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extension+String.swift"; sourceTree = "<group>"; };
 		E1CED5122AAB42BB00F7F94E /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -198,6 +202,8 @@
 		E12FA0332AAC2EB7007890A3 /* Profile */ = {
 			isa = PBXGroup;
 			children = (
+				E17E8CF72AAC85E500EF5EFB /* PostGridView.swift */,
+				E17E8CF62AAC85E500EF5EFB /* ProfileInfoBlock.swift */,
 				2FF0ACC52AAB05120033AEEB /* ProfileToolBar.swift */,
 				2FF0ACC32AAAFA3C0033AEEB /* ProfileView.swift */,
 			);
@@ -309,6 +315,7 @@
 				E17E8CE12AAC6ABF00EF5EFB /* SettingModel.swift in Sources */,
 				2F68ACF92AAC6EE10059E1AF /* FollowViewModel.swift in Sources */,
 				E12FA0362AAC2EE3007890A3 /* HomeView.swift in Sources */,
+				E17E8CF92AAC85E500EF5EFB /* PostGridView.swift in Sources */,
 				E12FA03A2AAC2EFB007890A3 /* StoryView.swift in Sources */,
 				E1CED5132AAB42BB00F7F94E /* Constants.swift in Sources */,
 				E17E8CE52AAC6C5800EF5EFB /* CommentModel.swift in Sources */,
@@ -321,6 +328,7 @@
 				E12FA0292AAC2963007890A3 /* UserModel.swift in Sources */,
 				E17E8CDB2AAC496F00EF5EFB /* CustomAlertView.swift in Sources */,
 				2FF0ACC42AAAFA3C0033AEEB /* ProfileView.swift in Sources */,
+				E17E8CF82AAC85E500EF5EFB /* ProfileInfoBlock.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
