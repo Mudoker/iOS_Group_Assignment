@@ -9,6 +9,8 @@ import SwiftUI
 
 struct ProfileView: View {
     
+    //@State
+    @State var isDarkMode = false
     
     @State var haveHighlight = false
     @State var isSample = true
@@ -16,10 +18,12 @@ struct ProfileView: View {
     
     var body: some View {
         GeometryReader { reader in
-            VStack(alignment: .leading){
+            VStack(alignment: .center){
     
-                ProfileToolBar()
-                    
+                
+               
+                ProfileToolBar(isDarkMode: $isDarkMode)
+                    .padding(.horizontal, 20)
                 
                 //Profile info block
                 VStack(alignment: .leading){
@@ -30,30 +34,41 @@ struct ProfileView: View {
                             .frame(width: reader.size.width/4)
                             .clipShape(Circle())
                         Spacer()
-                        
                         VStack{
-                            HStack(spacing: 15){ //should be responsive
+                            HStack(spacing: reader.size.width/17){
                                 VStack{
                                     Text(LocalizedStringKey("0"))
+                                        .font(.system(size: UIDevice.current.userInterfaceIdiom == .phone ? 24 : 30))
                                         .fontWeight(.bold)
                                     Text(LocalizedStringKey("Posts"))
+                                        .font(.system(size: UIDevice.current.userInterfaceIdiom == .phone ? 18 : 26))
+                                        .opacity(0.5)
                                     
                                 }
                                 
+                                
                                 VStack{
                                     Text(LocalizedStringKey("0"))
+                                        .font(.system(size: UIDevice.current.userInterfaceIdiom == .phone ? 24 : 30))
                                         .fontWeight(.bold)
                                     Text(LocalizedStringKey("Followers"))
+                                        .font(.system(size: UIDevice.current.userInterfaceIdiom == .phone ? 18 : 26))
+                                        .opacity(0.5)
                                     
                                 }
                                 
+                                
                                 VStack{
                                     Text(LocalizedStringKey("0"))
+                                        .font(.system(size: UIDevice.current.userInterfaceIdiom == .phone ? 24 : 30))
                                         .fontWeight(.bold)
                                     Text(LocalizedStringKey("Following"))
-                                    
+                                        .font(.system(size: UIDevice.current.userInterfaceIdiom == .phone ? 18 : 26))
+                                        .opacity(0.5)
                                 }
                             }
+                            .foregroundColor(isDarkMode ? Color.white : Color.black)
+                            
                             //edit button and share button
                             HStack{
                                 Button {
@@ -61,102 +76,51 @@ struct ProfileView: View {
                                 } label: {
 
                                     Text(LocalizedStringKey("Edit Profile"))
+                                        .font(.system(size: UIDevice.current.userInterfaceIdiom == .phone ? 14 : 20))
                                         .fontWeight(.bold)
-                                        .foregroundColor(.black)
+                                        .foregroundColor(isDarkMode ? Constants.darkThemeColor : Constants.lightThemeColor)
                                         .frame(width: reader.size.width / 3.5,height: reader.size.height/20)
                                         .background{
                                             Color.gray
-                                                .opacity(0.3)
+                                                .opacity(isDarkMode ? 0.3 :0.1)
                                         }
-                                        .clipShape(RoundedRectangle(cornerRadius: 30))
+                                        .clipShape(RoundedRectangle(cornerRadius: 10))
                                 }
 
                                 Button {
                                     
                                 } label: {
-                                    Text(LocalizedStringKey("Facebook Link"))
+                                    Text(LocalizedStringKey("F"))
+                                        .font(.system(size: UIDevice.current.userInterfaceIdiom == .phone ? 14 : 20))
                                         .fontWeight(.bold)
-                                        .foregroundColor(.black)
+                                        .foregroundColor(isDarkMode ? Constants.darkThemeColor : Constants.lightThemeColor)
                                         .frame(width: reader.size.width / 3.5,height: reader.size.height/20)
                                         .background{
                                             Color.gray
-                                                .opacity(0.3)
+                                                .opacity(isDarkMode ? 0.3 : 0.1)
                                         }
-                                        .clipShape(RoundedRectangle(cornerRadius: 30))
+                                        .clipShape(RoundedRectangle(cornerRadius: 10))
                                 }
                                 
 
                             }
                         }
                     }
-                    
+                        .frame(minWidth: 0,maxWidth: .infinity)
                     HStack{
                         Text(LocalizedStringKey("FullName"))
+                            .font(.system(size: UIDevice.current.userInterfaceIdiom == .phone ? 24 : 40))
                             .fontWeight(.bold)
                     }
                     HStack{
                         Text(LocalizedStringKey("Quote"))
+                            .font(.system(size: UIDevice.current.userInterfaceIdiom == .phone ? 18 : 26))
+                            .opacity(0.5)
                     }
                 }
+                .padding(.horizontal, 20)
+                .foregroundColor(isDarkMode ? Color.white : Color.black)
 
-                
-                
-                
-                //Highlight stories
-//                if haveHighlight {
-//
-//                }else{
-//                    VStack(alignment: .leading){
-//                        HStack{
-//
-//                            Text(LocalizedStringKey("Story highlights"))
-//                                .fontWeight(.bold)
-//
-//                            Spacer()
-//
-//                            Button {
-//
-//                                isSample.toggle()
-//
-//
-//                            } label: {
-//                                Image(systemName: isSample ? "chevron.up" : "chevron.down")
-//                                    .foregroundColor(.black)
-//                            }
-//
-//                        }
-//
-//                        //Stories sample
-//                        if isSample {
-//
-//                            Text(LocalizedStringKey("Keep your favourite stories on your profile"))
-//
-//                            VStack{
-//
-//                                ZStack{
-//                                    Image(systemName: "plus")
-//                                        .resizable()
-//                                        .scaledToFit()
-//                                        .frame(width: 40)
-//                                }
-//                                .frame(width: reader.size.width/5,height: reader.size.width/5)
-//                                .clipShape(Circle())
-//                                .overlay(Circle().stroke(Color.black).shadow(radius: 5))
-//
-//                                Text(LocalizedStringKey("New"))
-//                            }
-//
-//                        }else{
-//                            Divider()
-//                                .frame(height: 2)
-//                        }
-//
-//
-//                    }
-//                    .padding(.top,20)
-//
-//
-//                }
                 
                 //tab changing
                 HStack{
@@ -170,12 +134,12 @@ struct ProfileView: View {
                             Image(systemName: "squareshape.split.3x3")
                                 .resizable()
                                 .scaledToFit()
-                                .frame(height: 30) //not responsive
-                                .foregroundColor(showingPost == 1 ? .black : .gray)
-                            
+                                .frame(height: UIDevice.current.userInterfaceIdiom == .phone ? 30 : 40) //not responsive
+                                .foregroundColor(showingPost == 1 ? isDarkMode ? Constants.darkThemeColor : Constants.lightThemeColor : .gray)
+                                
                             Divider()
-                                .overlay(showingPost == 1 ? .black : .gray)
-                            
+                                .overlay(showingPost == 1 ? isDarkMode ? Constants.darkThemeColor : Constants.lightThemeColor : .gray)
+                               
                             
                         }
                         .frame(width: (reader.size.width-40)/2)
@@ -190,26 +154,37 @@ struct ProfileView: View {
                         VStack{
                             Image(systemName: "bookmark")
                                 .resizable()
-                                .frame(width: 25,height: 30)    //not responsive
-                                .foregroundColor(showingPost == 2 ? .black : .gray)
+                                .frame(width: UIDevice.current.userInterfaceIdiom == .phone ? 30 : 40,height: UIDevice.current.userInterfaceIdiom == .phone ? 30 : 40)
+                                .foregroundColor(showingPost == 2 ? isDarkMode ? Constants.darkThemeColor : Constants.lightThemeColor : .gray)
 
                             Divider()
-                                .overlay(showingPost == 2 ? .black : .gray)
+                                .overlay(showingPost == 2 ? isDarkMode ? Constants.darkThemeColor : Constants.lightThemeColor : .gray)
                         }.frame(width: (reader.size.width-40)/2)
                     }
 
                 }
+                .frame(minWidth: 0, maxWidth: .infinity)
                 .padding(.top)
                 
+
+                
+                
+                ScrollView(.vertical, showsIndicators: false) {
+                    PostGridView()
+                }
+                
             }
-            .padding(.horizontal,20)
             .frame(minWidth: 0,maxWidth: .infinity)
+            
         }
+        .background(isDarkMode ? Color.black : Color.white)
     }
 }
 
 struct ProfileView_Previews: PreviewProvider {
     static var previews: some View {
         ProfileView()
+        
+        ProfileView().previewDevice("iPad Pro (11-inch) (4th generation)")
     }
 }
