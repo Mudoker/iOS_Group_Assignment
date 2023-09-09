@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2F68ACF92AAC6EE10059E1AF /* FollowViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F68ACF82AAC6EE10059E1AF /* FollowViewModel.swift */; };
+		2F68ACFC2AAC6FA00059E1AF /* FollowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F68ACFB2AAC6FA00059E1AF /* FollowView.swift */; };
+		2F68ACFE2AAC74FA0059E1AF /* FollowerRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F68ACFD2AAC74FA0059E1AF /* FollowerRow.swift */; };
 		2FF0ACC42AAAFA3C0033AEEB /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FF0ACC32AAAFA3C0033AEEB /* ProfileView.swift */; };
 		2FF0ACC62AAB05120033AEEB /* ProfileToolBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FF0ACC52AAB05120033AEEB /* ProfileToolBar.swift */; };
 		E10C0E292AAAEDBD00AEB220 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E10C0E282AAAEDBD00AEB220 /* Assets.xcassets */; };
@@ -30,6 +33,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		2F68ACF82AAC6EE10059E1AF /* FollowViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FollowViewModel.swift; sourceTree = "<group>"; };
+		2F68ACFB2AAC6FA00059E1AF /* FollowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FollowView.swift; sourceTree = "<group>"; };
+		2F68ACFD2AAC74FA0059E1AF /* FollowerRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FollowerRow.swift; sourceTree = "<group>"; };
 		2FF0ACC32AAAFA3C0033AEEB /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		2FF0ACC52AAB05120033AEEB /* ProfileToolBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileToolBar.swift; sourceTree = "<group>"; };
 		E10C0E212AAAEDBC00AEB220 /* Prismm.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Prismm.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -65,6 +71,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		2F68ACFA2AAC6F860059E1AF /* Follow */ = {
+			isa = PBXGroup;
+			children = (
+				2F68ACFB2AAC6FA00059E1AF /* FollowView.swift */,
+				2F68ACFD2AAC74FA0059E1AF /* FollowerRow.swift */,
+			);
+			path = Follow;
+			sourceTree = "<group>";
+		};
 		E10C0E182AAAEDBC00AEB220 = {
 			isa = PBXGroup;
 			children = (
@@ -133,6 +148,7 @@
 		E10C0E362AAAEF6E00AEB220 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				2F68ACFA2AAC6F860059E1AF /* Follow */,
 				E12FA0342AAC2EC7007890A3 /* Home */,
 				E12FA0332AAC2EB7007890A3 /* Profile */,
 				E12FA0312AAC2E9F007890A3 /* Authentication */,
@@ -165,6 +181,7 @@
 			isa = PBXGroup;
 			children = (
 				E12FA02F2AAC29A0007890A3 /* AuthenticationViewModel.swift */,
+				2F68ACF82AAC6EE10059E1AF /* FollowViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -290,13 +307,16 @@
 				E10C0E452AAB1DDA00AEB220 /* SignUp.swift in Sources */,
 				E10C0E432AAAFFA300AEB220 /* Login.swift in Sources */,
 				E17E8CE12AAC6ABF00EF5EFB /* SettingModel.swift in Sources */,
+				2F68ACF92AAC6EE10059E1AF /* FollowViewModel.swift in Sources */,
 				E12FA0362AAC2EE3007890A3 /* HomeView.swift in Sources */,
 				E12FA03A2AAC2EFB007890A3 /* StoryView.swift in Sources */,
 				E1CED5132AAB42BB00F7F94E /* Constants.swift in Sources */,
 				E17E8CE52AAC6C5800EF5EFB /* CommentModel.swift in Sources */,
 				E17E8CE72AAC6CA400EF5EFB /* StoryModel.swift in Sources */,
+				2F68ACFC2AAC6FA00059E1AF /* FollowView.swift in Sources */,
 				E12FA0382AAC2EEE007890A3 /* PostView.swift in Sources */,
 				E12FA0302AAC29A0007890A3 /* AuthenticationViewModel.swift in Sources */,
+				2F68ACFE2AAC74FA0059E1AF /* FollowerRow.swift in Sources */,
 				2FF0ACC62AAB05120033AEEB /* ProfileToolBar.swift in Sources */,
 				E12FA0292AAC2963007890A3 /* UserModel.swift in Sources */,
 				E17E8CDB2AAC496F00EF5EFB /* CustomAlertView.swift in Sources */,
