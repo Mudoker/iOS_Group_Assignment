@@ -17,9 +17,7 @@ struct ProfileView: View {
     var body: some View {
         GeometryReader { reader in
             VStack(alignment: .leading){
-    
                 ProfileToolBar()
-                    
                 
                 //Profile info block
                 VStack(alignment: .leading){
