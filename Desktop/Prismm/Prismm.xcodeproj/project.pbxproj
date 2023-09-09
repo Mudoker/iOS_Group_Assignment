@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2FF0ACC42AAAFA3C0033AEEB /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FF0ACC32AAAFA3C0033AEEB /* ProfileView.swift */; };
+		2FF0ACC62AAB05120033AEEB /* ProfileToolBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FF0ACC52AAB05120033AEEB /* ProfileToolBar.swift */; };
 		E10C0E252AAAEDBC00AEB220 /* PrismmApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10C0E242AAAEDBC00AEB220 /* PrismmApp.swift */; };
 		E10C0E272AAAEDBC00AEB220 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10C0E262AAAEDBC00AEB220 /* ContentView.swift */; };
 		E10C0E292AAAEDBD00AEB220 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E10C0E282AAAEDBD00AEB220 /* Assets.xcassets */; };
@@ -18,9 +20,15 @@
 		E17CBF592AAB267B004A97E7 /* Test+BioMetric.swift in Sources */ = {isa = PBXBuildFile; fileRef = E17CBF582AAB267B004A97E7 /* Test+BioMetric.swift */; };
 		E19D96832AAB2C0000E2CFAC /* Extension+String.swift in Sources */ = {isa = PBXBuildFile; fileRef = E19D96822AAB2C0000E2CFAC /* Extension+String.swift */; };
 		E1CED5132AAB42BB00F7F94E /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1CED5122AAB42BB00F7F94E /* Constants.swift */; };
+		E10C0E392AAAF01C00AEB220 /* test1.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10C0E382AAAF01C00AEB220 /* test1.swift */; };
+		E10C0E3B2AAAF02400AEB220 /* test2.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10C0E3A2AAAF02400AEB220 /* test2.swift */; };
+		E10C0E3D2AAAF02C00AEB220 /* test3.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10C0E3C2AAAF02C00AEB220 /* test3.swift */; };
+		E10C0E3F2AAAF03400AEB220 /* test4.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10C0E3E2AAAF03400AEB220 /* test4.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		2FF0ACC32AAAFA3C0033AEEB /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
+		2FF0ACC52AAB05120033AEEB /* ProfileToolBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileToolBar.swift; sourceTree = "<group>"; };
 		E10C0E212AAAEDBC00AEB220 /* Prismm.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Prismm.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E10C0E242AAAEDBC00AEB220 /* PrismmApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrismmApp.swift; sourceTree = "<group>"; };
 		E10C0E262AAAEDBC00AEB220 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -34,6 +42,10 @@
 		E17CBF582AAB267B004A97E7 /* Test+BioMetric.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Test+BioMetric.swift"; sourceTree = "<group>"; };
 		E19D96822AAB2C0000E2CFAC /* Extension+String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extension+String.swift"; sourceTree = "<group>"; };
 		E1CED5122AAB42BB00F7F94E /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		E10C0E382AAAF01C00AEB220 /* test1.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = test1.swift; sourceTree = "<group>"; };
+		E10C0E3A2AAAF02400AEB220 /* test2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = test2.swift; sourceTree = "<group>"; };
+		E10C0E3C2AAAF02C00AEB220 /* test3.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = test3.swift; sourceTree = "<group>"; };
+		E10C0E3E2AAAF03400AEB220 /* test4.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = test4.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -50,6 +62,7 @@
 		E10C0E182AAAEDBC00AEB220 = {
 			isa = PBXGroup;
 			children = (
+				E10C0E352AAAEF6500AEB220 /* Test */,
 				E10C0E232AAAEDBC00AEB220 /* Prismm */,
 				E10C0E222AAAEDBC00AEB220 /* Products */,
 			);
@@ -117,6 +130,7 @@
 			isa = PBXGroup;
 			children = (
 				E17CBF582AAB267B004A97E7 /* Test+BioMetric.swift */,
+				E10C0E3E2AAAF03400AEB220 /* test4.swift */,
 			);
 			path = Test;
 			sourceTree = "<group>";
@@ -126,6 +140,9 @@
 			children = (
 				E10C0E422AAAFFA300AEB220 /* Login.swift */,
 				E10C0E442AAB1DDA00AEB220 /* SignUp.swift */,
+				E10C0E3A2AAAF02400AEB220 /* test2.swift */,
+				2FF0ACC32AAAFA3C0033AEEB /* ProfileView.swift */,
+				2FF0ACC52AAB05120033AEEB /* ProfileToolBar.swift */,
 			);
 			path = Screens;
 			sourceTree = "<group>";
@@ -233,6 +250,14 @@
 				E10C0E452AAB1DDA00AEB220 /* SignUp.swift in Sources */,
 				E10C0E432AAAFFA300AEB220 /* Login.swift in Sources */,
 				E1CED5132AAB42BB00F7F94E /* Constants.swift in Sources */,
+				E10C0E3B2AAAF02400AEB220 /* test2.swift in Sources */,
+				E10C0E3F2AAAF03400AEB220 /* test4.swift in Sources */,
+				E10C0E272AAAEDBC00AEB220 /* ContentView.swift in Sources */,
+				2FF0ACC62AAB05120033AEEB /* ProfileToolBar.swift in Sources */,
+				E10C0E392AAAF01C00AEB220 /* test1.swift in Sources */,
+				E10C0E252AAAEDBC00AEB220 /* PrismmApp.swift in Sources */,
+				2FF0ACC42AAAFA3C0033AEEB /* ProfileView.swift in Sources */,
+				E10C0E3D2AAAF02C00AEB220 /* test3.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
