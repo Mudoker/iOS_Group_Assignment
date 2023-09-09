@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		9937EE8B2AAB026B00204AA6 /* Home.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9937EE8A2AAB026B00204AA6 /* Home.swift */; };
+		9937EE8D2AAB031400204AA6 /* Post.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9937EE8C2AAB031400204AA6 /* Post.swift */; };
+		9937EE8F2AAB686400204AA6 /* Story.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9937EE8E2AAB686400204AA6 /* Story.swift */; };
 		E10C0E252AAAEDBC00AEB220 /* PrismmApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10C0E242AAAEDBC00AEB220 /* PrismmApp.swift */; };
 		E10C0E272AAAEDBC00AEB220 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10C0E262AAAEDBC00AEB220 /* ContentView.swift */; };
 		E10C0E292AAAEDBD00AEB220 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E10C0E282AAAEDBD00AEB220 /* Assets.xcassets */; };
@@ -14,10 +17,13 @@
 		E10C0E392AAAF01C00AEB220 /* test1.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10C0E382AAAF01C00AEB220 /* test1.swift */; };
 		E10C0E3B2AAAF02400AEB220 /* test2.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10C0E3A2AAAF02400AEB220 /* test2.swift */; };
 		E10C0E3D2AAAF02C00AEB220 /* test3.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10C0E3C2AAAF02C00AEB220 /* test3.swift */; };
-		E10C0E3F2AAAF03400AEB220 /* test3.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10C0E3E2AAAF03400AEB220 /* test3.swift */; };
+		E10C0E3F2AAAF03400AEB220 /* test4.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10C0E3E2AAAF03400AEB220 /* test4.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		9937EE8A2AAB026B00204AA6 /* Home.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Home.swift; sourceTree = "<group>"; };
+		9937EE8C2AAB031400204AA6 /* Post.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Post.swift; sourceTree = "<group>"; };
+		9937EE8E2AAB686400204AA6 /* Story.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Story.swift; sourceTree = "<group>"; };
 		E10C0E212AAAEDBC00AEB220 /* Prismm.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Prismm.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E10C0E242AAAEDBC00AEB220 /* PrismmApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrismmApp.swift; sourceTree = "<group>"; };
 		E10C0E262AAAEDBC00AEB220 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -26,7 +32,7 @@
 		E10C0E382AAAF01C00AEB220 /* test1.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = test1.swift; sourceTree = "<group>"; };
 		E10C0E3A2AAAF02400AEB220 /* test2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = test2.swift; sourceTree = "<group>"; };
 		E10C0E3C2AAAF02C00AEB220 /* test3.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = test3.swift; sourceTree = "<group>"; };
-		E10C0E3E2AAAF03400AEB220 /* test3.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = test3.swift; sourceTree = "<group>"; };
+		E10C0E3E2AAAF03400AEB220 /* test4.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = test4.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -66,6 +72,9 @@
 				E10C0E242AAAEDBC00AEB220 /* PrismmApp.swift */,
 				E10C0E262AAAEDBC00AEB220 /* ContentView.swift */,
 				E10C0E2A2AAAEDBD00AEB220 /* Preview Content */,
+				9937EE8A2AAB026B00204AA6 /* Home.swift */,
+				9937EE8C2AAB031400204AA6 /* Post.swift */,
+				9937EE8E2AAB686400204AA6 /* Story.swift */,
 			);
 			path = Prismm;
 			sourceTree = "<group>";
@@ -106,7 +115,7 @@
 		E10C0E352AAAEF6500AEB220 /* Test */ = {
 			isa = PBXGroup;
 			children = (
-				E10C0E3E2AAAF03400AEB220 /* test3.swift */,
+				E10C0E3E2AAAF03400AEB220 /* test4.swift */,
 			);
 			path = Test;
 			sourceTree = "<group>";
@@ -198,11 +207,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				E10C0E3B2AAAF02400AEB220 /* test2.swift in Sources */,
-				E10C0E3F2AAAF03400AEB220 /* test3.swift in Sources */,
+				E10C0E3F2AAAF03400AEB220 /* test4.swift in Sources */,
 				E10C0E272AAAEDBC00AEB220 /* ContentView.swift in Sources */,
+				9937EE8D2AAB031400204AA6 /* Post.swift in Sources */,
 				E10C0E392AAAF01C00AEB220 /* test1.swift in Sources */,
 				E10C0E252AAAEDBC00AEB220 /* PrismmApp.swift in Sources */,
 				E10C0E3D2AAAF02C00AEB220 /* test3.swift in Sources */,
+				9937EE8B2AAB026B00204AA6 /* Home.swift in Sources */,
+				9937EE8F2AAB686400204AA6 /* Story.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
