@@ -11,7 +11,7 @@ import SwiftUI
 struct PrismmApp: App {
     var body: some Scene {
         WindowGroup {
-            Test_BioMetric()
+            Login()
         }
     }
 }

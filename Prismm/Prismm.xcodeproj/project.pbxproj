@@ -9,43 +9,39 @@
 /* Begin PBXBuildFile section */
 		2FF0ACC42AAAFA3C0033AEEB /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FF0ACC32AAAFA3C0033AEEB /* ProfileView.swift */; };
 		2FF0ACC62AAB05120033AEEB /* ProfileToolBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FF0ACC52AAB05120033AEEB /* ProfileToolBar.swift */; };
-		E10C0E252AAAEDBC00AEB220 /* PrismmApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10C0E242AAAEDBC00AEB220 /* PrismmApp.swift */; };
-		E10C0E272AAAEDBC00AEB220 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10C0E262AAAEDBC00AEB220 /* ContentView.swift */; };
 		E10C0E292AAAEDBD00AEB220 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E10C0E282AAAEDBD00AEB220 /* Assets.xcassets */; };
 		E10C0E2C2AAAEDBD00AEB220 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E10C0E2B2AAAEDBD00AEB220 /* Preview Assets.xcassets */; };
-		E10C0E3D2AAAF02C00AEB220 /* test4.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10C0E3C2AAAF02C00AEB220 /* test4.swift */; };
+		E10C0E3F2AAAF03400AEB220 /* test4.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10C0E3E2AAAF03400AEB220 /* test4.swift */; };
 		E10C0E412AAAF53E00AEB220 /* CustomTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10C0E402AAAF53E00AEB220 /* CustomTextField.swift */; };
 		E10C0E432AAAFFA300AEB220 /* Login.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10C0E422AAAFFA300AEB220 /* Login.swift */; };
 		E10C0E452AAB1DDA00AEB220 /* SignUp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10C0E442AAB1DDA00AEB220 /* SignUp.swift */; };
-		E17CBF592AAB267B004A97E7 /* Test+BioMetric.swift in Sources */ = {isa = PBXBuildFile; fileRef = E17CBF582AAB267B004A97E7 /* Test+BioMetric.swift */; };
+		E12FA0262AAC2915007890A3 /* Main.swift in Sources */ = {isa = PBXBuildFile; fileRef = E12FA0252AAC2915007890A3 /* Main.swift */; };
+		E12FA0292AAC2963007890A3 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = E12FA0282AAC2963007890A3 /* User.swift */; };
+		E12FA02B2AAC296D007890A3 /* Post.swift in Sources */ = {isa = PBXBuildFile; fileRef = E12FA02A2AAC296D007890A3 /* Post.swift */; };
+		E12FA02D2AAC2976007890A3 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = E12FA02C2AAC2976007890A3 /* Message.swift */; };
+		E12FA0302AAC29A0007890A3 /* LoginViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E12FA02F2AAC29A0007890A3 /* LoginViewModel.swift */; };
 		E19D96832AAB2C0000E2CFAC /* Extension+String.swift in Sources */ = {isa = PBXBuildFile; fileRef = E19D96822AAB2C0000E2CFAC /* Extension+String.swift */; };
 		E1CED5132AAB42BB00F7F94E /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1CED5122AAB42BB00F7F94E /* Constants.swift */; };
-		E10C0E392AAAF01C00AEB220 /* test1.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10C0E382AAAF01C00AEB220 /* test1.swift */; };
-		E10C0E3B2AAAF02400AEB220 /* test2.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10C0E3A2AAAF02400AEB220 /* test2.swift */; };
-		E10C0E3D2AAAF02C00AEB220 /* test3.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10C0E3C2AAAF02C00AEB220 /* test3.swift */; };
-		E10C0E3F2AAAF03400AEB220 /* test4.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10C0E3E2AAAF03400AEB220 /* test4.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		2FF0ACC32AAAFA3C0033AEEB /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		2FF0ACC52AAB05120033AEEB /* ProfileToolBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileToolBar.swift; sourceTree = "<group>"; };
 		E10C0E212AAAEDBC00AEB220 /* Prismm.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Prismm.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		E10C0E242AAAEDBC00AEB220 /* PrismmApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrismmApp.swift; sourceTree = "<group>"; };
-		E10C0E262AAAEDBC00AEB220 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		E10C0E282AAAEDBD00AEB220 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E10C0E2B2AAAEDBD00AEB220 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
-		E10C0E3C2AAAF02C00AEB220 /* test4.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = test4.swift; sourceTree = "<group>"; };
+		E10C0E3E2AAAF03400AEB220 /* test4.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = test4.swift; sourceTree = "<group>"; };
 		E10C0E402AAAF53E00AEB220 /* CustomTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTextField.swift; sourceTree = "<group>"; };
 		E10C0E422AAAFFA300AEB220 /* Login.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Login.swift; sourceTree = "<group>"; };
 		E10C0E442AAB1DDA00AEB220 /* SignUp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUp.swift; sourceTree = "<group>"; };
+		E12FA0252AAC2915007890A3 /* Main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Main.swift; sourceTree = "<group>"; };
+		E12FA0282AAC2963007890A3 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		E12FA02A2AAC296D007890A3 /* Post.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Post.swift; sourceTree = "<group>"; };
+		E12FA02C2AAC2976007890A3 /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
+		E12FA02F2AAC29A0007890A3 /* LoginViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewModel.swift; sourceTree = "<group>"; };
 		E17CBF572AAB25DA004A97E7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
-		E17CBF582AAB267B004A97E7 /* Test+BioMetric.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Test+BioMetric.swift"; sourceTree = "<group>"; };
 		E19D96822AAB2C0000E2CFAC /* Extension+String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extension+String.swift"; sourceTree = "<group>"; };
 		E1CED5122AAB42BB00F7F94E /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
-		E10C0E382AAAF01C00AEB220 /* test1.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = test1.swift; sourceTree = "<group>"; };
-		E10C0E3A2AAAF02400AEB220 /* test2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = test2.swift; sourceTree = "<group>"; };
-		E10C0E3C2AAAF02C00AEB220 /* test3.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = test3.swift; sourceTree = "<group>"; };
-		E10C0E3E2AAAF03400AEB220 /* test4.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = test4.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -62,6 +58,7 @@
 		E10C0E182AAAEDBC00AEB220 = {
 			isa = PBXGroup;
 			children = (
+				E12FA0252AAC2915007890A3 /* Main.swift */,
 				E10C0E352AAAEF6500AEB220 /* Test */,
 				E10C0E232AAAEDBC00AEB220 /* Prismm */,
 				E10C0E222AAAEDBC00AEB220 /* Products */,
@@ -82,12 +79,9 @@
 				E1CED5112AAB42A700F7F94E /* Constants */,
 				E19D96812AAB2BEE00E2CFAC /* Extensions */,
 				E17CBF572AAB25DA004A97E7 /* Info.plist */,
-				E10C0E352AAAEF6500AEB220 /* Test */,
 				E10C0E342AAAEF5900AEB220 /* Utilities */,
 				E10C0E332AAAEF4400AEB220 /* Components */,
 				E10C0E322AAAEF3000AEB220 /* Assets */,
-				E10C0E242AAAEDBC00AEB220 /* PrismmApp.swift */,
-				E10C0E262AAAEDBC00AEB220 /* ContentView.swift */,
 				E10C0E2A2AAAEDBD00AEB220 /* Preview Content */,
 			);
 			path = Prismm;
@@ -112,8 +106,10 @@
 		E10C0E332AAAEF4400AEB220 /* Components */ = {
 			isa = PBXGroup;
 			children = (
-				E10C0E372AAAEF7C00AEB220 /* Items */,
-				E10C0E362AAAEF6E00AEB220 /* Screens */,
+				E12FA02E2AAC298A007890A3 /* ViewModels */,
+				E12FA0272AAC2953007890A3 /* Models */,
+				E10C0E372AAAEF7C00AEB220 /* Custom */,
+				E10C0E362AAAEF6E00AEB220 /* Views */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -121,7 +117,6 @@
 		E10C0E342AAAEF5900AEB220 /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
-				E10C0E3C2AAAF02C00AEB220 /* test4.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -129,30 +124,46 @@
 		E10C0E352AAAEF6500AEB220 /* Test */ = {
 			isa = PBXGroup;
 			children = (
-				E17CBF582AAB267B004A97E7 /* Test+BioMetric.swift */,
 				E10C0E3E2AAAF03400AEB220 /* test4.swift */,
 			);
 			path = Test;
 			sourceTree = "<group>";
 		};
-		E10C0E362AAAEF6E00AEB220 /* Screens */ = {
+		E10C0E362AAAEF6E00AEB220 /* Views */ = {
 			isa = PBXGroup;
 			children = (
 				E10C0E422AAAFFA300AEB220 /* Login.swift */,
 				E10C0E442AAB1DDA00AEB220 /* SignUp.swift */,
-				E10C0E3A2AAAF02400AEB220 /* test2.swift */,
 				2FF0ACC32AAAFA3C0033AEEB /* ProfileView.swift */,
 				2FF0ACC52AAB05120033AEEB /* ProfileToolBar.swift */,
 			);
-			path = Screens;
+			path = Views;
 			sourceTree = "<group>";
 		};
-		E10C0E372AAAEF7C00AEB220 /* Items */ = {
+		E10C0E372AAAEF7C00AEB220 /* Custom */ = {
 			isa = PBXGroup;
 			children = (
 				E10C0E402AAAF53E00AEB220 /* CustomTextField.swift */,
 			);
-			path = Items;
+			path = Custom;
+			sourceTree = "<group>";
+		};
+		E12FA0272AAC2953007890A3 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				E12FA0282AAC2963007890A3 /* User.swift */,
+				E12FA02A2AAC296D007890A3 /* Post.swift */,
+				E12FA02C2AAC2976007890A3 /* Message.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		E12FA02E2AAC298A007890A3 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				E12FA02F2AAC29A0007890A3 /* LoginViewModel.swift */,
+			);
+			path = ViewModels;
 			sourceTree = "<group>";
 		};
 		E19D96812AAB2BEE00E2CFAC /* Extensions */ = {
@@ -241,23 +252,19 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E12FA0262AAC2915007890A3 /* Main.swift in Sources */,
+				E12FA02B2AAC296D007890A3 /* Post.swift in Sources */,
 				E10C0E412AAAF53E00AEB220 /* CustomTextField.swift in Sources */,
-				E17CBF592AAB267B004A97E7 /* Test+BioMetric.swift in Sources */,
-				E10C0E272AAAEDBC00AEB220 /* ContentView.swift in Sources */,
-				E10C0E252AAAEDBC00AEB220 /* PrismmApp.swift in Sources */,
 				E19D96832AAB2C0000E2CFAC /* Extension+String.swift in Sources */,
-				E10C0E3D2AAAF02C00AEB220 /* test4.swift in Sources */,
 				E10C0E452AAB1DDA00AEB220 /* SignUp.swift in Sources */,
 				E10C0E432AAAFFA300AEB220 /* Login.swift in Sources */,
 				E1CED5132AAB42BB00F7F94E /* Constants.swift in Sources */,
-				E10C0E3B2AAAF02400AEB220 /* test2.swift in Sources */,
 				E10C0E3F2AAAF03400AEB220 /* test4.swift in Sources */,
-				E10C0E272AAAEDBC00AEB220 /* ContentView.swift in Sources */,
+				E12FA0302AAC29A0007890A3 /* LoginViewModel.swift in Sources */,
 				2FF0ACC62AAB05120033AEEB /* ProfileToolBar.swift in Sources */,
-				E10C0E392AAAF01C00AEB220 /* test1.swift in Sources */,
-				E10C0E252AAAEDBC00AEB220 /* PrismmApp.swift in Sources */,
+				E12FA02D2AAC2976007890A3 /* Message.swift in Sources */,
+				E12FA0292AAC2963007890A3 /* User.swift in Sources */,
 				2FF0ACC42AAAFA3C0033AEEB /* ProfileView.swift in Sources */,
-				E10C0E3D2AAAF02C00AEB220 /* test3.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
