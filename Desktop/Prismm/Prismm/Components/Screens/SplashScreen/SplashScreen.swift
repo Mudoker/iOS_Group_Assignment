@@ -76,5 +76,11 @@ struct SplashScreen_Previews: PreviewProvider {
             .previewDevice("iPhone 14 Pro")
         SplashScreen()
             .previewDevice("iPhone 14 Pro Max")
+        SplashScreen()
+            .previewDevice("iPhone 14")
+        SplashScreen()
+            .previewDevice("iPad Pro (11-inch) (4th generation)")
+        SplashScreen()
+            .previewDevice("iPad Pro (12.9-inch) (6th generation)")
     }
 }
