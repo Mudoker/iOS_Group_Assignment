@@ -3,8 +3,8 @@
 <plist version="1.0">
 <dict>
 	<key>UIAppFonts</key>
-	<array>
-		<string>junegull rg.ttf</string>
-	</array>
+	<array/>
+	<key>font1</key>
+	<string>junegull_rg</string>
 </dict>
 </plist>

@@ -12,14 +12,15 @@ struct StoryView: View {
     //let story: Story
     var gradient = Gradient(colors: [.yellow, .red, .purple, .orange, .pink, .red])
     
+    @ObservedObject var homeViewModel = HomeViewModel()
+    
     var body: some View {
         GeometryReader {reader in
             //Stories
             VStack {
-                Image("ProfileImage")
+                Image("test")
                     .resizable()
                     .scaledToFit()
-                    //.frame(width: min(reader.size.width, reader.size.height) * 0.15) // Set the desired width and height for your circular image
                     .clipShape(Circle()) // Apply a circular clipping shape
                     .overlay(Circle().stroke(LinearGradient( gradient: gradient, startPoint: .bottomLeading, endPoint: .topTrailing) , style: StrokeStyle(lineWidth: 3, lineCap: .round)))
                 

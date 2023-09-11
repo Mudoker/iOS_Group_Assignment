@@ -15,7 +15,7 @@ struct AboutUs: View {
                     ScrollView(.vertical){
                         LazyVStack{
                             Text("Who we are")
-                                .font(.custom("Junegull-Regular", size: 45))
+                                .font(Font.custom("Junegull-Regular", size: 45))
                                 .foregroundColor(Color.red)
                                 .frame(maxWidth: .infinity, alignment:.leading)
 //                                .frame(height: getRect().height / 5.5)

@@ -30,10 +30,20 @@
 		E19D96832AAB2C0000E2CFAC /* Extension+String.swift in Sources */ = {isa = PBXBuildFile; fileRef = E19D96822AAB2C0000E2CFAC /* Extension+String.swift */; };
 		E1BB6F142AAEBE0100051687 /* AboutUsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BB6F062AAEBDA900051687 /* AboutUsView.swift */; };
 		E1BB6F152AAEBE0500051687 /* PersonalAboutUs.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BB6F072AAEBDA900051687 /* PersonalAboutUs.swift */; };
-		E1BB6F172AAEBE1D00051687 /* Font in Resources */ = {isa = PBXBuildFile; fileRef = E1BB6F162AAEBE1D00051687 /* Font */; };
 		E1BB6F1D2AAEBEAE00051687 /* CustomCorner.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BB6F1C2AAEBEAE00051687 /* CustomCorner.swift */; };
 		E1BB6F1E2AAEBEE900051687 /* SplashScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BB6F092AAEBDA900051687 /* SplashScreen.swift */; };
 		E1BB6F1F2AAEBF0E00051687 /* SettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BB6F132AAEBDA900051687 /* SettingView.swift */; };
+		E1BB6F202AAEC01800051687 /* PersonalChat.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BB6F0B2AAEBDA900051687 /* PersonalChat.swift */; };
+		E1BB6F212AAEC01A00051687 /* PreviewUserChat.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BB6F0C2AAEBDA900051687 /* PreviewUserChat.swift */; };
+		E1BB6F222AAEC01D00051687 /* UserActiveChat.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BB6F0D2AAEBDA900051687 /* UserActiveChat.swift */; };
+		E1BB6F232AAEC01F00051687 /* AllChat.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BB6F0E2AAEBDA900051687 /* AllChat.swift */; };
+		E1BB6F252AAEC12F00051687 /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BB6F242AAEC12F00051687 /* HomeViewModel.swift */; };
+		E1BB6F2C2AAEC1C700051687 /* FollowingRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BB6F272AAEC1C700051687 /* FollowingRow.swift */; };
+		E1BB6F2D2AAEC1C700051687 /* FollowerList.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BB6F282AAEC1C700051687 /* FollowerList.swift */; };
+		E1BB6F2E2AAEC1C700051687 /* FollowingList.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BB6F292AAEC1C700051687 /* FollowingList.swift */; };
+		E1BB6F2F2AAEC1C700051687 /* FollowerRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BB6F2A2AAEC1C700051687 /* FollowerRow.swift */; };
+		E1BB6F302AAEC1C700051687 /* FollowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BB6F2B2AAEC1C700051687 /* FollowView.swift */; };
+		E1BB6F322AAEC1DF00051687 /* FollowViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BB6F312AAEC1DF00051687 /* FollowViewModel.swift */; };
 		E1CED5132AAB42BB00F7F94E /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1CED5122AAB42BB00F7F94E /* Constants.swift */; };
 /* End PBXBuildFile section */
 
@@ -71,8 +81,15 @@
 		E1BB6F102AAEBDA900051687 /* progressBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = progressBarController.swift; sourceTree = "<group>"; };
 		E1BB6F112AAEBDA900051687 /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
 		E1BB6F132AAEBDA900051687 /* SettingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingView.swift; sourceTree = "<group>"; };
-		E1BB6F162AAEBE1D00051687 /* Font */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = folder; name = Font; path = Prismm/Assets/Font; sourceTree = SOURCE_ROOT; };
 		E1BB6F1C2AAEBEAE00051687 /* CustomCorner.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CustomCorner.swift; path = ../../../../../Downloads/CustomCorner.swift; sourceTree = "<group>"; };
+		E1BB6F242AAEC12F00051687 /* HomeViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
+		E1BB6F272AAEC1C700051687 /* FollowingRow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FollowingRow.swift; sourceTree = "<group>"; };
+		E1BB6F282AAEC1C700051687 /* FollowerList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FollowerList.swift; sourceTree = "<group>"; };
+		E1BB6F292AAEC1C700051687 /* FollowingList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FollowingList.swift; sourceTree = "<group>"; };
+		E1BB6F2A2AAEC1C700051687 /* FollowerRow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FollowerRow.swift; sourceTree = "<group>"; };
+		E1BB6F2B2AAEC1C700051687 /* FollowView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FollowView.swift; sourceTree = "<group>"; };
+		E1BB6F312AAEC1DF00051687 /* FollowViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FollowViewModel.swift; sourceTree = "<group>"; };
+		E1BB6F352AAEC4C800051687 /* junegull_rg.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = junegull_rg.ttf; sourceTree = "<group>"; };
 		E1CED5122AAB42BB00F7F94E /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -129,7 +146,7 @@
 		E10C0E322AAAEF3000AEB220 /* Assets */ = {
 			isa = PBXGroup;
 			children = (
-				E1BB6F162AAEBE1D00051687 /* Font */,
+				E1BB6F332AAEC41600051687 /* Fonts */,
 				E10C0E282AAAEDBD00AEB220 /* Assets.xcassets */,
 			);
 			path = Assets;
@@ -156,6 +173,7 @@
 		E10C0E362AAAEF6E00AEB220 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				E1BB6F262AAEC1A500051687 /* Follow */,
 				E1BB6F052AAEBDA900051687 /* AboutUs */,
 				E1BB6F0A2AAEBDA900051687 /* ChatView */,
 				E1BB6F0F2AAEBDA900051687 /* LaunchScreen */,
@@ -193,6 +211,8 @@
 			isa = PBXGroup;
 			children = (
 				E12FA02F2AAC29A0007890A3 /* AuthenticationViewModel.swift */,
+				E1BB6F242AAEC12F00051687 /* HomeViewModel.swift */,
+				E1BB6F312AAEC1DF00051687 /* FollowViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -281,6 +301,26 @@
 			path = SettingView;
 			sourceTree = "<group>";
 		};
+		E1BB6F262AAEC1A500051687 /* Follow */ = {
+			isa = PBXGroup;
+			children = (
+				E1BB6F282AAEC1C700051687 /* FollowerList.swift */,
+				E1BB6F2A2AAEC1C700051687 /* FollowerRow.swift */,
+				E1BB6F292AAEC1C700051687 /* FollowingList.swift */,
+				E1BB6F272AAEC1C700051687 /* FollowingRow.swift */,
+				E1BB6F2B2AAEC1C700051687 /* FollowView.swift */,
+			);
+			path = Follow;
+			sourceTree = "<group>";
+		};
+		E1BB6F332AAEC41600051687 /* Fonts */ = {
+			isa = PBXGroup;
+			children = (
+				E1BB6F352AAEC4C800051687 /* junegull_rg.ttf */,
+			);
+			path = Fonts;
+			sourceTree = "<group>";
+		};
 		E1CED5112AAB42A700F7F94E /* Constants */ = {
 			isa = PBXGroup;
 			children = (
@@ -348,7 +388,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				E10C0E2C2AAAEDBD00AEB220 /* Preview Assets.xcassets in Resources */,
-				E1BB6F172AAEBE1D00051687 /* Font in Resources */,
 				E10C0E292AAAEDBD00AEB220 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -363,27 +402,38 @@
 				E1BB6F1E2AAEBEE900051687 /* SplashScreen.swift in Sources */,
 				E12FA0262AAC2915007890A3 /* Main.swift in Sources */,
 				E17E8CE32AAC6B5200EF5EFB /* PostModel.swift in Sources */,
+				E1BB6F302AAEC1C700051687 /* FollowView.swift in Sources */,
+				E1BB6F232AAEC01F00051687 /* AllChat.swift in Sources */,
+				E1BB6F2F2AAEC1C700051687 /* FollowerRow.swift in Sources */,
 				E10C0E412AAAF53E00AEB220 /* CustomTextField.swift in Sources */,
 				E19D96832AAB2C0000E2CFAC /* Extension+String.swift in Sources */,
+				E1BB6F2C2AAEC1C700051687 /* FollowingRow.swift in Sources */,
 				E10C0E452AAB1DDA00AEB220 /* SignUp.swift in Sources */,
 				E1BB6F1F2AAEBF0E00051687 /* SettingView.swift in Sources */,
+				E1BB6F322AAEC1DF00051687 /* FollowViewModel.swift in Sources */,
 				E1BB6F152AAEBE0500051687 /* PersonalAboutUs.swift in Sources */,
 				E10C0E432AAAFFA300AEB220 /* Login.swift in Sources */,
 				E17E8CE12AAC6ABF00EF5EFB /* SettingModel.swift in Sources */,
 				E1BB6F1D2AAEBEAE00051687 /* CustomCorner.swift in Sources */,
 				E12FA0362AAC2EE3007890A3 /* HomeView.swift in Sources */,
+				E1BB6F252AAEC12F00051687 /* HomeViewModel.swift in Sources */,
 				E17E8CF92AAC85E500EF5EFB /* PostGridView.swift in Sources */,
 				E12FA03A2AAC2EFB007890A3 /* StoryView.swift in Sources */,
+				E1BB6F222AAEC01D00051687 /* UserActiveChat.swift in Sources */,
 				E1CED5132AAB42BB00F7F94E /* Constants.swift in Sources */,
+				E1BB6F2D2AAEC1C700051687 /* FollowerList.swift in Sources */,
+				E1BB6F202AAEC01800051687 /* PersonalChat.swift in Sources */,
 				E17E8CE52AAC6C5800EF5EFB /* CommentModel.swift in Sources */,
 				E17E8CE72AAC6CA400EF5EFB /* StoryModel.swift in Sources */,
 				E1BB6F142AAEBE0100051687 /* AboutUsView.swift in Sources */,
 				E12FA0382AAC2EEE007890A3 /* PostView.swift in Sources */,
 				E12FA0302AAC29A0007890A3 /* AuthenticationViewModel.swift in Sources */,
 				2FF0ACC62AAB05120033AEEB /* ProfileToolBar.swift in Sources */,
+				E1BB6F2E2AAEC1C700051687 /* FollowingList.swift in Sources */,
 				E12FA0292AAC2963007890A3 /* UserModel.swift in Sources */,
 				E17E8CDB2AAC496F00EF5EFB /* CustomAlertView.swift in Sources */,
 				2FF0ACC42AAAFA3C0033AEEB /* ProfileView.swift in Sources */,
+				E1BB6F212AAEC01A00051687 /* PreviewUserChat.swift in Sources */,
 				E17E8CF82AAC85E500EF5EFB /* ProfileInfoBlock.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
