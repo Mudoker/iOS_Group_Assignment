@@ -76,11 +76,14 @@ struct Login: View {
                         
                         // Login button
                         Button(action: {
-                            authVM.fetchUserData()
-                            if authVM.validateUsername(accountText) && authVM.validatePassword(passwordText) {
-                                print("ok")
-                            } else {
-                                showAlert.toggle()
+//                            authVM.fetchUserData()
+//                            if authVM.validateUsername(accountText) && authVM.validatePassword(passwordText) {
+//                                print("ok")
+//                            } else {
+//                                showAlert.toggle()
+//                            }
+                            Task {
+                                try await authVM.signIn(withEmail: "viet0123@gmail.com", password: "10102003")
                             }
                         }) {
                             Text("Login")

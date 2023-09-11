@@ -11,6 +11,7 @@ import SwiftUI
 import Firebase
 import FirebaseFirestoreSwift
 
+@MainActor
 class AuthenticationViewModel: ObservableObject {
     @Published var isUnlocked = false
     @Published var isDarkMode = false
@@ -26,7 +27,7 @@ class AuthenticationViewModel: ObservableObject {
     // set user token for bio metric login
     init() {
         self.userToken = UserDefaults.standard.string(forKey: "userToken") ?? ""
-        
+        //self.userSession = Auth.auth().currentUser
     }
     
     // Responsive
@@ -69,6 +70,16 @@ class AuthenticationViewModel: ObservableObject {
         }
     }
     
+    func signIn(withEmail email: String, password: String) async throws {
+        do {
+            let result = try await Auth.auth().signIn(withEmail: email, password: password)
+            self.userSession = result.user
+            await fetchUserData()
+        } catch {
+            print("Fail to log in \(error.localizedDescription)")
+        }
+    }
+    
     // Validate username (check for duplicates)
     func validateUsernameSignUp(_ username: String) -> Bool {
         return true
@@ -92,12 +103,16 @@ class AuthenticationViewModel: ObservableObject {
     }
     
     // Fetch userdata from Firebase
-    func fetchUserData() {
+    func fetchUserData() async {
         // Simulate fetching data with a delay
-        isLoading = true
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-            self.isLoading = false
-        }
+        guard let uid = Auth.auth().currentUser?.uid else {return}
+        guard let snapshot = try? await Firestore.firestore().collection("users").document(uid).getDocument() else {return}
+        self.currentUser = try? snapshot.data(as: User.self)
+//        isLoading = true
+//        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+//            self.isLoading = false
+//        }
+        print("Current user: : \(self.currentUser?.fullName)")
     }
     
     // FaceId login
