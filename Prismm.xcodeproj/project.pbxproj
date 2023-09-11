@@ -31,7 +31,7 @@
 		E1BB6F142AAEBE0100051687 /* AboutUsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BB6F062AAEBDA900051687 /* AboutUsView.swift */; };
 		E1BB6F152AAEBE0500051687 /* PersonalAboutUs.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BB6F072AAEBDA900051687 /* PersonalAboutUs.swift */; };
 		E1BB6F172AAEBE1D00051687 /* Font in Resources */ = {isa = PBXBuildFile; fileRef = E1BB6F162AAEBE1D00051687 /* Font */; };
-		E1BB6F1B2AAEBE6D00051687 /* CustomCorner.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BB6F1A2AAEBE6D00051687 /* CustomCorner.swift */; };
+		E1BB6F1D2AAEBEAE00051687 /* CustomCorner.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BB6F1C2AAEBEAE00051687 /* CustomCorner.swift */; };
 		E1CED5132AAB42BB00F7F94E /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1CED5122AAB42BB00F7F94E /* Constants.swift */; };
 /* End PBXBuildFile section */
 
@@ -70,7 +70,7 @@
 		E1BB6F112AAEBDA900051687 /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
 		E1BB6F132AAEBDA900051687 /* SettingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingView.swift; sourceTree = "<group>"; };
 		E1BB6F162AAEBE1D00051687 /* Font */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = folder; name = Font; path = Prismm/Assets/Font; sourceTree = SOURCE_ROOT; };
-		E1BB6F1A2AAEBE6D00051687 /* CustomCorner.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomCorner.swift; sourceTree = "<group>"; };
+		E1BB6F1C2AAEBEAE00051687 /* CustomCorner.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CustomCorner.swift; path = ../../../../../Downloads/CustomCorner.swift; sourceTree = "<group>"; };
 		E1CED5122AAB42BB00F7F94E /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -191,7 +191,6 @@
 			isa = PBXGroup;
 			children = (
 				E12FA02F2AAC29A0007890A3 /* AuthenticationViewModel.swift */,
-				E1BB6F1A2AAEBE6D00051687 /* CustomCorner.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -230,6 +229,7 @@
 			isa = PBXGroup;
 			children = (
 				E19D96822AAB2C0000E2CFAC /* Extension+String.swift */,
+				E1BB6F1C2AAEBEAE00051687 /* CustomCorner.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -358,7 +358,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E1BB6F1B2AAEBE6D00051687 /* CustomCorner.swift in Sources */,
 				E12FA0262AAC2915007890A3 /* Main.swift in Sources */,
 				E17E8CE32AAC6B5200EF5EFB /* PostModel.swift in Sources */,
 				E10C0E412AAAF53E00AEB220 /* CustomTextField.swift in Sources */,
@@ -367,6 +366,7 @@
 				E1BB6F152AAEBE0500051687 /* PersonalAboutUs.swift in Sources */,
 				E10C0E432AAAFFA300AEB220 /* Login.swift in Sources */,
 				E17E8CE12AAC6ABF00EF5EFB /* SettingModel.swift in Sources */,
+				E1BB6F1D2AAEBEAE00051687 /* CustomCorner.swift in Sources */,
 				E12FA0362AAC2EE3007890A3 /* HomeView.swift in Sources */,
 				E17E8CF92AAC85E500EF5EFB /* PostGridView.swift in Sources */,
 				E12FA03A2AAC2EFB007890A3 /* StoryView.swift in Sources */,
