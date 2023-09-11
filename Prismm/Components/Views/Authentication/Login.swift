@@ -15,7 +15,6 @@ struct Login: View {
     @State private var isPasswordVisible: Bool = false
     @State var isValidUserName = false
     @State var isValidPassword = false
-    @State private var showAlert = false
     @State var isForgotPassword = false
     @State var isSignUp = false
     // View Model
@@ -99,7 +98,7 @@ struct Login: View {
                                 )
                                 .padding(.horizontal)
                         }
-                        .alert(isPresented: $showAlert) {
+                        .alert(isPresented: $authVM.logInError) {
                             Alert(
                                 title: Text("Login Failed"),
                                 message: Text("Invalid username or password.\nPlease check again"),
@@ -118,7 +117,7 @@ struct Login: View {
                                     .padding(.horizontal)
                                     .opacity(0.8)
                             }
-                            .alert(isPresented: $showAlert) {
+                            .alert(isPresented:$authVM.logInError) {
                                 Alert(
                                     title: Text("Login Failed"),
                                     message: Text("Invalid username or password.\nPlease check again"),

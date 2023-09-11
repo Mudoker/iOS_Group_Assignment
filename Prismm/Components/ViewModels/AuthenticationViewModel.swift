@@ -13,6 +13,9 @@ import FirebaseFirestoreSwift
 
 @MainActor
 class AuthenticationViewModel: ObservableObject {
+    
+    @Published var logInError = false
+    
     @Published var isUnlocked = false
     @Published var isDarkMode = false
     @Published var userToken: String {
@@ -76,7 +79,8 @@ class AuthenticationViewModel: ObservableObject {
             self.userSession = result.user
             await fetchUserData()
         } catch {
-            print("Fail to log in \(error.localizedDescription)")
+            logInError = true
+            print("\(error.localizedDescription)")
         }
     }
     
