@@ -6,9 +6,12 @@
 //
 
 import SwiftUI
-
+import Firebase
 @main
 struct PrismmApp: App {
+    init() {
+        FirebaseApp.configure()
+    }
     var body: some Scene {
         WindowGroup {
             Login()

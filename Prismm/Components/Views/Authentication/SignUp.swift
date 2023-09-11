@@ -6,7 +6,8 @@
 //
 
 import SwiftUI
-
+import Firebase
+ 
 struct SignUp: View {
     // Control state
     @State var accountText = ""
@@ -19,6 +20,12 @@ struct SignUp: View {
     
     // View Model
     @ObservedObject var authenticationViewModel = AuthenticationViewModel()
+    
+    
+    //init firebase
+//    init() {
+//        FirebaseApp.configure()
+//    }
     
     var body: some View {
         GeometryReader { proxy in
@@ -38,7 +45,7 @@ struct SignUp: View {
                     .font(.system(size: authenticationViewModel.titleFont))
                     .bold()
                 
-                Text("Create a new profile")
+                Text("Create a new profile") 
                     .font(authenticationViewModel.captionFont)
                     .bold()
                     .opacity(0.7)
@@ -60,7 +67,7 @@ struct SignUp: View {
 
                     
                     CustomTextField(
-                        text: $accountText,
+                        text: $passwordText,
                         textFieldTitle: "Password",
                         testFieldPlaceHolder: "Password",
                         titleFont: $authenticationViewModel.textFieldTitleFont,
@@ -140,6 +147,9 @@ struct SignUp: View {
                 // Signup button
                 VStack {
                     Button(action: {
+                        authenticationViewModel.createAccount(withEmail: accountText, password: passwordText)
+//                        print(1)
+                        
                     }) {
                         Text("Sign Up")
                             .foregroundColor(.white)

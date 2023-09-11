@@ -8,6 +8,7 @@
 import Foundation
 import LocalAuthentication
 import SwiftUI
+import Firebase
 
 class AuthenticationViewModel: ObservableObject {
     @Published var isUnlocked = false
@@ -38,7 +39,8 @@ class AuthenticationViewModel: ObservableObject {
     @Published var loginTextFont: Font = .title3
     @Published var textFieldPlaceHolderFont: Font = .body
     @Published var isLoading = false
-
+    @Published var loginStatusMessage = ""
+    @Published var errorMessage = ""
     // Validate username
     func validateUsername(_ username: String) -> Bool{
         isUnlocked = true
@@ -70,6 +72,32 @@ class AuthenticationViewModel: ObservableObject {
             return true
         } else {
             return false
+        }
+    }
+    // log in
+    func login(withEmail email: String, password: String){
+        Auth.auth().signIn(withEmail: email, password: password){
+            res, err in
+            if let err = err {
+                print("Failed to login user", err)
+                self.loginStatusMessage = "Fail to create user \(err)"
+            }
+            
+            print("log in thanh cong : \(res?.user.uid ?? "" )")
+            self.loginStatusMessage = "log in thanh cong: \(res?.user.uid ?? "")"
+        }
+    }
+    // create new account
+    func createAccount(withEmail email: String, password  : String){
+        Auth.auth().createUser(withEmail : email, password: password){
+            res, err in
+            if let err = err {
+                print("Failed to create user", err)
+                self.errorMessage = "Fail to create user \(err)"
+            }
+            
+            print("Dk thanh cong : \(res?.user.uid ?? "" )")
+            self.loginStatusMessage = "Dk thanh cong: \(res?.user.uid ?? "")"
         }
     }
     
