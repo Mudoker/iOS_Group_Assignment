@@ -32,6 +32,8 @@
 		E1BB6F152AAEBE0500051687 /* PersonalAboutUs.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BB6F072AAEBDA900051687 /* PersonalAboutUs.swift */; };
 		E1BB6F172AAEBE1D00051687 /* Font in Resources */ = {isa = PBXBuildFile; fileRef = E1BB6F162AAEBE1D00051687 /* Font */; };
 		E1BB6F1D2AAEBEAE00051687 /* CustomCorner.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BB6F1C2AAEBEAE00051687 /* CustomCorner.swift */; };
+		E1BB6F1E2AAEBEE900051687 /* SplashScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BB6F092AAEBDA900051687 /* SplashScreen.swift */; };
+		E1BB6F1F2AAEBF0E00051687 /* SettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BB6F132AAEBDA900051687 /* SettingView.swift */; };
 		E1CED5132AAB42BB00F7F94E /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1CED5122AAB42BB00F7F94E /* Constants.swift */; };
 /* End PBXBuildFile section */
 
@@ -358,11 +360,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E1BB6F1E2AAEBEE900051687 /* SplashScreen.swift in Sources */,
 				E12FA0262AAC2915007890A3 /* Main.swift in Sources */,
 				E17E8CE32AAC6B5200EF5EFB /* PostModel.swift in Sources */,
 				E10C0E412AAAF53E00AEB220 /* CustomTextField.swift in Sources */,
 				E19D96832AAB2C0000E2CFAC /* Extension+String.swift in Sources */,
 				E10C0E452AAB1DDA00AEB220 /* SignUp.swift in Sources */,
+				E1BB6F1F2AAEBF0E00051687 /* SettingView.swift in Sources */,
 				E1BB6F152AAEBE0500051687 /* PersonalAboutUs.swift in Sources */,
 				E10C0E432AAAFFA300AEB220 /* Login.swift in Sources */,
 				E17E8CE12AAC6ABF00EF5EFB /* SettingModel.swift in Sources */,

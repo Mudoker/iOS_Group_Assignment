@@ -173,21 +173,21 @@ struct SettingView : View {
                                 .clipShape(RoundedRectangle(cornerRadius:18))
                                 .padding()
                                 
-                                NavigationLink(destination: test1()
-                                    .navigationBarTitle("")
-                                    .navigationBarHidden(true)) {
-                                        ZStack {
-                                            Text("Sign out")
-                                                .foregroundColor(.red)
-                                                .bold()
-                                        }
-                                    }
-                                    .simultaneousGesture(
-                                        TapGesture()
-                                            .onEnded {
-                                                
-                                            }
-                                    )
+//                                NavigationLink(destination: test1()
+//                                    .navigationBarTitle("")
+//                                    .navigationBarHidden(true)) {
+//                                        ZStack {
+//                                            Text("Sign out")
+//                                                .foregroundColor(.red)
+//                                                .bold()
+//                                        }
+//                                    }
+//                                    .simultaneousGesture(
+//                                        TapGesture()
+//                                            .onEnded {
+//
+//                                            }
+//                                    )
                             }
                         }
                         .toolbar{
