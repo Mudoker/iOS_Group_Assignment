@@ -8,6 +8,7 @@
 import SwiftUI
 import Firebase
 import FirebaseFirestoreSwift
+
 @main
 struct PrismmApp: App {
     @StateObject var viewModel = AuthenticationViewModel()

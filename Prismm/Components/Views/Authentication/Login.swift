@@ -132,12 +132,6 @@ struct Login: View {
                                         .padding(.horizontal)
                                         .opacity(0.8)
                                 }
-//                                .simultaneousGesture(
-//                                    TapGesture()
-//                                        .onEnded {
-//                                            isSignUp = true
-//                                        }
-//                                )
                         }
                         
                         HStack {
@@ -270,7 +264,7 @@ struct Login: View {
                     
                     if authVM.isLoading {
                         Color.gray.opacity(0.3).ignoresSafeArea()
-                        ProgressView("Fetching Data...")
+                        ProgressView("Loading...")
                     }
                 }
             }

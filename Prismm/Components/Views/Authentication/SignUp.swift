@@ -21,6 +21,7 @@ struct SignUp: View {
     @State var isValidUserName = false
 
     
+    @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
     // View Model
     @EnvironmentObject var authVM:AuthenticationViewModel
     
@@ -60,7 +61,7 @@ struct SignUp: View {
                         textFieldPlaceHolderFont: $authVM.textFieldPlaceHolderFont
                     )
                     .padding(.bottom)
-
+                    
                     
                     CustomTextField(
                         text: $passwordText,
@@ -140,14 +141,16 @@ struct SignUp: View {
                     .padding(.bottom)
                 }
                 
+               
                 // Signup button
                 VStack {
+                    
                     Button(action: {
-                        
-                            Task {
-                                try await authVM.signUp(withEmail: accountText, password: passwordText)
-                            }
-                        
+                        Task {
+                            try await authVM.signUp(withEmail: accountText, password: passwordText)
+                            authVM.isAlert = true
+                            
+                        }
                     }) {
                         Text("Sign Up")
                             .foregroundColor(.white)
@@ -165,6 +168,19 @@ struct SignUp: View {
                     }
                     .disabled(!formIsValid)
                     .opacity(formIsValid ? 1 : 0.5)
+                    .alert(isPresented: $authVM.isAlert) {
+                        Alert(
+                            title: Text(authVM.signUpError ? "Sign up failed" : "Sign up successfully!"),
+                            message: Text(authVM.signUpError ? "The email has been used. Please register with another email" : "You have created a new account"),
+                            dismissButton: .default(Text(authVM.signUpError ? "Close" : "OK")) {
+                                if (!authVM.signUpError) {
+                                    presentationMode.wrappedValue.dismiss()
+                                }
+                            }
+                        )
+                    }
+                    
+
                 }
                 
                 
@@ -182,6 +198,7 @@ struct SignUp: View {
                 
                 isValidReEnterPassword = authVM.isMatchPassword(currentPassword: passwordText, reEnteredPassword: newValue)
             }
+
         }
         .background(authVM.isDarkMode ? .black : .white)
     }

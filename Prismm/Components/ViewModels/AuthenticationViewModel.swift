@@ -15,12 +15,12 @@ protocol SignUpFormProtocol{
     var formIsValid: Bool{get}
 }
 
-
 @MainActor
 class AuthenticationViewModel: ObservableObject {
     
     @Published var logInError = false
     @Published var signUpError = false
+    @Published var isAlert = false
     
     @Published var isUnlocked = false
     @Published var isDarkMode = false
@@ -74,7 +74,9 @@ class AuthenticationViewModel: ObservableObject {
             let user = User(id: result.user.uid, password: password)
             let encodedUser = try Firestore.Encoder().encode(user)
             try await Firestore.firestore().collection("users").document(user.id).setData(encodedUser)
+            signUpError = false
         } catch {
+            signUpError = true
             print("Error: \(error.localizedDescription)")
         }
     }
@@ -83,7 +85,9 @@ class AuthenticationViewModel: ObservableObject {
         do {
             let result = try await Auth.auth().signIn(withEmail: email, password: password)
             self.userSession = result.user
+            isLoading = true
             await fetchUserData()
+            isLoading = false
         } catch {
             logInError = true
             print("\(error.localizedDescription)")
@@ -113,11 +117,7 @@ class AuthenticationViewModel: ObservableObject {
         guard let uid = Auth.auth().currentUser?.uid else {return}
         guard let snapshot = try? await Firestore.firestore().collection("users").document(uid).getDocument() else {return}
         self.currentUser = try? snapshot.data(as: User.self)
-//        isLoading = true
-//        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-//            self.isLoading = false
-//        }
-        print("Current user: : \(self.currentUser?.fullName)")
+
     }
     
     // FaceId login
