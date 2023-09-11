@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct SettingModel {
+struct Setting {
     let id: UUID
     var isDarkMode: Bool
     var isEnglish: Bool

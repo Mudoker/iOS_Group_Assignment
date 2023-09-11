@@ -8,6 +8,8 @@
 import Foundation
 import LocalAuthentication
 import SwiftUI
+import Firebase
+import FirebaseFirestoreSwift
 
 class AuthenticationViewModel: ObservableObject {
     @Published var isUnlocked = false
@@ -18,9 +20,13 @@ class AuthenticationViewModel: ObservableObject {
         }
     }
     
+    @Published var userSession : FirebaseAuth.User?
+    @Published var currentUser : User?
+    
     // set user token for bio metric login
     init() {
         self.userToken = UserDefaults.standard.string(forKey: "userToken") ?? ""
+        
     }
     
     // Responsive
@@ -49,6 +55,18 @@ class AuthenticationViewModel: ObservableObject {
     func validatePassword(_ password: String) -> Bool{
         isUnlocked = true
         return true
+    }
+    
+    func signUp (withEmail email: String, password: String, fullName: String) async throws {
+        do {
+            let result = try await Auth.auth().createUser(withEmail: email, password: password)
+            self.userSession = result.user
+            let user = User(id: result.user.uid, userName: fullName, password: password)
+            let encodedUser = try Firestore.Encoder().encode(user)
+            try await Firestore.firestore().collection("users").document(user.id).setData(encodedUser)
+        } catch {
+            print("Error: \(error.localizedDescription)")
+        }
     }
     
     // Validate username (check for duplicates)

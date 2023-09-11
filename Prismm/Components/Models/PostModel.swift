@@ -7,12 +7,12 @@
 
 import Foundation
 
-struct PostModel {
+struct Post {
     let id: UUID
     let Date: Date
     let op: UUID
     var likers: [UUID]
     var postImage: String
     var postcaption: String
-    var postComment: [CommentModel]
+    var postComment: [Comment]
 }

@@ -18,28 +18,27 @@ struct SignUp: View {
     @State var isValidUserName = false
     
     // View Model
-    @ObservedObject var authenticationViewModel = AuthenticationViewModel()
+    @EnvironmentObject var authVM:AuthenticationViewModel
     
     var body: some View {
         GeometryReader { proxy in
             VStack (alignment: .center) {
-                // Push view
-                Spacer()
-                
+                                // Push view
+                                Spacer()
                 // Logo
-                Image(authenticationViewModel.isDarkMode ? Constants.darkThemeAppLogo : Constants.lightThemeAppLogo)
+                Image(authVM.isDarkMode ? Constants.darkThemeAppLogo : Constants.lightThemeAppLogo)
                     .resizable()
                     .aspectRatio(contentMode: .fill)
-                    .frame(width: authenticationViewModel.logoImageSize, height: 0)
-                    .padding(.vertical, authenticationViewModel.imagePaddingVertical)
+                    .frame(width: authVM.logoImageSize, height: 0)
+                    .padding(.vertical, authVM.imagePaddingVertical)
 
                 // Title
                 Text ("Sign Up")
-                    .font(.system(size: authenticationViewModel.titleFont))
+                    .font(.system(size: authVM.titleFont))
                     .bold()
                 
                 Text("Create a new profile")
-                    .font(authenticationViewModel.captionFont)
+                    .font(authVM.captionFont)
                     .bold()
                     .opacity(0.7)
                          
@@ -49,44 +48,44 @@ struct SignUp: View {
                         text: $accountText,
                         textFieldTitle: "Username",
                         testFieldPlaceHolder: "Username or Account",
-                        titleFont: $authenticationViewModel.textFieldTitleFont,
-                        textFieldSizeHeight: $authenticationViewModel.textFieldSizeHeight,
-                        textFieldCorner: $authenticationViewModel.textFieldCorner,
-                        textFieldBorderWidth: $authenticationViewModel.textFieldBorderWidth,
+                        titleFont: $authVM.textFieldTitleFont,
+                        textFieldSizeHeight: $authVM.textFieldSizeHeight,
+                        textFieldCorner: $authVM.textFieldCorner,
+                        textFieldBorderWidth: $authVM.textFieldBorderWidth,
                         isPassword: .constant(false),
-                        textFieldPlaceHolderFont: $authenticationViewModel.textFieldPlaceHolderFont
+                        textFieldPlaceHolderFont: $authVM.textFieldPlaceHolderFont
                     )
                     .padding(.bottom)
 
                     
                     CustomTextField(
-                        text: $accountText,
+                        text: $passwordText,
                         textFieldTitle: "Password",
                         testFieldPlaceHolder: "Password",
-                        titleFont: $authenticationViewModel.textFieldTitleFont,
-                        textFieldSizeHeight: $authenticationViewModel.textFieldSizeHeight,
-                        textFieldCorner: $authenticationViewModel.textFieldCorner,
-                        textFieldBorderWidth: $authenticationViewModel.textFieldBorderWidth,
+                        titleFont: $authVM.textFieldTitleFont,
+                        textFieldSizeHeight: $authVM.textFieldSizeHeight,
+                        textFieldCorner: $authVM.textFieldCorner,
+                        textFieldBorderWidth: $authVM.textFieldBorderWidth,
                         isPassword: .constant(true),
-                        textFieldPlaceHolderFont: $authenticationViewModel.textFieldPlaceHolderFont
+                        textFieldPlaceHolderFont: $authVM.textFieldPlaceHolderFont
                     )
                         
                     HStack {
                         if passwordText.isEmpty {
                             Text("At least 8 characters and not contain special symbols")
-                                .font(authenticationViewModel.captionFont )
+                                .font(authVM.captionFont )
                                 .padding(.bottom, 5)
                                 .opacity(0.7)
                         } else {
                             if isValidPassword {
                                 Text("Invalid Password")
-                                    .font(authenticationViewModel.captionFont )
+                                    .font(authVM.captionFont )
                                     .padding(.bottom, 5)
                                     .opacity(0.7)
                                     .foregroundColor(.red)
                             } else {
                                 Text("Password valid")
-                                    .font(authenticationViewModel.captionFont )
+                                    .font(authVM.captionFont )
                                     .padding(.bottom, 5)
                                     .opacity(0.7)
                                     .foregroundColor(.green)
@@ -101,30 +100,30 @@ struct SignUp: View {
                         text: $confrimPasswordText,
                         textFieldTitle: "Confirm Password",
                         testFieldPlaceHolder: "Password",
-                        titleFont: $authenticationViewModel.textFieldTitleFont,
-                        textFieldSizeHeight: $authenticationViewModel.textFieldSizeHeight,
-                        textFieldCorner: $authenticationViewModel.textFieldCorner,
-                        textFieldBorderWidth: $authenticationViewModel.textFieldBorderWidth,
+                        titleFont: $authVM.textFieldTitleFont,
+                        textFieldSizeHeight: $authVM.textFieldSizeHeight,
+                        textFieldCorner: $authVM.textFieldCorner,
+                        textFieldBorderWidth: $authVM.textFieldBorderWidth,
                         isPassword: .constant(true),
-                        textFieldPlaceHolderFont: $authenticationViewModel.textFieldPlaceHolderFont
+                        textFieldPlaceHolderFont: $authVM.textFieldPlaceHolderFont
                     )
                     
                     HStack {
                         if confrimPasswordText.isEmpty {
                             Text("Re-enter your password")
-                                .font(authenticationViewModel.captionFont )
+                                .font(authVM.captionFont )
                                 .padding(.bottom, 5)
                                 .opacity(0.7)
                         } else {
                             if isValidReEnterPassword {
                                 Text("Matched Password!")
-                                    .font(authenticationViewModel.captionFont )
+                                    .font(authVM.captionFont )
                                     .padding(.bottom, 5)
                                     .opacity(0.7)
                                     .foregroundColor(.green)
                             } else {
                                 Text("Password not match!")
-                                    .font(authenticationViewModel.captionFont )
+                                    .font(authVM.captionFont )
                                     .padding(.bottom, 5)
                                     .opacity(0.7)
                                     .foregroundColor(.red)
@@ -140,17 +139,20 @@ struct SignUp: View {
                 // Signup button
                 VStack {
                     Button(action: {
+                        Task {
+                            try await authVM.signUp(withEmail: "ntbngoc0123@gmail.com", password: "10102003", fullName: "Ngoc Nguyen")
+                        }
                     }) {
                         Text("Sign Up")
                             .foregroundColor(.white)
-                            .font(authenticationViewModel.loginTextFont)
+                            .font(authVM.loginTextFont)
                             .bold()
                             .padding()
                             .frame(maxWidth: .infinity)
-                            .frame(height: authenticationViewModel.loginButtonSizeHeight)
+                            .frame(height: authVM.loginButtonSizeHeight)
                             .background(
                                 RoundedRectangle(cornerRadius: 10)
-                                    .fill(authenticationViewModel.isDarkMode ? Constants.darkThemeColor : Constants.lightThemeColor)
+                                    .fill(authVM.isDarkMode ? Constants.darkThemeColor : Constants.lightThemeColor)
                             )
                             .padding(.horizontal)
                     }
@@ -160,42 +162,19 @@ struct SignUp: View {
                 // Push view
                 Spacer()
             }
-            .foregroundColor(authenticationViewModel.isDarkMode ? .white : .black)
+            .foregroundColor(authVM.isDarkMode ? .white : .black)
             .padding(.horizontal)
-            .onAppear {
-                if UIDevice.current.userInterfaceIdiom == .phone {
-                    authenticationViewModel.logoImageSize = proxy.size.width/2.2
-                    authenticationViewModel.textFieldSizeHeight = proxy.size.width/7
-                    authenticationViewModel.textFieldCorner = proxy.size.width/50
-                    authenticationViewModel.faceIdImageSize = proxy.size.width/10
-                    authenticationViewModel.loginButtonSizeHeight = authenticationViewModel.textFieldSizeHeight
-                } else {
-                    authenticationViewModel.logoImageSize = proxy.size.width/2.8
-                    authenticationViewModel.textFieldSizeHeight = proxy.size.width/9
-                    authenticationViewModel.textFieldCorner = proxy.size.width/50
-                    authenticationViewModel.faceIdImageSize = proxy.size.width/12
-                    authenticationViewModel.imagePaddingVertical = 30
-                    authenticationViewModel.titleFont = 60
-                    authenticationViewModel.textFieldCorner = proxy.size.width/60
-                    authenticationViewModel.loginButtonSizeHeight = authenticationViewModel.textFieldSizeHeight
-                    authenticationViewModel.conentFont = .title2
-                    authenticationViewModel.textFieldTitleFont = .title
-                    authenticationViewModel.loginTextFont = .largeTitle
-                    authenticationViewModel.captionFont = .title3
-                    authenticationViewModel.textFieldPlaceHolderFont = .title2
-                }
-            }
             .onChange(of: accountText) {newValue in
-                isValidUserName = authenticationViewModel.validateUsernameSignUp(newValue)
+                isValidUserName = authVM.validateUsernameSignUp(newValue)
             }
             .onChange(of: passwordText) {newValue in
-                isValidPassword = authenticationViewModel.validatePasswordSignUp(newValue)
+                isValidPassword = authVM.validatePasswordSignUp(newValue)
             }
             .onChange(of: confrimPasswordText) {newValue in
-                isValidReEnterPassword = authenticationViewModel.isMatchPassword(currentPassword: passwordText, reEnteredPassword: newValue)
+                isValidReEnterPassword = authVM.isMatchPassword(currentPassword: passwordText, reEnteredPassword: newValue)
             }
         }
-        .background(authenticationViewModel.isDarkMode ? .black : .white)
+        .background(authVM.isDarkMode ? .black : .white)
     }
 }
 
@@ -204,4 +183,3 @@ struct SignUp_Previews: PreviewProvider {
         SignUp()
     }
 }
-
