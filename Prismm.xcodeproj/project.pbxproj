@@ -44,6 +44,12 @@
 		E1BB6F2F2AAEC1C700051687 /* FollowerRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BB6F2A2AAEC1C700051687 /* FollowerRow.swift */; };
 		E1BB6F302AAEC1C700051687 /* FollowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BB6F2B2AAEC1C700051687 /* FollowView.swift */; };
 		E1BB6F322AAEC1DF00051687 /* FollowViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BB6F312AAEC1DF00051687 /* FollowViewModel.swift */; };
+		E1BB6F372AAECAB900051687 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E1BB6F362AAECAB900051687 /* LaunchScreen.storyboard */; };
+		E1BB6F3D2AAED05300051687 /* Test+SearchSetting.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BB6F3C2AAED05300051687 /* Test+SearchSetting.swift */; };
+		E1BB6F3F2AAEE2B300051687 /* SettingSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BB6F3E2AAEE2B300051687 /* SettingSheet.swift */; };
+		E1BB6F412AAEE7F000051687 /* SettingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BB6F402AAEE7F000051687 /* SettingViewModel.swift */; };
+		E1BB6F432AAEF6A800051687 /* EditProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BB6F422AAEF6A800051687 /* EditProfileView.swift */; };
+		E1BB6F452AAF027100051687 /* EditSecurityField.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BB6F442AAF027100051687 /* EditSecurityField.swift */; };
 		E1CED5132AAB42BB00F7F94E /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1CED5122AAB42BB00F7F94E /* Constants.swift */; };
 /* End PBXBuildFile section */
 
@@ -79,7 +85,6 @@
 		E1BB6F0D2AAEBDA900051687 /* UserActiveChat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserActiveChat.swift; sourceTree = "<group>"; };
 		E1BB6F0E2AAEBDA900051687 /* AllChat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllChat.swift; sourceTree = "<group>"; };
 		E1BB6F102AAEBDA900051687 /* progressBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = progressBarController.swift; sourceTree = "<group>"; };
-		E1BB6F112AAEBDA900051687 /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
 		E1BB6F132AAEBDA900051687 /* SettingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingView.swift; sourceTree = "<group>"; };
 		E1BB6F1C2AAEBEAE00051687 /* CustomCorner.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CustomCorner.swift; path = ../../../../../Downloads/CustomCorner.swift; sourceTree = "<group>"; };
 		E1BB6F242AAEC12F00051687 /* HomeViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
@@ -90,6 +95,12 @@
 		E1BB6F2B2AAEC1C700051687 /* FollowView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FollowView.swift; sourceTree = "<group>"; };
 		E1BB6F312AAEC1DF00051687 /* FollowViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FollowViewModel.swift; sourceTree = "<group>"; };
 		E1BB6F352AAEC4C800051687 /* junegull_rg.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = junegull_rg.ttf; sourceTree = "<group>"; };
+		E1BB6F362AAECAB900051687 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
+		E1BB6F3C2AAED05300051687 /* Test+SearchSetting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Test+SearchSetting.swift"; sourceTree = "<group>"; };
+		E1BB6F3E2AAEE2B300051687 /* SettingSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingSheet.swift; sourceTree = "<group>"; };
+		E1BB6F402AAEE7F000051687 /* SettingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingViewModel.swift; sourceTree = "<group>"; };
+		E1BB6F422AAEF6A800051687 /* EditProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProfileView.swift; sourceTree = "<group>"; };
+		E1BB6F442AAF027100051687 /* EditSecurityField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditSecurityField.swift; sourceTree = "<group>"; };
 		E1CED5122AAB42BB00F7F94E /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -124,6 +135,7 @@
 		E10C0E232AAAEDBC00AEB220 /* Prismm */ = {
 			isa = PBXGroup;
 			children = (
+				E1BB6F3B2AAED04300051687 /* Test */,
 				E1CED5112AAB42A700F7F94E /* Constants */,
 				E19D96812AAB2BEE00E2CFAC /* Extensions */,
 				E17CBF572AAB25DA004A97E7 /* Info.plist */,
@@ -213,6 +225,7 @@
 				E12FA02F2AAC29A0007890A3 /* AuthenticationViewModel.swift */,
 				E1BB6F242AAEC12F00051687 /* HomeViewModel.swift */,
 				E1BB6F312AAEC1DF00051687 /* FollowViewModel.swift */,
+				E1BB6F402AAEE7F000051687 /* SettingViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -288,7 +301,7 @@
 			isa = PBXGroup;
 			children = (
 				E1BB6F102AAEBDA900051687 /* progressBarController.swift */,
-				E1BB6F112AAEBDA900051687 /* Launch Screen.storyboard */,
+				E1BB6F362AAECAB900051687 /* LaunchScreen.storyboard */,
 			);
 			path = LaunchScreen;
 			sourceTree = "<group>";
@@ -297,6 +310,9 @@
 			isa = PBXGroup;
 			children = (
 				E1BB6F132AAEBDA900051687 /* SettingView.swift */,
+				E1BB6F3E2AAEE2B300051687 /* SettingSheet.swift */,
+				E1BB6F422AAEF6A800051687 /* EditProfileView.swift */,
+				E1BB6F442AAF027100051687 /* EditSecurityField.swift */,
 			);
 			path = SettingView;
 			sourceTree = "<group>";
@@ -319,6 +335,14 @@
 				E1BB6F352AAEC4C800051687 /* junegull_rg.ttf */,
 			);
 			path = Fonts;
+			sourceTree = "<group>";
+		};
+		E1BB6F3B2AAED04300051687 /* Test */ = {
+			isa = PBXGroup;
+			children = (
+				E1BB6F3C2AAED05300051687 /* Test+SearchSetting.swift */,
+			);
+			path = Test;
 			sourceTree = "<group>";
 		};
 		E1CED5112AAB42A700F7F94E /* Constants */ = {
@@ -387,6 +411,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E1BB6F372AAECAB900051687 /* LaunchScreen.storyboard in Resources */,
 				E10C0E2C2AAAEDBD00AEB220 /* Preview Assets.xcassets in Resources */,
 				E10C0E292AAAEDBD00AEB220 /* Assets.xcassets in Resources */,
 			);
@@ -405,14 +430,19 @@
 				E1BB6F302AAEC1C700051687 /* FollowView.swift in Sources */,
 				E1BB6F232AAEC01F00051687 /* AllChat.swift in Sources */,
 				E1BB6F2F2AAEC1C700051687 /* FollowerRow.swift in Sources */,
+				E1BB6F3F2AAEE2B300051687 /* SettingSheet.swift in Sources */,
+				E1BB6F3D2AAED05300051687 /* Test+SearchSetting.swift in Sources */,
 				E10C0E412AAAF53E00AEB220 /* CustomTextField.swift in Sources */,
 				E19D96832AAB2C0000E2CFAC /* Extension+String.swift in Sources */,
+				E1BB6F432AAEF6A800051687 /* EditProfileView.swift in Sources */,
 				E1BB6F2C2AAEC1C700051687 /* FollowingRow.swift in Sources */,
+				E1BB6F452AAF027100051687 /* EditSecurityField.swift in Sources */,
 				E10C0E452AAB1DDA00AEB220 /* SignUp.swift in Sources */,
 				E1BB6F1F2AAEBF0E00051687 /* SettingView.swift in Sources */,
 				E1BB6F322AAEC1DF00051687 /* FollowViewModel.swift in Sources */,
 				E1BB6F152AAEBE0500051687 /* PersonalAboutUs.swift in Sources */,
 				E10C0E432AAAFFA300AEB220 /* Login.swift in Sources */,
+				E1BB6F412AAEE7F000051687 /* SettingViewModel.swift in Sources */,
 				E17E8CE12AAC6ABF00EF5EFB /* SettingModel.swift in Sources */,
 				E1BB6F1D2AAEBEAE00051687 /* CustomCorner.swift in Sources */,
 				E12FA0362AAC2EE3007890A3 /* HomeView.swift in Sources */,
@@ -570,6 +600,7 @@
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen.storyboard;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -600,6 +631,7 @@
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen.storyboard;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (

@@ -11,6 +11,7 @@ import SwiftUI
 
 class AuthenticationViewModel: ObservableObject {
     @Published var isUnlocked = false
+    @ObservedObject var settingViewModel = SettingViewModel()
     @Published var isDarkMode = false
     @Published var userToken: String {
         didSet {
@@ -21,6 +22,7 @@ class AuthenticationViewModel: ObservableObject {
     // set user token for bio metric login
     init() {
         self.userToken = UserDefaults.standard.string(forKey: "userToken") ?? ""
+        isDarkMode = settingViewModel.isDarkMode
     }
     
     // Responsive

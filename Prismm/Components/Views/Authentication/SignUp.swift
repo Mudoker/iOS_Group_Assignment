@@ -25,14 +25,13 @@ struct SignUp: View {
             VStack (alignment: .center) {
                 // Push view
                 Spacer()
-                
                 // Logo
                 Image(authenticationViewModel.isDarkMode ? Constants.darkThemeAppLogo : Constants.lightThemeAppLogo)
                     .resizable()
                     .aspectRatio(contentMode: .fill)
                     .frame(width: authenticationViewModel.logoImageSize, height: 0)
                     .padding(.vertical, authenticationViewModel.imagePaddingVertical)
-
+                
                 // Title
                 Text ("Sign Up")
                     .font(.system(size: authenticationViewModel.titleFont))
@@ -42,7 +41,7 @@ struct SignUp: View {
                     .font(authenticationViewModel.captionFont)
                     .bold()
                     .opacity(0.7)
-                         
+                
                 // Text field
                 VStack {
                     CustomTextField(
@@ -57,7 +56,7 @@ struct SignUp: View {
                         textFieldPlaceHolderFont: $authenticationViewModel.textFieldPlaceHolderFont
                     )
                     .padding(.bottom)
-
+                    
                     
                     CustomTextField(
                         text: $accountText,
@@ -70,7 +69,7 @@ struct SignUp: View {
                         isPassword: .constant(true),
                         textFieldPlaceHolderFont: $authenticationViewModel.textFieldPlaceHolderFont
                     )
-                        
+                    
                     HStack {
                         if passwordText.isEmpty {
                             Text("At least 8 characters and not contain special symbols")
@@ -156,35 +155,11 @@ struct SignUp: View {
                     }
                 }
                 
-                
                 // Push view
                 Spacer()
             }
             .foregroundColor(authenticationViewModel.isDarkMode ? .white : .black)
             .padding(.horizontal)
-            .onAppear {
-                if UIDevice.current.userInterfaceIdiom == .phone {
-                    authenticationViewModel.logoImageSize = proxy.size.width/2.2
-                    authenticationViewModel.textFieldSizeHeight = proxy.size.width/7
-                    authenticationViewModel.textFieldCorner = proxy.size.width/50
-                    authenticationViewModel.faceIdImageSize = proxy.size.width/10
-                    authenticationViewModel.loginButtonSizeHeight = authenticationViewModel.textFieldSizeHeight
-                } else {
-                    authenticationViewModel.logoImageSize = proxy.size.width/2.8
-                    authenticationViewModel.textFieldSizeHeight = proxy.size.width/9
-                    authenticationViewModel.textFieldCorner = proxy.size.width/50
-                    authenticationViewModel.faceIdImageSize = proxy.size.width/12
-                    authenticationViewModel.imagePaddingVertical = 30
-                    authenticationViewModel.titleFont = 60
-                    authenticationViewModel.textFieldCorner = proxy.size.width/60
-                    authenticationViewModel.loginButtonSizeHeight = authenticationViewModel.textFieldSizeHeight
-                    authenticationViewModel.conentFont = .title2
-                    authenticationViewModel.textFieldTitleFont = .title
-                    authenticationViewModel.loginTextFont = .largeTitle
-                    authenticationViewModel.captionFont = .title3
-                    authenticationViewModel.textFieldPlaceHolderFont = .title2
-                }
-            }
             .onChange(of: accountText) {newValue in
                 isValidUserName = authenticationViewModel.validateUsernameSignUp(newValue)
             }
@@ -204,4 +179,3 @@ struct SignUp_Previews: PreviewProvider {
         SignUp()
     }
 }
-

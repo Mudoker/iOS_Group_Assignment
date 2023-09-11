@@ -36,7 +36,7 @@ struct FollowerRow: View {
                 Text("Remove")
                     .font(.system(size: CGFloat(fvm.rowButtonFontSize)))
                     .fontWeight(.bold)
-                    .foregroundColor(fvm.colorTheme)
+                    .foregroundColor(.red)
                     .frame(width: UIScreen.main.bounds.width/4,height: UIScreen.main.bounds.height/(UIDevice.current.userInterfaceIdiom == .phone ? 25 : 30))
                     .background{
                         fvm.isDarkMode ? Color.white.opacity(0.2) : Color.black.opacity(0.2)

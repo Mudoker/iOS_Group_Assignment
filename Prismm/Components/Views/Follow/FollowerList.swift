@@ -34,6 +34,5 @@ struct FollowerList: View {
 struct FollowerList_Previews: PreviewProvider {
     static var previews: some View {
         FollowerList(fvm: FollowViewModel())
-        
     }
 }

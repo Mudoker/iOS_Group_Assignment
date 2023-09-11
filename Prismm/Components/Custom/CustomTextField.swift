@@ -57,7 +57,7 @@ struct CustomTextField: View {
                                 Button(action: {
                                     isPasswordVisible.toggle()
                                 }) {
-                                    Image(systemName: isPasswordVisible ? "eye.slash.fill" : "eye.fill")
+                                    Image(systemName: !isPasswordVisible ? "eye.slash.fill" : "eye.fill")
                                         .foregroundColor(.gray)
                                         .font(textFieldPlaceHolderFont)
                                 }
@@ -73,7 +73,7 @@ struct CustomTextField: View {
                                 Button(action: {
                                     isPasswordVisible.toggle()
                                 }) {
-                                    Image(systemName: isPasswordVisible ? "eye.slash.fill" : "eye.fill")
+                                    Image(systemName: !isPasswordVisible ? "eye.slash.fill" : "eye.fill")
                                         .foregroundColor(.gray)
                                         .font(textFieldPlaceHolderFont)
                                 }

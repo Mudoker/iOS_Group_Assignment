@@ -33,7 +33,7 @@ class FollowViewModel: ObservableObject{
     }
     
     @Published var indicatorOffset = -(UIScreen.main.bounds.width/4)
-    @Published var isDarkMode = true{
+    @Published var isDarkMode = true {
         didSet{
             if isDarkMode {
                 colorTheme = Constants.darkThemeColor

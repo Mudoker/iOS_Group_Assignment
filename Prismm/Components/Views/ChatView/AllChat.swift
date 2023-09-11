@@ -23,7 +23,7 @@ struct AllChat : View {
     var body: some View {
         NavigationStack{
             GeometryReader { geometry in
-                ScrollView(.vertical){
+                ScrollView(.vertical, showsIndicators: false){
                     LazyVStack{
                         VStack (spacing: 10){
                             HStack {
