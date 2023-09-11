@@ -62,7 +62,7 @@ struct Login: View {
                         .padding(.bottom)
                         
                         CustomTextField(
-                            text: $accountText,
+                            text: $passwordText,
                             textFieldTitle: "Password",
                             testFieldPlaceHolder: "Password",
                             titleFont: $authVM.textFieldTitleFont,
@@ -83,7 +83,7 @@ struct Login: View {
 //                                showAlert.toggle()
 //                            }
                             Task {
-                                try await authVM.signIn(withEmail: "viet0123@gmail.com", password: "10102003")
+                                try await authVM.signIn(withEmail: accountText, password: passwordText)
                             }
                         }) {
                             Text("Login")

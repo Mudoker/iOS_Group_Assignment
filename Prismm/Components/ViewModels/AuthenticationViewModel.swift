@@ -58,11 +58,11 @@ class AuthenticationViewModel: ObservableObject {
         return true
     }
     
-    func signUp (withEmail email: String, password: String, fullName: String) async throws {
+    func signUp (withEmail email: String, password: String) async throws {
         do {
             let result = try await Auth.auth().createUser(withEmail: email, password: password)
             self.userSession = result.user
-            let user = User(id: result.user.uid, userName: fullName, password: password)
+            let user = User(id: result.user.uid, password: password)
             let encodedUser = try Firestore.Encoder().encode(user)
             try await Firestore.firestore().collection("users").document(user.id).setData(encodedUser)
         } catch {
@@ -78,11 +78,6 @@ class AuthenticationViewModel: ObservableObject {
         } catch {
             print("Fail to log in \(error.localizedDescription)")
         }
-    }
-    
-    // Validate username (check for duplicates)
-    func validateUsernameSignUp(_ username: String) -> Bool {
-        return true
     }
     
     // Validate password (at least 8 characters + not contating special symbols)

@@ -139,8 +139,12 @@ struct SignUp: View {
                 // Signup button
                 VStack {
                     Button(action: {
-                        Task {
-                            try await authVM.signUp(withEmail: "ntbngoc0123@gmail.com", password: "10102003", fullName: "Ngoc Nguyen")
+                        if (authVM.validatePassword(passwordText) && authVM.isMatchPassword(currentPassword: passwordText, reEnteredPassword: confrimPasswordText)) {
+                            Task {
+                                try await authVM.signUp(withEmail: accountText, password: passwordText)
+                            }
+                        }else{
+                            print("No match")
                         }
                     }) {
                         Text("Sign Up")
@@ -164,9 +168,7 @@ struct SignUp: View {
             }
             .foregroundColor(authVM.isDarkMode ? .white : .black)
             .padding(.horizontal)
-            .onChange(of: accountText) {newValue in
-                isValidUserName = authVM.validateUsernameSignUp(newValue)
-            }
+            
             .onChange(of: passwordText) {newValue in
                 isValidPassword = authVM.validatePasswordSignUp(newValue)
             }

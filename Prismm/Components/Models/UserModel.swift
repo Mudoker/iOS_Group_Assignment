@@ -24,10 +24,10 @@ struct User: Identifiable, Codable {
     var message: [String] //
     //var setting: Setting
     
-    init(id: String, userName: String, password: String) {
+    init(id: String, password: String) {
         self.id = id
-        self.username = userName
-        self.fullName = userName + "1"
+        self.username = ""
+        self.fullName = ""
         self.password = password
         self.phoneNumber = ""
         self.bio = ""
