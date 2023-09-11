@@ -11,10 +11,16 @@ import SwiftUI
 import Firebase
 import FirebaseFirestoreSwift
 
+protocol SignUpFormProtocol{
+    var formIsValid: Bool{get}
+}
+
+
 @MainActor
 class AuthenticationViewModel: ObservableObject {
     
     @Published var logInError = false
+    @Published var signUpError = false
     
     @Published var isUnlocked = false
     @Published var isDarkMode = false
@@ -87,9 +93,9 @@ class AuthenticationViewModel: ObservableObject {
     // Validate password (at least 8 characters + not contating special symbols)
     func validatePasswordSignUp(_ password: String) -> Bool {
         if password.count >= 8 && !password.containsSpecialSymbols() {
-            return false
-        } else {
             return true
+        } else {
+            return false
         }
     }
     

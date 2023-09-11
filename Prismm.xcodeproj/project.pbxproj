@@ -7,9 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2F68AD7A2AAEF0740059E1AF /* CustomCorner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F68AD792AAEF0740059E1AF /* CustomCorner.swift */; };
 		2FF0ACC42AAAFA3C0033AEEB /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FF0ACC32AAAFA3C0033AEEB /* ProfileView.swift */; };
 		2FF0ACC62AAB05120033AEEB /* ProfileToolBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FF0ACC52AAB05120033AEEB /* ProfileToolBar.swift */; };
-		9941534C2AAEC6AC001815C5 /* CustomCorner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9941534B2AAEC6AC001815C5 /* CustomCorner.swift */; };
 		9941534E2AAEC819001815C5 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 9941534D2AAEC819001815C5 /* GoogleService-Info.plist */; };
 		994153512AAEC873001815C5 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 994153502AAEC873001815C5 /* FirebaseAuth */; };
 		994153532AAEC873001815C5 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 994153522AAEC873001815C5 /* FirebaseFirestore */; };
@@ -55,9 +55,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		2F68AD792AAEF0740059E1AF /* CustomCorner.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CustomCorner.swift; path = ../../../../Downloads/CustomCorner.swift; sourceTree = "<group>"; };
 		2FF0ACC32AAAFA3C0033AEEB /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		2FF0ACC52AAB05120033AEEB /* ProfileToolBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileToolBar.swift; sourceTree = "<group>"; };
-		9941534B2AAEC6AC001815C5 /* CustomCorner.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CustomCorner.swift; path = ../../../CustomCorner.swift; sourceTree = "<group>"; };
 		9941534D2AAEC819001815C5 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		E10C0E212AAAEDBC00AEB220 /* Prismm.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Prismm.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E10C0E282AAAEDBD00AEB220 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -266,7 +266,7 @@
 			isa = PBXGroup;
 			children = (
 				E19D96822AAB2C0000E2CFAC /* Extension+String.swift */,
-				9941534B2AAEC6AC001815C5 /* CustomCorner.swift */,
+				2F68AD792AAEF0740059E1AF /* CustomCorner.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -447,9 +447,9 @@
 				E12FA03A2AAC2EFB007890A3 /* StoryView.swift in Sources */,
 				E1BB6F222AAEC01D00051687 /* UserActiveChat.swift in Sources */,
 				E1CED5132AAB42BB00F7F94E /* Constants.swift in Sources */,
+				2F68AD7A2AAEF0740059E1AF /* CustomCorner.swift in Sources */,
 				E1BB6F2D2AAEC1C700051687 /* FollowerList.swift in Sources */,
 				E1BB6F202AAEC01800051687 /* PersonalChat.swift in Sources */,
-				9941534C2AAEC6AC001815C5 /* CustomCorner.swift in Sources */,
 				E17E8CE52AAC6C5800EF5EFB /* CommentModel.swift in Sources */,
 				E17E8CE72AAC6CA400EF5EFB /* StoryModel.swift in Sources */,
 				E1BB6F142AAEBE0100051687 /* AboutUsView.swift in Sources */,

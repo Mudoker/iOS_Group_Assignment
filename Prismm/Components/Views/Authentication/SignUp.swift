@@ -7,15 +7,19 @@
 
 import SwiftUI
 
+
+
 struct SignUp: View {
     // Control state
     @State var accountText = ""
     @State var passwordText = ""
     @State var confrimPasswordText = ""
     @State private var isPasswordVisible: Bool = false
+    
     @State var isValidPassword = false
     @State var isValidReEnterPassword = false
     @State var isValidUserName = false
+
     
     // View Model
     @EnvironmentObject var authVM:AuthenticationViewModel
@@ -77,7 +81,7 @@ struct SignUp: View {
                                 .padding(.bottom, 5)
                                 .opacity(0.7)
                         } else {
-                            if isValidPassword {
+                            if !isValidPassword {
                                 Text("Invalid Password")
                                     .font(authVM.captionFont )
                                     .padding(.bottom, 5)
@@ -139,13 +143,11 @@ struct SignUp: View {
                 // Signup button
                 VStack {
                     Button(action: {
-                        if (authVM.validatePassword(passwordText) && authVM.isMatchPassword(currentPassword: passwordText, reEnteredPassword: confrimPasswordText)) {
+                        
                             Task {
                                 try await authVM.signUp(withEmail: accountText, password: passwordText)
                             }
-                        }else{
-                            print("No match")
-                        }
+                        
                     }) {
                         Text("Sign Up")
                             .foregroundColor(.white)
@@ -159,7 +161,10 @@ struct SignUp: View {
                                     .fill(authVM.isDarkMode ? Constants.darkThemeColor : Constants.lightThemeColor)
                             )
                             .padding(.horizontal)
+                            
                     }
+                    .disabled(!formIsValid)
+                    .opacity(formIsValid ? 1 : 0.5)
                 }
                 
                 
@@ -171,8 +176,10 @@ struct SignUp: View {
             
             .onChange(of: passwordText) {newValue in
                 isValidPassword = authVM.validatePasswordSignUp(newValue)
+                isValidReEnterPassword = authVM.isMatchPassword(currentPassword: newValue, reEnteredPassword: confrimPasswordText)
             }
             .onChange(of: confrimPasswordText) {newValue in
+                
                 isValidReEnterPassword = authVM.isMatchPassword(currentPassword: passwordText, reEnteredPassword: newValue)
             }
         }
@@ -180,8 +187,15 @@ struct SignUp: View {
     }
 }
 
+
+extension SignUp: SignUpFormProtocol{
+    var formIsValid: Bool{
+        return accountText.contains("@") && !accountText.isEmpty&&isValidPassword&&isValidReEnterPassword
+    }
+}
+
 struct SignUp_Previews: PreviewProvider {
     static var previews: some View {
-        SignUp()
+        SignUp().environmentObject(AuthenticationViewModel())
     }
 }

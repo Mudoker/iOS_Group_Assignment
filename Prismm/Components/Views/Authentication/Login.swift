@@ -75,12 +75,7 @@ struct Login: View {
                         
                         // Login button
                         Button(action: {
-//                            authVM.fetchUserData()
-//                            if authVM.validateUsername(accountText) && authVM.validatePassword(passwordText) {
-//                                print("ok")
-//                            } else {
-//                                showAlert.toggle()
-//                            }
+
                             Task {
                                 try await authVM.signIn(withEmail: accountText, password: passwordText)
                             }
@@ -137,12 +132,12 @@ struct Login: View {
                                         .padding(.horizontal)
                                         .opacity(0.8)
                                 }
-                                .simultaneousGesture(
-                                    TapGesture()
-                                        .onEnded {
-                                            isSignUp = true
-                                        }
-                                )
+//                                .simultaneousGesture(
+//                                    TapGesture()
+//                                        .onEnded {
+//                                            isSignUp = true
+//                                        }
+//                                )
                         }
                         
                         HStack {
