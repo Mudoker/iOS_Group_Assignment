@@ -27,7 +27,7 @@ struct SplashScreen: View {
                         ZStack{
                             HStack(spacing: 0){
                                 VStack(alignment: .trailing){
-                                    Image("logoNoText")
+                                    Image("logolight")
                                         .resizable()
                                         .aspectRatio(contentMode: .fill)
                                     
@@ -42,12 +42,14 @@ struct SplashScreen: View {
                                     }
                                 }
 //                                .background(.yellow)
-                                .position(x: isText ? geometry.size.width / 2 - 90 : geometry.size.width / 2, y: geometry.size.height / 2)
+                                .position(x: isText ? geometry.size.width / 2 - 90 : geometry.size.width / 2, y: geometry.size.height / 2 + 17)
                                 
                                 VStack{
                                     Text("Prism")
+                                        .foregroundColor(.pink)
                                         .font(.custom("Junegull-Regular", size: geometry.size.width >=  834 ? 30 : 40 ))
                                     Text("Through your lens")
+                                        .foregroundColor(.pink)
                                         .font(.custom("Junegull-Regular", size: geometry.size.width >=  834 ? 30 : 15 ))
                                 }
 //                                .background(.yellow)

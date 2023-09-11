@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		2FF0ACC42AAAFA3C0033AEEB /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FF0ACC32AAAFA3C0033AEEB /* ProfileView.swift */; };
 		2FF0ACC62AAB05120033AEEB /* ProfileToolBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FF0ACC52AAB05120033AEEB /* ProfileToolBar.swift */; };
+		3461CE9D2AAEE4A9008BB2B4 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3461CE9C2AAEE4A9008BB2B4 /* Launch Screen.storyboard */; };
+		34A351362AAECA2E00412BBC /* CustomCorner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A351352AAECA2E00412BBC /* CustomCorner.swift */; };
 		E10C0E292AAAEDBD00AEB220 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E10C0E282AAAEDBD00AEB220 /* Assets.xcassets */; };
 		E10C0E2C2AAAEDBD00AEB220 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E10C0E2B2AAAEDBD00AEB220 /* Preview Assets.xcassets */; };
 		E10C0E412AAAF53E00AEB220 /* CustomTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10C0E402AAAF53E00AEB220 /* CustomTextField.swift */; };
@@ -30,7 +32,6 @@
 		E19D96832AAB2C0000E2CFAC /* Extension+String.swift in Sources */ = {isa = PBXBuildFile; fileRef = E19D96822AAB2C0000E2CFAC /* Extension+String.swift */; };
 		E1BB6F142AAEBE0100051687 /* AboutUsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BB6F062AAEBDA900051687 /* AboutUsView.swift */; };
 		E1BB6F152AAEBE0500051687 /* PersonalAboutUs.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BB6F072AAEBDA900051687 /* PersonalAboutUs.swift */; };
-		E1BB6F1D2AAEBEAE00051687 /* CustomCorner.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BB6F1C2AAEBEAE00051687 /* CustomCorner.swift */; };
 		E1BB6F1E2AAEBEE900051687 /* SplashScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BB6F092AAEBDA900051687 /* SplashScreen.swift */; };
 		E1BB6F1F2AAEBF0E00051687 /* SettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BB6F132AAEBDA900051687 /* SettingView.swift */; };
 		E1BB6F202AAEC01800051687 /* PersonalChat.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BB6F0B2AAEBDA900051687 /* PersonalChat.swift */; };
@@ -50,6 +51,8 @@
 /* Begin PBXFileReference section */
 		2FF0ACC32AAAFA3C0033AEEB /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		2FF0ACC52AAB05120033AEEB /* ProfileToolBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileToolBar.swift; sourceTree = "<group>"; };
+		3461CE9C2AAEE4A9008BB2B4 /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
+		34A351352AAECA2E00412BBC /* CustomCorner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomCorner.swift; sourceTree = "<group>"; };
 		E10C0E212AAAEDBC00AEB220 /* Prismm.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Prismm.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E10C0E282AAAEDBD00AEB220 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E10C0E2B2AAAEDBD00AEB220 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
@@ -78,10 +81,7 @@
 		E1BB6F0C2AAEBDA900051687 /* PreviewUserChat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewUserChat.swift; sourceTree = "<group>"; };
 		E1BB6F0D2AAEBDA900051687 /* UserActiveChat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserActiveChat.swift; sourceTree = "<group>"; };
 		E1BB6F0E2AAEBDA900051687 /* AllChat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllChat.swift; sourceTree = "<group>"; };
-		E1BB6F102AAEBDA900051687 /* progressBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = progressBarController.swift; sourceTree = "<group>"; };
-		E1BB6F112AAEBDA900051687 /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
 		E1BB6F132AAEBDA900051687 /* SettingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingView.swift; sourceTree = "<group>"; };
-		E1BB6F1C2AAEBEAE00051687 /* CustomCorner.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CustomCorner.swift; path = ../../../../../Downloads/CustomCorner.swift; sourceTree = "<group>"; };
 		E1BB6F242AAEC12F00051687 /* HomeViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
 		E1BB6F272AAEC1C700051687 /* FollowingRow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FollowingRow.swift; sourceTree = "<group>"; };
 		E1BB6F282AAEC1C700051687 /* FollowerList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FollowerList.swift; sourceTree = "<group>"; };
@@ -251,7 +251,7 @@
 			isa = PBXGroup;
 			children = (
 				E19D96822AAB2C0000E2CFAC /* Extension+String.swift */,
-				E1BB6F1C2AAEBEAE00051687 /* CustomCorner.swift */,
+				34A351352AAECA2E00412BBC /* CustomCorner.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -287,8 +287,7 @@
 		E1BB6F0F2AAEBDA900051687 /* LaunchScreen */ = {
 			isa = PBXGroup;
 			children = (
-				E1BB6F102AAEBDA900051687 /* progressBarController.swift */,
-				E1BB6F112AAEBDA900051687 /* Launch Screen.storyboard */,
+				3461CE9C2AAEE4A9008BB2B4 /* Launch Screen.storyboard */,
 			);
 			path = LaunchScreen;
 			sourceTree = "<group>";
@@ -387,6 +386,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3461CE9D2AAEE4A9008BB2B4 /* Launch Screen.storyboard in Resources */,
 				E10C0E2C2AAAEDBD00AEB220 /* Preview Assets.xcassets in Resources */,
 				E10C0E292AAAEDBD00AEB220 /* Assets.xcassets in Resources */,
 			);
@@ -414,13 +414,13 @@
 				E1BB6F152AAEBE0500051687 /* PersonalAboutUs.swift in Sources */,
 				E10C0E432AAAFFA300AEB220 /* Login.swift in Sources */,
 				E17E8CE12AAC6ABF00EF5EFB /* SettingModel.swift in Sources */,
-				E1BB6F1D2AAEBEAE00051687 /* CustomCorner.swift in Sources */,
 				E12FA0362AAC2EE3007890A3 /* HomeView.swift in Sources */,
 				E1BB6F252AAEC12F00051687 /* HomeViewModel.swift in Sources */,
 				E17E8CF92AAC85E500EF5EFB /* PostGridView.swift in Sources */,
 				E12FA03A2AAC2EFB007890A3 /* StoryView.swift in Sources */,
 				E1BB6F222AAEC01D00051687 /* UserActiveChat.swift in Sources */,
 				E1CED5132AAB42BB00F7F94E /* Constants.swift in Sources */,
+				34A351362AAECA2E00412BBC /* CustomCorner.swift in Sources */,
 				E1BB6F2D2AAEC1C700051687 /* FollowerList.swift in Sources */,
 				E1BB6F202AAEC01800051687 /* PersonalChat.swift in Sources */,
 				E17E8CE52AAC6C5800EF5EFB /* CommentModel.swift in Sources */,
@@ -560,6 +560,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Prismm/Preview Content\"";
@@ -570,6 +571,7 @@
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = "Launch Screen.storyboard";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -590,6 +592,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Prismm/Preview Content\"";
@@ -600,6 +603,7 @@
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = "Launch Screen.storyboard";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (
