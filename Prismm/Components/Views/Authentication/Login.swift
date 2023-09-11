@@ -7,6 +7,8 @@
 
 import SwiftUI
 import LocalAuthentication
+import GoogleSignIn
+import GoogleSignInSwift
 
 struct Login: View {
     // Control state
@@ -160,24 +162,34 @@ struct Login: View {
                                             )
                                     }
                                     
-                                    Button(action: {
-                                        // Add action code here for the second button
-                                    }) {
-                                        RoundedRectangle(cornerRadius: proxy.size.width / 50)
-                                            .frame(width: proxy.size.width / 4, height: proxy.size.height / 17)
-                                            .background(Color.white)
-                                            .overlay(
-                                                RoundedRectangle(cornerRadius: proxy.size.width / 50)
-                                                    .stroke(Color.black, lineWidth: 1)
-                                                    .background(Color.white)
-                                                    .overlay(
-                                                        Image("mail")
-                                                            .resizable()
-                                                            .aspectRatio(contentMode: .fit)
-                                                            .frame(width: proxy.size.width / 18)
-                                                            .foregroundColor(.black)
-                                                    )
-                                            )
+//                                    Button(action: {
+//                                        // Add action code here for the second button
+//                                    }) {
+//                                        RoundedRectangle(cornerRadius: proxy.size.width / 50)
+//                                            .frame(width: proxy.size.width / 4, height: proxy.size.height / 17)
+//                                            .background(Color.white)
+//                                            .overlay(
+//                                                RoundedRectangle(cornerRadius: proxy.size.width / 50)
+//                                                    .stroke(Color.black, lineWidth: 1)
+//                                                    .background(Color.white)
+//                                                    .overlay(
+//                                                        Image("mail")
+//                                                            .resizable()
+//                                                            .aspectRatio(contentMode: .fit)
+//                                                            .frame(width: proxy.size.width / 18)
+//                                                            .foregroundColor(.black)
+//                                                    )
+//                                            )
+//                                    }
+                                    
+                                    GoogleSignInButton {
+                                        
+                                        Task{
+                                            try await authVM.signInGoogle()
+                                        }
+                                        
+                                        
+                                        
                                     }
                                     
                                     Button(action: {
@@ -276,5 +288,6 @@ struct Login: View {
 struct Login_Previews: PreviewProvider {
     static var previews: some View {
         Login()
+            .environmentObject(AuthenticationViewModel())
     }
 }
