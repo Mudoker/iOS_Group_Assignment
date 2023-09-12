@@ -142,25 +142,6 @@ struct Login: View {
                             VStack {
                                 Divider()
                                 HStack {
-                                    Button(action: {
-                                        // Add action code here for the first button
-                                    }) {
-                                        RoundedRectangle(cornerRadius: proxy.size.width / 50)
-                                            .frame(width: proxy.size.width / 4, height: proxy.size.height / 17)
-                                            .background(Color.white)
-                                            .overlay(
-                                                RoundedRectangle(cornerRadius: proxy.size.width / 50)
-                                                    .stroke(Color.black, lineWidth: 1)
-                                                    .background(Color.white)
-                                                    .overlay(
-                                                        Image(systemName: "applelogo")
-                                                            .resizable()
-                                                            .aspectRatio(contentMode: .fit)
-                                                            .frame(width: proxy.size.width / 18)
-                                                            .foregroundColor(.black)
-                                                    )
-                                            )
-                                    }
                                     
                                     Button(action: {
                                         authVM.isLoading = true
@@ -170,45 +151,25 @@ struct Login: View {
                                         }
                                     }) {
                                         RoundedRectangle(cornerRadius: proxy.size.width / 50)
-                                            .frame(width: proxy.size.width / 4, height: proxy.size.height / 17)
+                                            .frame(width: proxy.size.width / 2, height: proxy.size.height / 17)
                                             .background(Color.white)
                                             .overlay(
                                                 RoundedRectangle(cornerRadius: proxy.size.width / 50)
                                                     .stroke(Color.black, lineWidth: 1)
                                                     .background(Color.white)
                                                     .overlay(
-                                                        Image("mail")
-                                                            .resizable()
-                                                            .aspectRatio(contentMode: .fit)
-                                                            .frame(width: proxy.size.width / 18)
-                                                            .foregroundColor(.black)
+                                                        HStack {
+                                                            Image("mail")
+                                                                .resizable()
+                                                                .aspectRatio(contentMode: .fit)
+                                                                .frame(width: proxy.size.width / 18)
+                                                                .foregroundColor(.black)
+                                                            
+                                                            Text("Login with Google")
+                                                        }
                                                     )
                                             )
                                     }
-                                    
-
-                                    
-                                    Button(action: {
-                                        // Add action code here for the third button
-                                    }) {
-                                        RoundedRectangle(cornerRadius: proxy.size.width / 50)
-                                            .frame(width: proxy.size.width / 4, height: proxy.size.height / 17)
-                                            .background(Color.white)
-                                            .overlay(
-                                                RoundedRectangle(cornerRadius: proxy.size.width / 50)
-                                                    .stroke(Color.black, lineWidth: 1)
-                                                    .background(Color.white)
-                                                    .overlay(
-                                                        Image("fb")
-                                                            .resizable()
-                                                            .aspectRatio(contentMode: .fit)
-                                                            .frame(width: proxy.size.width / 18)
-                                                            .foregroundColor(.black)
-                                                    )
-                                            )
-                                    }
-                                    
-                                    
                                 }
                                 .padding(.vertical)
                                 

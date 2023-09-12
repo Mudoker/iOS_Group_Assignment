@@ -1,15 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "gmail.png",
+      "filename" : "Google-Icon-PNG_rwscww@1x.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
+      "filename" : "Google-Icon-PNG_rwscww@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
+      "filename" : "Google-Icon-PNG_rwscww@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }
