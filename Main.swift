@@ -14,8 +14,9 @@ struct PrismmApp: App {
     @StateObject var viewModel = AuthenticationViewModel()
     var body: some Scene {
         WindowGroup {
-            Login()
-                .environmentObject(viewModel)
+//            Login()
+//                .environmentObject(viewModel)
+            UploadPostView()
         }
     }
     

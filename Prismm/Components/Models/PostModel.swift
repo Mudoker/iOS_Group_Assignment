@@ -7,12 +7,13 @@
 
 import Foundation
 
-struct Post {
-    let id: UUID
+struct Post: Identifiable, Codable {
+    let id: String
+    let owner: String
+    let postCaption: String
+    var likers: [String]
+    let postImage: String
     let Date: Date
-    let op: UUID
-    var likers: [UUID]
-    var postImage: String
-    var postcaption: String
-    var postComment: [Comment]
+    var user: User?
+    //var postComment: [String]
 }
