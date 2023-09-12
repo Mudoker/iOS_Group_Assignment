@@ -7,18 +7,12 @@
 
 import Foundation
 
-struct Post_Image: Identifiable, Decodable {
+struct Media: Identifiable, Decodable {
     let mediaUrl: String
+    let mimeType: String
 
     var id: String {
         return NSUUID().uuidString
     }
 }
 
-struct Post_Video: Identifiable, Decodable {
-    let mediaUrl: String
-
-    var id: String {
-        return NSUUID().uuidString
-    }
-}

@@ -15,30 +15,56 @@ struct Test_UploadImg_Video: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                ForEach(uploadVM.fetched_images) { media in
-                    Image(media.mediaUrl)
-//                    if let mediaUrl = URL(string: media.mediaUrl) {
-//                        let playerItem = AVPlayerItem(url: mediaUrl)
-//                        let player = AVPlayer(playerItem: playerItem)
-//
-//                        VideoPlayer(player: player)
-//                            .frame(height: 200)
-//                            .onAppear {
-//                                // Optionally, you can play the video when it appears on the screen.
-//                                player.play()
-//                            }
-//                    } else {
-//                        // Handle the case where the media URL is invalid or empty.
-//                        Text("Invalid media URL")
-//                    }
-//                    VideoPlayer(player: AVPlayer(url: URL(string: media.mediaUrl)!))
-//                        .frame(height: 200)
-    //                    VideoPlayer (player: AVPlayer(url: URL(string: media.mediaUrl) ?? URL(fileURLWithPath: "")))
+                ForEach(uploadVM.fetched_post) { post in
+                    Text(post.postCaption)
+                    if let mediaUrl = URL(string: post.mediaURL ?? "") {
+                        if let mimeType = post.mimeType {
+                            if !mimeType.hasPrefix("image") {
+                                // This condition checks if the mimeType does not start with "image" (i.e., it's not an image).
+                                
+                                let playerItem = AVPlayerItem(url: mediaUrl)
+                                let player = AVPlayer(playerItem: playerItem)
+                                
+                                VideoPlayer(player: player)
+                                    .frame(height: 200)
+                                    .onAppear {
+                                        // Optionally, you can play the video when it appears on the screen.
+                                        player.play()
+                                    }
+                            } else {
+                                AsyncImage(url: mediaUrl) { phase in
+                                    switch phase {
+                                    case .empty:
+                                        // Placeholder while loading
+                                        ProgressView()
+                                    case .success(let image):
+                                        // Image loaded successfully
+                                        image
+                                            .resizable()
+                                            .aspectRatio(contentMode: .fit)
+                                            .frame(height: 200)
+                                    case .failure(_):
+                                        // Handle error, e.g., display a placeholder or error message
+                                        Text("Image loading failed")
+                                    @unknown default:
+                                        // Handle other states if needed
+                                        Text("Unknown state")
+                                    }
+                                }
+                            }
+                        } else {
+                            // Handle the case where the mimeType is nil
+                            Text("Invalid MIME type")
+                        }
+                    } else {
+                        // Handle the case where the media URL is invalid or empty.
+                        Text("Invalid media URL")
+                    }
                 }
             }
             .refreshable {
                 Task {
-                    try await uploadVM.fetchMedia()
+                    try await uploadVM.fetchPost()
                 }
             }
             .toolbar {

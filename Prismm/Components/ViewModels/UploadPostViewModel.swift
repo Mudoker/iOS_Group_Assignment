@@ -15,58 +15,48 @@ import AVFoundation
 import FirebaseFirestoreSwift
 
 class UploadPostViewModel: ObservableObject {
-    @Published var fetched_images = [Post_Image]()
-    @Published var fetched_videos = [Post_Video]()
+    @Published var fetched_media = [Media]()
+    @Published var fetched_post = [Post]()
 
     @Published var selectedMedia: PhotosPickerItem? {
         didSet {
             Task {
-                try await uploadMediaFromLocal()
+                try await uploadingPost()
             }
         }
     }
     
     init() {
         Task {
-            try await fetchMedia()
+            try await fetchPost()
         }
     }
     
     @Published var postImage: Image?
     @Published var selectedVideoURL: URL? // Store the video URL
 
-    func uploadMediaFromLocal() async throws {
-        guard let media = selectedMedia else { return }
-        
-        guard let mediaData = try await media.loadTransferable(type: Data.self) else { return }
-        
-        if mediaData.count > 25_000_000 {
-            print("Selected file too large: \(mediaData)")
-        } else {
-            print("Approved: \(mediaData)")
-        }
-        
-        guard let mediaUrl = try await uploadMediaToFireBase(data: mediaData) else { return }
-        
-        if mimeType(for: mediaData) == "video/avi" || mimeType(for: mediaData) == "video/mp4" || mimeType(for: mediaData) == "video/quicktime" || mimeType(for: mediaData) == "video/webm" {
-            try await Firestore.firestore().collection("post_videos").document().setData(["mediaUrl" : mediaUrl, "type" : mimeType(for: mediaData)])
-        } else {
-            try await Firestore.firestore().collection("post_images").document().setData(["mediaUrl" : mediaUrl, "type" : mimeType(for: mediaData)])
-        }
-        
-        print (" load ok ")
-    }
+//    func uploadMediaFromLocal() async throws {
+//        guard let media = selectedMedia else { return }
+//
+//        guard let mediaData = try await media.loadTransferable(type: Data.self) else { return }
+//
+//        if mediaData.count > 25_000_000 {
+//            print("Selected file too large: \(mediaData)")
+//        } else {
+//            print("Approved: \(mediaData)")
+//        }
+//
+//        guard let mediaUrl = try await uploadMediaToFireBase(data: mediaData) else { return }
+//
+//        try await Firestore.firestore().collection("media").document().setData(["mediaUrl" : mediaUrl, "mimeType" : mimeType(for: mediaData)])
+//
+//
+//        print (" load ok ")
+//    }
     
     func uploadMediaToFireBase(data: Data) async throws -> String? {
         let fileName = UUID().uuidString
-        var ref = Storage.storage().reference().child("/medias/\(fileName)")
-
-        if mimeType(for: data) == "video/avi" || mimeType(for: data) == "video/mp4" || mimeType(for: data) == "video/quicktime" || mimeType(for: data) == "video/webm" {
-            ref = Storage.storage().reference().child("/post_videos/\(fileName)")
-        } else {
-            ref = Storage.storage().reference().child("/post_images/\(fileName)")
-        }
-        
+        let ref = Storage.storage().reference().child("/media/\(fileName)")
         let metaData  = StorageMetadata()
         metaData.contentType = mimeType(for: data)
         
@@ -80,36 +70,61 @@ class UploadPostViewModel: ObservableObject {
         }
     }
     
+//    @MainActor
+//    func fetchMedia() async throws {
+//        let medias = try await Firestore.firestore().collection("media").getDocuments()
+//        self.fetched_media = medias.documents.compactMap { document in
+//            do {
+//                return try document.data(as: Media.self)
+//            } catch {
+//                print("Error decoding document: \(error)")
+//                return nil
+//            }
+//        }
+//
+//
+//        for each in medias.documents {
+//            print(each)
+//        }
+//    }
+    
     @MainActor
-    func fetchMedia() async throws {
-        let images = try await Firestore.firestore().collection("post_images").getDocuments()
-        let videos = try await Firestore.firestore().collection("post_videos").getDocuments()
-        
-        self.fetched_images = images.documents.compactMap { document in
+    func fetchPost() async throws {
+        let post = try await Firestore.firestore().collection("posts").getDocuments()
+        self.fetched_post = post.documents.compactMap { document in
             do {
-                return try document.data(as: Post_Image.self)
+                
+            
+                return try document.data(as: Post.self)
             } catch {
                 print("Error decoding document: \(error)")
                 return nil
             }
         }
-        
-        self.fetched_videos = videos.documents.compactMap { document in
-            do {
-                return try document.data(as: Post_Video.self)
-            } catch {
-                print("Error decoding document: \(error)")
-                return nil
-            }
-        }
-        
-        for each in images.documents {
-            print(each)
+        for each in fetched_post {
+            print(each.mimeType ?? "")
         }
     }
     
-    func uploadingPost(caption: String) async throws {
-
+    func uploadingPost() async throws {
+//        guard let uid = Auth.auth().currentUser?.uid else {
+//            print("No user account")
+//            return
+//        }
+        
+        guard let media = selectedMedia else { return }
+        
+        guard let mediaData = try await media.loadTransferable(type: Data.self) else { return }
+        
+        if mediaData.count > 25_000_000 {
+            print("Selected file too large: \(mediaData)")
+        } else {
+            guard let mediaUrl = try await uploadMediaToFireBase(data: mediaData) else { return }
+            let postRef = Firestore.firestore().collection("posts").document()
+            let post = Post(id: postRef.documentID, owner: "", postCaption: "Hello", likers: [], mediaURL: mediaUrl, mimeType: mimeType(for: mediaData), date: Timestamp())
+            guard let encodedPost = try? Firestore.Encoder().encode(post) else {return}
+            try await postRef.setData(encodedPost)
+        }
     }
     
     func mimeType(for data: Data) -> String {
