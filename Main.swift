@@ -16,7 +16,8 @@ struct PrismmApp: App {
         WindowGroup {
 //            Login()
 //                .environmentObject(viewModel)
-            UploadPostView()
+//            UploadPostView()
+            Test_UploadImg_Video()
         }
     }
     
