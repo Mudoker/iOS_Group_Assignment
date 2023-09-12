@@ -27,178 +27,187 @@ struct SignUp: View {
     
     var body: some View {
         GeometryReader { proxy in
-            VStack (alignment: .center) {
-                                // Push view
-                                Spacer()
-                // Logo
-                Image(authVM.isDarkMode ? Constants.darkThemeAppLogo : Constants.lightThemeAppLogo)
-                    .resizable()
-                    .aspectRatio(contentMode: .fill)
-                    .frame(width: authVM.logoImageSize, height: 0)
-                    .padding(.vertical, authVM.imagePaddingVertical)
+            ZStack {
+                VStack (alignment: .center) {
+                    // Push view
+                    Spacer()
+                    
+                    // Logo
+                    Image(authVM.isDarkMode ? Constants.darkThemeAppLogo : Constants.lightThemeAppLogo)
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                        .frame(width: authVM.logoImageSize, height: 0)
+                        .padding(.vertical, authVM.imagePaddingVertical)
 
-                // Title
-                Text ("Sign Up")
-                    .font(.system(size: authVM.titleFont))
-                    .bold()
-                
-                Text("Create a new profile")
-                    .font(authVM.captionFont)
-                    .bold()
-                    .opacity(0.7)
-                         
-                // Text field
-                VStack {
-                    CustomTextField(
-                        text: $accountText,
-                        textFieldTitle: "Username",
-                        testFieldPlaceHolder: "Username or Account",
-                        titleFont: $authVM.textFieldTitleFont,
-                        textFieldSizeHeight: $authVM.textFieldSizeHeight,
-                        textFieldCorner: $authVM.textFieldCorner,
-                        textFieldBorderWidth: $authVM.textFieldBorderWidth,
-                        isPassword: .constant(false),
-                        textFieldPlaceHolderFont: $authVM.textFieldPlaceHolderFont
-                    )
-                    .padding(.bottom)
+                    // Title
+                    Text ("Sign Up")
+                        .font(.system(size: authVM.titleFont))
+                        .bold()
                     
-                    
-                    CustomTextField(
-                        text: $passwordText,
-                        textFieldTitle: "Password",
-                        testFieldPlaceHolder: "Password",
-                        titleFont: $authVM.textFieldTitleFont,
-                        textFieldSizeHeight: $authVM.textFieldSizeHeight,
-                        textFieldCorner: $authVM.textFieldCorner,
-                        textFieldBorderWidth: $authVM.textFieldBorderWidth,
-                        isPassword: .constant(true),
-                        textFieldPlaceHolderFont: $authVM.textFieldPlaceHolderFont
-                    )
+                    Text("Create a new profile")
+                        .font(authVM.captionFont)
+                        .bold()
+                        .opacity(0.7)
+                             
+                    // Text field
+                    VStack {
+                        CustomTextField(
+                            text: $accountText,
+                            textFieldTitle: "Username",
+                            testFieldPlaceHolder: "Username or Account",
+                            titleFont: $authVM.textFieldTitleFont,
+                            textFieldSizeHeight: $authVM.textFieldSizeHeight,
+                            textFieldCorner: $authVM.textFieldCorner,
+                            textFieldBorderWidth: $authVM.textFieldBorderWidth,
+                            isPassword: .constant(false),
+                            textFieldPlaceHolderFont: $authVM.textFieldPlaceHolderFont
+                        )
+                        .padding(.bottom)
                         
-                    HStack {
-                        if passwordText.isEmpty {
-                            Text("At least 8 characters and not contain special symbols")
-                                .font(authVM.captionFont )
-                                .padding(.bottom, 5)
-                                .opacity(0.7)
-                        } else {
-                            if !isValidPassword {
-                                Text("Invalid Password")
-                                    .font(authVM.captionFont )
-                                    .padding(.bottom, 5)
-                                    .opacity(0.7)
-                                    .foregroundColor(.red)
-                            } else {
-                                Text("Password valid")
-                                    .font(authVM.captionFont )
-                                    .padding(.bottom, 5)
-                                    .opacity(0.7)
-                                    .foregroundColor(.green)
-                            }
-                        }
                         
-                        Spacer()
-                    }
-                    .padding(.horizontal)
-                    
-                    CustomTextField(
-                        text: $confrimPasswordText,
-                        textFieldTitle: "Confirm Password",
-                        testFieldPlaceHolder: "Password",
-                        titleFont: $authVM.textFieldTitleFont,
-                        textFieldSizeHeight: $authVM.textFieldSizeHeight,
-                        textFieldCorner: $authVM.textFieldCorner,
-                        textFieldBorderWidth: $authVM.textFieldBorderWidth,
-                        isPassword: .constant(true),
-                        textFieldPlaceHolderFont: $authVM.textFieldPlaceHolderFont
-                    )
-                    
-                    HStack {
-                        if confrimPasswordText.isEmpty {
-                            Text("Re-enter your password")
-                                .font(authVM.captionFont )
-                                .padding(.bottom, 5)
-                                .opacity(0.7)
-                        } else {
-                            if isValidReEnterPassword {
-                                Text("Matched Password!")
-                                    .font(authVM.captionFont )
-                                    .padding(.bottom, 5)
-                                    .opacity(0.7)
-                                    .foregroundColor(.green)
-                            } else {
-                                Text("Password not match!")
-                                    .font(authVM.captionFont )
-                                    .padding(.bottom, 5)
-                                    .opacity(0.7)
-                                    .foregroundColor(.red)
-                            }
-                        }
-                        
-                        Spacer()
-                    }
-                    .padding(.horizontal)
-                    .padding(.bottom)
-                }
-                
-               
-                // Signup button
-                VStack {
-                    
-                    Button(action: {
-                        Task {
-                            try await authVM.signUp(withEmail: accountText, password: passwordText)
-                            authVM.isAlert = true
+                        CustomTextField(
+                            text: $passwordText,
+                            textFieldTitle: "Password",
+                            testFieldPlaceHolder: "Password",
+                            titleFont: $authVM.textFieldTitleFont,
+                            textFieldSizeHeight: $authVM.textFieldSizeHeight,
+                            textFieldCorner: $authVM.textFieldCorner,
+                            textFieldBorderWidth: $authVM.textFieldBorderWidth,
+                            isPassword: .constant(true),
+                            textFieldPlaceHolderFont: $authVM.textFieldPlaceHolderFont
+                        )
                             
-                        }
-                    }) {
-                        Text("Sign Up")
-                            .foregroundColor(.white)
-                            .font(authVM.loginTextFont)
-                            .bold()
-                            .padding()
-                            .frame(maxWidth: .infinity)
-                            .frame(height: authVM.loginButtonSizeHeight)
-                            .background(
-                                RoundedRectangle(cornerRadius: 10)
-                                    .fill(authVM.isDarkMode ? Constants.darkThemeColor : Constants.lightThemeColor)
-                            )
-                            .padding(.horizontal)
-                            
-                    }
-                    .disabled(!formIsValid)
-                    .opacity(formIsValid ? 1 : 0.5)
-                    .alert(isPresented: $authVM.isAlert) {
-                        Alert(
-                            title: Text(authVM.signUpError ? "Sign up failed" : "Sign up successfully!"),
-                            message: Text(authVM.signUpError ? "The email has been used. Please register with another email" : "You have created a new account"),
-                            dismissButton: .default(Text(authVM.signUpError ? "Close" : "OK")) {
-                                if (!authVM.signUpError) {
-                                    presentationMode.wrappedValue.dismiss()
+                        HStack {
+                            if passwordText.isEmpty {
+                                Text("At least 8 characters and not contain special symbols")
+                                    .font(authVM.captionFont )
+                                    .padding(.bottom, 5)
+                                    .opacity(0.7)
+                            } else {
+                                if !isValidPassword {
+                                    Text("Invalid Password")
+                                        .font(authVM.captionFont )
+                                        .padding(.bottom, 5)
+                                        .opacity(0.7)
+                                        .foregroundColor(.red)
+                                } else {
+                                    Text("Password valid")
+                                        .font(authVM.captionFont )
+                                        .padding(.bottom, 5)
+                                        .opacity(0.7)
+                                        .foregroundColor(.green)
                                 }
                             }
+                            
+                            Spacer()
+                        }
+                        .padding(.horizontal)
+                        
+                        CustomTextField(
+                            text: $confrimPasswordText,
+                            textFieldTitle: "Confirm Password",
+                            testFieldPlaceHolder: "Password",
+                            titleFont: $authVM.textFieldTitleFont,
+                            textFieldSizeHeight: $authVM.textFieldSizeHeight,
+                            textFieldCorner: $authVM.textFieldCorner,
+                            textFieldBorderWidth: $authVM.textFieldBorderWidth,
+                            isPassword: .constant(true),
+                            textFieldPlaceHolderFont: $authVM.textFieldPlaceHolderFont
                         )
+                        
+                        HStack {
+                            if confrimPasswordText.isEmpty {
+                                Text("Re-enter your password")
+                                    .font(authVM.captionFont )
+                                    .padding(.bottom, 5)
+                                    .opacity(0.7)
+                            } else {
+                                if isValidReEnterPassword {
+                                    Text("Matched Password!")
+                                        .font(authVM.captionFont )
+                                        .padding(.bottom, 5)
+                                        .opacity(0.7)
+                                        .foregroundColor(.green)
+                                } else {
+                                    Text("Password not match!")
+                                        .font(authVM.captionFont )
+                                        .padding(.bottom, 5)
+                                        .opacity(0.7)
+                                        .foregroundColor(.red)
+                                }
+                            }
+                            
+                            Spacer()
+                        }
+                        .padding(.horizontal)
+                        .padding(.bottom)
                     }
                     
+                   
+                    // Signup button
+                    VStack {
+                        Button(action: {
+                            authVM.isLoading = true
+                            
+                            Task {
+                                try await authVM.signUp(withEmail: accountText, password: passwordText)
+                                
+                                authVM.isLoading = false
+                                authVM.isAlert = true
+                            }
+                        }) {
+                            Text("Sign Up")
+                                .foregroundColor(.white)
+                                .font(authVM.loginTextFont)
+                                .bold()
+                                .padding()
+                                .frame(maxWidth: .infinity)
+                                .frame(height: authVM.loginButtonSizeHeight)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 10)
+                                        .fill(authVM.isDarkMode ? Constants.darkThemeColor : Constants.lightThemeColor)
+                                )
+                                .padding(.horizontal)
+                                
+                        }
+                        .disabled(!formIsValid)
+                        .opacity(formIsValid ? 1 : 0.5)
+                        .alert(isPresented: $authVM.isAlert) {
+                            Alert(
+                                title: Text(authVM.signUpError ? "Sign up failed" : "Sign up successfully!"),
+                                message: Text(authVM.signUpError ? "The email has been used. Please register with another email" : "You have created a new account"),
+                                dismissButton: .default(Text(authVM.signUpError ? "Close" : "OK")) {
+                                    if (!authVM.signUpError) {
+                                        presentationMode.wrappedValue.dismiss()
+                                    }
+                                }
+                            )
+                        }
+                        
 
+                    }
+                    
+                    
+                    // Push view
+                    Spacer()
+                }
+                .foregroundColor(authVM.isDarkMode ? .white : .black)
+                .padding(.horizontal)
+                
+                .onChange(of: passwordText) {newValue in
+                    isValidPassword = authVM.validatePasswordSignUp(newValue)
+                    isValidReEnterPassword = authVM.isMatchPassword(currentPassword: newValue, reEnteredPassword: confrimPasswordText)
+                }
+                .onChange(of: confrimPasswordText) {newValue in
+                    
+                    isValidReEnterPassword = authVM.isMatchPassword(currentPassword: passwordText, reEnteredPassword: newValue)
                 }
                 
-                
-                // Push view
-                Spacer()
+                if authVM.isLoading {
+                    Color.gray.opacity(0.3).ignoresSafeArea()
+                    ProgressView("Loading...")
+                }
             }
-            .foregroundColor(authVM.isDarkMode ? .white : .black)
-            .padding(.horizontal)
-            
-            .onChange(of: passwordText) {newValue in
-                isValidPassword = authVM.validatePasswordSignUp(newValue)
-                isValidReEnterPassword = authVM.isMatchPassword(currentPassword: newValue, reEnteredPassword: confrimPasswordText)
-            }
-            .onChange(of: confrimPasswordText) {newValue in
-                
-                isValidReEnterPassword = authVM.isMatchPassword(currentPassword: passwordText, reEnteredPassword: newValue)
-            }
-
         }
         .background(authVM.isDarkMode ? .black : .white)
     }

@@ -163,8 +163,10 @@ struct Login: View {
                                     }
                                     
                                     Button(action: {
+                                        authVM.isLoading = true
                                         Task{
                                             await authVM.signInGoogle()
+                                            authVM.isLoading = false
                                         }
                                     }) {
                                         RoundedRectangle(cornerRadius: proxy.size.width / 50)
