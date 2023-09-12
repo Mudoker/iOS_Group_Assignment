@@ -22,6 +22,7 @@ struct PersonalAboutUs: View {
                 RoundedRectangle(cornerRadius: 20)
                     .stroke(Color(.white).opacity(0.4), lineWidth: 3)
                     .background(RoundedRectangle(cornerRadius: 20).fill(Color.pink.opacity(0.2)))
+                
                 // responsive
                     .frame(width: 363, height: 400)
                     .padding(.horizontal,15)

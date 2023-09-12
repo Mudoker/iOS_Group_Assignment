@@ -10,6 +10,10 @@
 		2FF0ACC42AAAFA3C0033AEEB /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FF0ACC32AAAFA3C0033AEEB /* ProfileView.swift */; };
 		2FF0ACC62AAB05120033AEEB /* ProfileToolBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FF0ACC52AAB05120033AEEB /* ProfileToolBar.swift */; };
 		3461CE9D2AAEE4A9008BB2B4 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3461CE9C2AAEE4A9008BB2B4 /* Launch Screen.storyboard */; };
+		3461CEA92AB08CC0008BB2B4 /* StoryBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3461CEA82AB08CC0008BB2B4 /* StoryBundle.swift */; };
+		3461CEAB2AB0D380008BB2B4 /* StoryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3461CEAA2AB0D380008BB2B4 /* StoryViewModel.swift */; };
+		3461CEAD2AB0DB39008BB2B4 /* PersonalStoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3461CEAC2AB0DB39008BB2B4 /* PersonalStoryView.swift */; };
+		3461CEAF2AB0E4BF008BB2B4 /* StoryCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3461CEAE2AB0E4BF008BB2B4 /* StoryCardView.swift */; };
 		34A351362AAECA2E00412BBC /* CustomCorner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A351352AAECA2E00412BBC /* CustomCorner.swift */; };
 		E10C0E292AAAEDBD00AEB220 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E10C0E282AAAEDBD00AEB220 /* Assets.xcassets */; };
 		E10C0E2C2AAAEDBD00AEB220 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E10C0E2B2AAAEDBD00AEB220 /* Preview Assets.xcassets */; };
@@ -52,6 +56,10 @@
 		2FF0ACC32AAAFA3C0033AEEB /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		2FF0ACC52AAB05120033AEEB /* ProfileToolBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileToolBar.swift; sourceTree = "<group>"; };
 		3461CE9C2AAEE4A9008BB2B4 /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
+		3461CEA82AB08CC0008BB2B4 /* StoryBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoryBundle.swift; sourceTree = "<group>"; };
+		3461CEAA2AB0D380008BB2B4 /* StoryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoryViewModel.swift; sourceTree = "<group>"; };
+		3461CEAC2AB0DB39008BB2B4 /* PersonalStoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonalStoryView.swift; sourceTree = "<group>"; };
+		3461CEAE2AB0E4BF008BB2B4 /* StoryCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoryCardView.swift; sourceTree = "<group>"; };
 		34A351352AAECA2E00412BBC /* CustomCorner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomCorner.swift; sourceTree = "<group>"; };
 		E10C0E212AAAEDBC00AEB220 /* Prismm.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Prismm.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E10C0E282AAAEDBD00AEB220 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -104,6 +112,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		3461CEA52AB089C1008BB2B4 /* StotryView */ = {
+			isa = PBXGroup;
+			children = (
+				3461CEA82AB08CC0008BB2B4 /* StoryBundle.swift */,
+				3461CEAA2AB0D380008BB2B4 /* StoryViewModel.swift */,
+			);
+			path = StotryView;
+			sourceTree = "<group>";
+		};
 		E10C0E182AAAEDBC00AEB220 = {
 			isa = PBXGroup;
 			children = (
@@ -173,6 +190,7 @@
 		E10C0E362AAAEF6E00AEB220 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				3461CEA52AB089C1008BB2B4 /* StotryView */,
 				E1BB6F262AAEC1A500051687 /* Follow */,
 				E1BB6F052AAEBDA900051687 /* AboutUs */,
 				E1BB6F0A2AAEBDA900051687 /* ChatView */,
@@ -243,6 +261,8 @@
 				E12FA0352AAC2EE3007890A3 /* HomeView.swift */,
 				E12FA0372AAC2EEE007890A3 /* PostView.swift */,
 				E12FA0392AAC2EFB007890A3 /* StoryView.swift */,
+				3461CEAC2AB0DB39008BB2B4 /* PersonalStoryView.swift */,
+				3461CEAE2AB0E4BF008BB2B4 /* StoryCardView.swift */,
 			);
 			path = Home;
 			sourceTree = "<group>";
@@ -405,6 +425,7 @@
 				E1BB6F302AAEC1C700051687 /* FollowView.swift in Sources */,
 				E1BB6F232AAEC01F00051687 /* AllChat.swift in Sources */,
 				E1BB6F2F2AAEC1C700051687 /* FollowerRow.swift in Sources */,
+				3461CEAB2AB0D380008BB2B4 /* StoryViewModel.swift in Sources */,
 				E10C0E412AAAF53E00AEB220 /* CustomTextField.swift in Sources */,
 				E19D96832AAB2C0000E2CFAC /* Extension+String.swift in Sources */,
 				E1BB6F2C2AAEC1C700051687 /* FollowingRow.swift in Sources */,
@@ -419,6 +440,7 @@
 				E17E8CF92AAC85E500EF5EFB /* PostGridView.swift in Sources */,
 				E12FA03A2AAC2EFB007890A3 /* StoryView.swift in Sources */,
 				E1BB6F222AAEC01D00051687 /* UserActiveChat.swift in Sources */,
+				3461CEAD2AB0DB39008BB2B4 /* PersonalStoryView.swift in Sources */,
 				E1CED5132AAB42BB00F7F94E /* Constants.swift in Sources */,
 				34A351362AAECA2E00412BBC /* CustomCorner.swift in Sources */,
 				E1BB6F2D2AAEC1C700051687 /* FollowerList.swift in Sources */,
@@ -427,11 +449,13 @@
 				E17E8CE72AAC6CA400EF5EFB /* StoryModel.swift in Sources */,
 				E1BB6F142AAEBE0100051687 /* AboutUsView.swift in Sources */,
 				E12FA0382AAC2EEE007890A3 /* PostView.swift in Sources */,
+				3461CEA92AB08CC0008BB2B4 /* StoryBundle.swift in Sources */,
 				E12FA0302AAC29A0007890A3 /* AuthenticationViewModel.swift in Sources */,
 				2FF0ACC62AAB05120033AEEB /* ProfileToolBar.swift in Sources */,
 				E1BB6F2E2AAEC1C700051687 /* FollowingList.swift in Sources */,
 				E12FA0292AAC2963007890A3 /* UserModel.swift in Sources */,
 				E17E8CDB2AAC496F00EF5EFB /* CustomAlertView.swift in Sources */,
+				3461CEAF2AB0E4BF008BB2B4 /* StoryCardView.swift in Sources */,
 				2FF0ACC42AAAFA3C0033AEEB /* ProfileView.swift in Sources */,
 				E1BB6F212AAEC01A00051687 /* PreviewUserChat.swift in Sources */,
 				E17E8CF82AAC85E500EF5EFB /* ProfileInfoBlock.swift in Sources */,

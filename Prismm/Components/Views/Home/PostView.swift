@@ -117,12 +117,12 @@ struct PostView: View {
                 }
                 .padding(.horizontal)
                 
-                VStack{
-                    Rectangle()
-                        .frame(height: proxy.size.height * 0.0005)
-                        .foregroundColor(Color.gray.opacity(0.5))
-                }
-                .padding(.vertical)
+//                VStack{
+//                    Rectangle()
+//                        .frame(height: proxy.size.height * 0.0005)
+//                        .foregroundColor(Color.gray.opacity(0.5))
+//                }
+//                .padding(.vertical)
             }
         }
     }

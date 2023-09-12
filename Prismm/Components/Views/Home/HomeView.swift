@@ -10,16 +10,23 @@ import SwiftUI
 
 struct HomeView: View {
     @StateObject var homeViewModel = HomeViewModel()
-
+    @StateObject var storyData = StoryViewModel()
+    
     var body: some View {
         GeometryReader {proxy in
             NavigationStack {
                 ScrollView(.vertical, showsIndicators: false) {
                     ScrollView(.horizontal, showsIndicators: false) {
-                        HStack (spacing: 40) {
-                            ForEach(0..<5, id: \.self) { _ in
-                                StoryView()
+                        HStack (spacing: 25) {
+//                            ForEach(0..<5, id: \.self) { _ in
+//                                StoryView()
+//                                    .frame(width: homeViewModel.storyViewSizeWidth, height: homeViewModel.storyViewSizeHeight)
+//                            }
+                            ForEach($storyData.stories){ $bundle in
+                                StoryView(bundle: $bundle)
+                                    .environmentObject(storyData)
                                     .frame(width: homeViewModel.storyViewSizeWidth, height: homeViewModel.storyViewSizeHeight)
+                                    
                             }
                         }
                         .padding()
@@ -32,10 +39,11 @@ struct HomeView: View {
                             PostView(homeViewModel: homeViewModel)
                                 .frame(height: proxy.size.height)
                                 .padding(.bottom)
+                                .padding(.bottom)
                             
                             if proxy.size.height == 1322 {
                                 VStack{}
-                                    .frame(height: proxy.size.height/22)
+                                    .frame(height: proxy.size.height / 15)
                             }
                         }
                     }
@@ -85,6 +93,10 @@ struct HomeView: View {
                         homeViewModel.captionFont = .title
                     }
                 }
+            }
+            .overlay{
+                PersonalStoryView()
+                    .environmentObject(storyData)
             }
         }
     }
