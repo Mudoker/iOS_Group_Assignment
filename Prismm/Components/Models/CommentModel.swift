@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct CommentModel {
+struct Comment {
     let id: UUID
     let content: String
     let userId: UUID

@@ -53,6 +53,8 @@ struct CustomTextField: View {
                                     .foregroundColor(authenticationViewModel.isDarkMode ? .white.opacity(0.5) : .black.opacity(0.5)))
                                     .font(textFieldPlaceHolderFont)
                                     .padding(.horizontal)
+                                    .autocorrectionDisabled(true)
+                                    .textInputAutocapitalization(.never)
 
                                 Button(action: {
                                     isPasswordVisible.toggle()
@@ -67,6 +69,8 @@ struct CustomTextField: View {
                             HStack {
                                 SecureField("", text: $text, prompt:  Text(testFieldPlaceHolder).foregroundColor(authenticationViewModel.isDarkMode ? .white.opacity(0.5) : .black.opacity(0.5)))
                                     .font(textFieldPlaceHolderFont)
+                                    .autocorrectionDisabled(true)
+                                    .textInputAutocapitalization(.never)
 
                                 .padding(.horizontal)
 
@@ -85,8 +89,11 @@ struct CustomTextField: View {
                         HStack {
                             TextField("", text: $text, prompt:  Text(testFieldPlaceHolder).foregroundColor(authenticationViewModel.isDarkMode ? .white.opacity(0.5) : .black.opacity(0.5))
                                 .font(textFieldPlaceHolderFont)
+                                
                             )
                             .padding(.horizontal)
+                            .autocorrectionDisabled(true)
+                            .textInputAutocapitalization(.never)
                         }
                     }
                 }

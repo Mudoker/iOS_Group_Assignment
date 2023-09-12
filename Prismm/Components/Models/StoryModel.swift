@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct StoryModel {
+struct Story {
     let id: UUID
     let date: Date
     var status: Bool

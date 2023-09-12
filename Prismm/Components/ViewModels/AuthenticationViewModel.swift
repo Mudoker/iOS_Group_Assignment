@@ -8,8 +8,23 @@
 import Foundation
 import LocalAuthentication
 import SwiftUI
+import Firebase
+import FirebaseFirestoreSwift
+import FirebaseCore
+import FirebaseAuth
+import GoogleSignIn
 
+protocol SignUpFormProtocol{
+    var formIsValid: Bool{get}
+}
+
+@MainActor
 class AuthenticationViewModel: ObservableObject {
+    
+    @Published var logInError = false
+    @Published var signUpError = false
+    @Published var isAlert = false
+    
     @Published var isUnlocked = false
     @Published var isDarkMode = false
     @Published var userToken: String {
@@ -18,9 +33,13 @@ class AuthenticationViewModel: ObservableObject {
         }
     }
     
+    @Published var userSession : FirebaseAuth.User?
+    @Published var currentUser : User?
+    
     // set user token for bio metric login
     init() {
         self.userToken = UserDefaults.standard.string(forKey: "userToken") ?? ""
+        //self.userSession = Auth.auth().currentUser
     }
     
     // Responsive
@@ -51,17 +70,39 @@ class AuthenticationViewModel: ObservableObject {
         return true
     }
     
-    // Validate username (check for duplicates)
-    func validateUsernameSignUp(_ username: String) -> Bool {
-        return true
+    func signUp (withEmail email: String, password: String) async throws {
+        do {
+            let result = try await Auth.auth().createUser(withEmail: email, password: password)
+            self.userSession = result.user
+            let user = User(id: result.user.uid, password: password)
+            let encodedUser = try Firestore.Encoder().encode(user)
+            try await Firestore.firestore().collection("users").document(user.id).setData(encodedUser)
+            signUpError = false
+        } catch {
+            signUpError = true
+            print("Error: \(error.localizedDescription)")
+        }
+    }
+    
+    func signIn(withEmail email: String, password: String) async throws {
+        do {
+            let result = try await Auth.auth().signIn(withEmail: email, password: password)
+            self.userSession = result.user
+            isLoading = true
+            await fetchUserData()
+            isLoading = false
+        } catch {
+            logInError = true
+            print("\(error.localizedDescription)")
+        }
     }
     
     // Validate password (at least 8 characters + not contating special symbols)
     func validatePasswordSignUp(_ password: String) -> Bool {
         if password.count >= 8 && !password.containsSpecialSymbols() {
-            return false
-        } else {
             return true
+        } else {
+            return false
         }
     }
     
@@ -74,12 +115,26 @@ class AuthenticationViewModel: ObservableObject {
     }
     
     // Fetch userdata from Firebase
-    func fetchUserData() {
+    func fetchUserData() async {
         // Simulate fetching data with a delay
-        isLoading = true
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-            self.isLoading = false
+        guard let uid = Auth.auth().currentUser?.uid else {return}
+        guard let snapshot = try? await Firestore.firestore().collection("users").document(uid).getDocument() else {return}
+        
+        if !snapshot.exists {
+            do{
+                let user = User(id: uid, password: "password")
+                let encodedUser = try Firestore.Encoder().encode(user)
+                try await Firestore.firestore().collection("users").document(user.id).setData(encodedUser)
+            }catch{
+                
+            }
+            print("User data do not exist!! Create new user")
+        }else{
+            self.currentUser = try? snapshot.data(as: User.self)
         }
+        
+        
+
     }
     
     // FaceId login
@@ -115,6 +170,44 @@ class AuthenticationViewModel: ObservableObject {
                 // Handle the case where biometric authentication is not supported
                 print("Biometric authentication not supported on this device.")
             }
+        }
+    }
+    
+    
+    func signInGoogle() async{
+        guard let clientID = FirebaseApp.app()?.options.clientID else {
+            fatalError("No client ID found ")
+        }
+        
+        let config = GIDConfiguration(clientID: clientID)
+        GIDSignIn.sharedInstance.configuration = config
+        
+        guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+              let window = windowScene.windows.first,
+              let rootViewController = window.rootViewController else {
+            print("no root view controller")
+            return
+        }
+        
+        do{
+            let userAuth = try await GIDSignIn.sharedInstance.signIn(withPresenting: rootViewController)
+            let user = userAuth.user
+            guard let idToken = user.idToken else{return}
+            let accessToken = user.accessToken
+            let credential = GoogleAuthProvider.credential(withIDToken: idToken.tokenString, accessToken: accessToken.tokenString)
+            
+            
+            let result = try await Auth.auth().signIn(with: credential)
+            
+            let firebaseUser = result.user
+            
+            print("User \(firebaseUser.uid) signed in with \(firebaseUser.email ?? "unknown" )")
+            await fetchUserData()
+
+        }
+        catch{
+            print(error.localizedDescription)
+            return
         }
     }
 }

@@ -7,6 +7,8 @@
 
 import SwiftUI
 import LocalAuthentication
+import GoogleSignIn
+import GoogleSignInSwift
 
 struct Login: View {
     // Control state
@@ -15,106 +17,85 @@ struct Login: View {
     @State private var isPasswordVisible: Bool = false
     @State var isValidUserName = false
     @State var isValidPassword = false
-    @State private var showAlert = false
     @State var isForgotPassword = false
-    
+    @State var isSignUp = false
     // View Model
-    @StateObject var authenticationViewModel = AuthenticationViewModel()
+    @EnvironmentObject var authVM :AuthenticationViewModel
     
     var body: some View {
-        GeometryReader { proxy in
-            ZStack {
-                VStack (alignment: .center) {
-                    // Push view
-                    Spacer()
-                    
-                    //Logo
-                    Image(authenticationViewModel.isDarkMode ? Constants.darkThemeAppLogo : Constants.lightThemeAppLogo)
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                        .frame(width: authenticationViewModel.logoImageSize, height: 0)
-                        .padding(.vertical, authenticationViewModel.imagePaddingVertical)
-                    
-                    // Title
-                    Text ("Log in")
-                        .font(.system(size: authenticationViewModel.titleFont))
-                        .bold()
-                    
-                    Text("Please sign in to continue")
-                        .font(authenticationViewModel.captionFont)
-                        .bold()
-                        .opacity(0.7)
-                        .padding(.bottom)
-                    
-                    //Text field
-                    CustomTextField(
-                        text: $accountText,
-                        textFieldTitle: "Username",
-                        testFieldPlaceHolder: "Username or Account",
-                        titleFont: $authenticationViewModel.textFieldTitleFont,
-                        textFieldSizeHeight: $authenticationViewModel.textFieldSizeHeight,
-                        textFieldCorner: $authenticationViewModel.textFieldCorner,
-                        textFieldBorderWidth: $authenticationViewModel.textFieldBorderWidth,
-                        isPassword: .constant(false),
-                        textFieldPlaceHolderFont: $authenticationViewModel.textFieldPlaceHolderFont
-                    )
-                    .padding(.bottom)
-                    
-                    CustomTextField(
-                        text: $accountText,
-                        textFieldTitle: "Password",
-                        testFieldPlaceHolder: "Password",
-                        titleFont: $authenticationViewModel.textFieldTitleFont,
-                        textFieldSizeHeight: $authenticationViewModel.textFieldSizeHeight,
-                        textFieldCorner: $authenticationViewModel.textFieldCorner,
-                        textFieldBorderWidth: $authenticationViewModel.textFieldBorderWidth,
-                        isPassword: .constant(true),
-                        textFieldPlaceHolderFont: $authenticationViewModel.textFieldPlaceHolderFont
-                    )
-                    .padding(.bottom)
-                    
-                    // Login button
-                    Button(action: {
-                        authenticationViewModel.fetchUserData()
-                        if authenticationViewModel.validateUsername(accountText) && authenticationViewModel.validatePassword(passwordText) {
-                            print("ok")
-                        } else {
-                            showAlert.toggle()
-                        }
-                    }) {
-                        Text("Login")
-                            .foregroundColor(.white)
+        NavigationStack {
+            GeometryReader { proxy in
+                ZStack {
+                    VStack (alignment: .center) {
+                        // Push view
+                        Spacer()
+                        
+                        //Logo
+                        Image(authVM.isDarkMode ? Constants.darkThemeAppLogo : Constants.lightThemeAppLogo)
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                            .frame(width: authVM.logoImageSize, height: 0)
+                            .padding(.vertical, authVM.imagePaddingVertical)
+                        
+                        // Title
+                        Text ("Log in")
+                            .font(.system(size: authVM.titleFont))
                             .bold()
-                            .font(authenticationViewModel.loginTextFont)
-                            .padding()
-                            .frame(maxWidth: .infinity)
-                            .frame(height: authenticationViewModel.loginButtonSizeHeight)
-                            .background(
-                                RoundedRectangle(cornerRadius: authenticationViewModel.textFieldCorner)
-                                    .fill(authenticationViewModel.isDarkMode ? Constants.darkThemeColor : Constants.lightThemeColor)
-                            )
-                            .padding(.horizontal)
-                    }
-                    .alert(isPresented: $showAlert) {
-                        Alert(
-                            title: Text("Login Failed"),
-                            message: Text("Invalid username or password.\nPlease check again"),
-                            dismissButton: .default(Text("Close"))
+                        
+                        Text("Please sign in to continue")
+                            .font(authVM.captionFont)
+                            .bold()
+                            .opacity(0.7)
+                            .padding(.bottom)
+                        
+                        //Text field
+                        CustomTextField(
+                            text: $accountText,
+                            textFieldTitle: "Username",
+                            testFieldPlaceHolder: "Username or Account",
+                            titleFont: $authVM.textFieldTitleFont,
+                            textFieldSizeHeight: $authVM.textFieldSizeHeight,
+                            textFieldCorner: $authVM.textFieldCorner,
+                            textFieldBorderWidth: $authVM.textFieldBorderWidth,
+                            isPassword: .constant(false),
+                            textFieldPlaceHolderFont: $authVM.textFieldPlaceHolderFont
                         )
-                    }
-
-                    // Helpers
-                    HStack {
+                        .padding(.bottom)
+                        
+                        CustomTextField(
+                            text: $passwordText,
+                            textFieldTitle: "Password",
+                            testFieldPlaceHolder: "Password",
+                            titleFont: $authVM.textFieldTitleFont,
+                            textFieldSizeHeight: $authVM.textFieldSizeHeight,
+                            textFieldCorner: $authVM.textFieldCorner,
+                            textFieldBorderWidth: $authVM.textFieldBorderWidth,
+                            isPassword: .constant(true),
+                            textFieldPlaceHolderFont: $authVM.textFieldPlaceHolderFont
+                        )
+                        .padding(.bottom)
+                        
+                        // Login button
                         Button(action: {
+
+                            Task {
+                                try await authVM.signIn(withEmail: accountText, password: passwordText)
+                            }
                         }) {
-                            Text("Forgot Password?")
+                            Text("Login")
+                                .foregroundColor(.white)
                                 .bold()
-                                .font(authenticationViewModel.conentFont)
+                                .font(authVM.loginTextFont)
                                 .padding()
+                                .frame(maxWidth: .infinity)
+                                .frame(height: authVM.loginButtonSizeHeight)
+                                .background(
+                                    RoundedRectangle(cornerRadius: authVM.textFieldCorner)
+                                        .fill(authVM.isDarkMode ? Constants.darkThemeColor : Constants.lightThemeColor)
+                                )
                                 .padding(.horizontal)
-                                .opacity(0.8)
                         }
-                        .alert(isPresented: $showAlert) {
+                        .alert(isPresented: $authVM.logInError) {
                             Alert(
                                 title: Text("Login Failed"),
                                 message: Text("Invalid username or password.\nPlease check again"),
@@ -122,93 +103,187 @@ struct Login: View {
                             )
                         }
                         
-                        Spacer()
-                        
-                        Button(action: {
-                            // Add your login action here
-                        }) {
-                            Text("Sign Up")
-                                .bold()
-                                .font(authenticationViewModel.conentFont)
-                                .padding()
-                                .padding(.horizontal)
-                                .opacity(0.8)
-                        }
-                    }
-                    
-                    HStack {
-                        Spacer()
-                        
-                        VStack {
-                            Text("Sign in with")
-                                .bold()
-                                .opacity(0.8)
-                                .font(authenticationViewModel.conentFont)
-                            
+                        // Helpers
+                        HStack {
                             Button(action: {
-                                authenticationViewModel.bioMetricAuthenticate()
                             }) {
-                                Image(systemName: "faceid")
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fit)
-                                    .frame(width: authenticationViewModel.faceIdImageSize)
-                                    .foregroundColor(authenticationViewModel.isDarkMode ? Constants.darkThemeColor : Constants.lightThemeColor)
+                                Text("Forgot Password?")
+                                    .bold()
+                                    .font(authVM.conentFont)
+                                    .padding()
+                                    .padding(.horizontal)
+                                    .opacity(0.8)
+                            }
+                            .alert(isPresented:$authVM.logInError) {
+                                Alert(
+                                    title: Text("Login Failed"),
+                                    message: Text("Invalid username or password.\nPlease check again"),
+                                    dismissButton: .default(Text("Close"))
+                                )
                             }
                             
+                            Spacer()
+                            
+                            NavigationLink(destination: SignUp()
+                                .navigationBarTitle("")
+                                .navigationBarHidden(false)) {
+                                    Text("Sign Up")
+                                        .bold()
+                                        .font(authVM.conentFont)
+                                        .padding()
+                                        .padding(.horizontal)
+                                        .opacity(0.8)
+                                }
                         }
                         
-                        Spacer()
+                        HStack {
+                            Spacer()
+                            
+                            VStack {
+                                Divider()
+                                HStack {
+                                    Button(action: {
+                                        // Add action code here for the first button
+                                    }) {
+                                        RoundedRectangle(cornerRadius: proxy.size.width / 50)
+                                            .frame(width: proxy.size.width / 4, height: proxy.size.height / 17)
+                                            .background(Color.white)
+                                            .overlay(
+                                                RoundedRectangle(cornerRadius: proxy.size.width / 50)
+                                                    .stroke(Color.black, lineWidth: 1)
+                                                    .background(Color.white)
+                                                    .overlay(
+                                                        Image(systemName: "applelogo")
+                                                            .resizable()
+                                                            .aspectRatio(contentMode: .fit)
+                                                            .frame(width: proxy.size.width / 18)
+                                                            .foregroundColor(.black)
+                                                    )
+                                            )
+                                    }
+                                    
+                                    Button(action: {
+                                        // Add action code here for the second button
+                                        
+                                        Task{
+                                            try await authVM.signInGoogle()
+                                        }
+                                    }) {
+                                        RoundedRectangle(cornerRadius: proxy.size.width / 50)
+                                            .frame(width: proxy.size.width / 4, height: proxy.size.height / 17)
+                                            .background(Color.white)
+                                            .overlay(
+                                                RoundedRectangle(cornerRadius: proxy.size.width / 50)
+                                                    .stroke(Color.black, lineWidth: 1)
+                                                    .background(Color.white)
+                                                    .overlay(
+                                                        Image("mail")
+                                                            .resizable()
+                                                            .aspectRatio(contentMode: .fit)
+                                                            .frame(width: proxy.size.width / 18)
+                                                            .foregroundColor(.black)
+                                                    )
+                                            )
+                                    }
+                                    
+
+                                    
+                                    Button(action: {
+                                        // Add action code here for the third button
+                                    }) {
+                                        RoundedRectangle(cornerRadius: proxy.size.width / 50)
+                                            .frame(width: proxy.size.width / 4, height: proxy.size.height / 17)
+                                            .background(Color.white)
+                                            .overlay(
+                                                RoundedRectangle(cornerRadius: proxy.size.width / 50)
+                                                    .stroke(Color.black, lineWidth: 1)
+                                                    .background(Color.white)
+                                                    .overlay(
+                                                        Image("fb")
+                                                            .resizable()
+                                                            .aspectRatio(contentMode: .fit)
+                                                            .frame(width: proxy.size.width / 18)
+                                                            .foregroundColor(.black)
+                                                    )
+                                            )
+                                    }
+                                    
+                                    
+                                }
+                                .padding(.vertical)
+                                
+                                HStack {
+                                    Spacer()
+                                    
+                                    VStack {
+                                        Text("Sign in with")
+                                            .bold()
+                                            .opacity(0.8)
+                                            .font(authVM.conentFont)
+                                        
+                                        Button(action: {
+                                            authVM.bioMetricAuthenticate()
+                                        }) {
+                                            Image(systemName: "faceid")
+                                                .resizable()
+                                                .aspectRatio(contentMode: .fit)
+                                                .frame(width: authVM.faceIdImageSize)
+                                                .foregroundColor(authVM.isDarkMode ? Constants.darkThemeColor : Constants.lightThemeColor)
+                                        }
+                                    }
+                                    Spacer()
+                                }
+                                .padding(.vertical)
+                            }
+                            Spacer()
+                        }
                     }
-                    .padding(.top)
+                    .foregroundColor(authVM.isDarkMode ? .white : .black)
+                    .padding(.horizontal)
+                    .onAppear {
+                        if UIDevice.current.userInterfaceIdiom == .phone {
+                            authVM.logoImageSize = proxy.size.width/2.2
+                            authVM.textFieldSizeHeight = proxy.size.width/7
+                            authVM.textFieldCorner = proxy.size.width/50
+                            authVM.faceIdImageSize = proxy.size.width/10
+                            authVM.loginButtonSizeHeight = authVM.textFieldSizeHeight
+                        } else {
+                            authVM.logoImageSize = proxy.size.width/2.8
+                            authVM.textFieldSizeHeight = proxy.size.width/9
+                            authVM.textFieldCorner = proxy.size.width/50
+                            authVM.faceIdImageSize = proxy.size.width/12
+                            authVM.imagePaddingVertical = 30
+                            authVM.titleFont = 60
+                            authVM.textFieldCorner = proxy.size.width/60
+                            authVM.loginButtonSizeHeight = authVM.textFieldSizeHeight
+                            authVM.conentFont = .title2
+                            authVM.textFieldTitleFont = .title
+                            authVM.loginTextFont = .largeTitle
+                            authVM.captionFont = .title3
+                            authVM.textFieldPlaceHolderFont = .title2
+                        }
+                    }
+                    .onChange(of: accountText) { newValue in
+                        isValidUserName = authVM.validateUsername(newValue)
+                    }
+                    .onChange(of: passwordText) { newValue in
+                        isValidPassword = authVM.validatePassword(newValue)
+                    }
                     
-                    // Push view
-                    Spacer()
-                }
-                .foregroundColor(authenticationViewModel.isDarkMode ? .white : .black)
-                .padding(.horizontal)
-                .onAppear {
-                    if UIDevice.current.userInterfaceIdiom == .phone {
-                        authenticationViewModel.logoImageSize = proxy.size.width/2.2
-                        authenticationViewModel.textFieldSizeHeight = proxy.size.width/7
-                        authenticationViewModel.textFieldCorner = proxy.size.width/50
-                        authenticationViewModel.faceIdImageSize = proxy.size.width/10
-                        authenticationViewModel.loginButtonSizeHeight = authenticationViewModel.textFieldSizeHeight
-                    } else {
-                        authenticationViewModel.logoImageSize = proxy.size.width/2.8
-                        authenticationViewModel.textFieldSizeHeight = proxy.size.width/9
-                        authenticationViewModel.textFieldCorner = proxy.size.width/50
-                        authenticationViewModel.faceIdImageSize = proxy.size.width/12
-                        authenticationViewModel.imagePaddingVertical = 30
-                        authenticationViewModel.titleFont = 60
-                        authenticationViewModel.textFieldCorner = proxy.size.width/60
-                        authenticationViewModel.loginButtonSizeHeight = authenticationViewModel.textFieldSizeHeight
-                        authenticationViewModel.conentFont = .title2
-                        authenticationViewModel.textFieldTitleFont = .title
-                        authenticationViewModel.loginTextFont = .largeTitle
-                        authenticationViewModel.captionFont = .title3
-                        authenticationViewModel.textFieldPlaceHolderFont = .title2
+                    if authVM.isLoading {
+                        Color.gray.opacity(0.3).ignoresSafeArea()
+                        ProgressView("Loading...")
                     }
-                }
-                .onChange(of: accountText) { newValue in
-                    isValidUserName = authenticationViewModel.validateUsername(newValue)
-                }
-                .onChange(of: passwordText) { newValue in
-                    isValidPassword = authenticationViewModel.validatePassword(newValue)
-                }
-                
-                if authenticationViewModel.isLoading {
-                    Color.gray.opacity(0.3).ignoresSafeArea()
-                    ProgressView("Fetching Data...")
                 }
             }
+            .background(authVM.isDarkMode ? .black : .white)
         }
-        .background(authenticationViewModel.isDarkMode ? .black : .white)
     }
 }
 
 struct Login_Previews: PreviewProvider {
     static var previews: some View {
         Login()
+            .environmentObject(AuthenticationViewModel())
     }
 }
-
