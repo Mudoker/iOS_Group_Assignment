@@ -26,10 +26,11 @@ class AuthenticationViewModel: ObservableObject {
     @Published var isAlert = false
     
     @Published var isUnlocked = false
-    
-    @ObservedObject var settingVM = SettingViewModel()
-    
+    @Published var isUnlockedGoogle = false
+
     @Published var isDarkMode = false
+    @Published var currentEmail = ""
+    @ObservedObject var uploadVM = UploadPostViewModel()
     @Published var userToken: String {
         didSet {
             UserDefaults.standard.set(userToken, forKey: "userToken")
@@ -39,12 +40,11 @@ class AuthenticationViewModel: ObservableObject {
     @Published var userSession : FirebaseAuth.User?
     @Published var currentUser : User?
     
+    
     // set user token for bio metric login
     init() {
         self.userToken = UserDefaults.standard.string(forKey: "userToken") ?? ""
         //self.userSession = Auth.auth().currentUser
-        
-        self.isDarkMode = settingVM.isDarkMode
     }
     
     // Responsive
@@ -79,7 +79,7 @@ class AuthenticationViewModel: ObservableObject {
         do {
             let result = try await Auth.auth().createUser(withEmail: email, password: password)
             self.userSession = result.user
-            let user = User(id: result.user.uid, password: password)
+            let user = User(id: result.user.uid, password: password, username: email)
             let encodedUser = try Firestore.Encoder().encode(user)
             try await Firestore.firestore().collection("users").document(user.id).setData(encodedUser)
             signUpError = false
@@ -93,9 +93,9 @@ class AuthenticationViewModel: ObservableObject {
         do {
             let result = try await Auth.auth().signIn(withEmail: email, password: password)
             self.userSession = result.user
-            isLoading = true
             await fetchUserData()
             isLoading = false
+            isUnlocked = true // Set isUnlocked to true after successfully fetching posts
         } catch {
             logInError = true
             print("\(error.localizedDescription)")
@@ -127,19 +127,15 @@ class AuthenticationViewModel: ObservableObject {
         
         if !snapshot.exists {
             do{
-                let user = User(id: uid, password: "password")
+                let user = User(id: uid, password: "password", username: currentEmail)
                 let encodedUser = try Firestore.Encoder().encode(user)
                 try await Firestore.firestore().collection("users").document(user.id).setData(encodedUser)
             }catch{
-                
+               print("ERROR 001")
             }
-            print("User data do not exist!! Create new user")
         }else{
             self.currentUser = try? snapshot.data(as: User.self)
         }
-        
-        
-
     }
     
     // FaceId login
@@ -205,10 +201,11 @@ class AuthenticationViewModel: ObservableObject {
             let result = try await Auth.auth().signIn(with: credential)
             
             let firebaseUser = result.user
-            
+            currentEmail=firebaseUser.email ?? ""
             print("User \(firebaseUser.uid) signed in with \(firebaseUser.email ?? "unknown" )")
             await fetchUserData()
-
+            
+            isUnlockedGoogle = true
         }
         catch{
             print(error.localizedDescription)

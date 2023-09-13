@@ -14,10 +14,22 @@ struct EditSecurityField: View {
     @State var isPasswordVisible = false
     @State private var isChanged = false // Track changes in fields
     @State var isFaceId = false
+//    @ObservedObject var authVM = AuthenticationViewModel()
     
     var body: some View {
         GeometryReader { proxy in
-            VStack (alignment: .leading) {                
+            VStack (alignment: .leading) {
+                HStack {
+                    Spacer()
+                    
+                    Text("Password & Security")
+                        .bold()
+                        .font(.title)
+                        .padding(.horizontal)
+                    
+                    Spacer()
+                }
+                
                 Text("Change Password")
                     .bold()
                     .font(.title2)
@@ -32,7 +44,8 @@ struct EditSecurityField: View {
                     textFieldCorner: .constant(proxy.size.width/40),
                     textFieldBorderWidth: .constant(1),
                     isPassword: .constant(true),
-                    textFieldPlaceHolderFont: .constant(.body)
+                    textFieldPlaceHolderFont: .constant(.body),
+                    isDarkMode: $settingVM.isDarkMode
                 )
                 .padding(.bottom)
                 .onChange(of: currentPassword) { _ in
@@ -54,7 +67,8 @@ struct EditSecurityField: View {
                     textFieldCorner: .constant(proxy.size.width/40),
                     textFieldBorderWidth: .constant(1),
                     isPassword: .constant(true),
-                    textFieldPlaceHolderFont: .constant(.body)
+                    textFieldPlaceHolderFont: .constant(.body),
+                    isDarkMode: $settingVM.isDarkMode
                 )
                 .padding(.bottom)
                 .onChange(of: newPassword) { _ in
@@ -130,7 +144,6 @@ struct EditSecurityField: View {
                                 
                 Spacer()
             }
-            .navigationTitle("Password & Security")
             .foregroundColor(settingVM.isDarkMode ? .white : .black)
             .background(!settingVM.isDarkMode ? .white : .black)
         }

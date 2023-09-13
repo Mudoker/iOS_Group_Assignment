@@ -10,10 +10,14 @@ import SwiftUI
 struct SettingSheet: View {
     @Binding var isSheetPresented: Bool
     @ObservedObject var settingVM = SettingViewModel()
-    
     var body: some View {
 //        NavigationView {
-            VStack {
+        VStack (alignment: .center) {
+                Text("Accont Manager")
+                .bold()
+                .padding(.horizontal)
+                .font(.title)
+            
                 VStack {
                     NavigationLink(destination: EditProfileView(settingVM: settingVM)) {
                         HStack {
@@ -63,7 +67,6 @@ struct SettingSheet: View {
             .navigationBarItems(trailing: Button("Close") {
                 isSheetPresented.toggle()
             })
-            .navigationTitle("Account Manager")
 //        }
         
     }

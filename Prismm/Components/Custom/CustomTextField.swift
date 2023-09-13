@@ -23,9 +23,11 @@ struct CustomTextField: View {
     @Binding var textFieldBorderWidth: CGFloat
     @Binding var isPassword: Bool
     @Binding var textFieldPlaceHolderFont: Font
+    @Binding var isDarkMode: Bool
     
     // ViewModel
     @ObservedObject var authenticationViewModel = AuthenticationViewModel()
+    @ObservedObject var settingVM = SettingViewModel()
     
     var body: some View {
             VStack (alignment: .leading) {
@@ -38,7 +40,7 @@ struct CustomTextField: View {
                 ZStack {
                     RoundedRectangle(cornerRadius: textFieldCorner)
                         .stroke(LinearGradient(
-                            gradient: Gradient(colors: authenticationViewModel.isDarkMode ? Constants.buttonGradientColorDark : Constants.buttonGradientColorLight),
+                            gradient: Gradient(colors: isDarkMode ? Constants.buttonGradientColorDark : Constants.buttonGradientColorLight),
                             startPoint: .topLeading,
                             endPoint: .bottomTrailing
                         ), lineWidth: textFieldBorderWidth)
@@ -50,11 +52,12 @@ struct CustomTextField: View {
                         if isPasswordVisible {
                             HStack {
                                 TextField("", text: $text, prompt:  Text(testFieldPlaceHolder)
-                                    .foregroundColor(authenticationViewModel.isDarkMode ? .white.opacity(0.5) : .black.opacity(0.5)))
+                                    .foregroundColor(isDarkMode ? .white.opacity(0.5) : .black.opacity(0.5)))
                                     .font(textFieldPlaceHolderFont)
                                     .padding(.horizontal)
                                     .autocorrectionDisabled(true)
                                     .textInputAutocapitalization(.never)
+                                    .font(textFieldPlaceHolderFont)
 
                                 Button(action: {
                                     isPasswordVisible.toggle()
@@ -67,10 +70,11 @@ struct CustomTextField: View {
                             }
                         } else {
                             HStack {
-                                SecureField("", text: $text, prompt:  Text(testFieldPlaceHolder).foregroundColor(authenticationViewModel.isDarkMode ? .white.opacity(0.5) : .black.opacity(0.5)))
+                                SecureField("", text: $text, prompt:  Text(testFieldPlaceHolder).foregroundColor(isDarkMode ? .white.opacity(0.5) : .black.opacity(0.5)))
                                     .font(textFieldPlaceHolderFont)
                                     .autocorrectionDisabled(true)
                                     .textInputAutocapitalization(.never)
+                                    .font(textFieldPlaceHolderFont)
 
                                 .padding(.horizontal)
 
@@ -87,18 +91,18 @@ struct CustomTextField: View {
                     } else {
                         // Username field
                         HStack {
-                            TextField("", text: $text, prompt:  Text(testFieldPlaceHolder).foregroundColor(authenticationViewModel.isDarkMode ? .white.opacity(0.5) : .black.opacity(0.5))
+                            TextField("", text: $text, prompt:  Text(testFieldPlaceHolder).foregroundColor(isDarkMode ? .white.opacity(0.5) : .black.opacity(0.5))
                                 .font(textFieldPlaceHolderFont)
-                                
                             )
                             .padding(.horizontal)
                             .autocorrectionDisabled(true)
                             .textInputAutocapitalization(.never)
+                            .font(textFieldPlaceHolderFont)
                         }
                     }
                 }
             }
-            .foregroundColor(authenticationViewModel.isDarkMode ? .white : .black)
+            .foregroundColor(isDarkMode ? .white : .black)
             .padding(.horizontal)
             .onAppear {
                 textFieldSizeHeight = textFieldSizeHeight
@@ -114,7 +118,7 @@ struct CustomTextField_Previews: PreviewProvider {
             testFieldPlaceHolder: "Username or email", titleFont: .constant(.headline),
             textFieldSizeHeight: .constant(40.0),
             textFieldCorner: .constant(10.0),
-            textFieldBorderWidth: .constant(2.0), isPassword: .constant(true), textFieldPlaceHolderFont: .constant(Font.body)
+            textFieldBorderWidth: .constant(2.0), isPassword: .constant(true), textFieldPlaceHolderFont: .constant(Font.body), isDarkMode: .constant(true)
         )
     }
 }

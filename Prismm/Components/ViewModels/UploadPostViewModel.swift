@@ -15,7 +15,7 @@ import AVFoundation
 import FirebaseFirestoreSwift
 
 class UploadPostViewModel: ObservableObject {
-//    @Published var fetched_media = [Media]()
+    //@Published var fetched_media = [Media]()
     @Published var fetched_post = [Post]()
 
     @Published var selectedMedia: NSURL? {
@@ -110,8 +110,12 @@ class UploadPostViewModel: ObservableObject {
                 return nil
             }
         }
-        for each in fetched_post {
-            print(each.mimeType ?? "")
+        
+        for i in 0..<fetched_post.count {
+            let post = fetched_post[i]
+            let owner = post.owner
+            let postUser = try await UserService.fetchUser(withUid: owner)
+            fetched_post[i].user = postUser
         }
     }
     

@@ -10,6 +10,7 @@ import SwiftUI
 
 struct HomeView: View {
     @StateObject var homeViewModel = HomeViewModel()
+    @ObservedObject var uploadVM = UploadPostViewModel()
 
     var body: some View {
         GeometryReader {proxy in
@@ -27,37 +28,32 @@ struct HomeView: View {
                     
                     Divider()
                     
-                    VStack {
-                        ForEach(0..<3, id: \.self) { _ in
-                            PostView(homeViewModel: homeViewModel)
-                                .frame(height: proxy.size.height)
-                                .padding(.bottom)
-                            
-                            if proxy.size.height == 1322 {
-                                VStack{}
-                                    .frame(height: proxy.size.height/22)
-                            }
+                   VStack {
+                        ForEach(uploadVM.fetched_post) { post in
+                            PostView(post: post, homeViewModel: homeViewModel, uploadVM: uploadVM)
+                                .padding(.bottom, 50)
                         }
                     }
                 }
-//                .navigationBarTitle("", displayMode: .inline)
-//                .toolbar(content: {
-//                    ToolbarItem(placement: .navigationBarLeading) {
-//                        Image("logolight")
-//                            .resizable()
-//                        .frame(width: homeViewModel.appLogoSize, height: homeViewModel.appLogoSize)
-//
-//                    }
-//                    ToolbarItem(placement: .navigationBarTrailing) {
-//                          NavigationLink(destination: EmptyView()) {
-//                                Image(systemName: "message")
-//                                    .resizable()
-//                                    .scaledToFill()
-//                                    .frame(width: homeViewModel.messageLogoSize)
-//                            }
-//                    }
-//                })
+                //.navigationBarTitle("", displayMode: .inline)
+                .toolbar(content: {
+                    ToolbarItem(placement: .navigationBarLeading) {
+                        Image("logolight")
+                            .resizable()
+                        .frame(width: homeViewModel.appLogoSize, height: homeViewModel.appLogoSize)
+
+                    }
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                          NavigationLink(destination: EmptyView()) {
+                                Image(systemName: "message")
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(width: homeViewModel.messageLogoSize)
+                            }
+                    }
+                })
                 .onAppear {
+                    print(uploadVM.fetched_post.count)
                     if UIDevice.current.userInterfaceIdiom == .phone {
                         homeViewModel.storyViewSizeWidth = proxy.size.width * 0.2
                         homeViewModel.storyViewSizeHeight = proxy.size.width * 0.23
@@ -83,6 +79,11 @@ struct HomeView: View {
                         homeViewModel.commentTextFiledFont = .title
                         homeViewModel.usernameFont = 25
                         homeViewModel.captionFont = .title
+                    }
+                }
+                .refreshable {
+                    Task {
+                        try await uploadVM.fetchPost()
                     }
                 }
             }
