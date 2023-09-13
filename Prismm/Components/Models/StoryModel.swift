@@ -6,12 +6,15 @@
 //
 
 import Foundation
+import Firebase
 
 struct Story {
-    let id: UUID
-    let date: Date
+    let id: String
+    let date: Timestamp
     var status: Bool
-    var source: URL
-    let op: [UUID]
-    var likers: [UUID]
+    var source: String
+    let poster: [String]
+    var likers: [String?]
+    var unwrapPoster: User?
+    var unwrapLikers: [User?]
 }

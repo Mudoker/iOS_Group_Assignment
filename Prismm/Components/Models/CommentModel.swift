@@ -7,8 +7,8 @@
 
 import Foundation
 
-struct Comment {
-    let id: UUID
+struct Comment: Identifiable, Codable {
+    let id: String
     let content: String
-    let userId: UUID
+    let commentor: String
 }

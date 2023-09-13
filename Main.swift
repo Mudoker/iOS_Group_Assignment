@@ -14,7 +14,7 @@ struct PrismmApp: App {
     @StateObject var viewModel = AuthenticationViewModel()
     var body: some Scene {
         WindowGroup {
-            HomeView()
+            Test_AddComment()
                 .environmentObject(viewModel)
         }
     }

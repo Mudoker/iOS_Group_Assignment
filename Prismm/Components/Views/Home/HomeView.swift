@@ -48,12 +48,11 @@ struct HomeView: View {
                                 Image(systemName: "message")
                                     .resizable()
                                     .scaledToFill()
-                                    .frame(width: homeViewModel.messageLogoSize)
+                                    .font(.system(size: homeViewModel.messageLogoSize))
                             }
                     }
                 })
                 .onAppear {
-                    print(uploadVM.fetched_post.count)
                     if UIDevice.current.userInterfaceIdiom == .phone {
                         homeViewModel.storyViewSizeWidth = proxy.size.width * 0.2
                         homeViewModel.storyViewSizeHeight = proxy.size.width * 0.23
@@ -68,8 +67,8 @@ struct HomeView: View {
                     } else {
                         homeViewModel.storyViewSizeWidth = proxy.size.width * 0.15
                         homeViewModel.storyViewSizeHeight = proxy.size.width * 0.15
-                        homeViewModel.appLogoSize = proxy.size.width/7
-                        homeViewModel.messageLogoSize = proxy.size.width * 0.06
+                        homeViewModel.appLogoSize = proxy.size.width/14
+                        homeViewModel.messageLogoSize = 20
                         homeViewModel.profileImageSize = proxy.size.width * 0.1
                         homeViewModel.seeMoreButtonSize = proxy.size.width * 0.04
                         homeViewModel.postStatsFontSize = proxy.size.width * 0.03
@@ -77,8 +76,8 @@ struct HomeView: View {
                         homeViewModel.commentProfileImage = proxy.size.width * 0.08
                         homeViewModel.commentTextFieldSizeHeight = proxy.size.width * 0.08
                         homeViewModel.commentTextFiledFont = .title
-                        homeViewModel.usernameFont = 25
-                        homeViewModel.captionFont = .title
+                        homeViewModel.usernameFont = 35
+                        homeViewModel.captionFont = .largeTitle
                     }
                 }
                 .refreshable {
