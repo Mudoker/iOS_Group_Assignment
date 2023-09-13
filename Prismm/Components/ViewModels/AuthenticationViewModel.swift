@@ -26,6 +26,8 @@ class AuthenticationViewModel: ObservableObject {
     @Published var isAlert = false
     
     @Published var isUnlocked = false
+    @Published var isUnlockedGoogle = false
+
     @Published var isDarkMode = false
     @Published var currentEmail = ""
     @ObservedObject var uploadVM = UploadPostViewModel()
@@ -203,7 +205,7 @@ class AuthenticationViewModel: ObservableObject {
             print("User \(firebaseUser.uid) signed in with \(firebaseUser.email ?? "unknown" )")
             await fetchUserData()
             
-            isUnlocked = true
+            isUnlockedGoogle = true
         }
         catch{
             print(error.localizedDescription)

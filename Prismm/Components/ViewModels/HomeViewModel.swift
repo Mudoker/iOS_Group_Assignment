@@ -15,9 +15,9 @@ class HomeViewModel: ObservableObject {
     @Published var appLogoSize: CGFloat = 0
     @Published var messageLogoSize: CGFloat = 0
     @Published var profileImageSize: CGFloat = 0
-    @Published var usernameFont: CGFloat = 14
+    @Published var usernameFont: CGFloat = 20
     @Published var seeMoreButtonSize: CGFloat = 0
-    @Published var captionFont: Font = .body
+    @Published var captionFont: Font = .title3
     @Published var postStatsFontSize: CGFloat = 0
     @Published var postStatsImageSize: CGFloat = 0
     @Published var commentProfileImage: CGFloat = 0

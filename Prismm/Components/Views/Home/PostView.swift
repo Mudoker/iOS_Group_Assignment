@@ -45,12 +45,10 @@ struct PostView: View {
                 }
                 
                 
-                VStack (alignment: .leading) {
+                VStack (alignment: .leading, spacing: 1) {
                     if let user = post.user {
                         Text(user.username)
                             .font(Font.system(size: homeViewModel.usernameFont, weight: .semibold))
-                    } else {
-                        Text("undefined")
                     }
                     
                     Text("8th September ")
@@ -77,7 +75,6 @@ struct PostView: View {
                 Spacer()
             }
             .padding(.horizontal)
-            .padding(.vertical)
             
             VStack {
                 //Image.
@@ -90,6 +87,8 @@ struct PostView: View {
                             
                             VideoPlayer(player: player)
                                 .frame(width: UIScreen.main.bounds.width)
+                                .frame(minHeight: UIScreen.main.bounds.height / 4)
+                                .frame(maxHeight: UIScreen.main.bounds.height * 0.5)
                                 .onAppear {
                                     // Optionally, you can play the video when it appears on the screen.
                                     player.play()
@@ -97,7 +96,8 @@ struct PostView: View {
                         } else {
                             KFImage(mediaURL)
                                 .resizable()
-                                .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height * 0.6)
+                                .frame(width: UIScreen.main.bounds.width)
+                                .frame(maxHeight: UIScreen.main.bounds.height * 0.5)
                                 .background(Color.gray)
                                 .clipShape(Rectangle())
                         }
