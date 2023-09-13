@@ -18,9 +18,10 @@ class UploadPostViewModel: ObservableObject {
 //    @Published var fetched_media = [Media]()
     @Published var fetched_post = [Post]()
 
-    @Published var selectedMedia: PhotosPickerItem? {
+    @Published var selectedMedia: UIImage? {
         didSet {
             Task {
+                print("setted")
                 try await uploadingPost()
             }
         }
@@ -28,9 +29,12 @@ class UploadPostViewModel: ObservableObject {
     
     init() {
         Task {
+        
             try await fetchPost()
         }
     }
+    
+    @Published var isAdding = false
     
     @Published var postImage: Image?
     @Published var selectedVideoURL: URL? // Store the video URL
@@ -53,6 +57,8 @@ class UploadPostViewModel: ObservableObject {
 //
 //        print (" load ok ")
 //    }
+    
+
     
     func uploadMediaToFireBase(data: Data) async throws -> String? {
         let fileName = UUID().uuidString
@@ -111,20 +117,39 @@ class UploadPostViewModel: ObservableObject {
 //            print("No user account")
 //            return
 //        }
+        print("enter uploading")
+        guard let media = selectedMedia else {
+            print("Failed to get data")
+            return
+            
+        }
         
-        guard let media = selectedMedia else { return }
+//        guard let mediaData = try await media.loadTransferable(type: Data.self) else {
+//            print("Failed to convert")
+//            return
+//
+//        }
+        let mediaData = media.pngData()
         
-        guard let mediaData = try await media.loadTransferable(type: Data.self) else { return }
-        
-        if mediaData.count > 25_000_000 {
+        if mediaData!.count > 25_000_000 {
             print("Selected file too large: \(mediaData)")
         } else {
-            guard let mediaUrl = try await uploadMediaToFireBase(data: mediaData) else { return }
+            guard let mediaUrl = try await uploadMediaToFireBase(data: mediaData!) else {
+                print("failed to upload")
+                return
+                
+            }
             let postRef = Firestore.firestore().collection("posts").document()
-            let post = Post(id: postRef.documentID, owner: "", postCaption: "Hello", likers: [], mediaURL: mediaUrl, mimeType: mimeType(for: mediaData), date: Timestamp())
-            guard let encodedPost = try? Firestore.Encoder().encode(post) else {return}
+            let post = Post(id: postRef.documentID, owner: "", postCaption: "Hello", likers: [], mediaURL: mediaUrl, mimeType: mimeType(for: mediaData!), date: Timestamp())
+            guard let encodedPost = try? Firestore.Encoder().encode(post) else {
+                print("failed to encode")
+                return
+                
+            }
             try await postRef.setData(encodedPost)
         }
+        
+        print("uploaded to firebase")
     }
     
     func mimeType(for data: Data) -> String {

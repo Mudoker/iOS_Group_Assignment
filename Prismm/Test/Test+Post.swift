@@ -5,6 +5,18 @@ import AVKit
 struct Test_UploadImg_Video: View {
     @StateObject var uploadVM = UploadPostViewModel()
     
+    
+//    @State private var image: UIImage?{
+//        didSet{
+//            Task{
+//                await uploadVM.setSelected(image: image!)
+//
+//            }
+//        }
+//    }
+    @State private var shouldPresentPickerSheet = false
+    @State private var shouldPresentCamera = false
+    
     var body: some View {
         NavigationStack {
             ScrollView {
@@ -66,9 +78,31 @@ struct Test_UploadImg_Video: View {
             }
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    PhotosPicker(selection: $uploadVM.selectedMedia, matching: .any(of: [.videos, .images, .screenRecordings, .timelapseVideos, .screenshots])){
+                    
+
+                    Button {
+                        uploadVM.isAdding = true
+                    } label: {
                         Image(systemName: "plus")
                     }
+                    .sheet(isPresented: $shouldPresentPickerSheet) {
+                        SUImagePickerView(sourceType: self.shouldPresentCamera ? .camera : .photoLibrary, image: $uploadVM.selectedMedia, isPresented: self.$shouldPresentPickerSheet)
+                            }
+                    .actionSheet(isPresented: $uploadVM.isAdding) { () -> ActionSheet in
+                                ActionSheet(title: Text("Choose mode"), message: Text("Please choose your preferred mode to set your profile image"), buttons: [ActionSheet.Button.default(Text("Camera"), action: {
+                                    self.shouldPresentPickerSheet = true
+                                    self.shouldPresentCamera = true
+                                }), ActionSheet.Button.default(Text("Photo Library"), action: {
+                                    self.shouldPresentPickerSheet = true
+                                    self.shouldPresentCamera = false
+                                }), ActionSheet.Button.cancel()])
+                            }
+
+//                    PhotosPicker(selection: $uploadVM.selectedMedia, matching: .any(of: [.videos, .images, .screenRecordings, .timelapseVideos, .screenshots])){
+//                        Image(systemName: "plus")
+//                    }
+
+                    
                 }
             }
         }
