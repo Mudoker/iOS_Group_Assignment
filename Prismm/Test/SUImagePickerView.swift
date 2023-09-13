@@ -7,7 +7,7 @@
 //
 
 import SwiftUI
-import UIKit
+//import UIKit
 import _PhotosUI_SwiftUI
 
 struct SUImagePickerView: UIViewControllerRepresentable {
@@ -24,43 +24,44 @@ struct SUImagePickerView: UIViewControllerRepresentable {
         let pickerController = UIImagePickerController()
         pickerController.sourceType = sourceType
         pickerController.delegate = context.coordinator
+        pickerController.mediaTypes = ["public.image", "public.movie"]
         return pickerController
     }
 
-    func updateUIViewController(_ uiViewController: UIImagePickerController, context: Context) {
-        // Nothing to update here
-    }
+    
 
 }
 
-class ImagePickerViewCoordinator: NSObject, UINavigationControllerDelegate, UIImagePickerControllerDelegate {
-    
-    @Binding var image: UIImage?
-    @Binding var isPresented: Bool
-    
-    init(image: Binding<UIImage?>, isPresented: Binding<Bool>) {
-        self._image = image
-        self._isPresented = isPresented
-    }
-    
-    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-        print("set/chose image")
-        
-        
-        if let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage? {
-            
-            print("set/chose 2 image")
-            self.image = image
-        }else {
-            print("failed")
-        }
-        
-        self.isPresented = false
-    }
-    
-    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
-        self.isPresented = false
-    }
-    
-}
+//class ImagePickerViewCoordinator: NSObject, UINavigationControllerDelegate, UIImagePickerControllerDelegate {
+//
+//    @Binding var image: UIImage?
+//    @Binding var isPresented: Bool
+//
+//    init(image: Binding<UIImage?>, isPresented: Binding<Bool>) {
+//        self._image = image
+//        self._isPresented = isPresented
+//    }
+//
+//    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+//        print("set/chose image")
+//
+//        print("\(info[UIImagePickerController.InfoKey.mediaType])")
+//
+//
+//        if let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage? {
+//
+//            print("set/chose 2 image")
+//            self.image = image
+//        }else {
+//            print("failed")
+//        }
+//
+//        self.isPresented = false
+//    }
+//
+//    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+//        self.isPresented = false
+//    }
+//
+//}
 

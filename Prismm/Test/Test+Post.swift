@@ -86,9 +86,9 @@ struct Test_UploadImg_Video: View {
                         Image(systemName: "plus")
                     }
                     .sheet(isPresented: $shouldPresentPickerSheet) {
-                        SUImagePickerView(sourceType: self.shouldPresentCamera ? .camera : .photoLibrary, image: $uploadVM.selectedMedia, isPresented: self.$shouldPresentPickerSheet)
-                            }
-                    .actionSheet(isPresented: $uploadVM.isAdding) { () -> ActionSheet in
+                        UIImagePickerView(sourceType: shouldPresentCamera ? .camera : .photoLibrary, isPresented: $shouldPresentPickerSheet, selectedMedia: $uploadVM.selectedMedia)
+                    }
+                            .actionSheet(isPresented: $uploadVM.isAdding) { () -> ActionSheet in
                                 ActionSheet(title: Text("Choose mode"), message: Text("Please choose your preferred mode to set your profile image"), buttons: [ActionSheet.Button.default(Text("Camera"), action: {
                                     self.shouldPresentPickerSheet = true
                                     self.shouldPresentCamera = true
@@ -97,13 +97,11 @@ struct Test_UploadImg_Video: View {
                                     self.shouldPresentCamera = false
                                 }), ActionSheet.Button.cancel()])
                             }
-
-//                    PhotosPicker(selection: $uploadVM.selectedMedia, matching: .any(of: [.videos, .images, .screenRecordings, .timelapseVideos, .screenshots])){
-//                        Image(systemName: "plus")
-//                    }
+                        
+                    }
 
                     
-                }
+                
             }
         }
     }

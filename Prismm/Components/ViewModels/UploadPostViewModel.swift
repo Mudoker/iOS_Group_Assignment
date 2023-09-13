@@ -18,7 +18,7 @@ class UploadPostViewModel: ObservableObject {
 //    @Published var fetched_media = [Media]()
     @Published var fetched_post = [Post]()
 
-    @Published var selectedMedia: UIImage? {
+    @Published var selectedMedia: NSURL? {
         didSet {
             Task {
                 print("setted")
@@ -26,6 +26,9 @@ class UploadPostViewModel: ObservableObject {
             }
         }
     }
+    
+    
+    
     
     init() {
         Task {
@@ -121,7 +124,7 @@ class UploadPostViewModel: ObservableObject {
         guard let media = selectedMedia else {
             print("Failed to get data")
             return
-            
+
         }
         
 //        guard let mediaData = try await media.loadTransferable(type: Data.self) else {
@@ -129,18 +132,18 @@ class UploadPostViewModel: ObservableObject {
 //            return
 //
 //        }
-        let mediaData = media.pngData()
+        let mediaData = media.dataRepresentation
         
-        if mediaData!.count > 25_000_000 {
+        if mediaData.count > 25_000_000 {
             print("Selected file too large: \(mediaData)")
         } else {
-            guard let mediaUrl = try await uploadMediaToFireBase(data: mediaData!) else {
+            guard let mediaUrl = try await uploadMediaToFireBase(data: mediaData) else {
                 print("failed to upload")
                 return
                 
             }
             let postRef = Firestore.firestore().collection("posts").document()
-            let post = Post(id: postRef.documentID, owner: "", postCaption: "Hello", likers: [], mediaURL: mediaUrl, mimeType: mimeType(for: mediaData!), date: Timestamp())
+            let post = Post(id: postRef.documentID, owner: "", postCaption: "Hello", likers: [], mediaURL: mediaUrl, mimeType: mimeType(for: mediaData), date: Timestamp())
             guard let encodedPost = try? Firestore.Encoder().encode(post) else {
                 print("failed to encode")
                 return
