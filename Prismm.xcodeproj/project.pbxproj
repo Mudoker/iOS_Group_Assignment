@@ -639,6 +639,7 @@
 				INFOPLIST_FILE = Prismm/Info.plist;
 				INFOPLIST_KEY_NSCameraUsageDescription = "This app uses camera to capture photos";
 				INFOPLIST_KEY_NSFaceIDUsageDescription = "Please proceed to allow fast login";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "alo alo alo";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "This app use your photo library to post";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -672,6 +673,7 @@
 				INFOPLIST_FILE = Prismm/Info.plist;
 				INFOPLIST_KEY_NSCameraUsageDescription = "This app uses camera to capture photos";
 				INFOPLIST_KEY_NSFaceIDUsageDescription = "Please proceed to allow fast login";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "alo alo alo";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "This app use your photo library to post";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;

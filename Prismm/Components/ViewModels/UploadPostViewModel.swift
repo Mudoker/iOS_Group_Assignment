@@ -197,9 +197,9 @@ class UploadPostViewModel: ObservableObject {
             }
         // Add more checks for specific file formats here
         default:
-            return "application/octet-stream"
+            return "video/mp4"
         }
 
-        return "application/octet-stream"
+        return "video/mp4"
     }
 }

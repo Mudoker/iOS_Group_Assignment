@@ -47,11 +47,28 @@ class ImagePickerViewCoordinator: NSObject, UINavigationControllerDelegate, UIIm
         print("set/chose image")
                 
         
-        if let mediaURL = info[UIImagePickerController.InfoKey.imageURL] as? NSURL {
-
+        if let mediaURL = info[UIImagePickerController.InfoKey.mediaURL] as? NSURL {
+            print("get video")
             print(mediaURL)
             self.media = mediaURL
-        }else {
+        }else if let mediaURL = info[UIImagePickerController.InfoKey.imageURL] as? NSURL {
+            print("get image")
+            print(mediaURL)
+            self.media = mediaURL
+        }else if let media = info[UIImagePickerController.InfoKey.originalImage] as? UIImage {
+            guard let mediaURL = NSURL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent("TempImage.png") else {
+                return
+            }
+            
+            let mediaData = media.pngData()
+            
+            do {
+                try mediaData?.write(to: mediaURL);
+            } catch { }
+            print("get camera")
+            print(mediaURL)
+            self.media = NSURL(fileURLWithPath: mediaURL.absoluteString)
+        }else{
             print("failed to get data")
         }
         
