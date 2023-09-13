@@ -7,6 +7,7 @@
 
 import Foundation
 import Firebase
+import FirebaseFirestore
 
 struct UserService {
     static func fetchUser(withUid: String) async throws -> User {

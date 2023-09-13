@@ -13,6 +13,7 @@ import FirebaseStorage
 import MobileCoreServices
 import AVFoundation
 import FirebaseFirestoreSwift
+import FirebaseFirestore
 
 class UploadPostViewModel: ObservableObject {
     //@Published var fetched_media = [Media]()
@@ -130,13 +131,13 @@ class UploadPostViewModel: ObservableObject {
             return
 
         }
-        
+        print(media)
 //        guard let mediaData = try await media.loadTransferable(type: Data.self) else {
 //            print("Failed to convert")
 //            return
 //
 //        }
-        let mediaData = media.dataRepresentation
+        let mediaData = try Data(contentsOf: media as URL)
         
         if mediaData.count > 25_000_000 {
             print("Selected file too large: \(mediaData)")
@@ -201,9 +202,9 @@ class UploadPostViewModel: ObservableObject {
             }
         // Add more checks for specific file formats here
         default:
-            return "video/mp4"
+            return "application/octet-stream"
         }
 
-        return "video/mp4"
+        return "application/octet-stream"
     }
 }
