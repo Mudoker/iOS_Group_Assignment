@@ -18,7 +18,7 @@ struct StoryView: View {
         GeometryReader {reader in
             //Stories
             VStack {
-                Image("test")
+                Image("testAvt")
                     .resizable()
                     .scaledToFit()
                     .clipShape(Circle()) // Apply a circular clipping shape

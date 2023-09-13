@@ -10,8 +10,6 @@ import SwiftUI
 
 struct SettingView : View {
     @State private var name = "Quang Anh"
-    @State var selectedTheme : String = "Dark"
-    @State var selectedLanguage : String = "en"
     @State private var isRePassword = ""
     @State private var password : Bool = false
     @State private var rePassword : Bool = false
@@ -22,332 +20,321 @@ struct SettingView : View {
     //    @AppStorage("password") private var isPassword = ""
     @State private var isPassword = "12345"
     @State private var searchText = ""
-    @ObservedObject var settingVM = SettingViewModel()
     @State private var isSheetPresented = false
     var languages = ["English, Vietnamese"]
     @State private var isShowingSignOutAlert = false
     @State private var isSignOut = false
+    @ObservedObject var authenVM = AuthenticationViewModel()
+    @StateObject var settingVM = SettingViewModel()
     
-    var body: some View {
-        NavigationStack{
-            GeometryReader{ proxy in
-                VStack {
-                    VStack (alignment: .leading, spacing: 0) {
-                        // Title and search field
-                        Text("Settings")
-                            .font(.largeTitle)
-                            .bold()
-                            .padding(.bottom, 8)
-                            .padding(.top)
-                        
-                        Button(action: {isSheetPresented.toggle()}) {
-                            ZStack {
-                                RoundedRectangle(cornerRadius: proxy.size.width/40)
-                                    .fill(!settingVM.isDarkMode ? .gray.opacity(0.1) : .gray.opacity(0.4))
+    @State private var cornerRadiusSize: CGFloat = 0
+    @State private var accountSettingSizeHeight: CGFloat = 0
+    @State private var accountSettingImageSizeWidth: CGFloat = 0
+    @State private var accountSettingUsernameFont: Font = .title3
+    @State private var accountSettingEmailFont: Font = .body
+    @State private var contentFont: Font = .body
+    @State private var imageSize: CGFloat = 0
+    @State private var signOutText: Font = .title
 
-                                    .frame(height: proxy.size.height/8)
+    var body: some View {
+        NavigationStack {
+            GeometryReader{ proxy in
+                ScrollView {
+                        VStack (alignment: .leading, spacing: 0) {
+                            // Title and search field
+                            Text("Settings")
+                                .font(.largeTitle)
+                                .bold()
+                                .padding(.bottom, 8)
+                                .padding(.top)
+                            
+                            Button(action: {isSheetPresented.toggle()}) {
+                                ZStack {
+                                    RoundedRectangle(cornerRadius: cornerRadiusSize)
+                                        .fill(!settingVM.isDarkMode ? .gray.opacity(0.1) : .gray.opacity(0.4))
+                                        .frame(height: accountSettingSizeHeight)
+                                        .onAppear {
+                                            print(accountSettingSizeHeight)
+                                        }
+                                    HStack {
+                                        
+                                        Image(systemName: "person.circle")
+                                            .resizable()
+                                            .aspectRatio(contentMode: .fit)
+                                            .frame(width: accountSettingImageSizeWidth)
+                                        
+                                        VStack(alignment: .leading) {
+                                            Text("Quoc Doan")
+                                                .font(accountSettingUsernameFont)
+                                                .bold()
+                                            
+                                            Text("@huuquoc7603")
+                                                .opacity(0.8)
+                                                .accentColor(.white)
+                                                .font(accountSettingEmailFont)
+                                        }
+                                        
+                                        Spacer()
+                                    }
+                                    .padding(.horizontal)
+                                }
+                                .padding(.vertical)
+                            }
+                            .padding(.bottom)
+                            
+                            VStack(alignment: .leading) {
+                                Text("System")
+                                    .bold()
+                                    .padding(.bottom)
+                                    .font(contentFont)
                                 
                                 HStack {
-                                    Image(systemName: "person.circle")
+                                    Image(systemName: "globe.asia.australia.fill")
                                         .resizable()
-                                        .aspectRatio(contentMode: .fit)
-                                        .frame(width: proxy.size.width/10)
+                                        .aspectRatio(contentMode: .fill)
+                                        .frame(width: imageSize, height: imageSize)
                                     
-                                    VStack(alignment: .leading) {
-                                        Text("Quoc Doan")
-                                            .font(.title3)
-                                            .bold()
-                                        
-                                        Text("@huuquoc7603")
-                                            .opacity(0.8)
-                                            .accentColor(.white)
+                                    Text("Language")
+                                        .font(contentFont)
+                                    
+                                    Spacer()
+                                    
+                                    Picker("", selection: $settingVM.language) {
+                                        Text("English").tag("en")
+                                        Text("Vietnamese").tag("vi")
                                     }
+                                    .pickerStyle(MenuPickerStyle())
                                     
-                                    Spacer()
-                                }
-                                .padding(.horizontal)
-                            }
-                            .padding(.vertical)
-                        }
-                        .padding(.bottom)
-                        
-                        VStack(alignment: .leading) {
-                            Text("System")
-                                .bold()
-                            
-                            HStack {
-                                Image(systemName: "globe.asia.australia.fill")
-                                
-                                Text("Language")
-                                
-                                Spacer()
-                                
-                                Picker("", selection: $selectedLanguage) {
-                                    Text("English").tag("en")
-                                    Text("Vietnamese").tag("vi")
-                                }
-                                .pickerStyle(MenuPickerStyle())
-                            }
-                            
-                            Divider()
-                            
-                            HStack {
-                                Image(systemName: "moon")
-                                
-                                Text("Dark Mode")
-                                
-                                Spacer()
-                                
-                                Toggle("", isOn: $settingVM.isDarkMode)
-                                    .padding(.bottom)
-                            }
-                        }
-                        .padding(.horizontal)
-                        .padding(.top)
-                        .background(RoundedRectangle(cornerRadius: proxy.size.width/40)
-                            .fill(!settingVM.isDarkMode ? .gray.opacity(0.1) : .gray.opacity(0.4))
-                        )
-                        .padding(.bottom)
-                        
-                        VStack(alignment: .leading) {
-                            Text("Notification")
-                                .bold()
-                                .padding(.bottom)
-                            
-                            HStack {
-                                Button(action: {}) {
-                                    Image(systemName: "bell")
-                                    
-                                    Text("Notifications")
-                                    
-                                    Spacer()
-                                    
-                                    Image(systemName: "arrow.right.square")
                                 }
                                 .padding(.bottom)
-                            }
-                        }
-                        .padding(.horizontal)
-                        .padding(.top)
-                        .background(RoundedRectangle(cornerRadius: proxy.size.width/40)
-                            .fill(!settingVM.isDarkMode ? .gray.opacity(0.1) : .gray.opacity(0.4))
-                        )
-                        .padding(.bottom)
-                        
-                        VStack(alignment: .leading) {
-                            Text("Social")
-                                .bold()
-                                .padding(.bottom)
-                            
-                            HStack {
-                                Button(action: {}) {
-                                    Image(systemName: "person.fill.xmark")
-                                    
-                                    Text("Blocked")
+                                
+                                Divider()
+                                
+                                HStack {
+                                    Image(systemName: "moon")
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fill)
+                                        .frame(width: imageSize, height: imageSize)
+                                    Text("Dark Mode")
+                                        .font(settingVM.contentFont)
                                     
                                     Spacer()
                                     
-                                    Image(systemName: "arrow.right.square")
-                                        .font(Font.body)
-                                        
-                                }
-                            }
-                            
-                            Divider()
-
-                            HStack {
-                                Button(action: {}) {
-                                    Image(systemName: "rectangle.portrait.slash")
-
-                                    Text("Hide story from")
-
-                                    Spacer()
-
-                                    Image(systemName: "arrow.right.square")
+                                    Toggle("", isOn: $settingVM.isDarkMode)
                                         .padding(.vertical)
                                 }
+                                .padding(.bottom)
+                                
                             }
+                            .padding(.horizontal)
+                            .padding(.top)
+                            .background(RoundedRectangle(cornerRadius: proxy.size.width/40)
+                                .fill(!settingVM.isDarkMode ? .gray.opacity(0.1) : .gray.opacity(0.4))
+                            )
+                            .padding(.bottom)
+                            
+                            VStack(alignment: .leading) {
+                                Text("Notification")
+                                    .bold()
+                                    .padding(.bottom)
+                                    .font(contentFont)
+                                
+                                HStack {
+                                    Image(systemName: "bell")
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fill)
+                                        .frame(width: imageSize, height: imageSize)
+                                    
+                                    Text("Push Notification")
+                                        .font(contentFont)
+                                    
+                                    Spacer()
+                                    
+                                    Toggle("", isOn: $settingVM.isPushNotification)
+                                }
+                                .padding(.bottom)
+                                
+                                
+                                Divider()
+                                
+                                HStack {
+                                    Image(systemName: "message")
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fill)
+                                        .frame(width: imageSize, height: imageSize)
+                                    
+                                    Text("Message Notification")
+                                        .font(contentFont)
+                                    
+                                    Spacer()
+                                    
+                                    Toggle("", isOn: $settingVM.isMessageNotification)
+                                        .padding(.vertical)
+                                }
+                                .padding(.bottom)
+                                
+                            }
+                            .padding(.horizontal)
+                            .padding(.top)
+                            .background(RoundedRectangle(cornerRadius: proxy.size.width/40)
+                                .fill(!settingVM.isDarkMode ? .gray.opacity(0.1) : .gray.opacity(0.4))
+                            )
+                            .padding(.bottom)
+                            
+                            VStack(alignment: .leading) {
+                                Text("Social")
+                                    .bold()
+                                    .padding(.bottom)
+                                    .font(contentFont)
+                                
+                                HStack {
+                                    Button(action: {}) {
+                                        Image(systemName: "person.crop.circle.badge.xmark")
+                                            .resizable()
+                                            .aspectRatio(contentMode: .fill)
+                                            .frame(width: imageSize, height: imageSize)
+                                        
+                                        Text("Blocked")
+                                            .font(contentFont)
+                                        
+                                        Spacer()
+                                        
+                                        Image(systemName: "arrow.right.square")
+                                            .resizable()
+                                            .aspectRatio(contentMode: .fill)
+                                            .frame(width: imageSize, height: imageSize)
+                                    }
+                                    .padding(.bottom)
+                                }
+                                
+                                Divider()
+                                
+                                HStack {
+                                    Button(action: {}) {
+                                        Image(systemName: "rectangle.portrait.slash")
+                                            .resizable()
+                                            .aspectRatio(contentMode: .fill)
+                                            .frame(width: imageSize, height: imageSize)
+                                        
+                                        Text("Hide story from")
+                                            .font(settingVM.contentFont)
+                                        
+                                        Spacer()
+                                        
+                                        Image(systemName: "arrow.right.square")
+                                            .resizable()
+                                            .aspectRatio(contentMode: .fill)
+                                            .frame(width: imageSize, height: imageSize)
+                                            .padding(.vertical)
+                                    }
+                                }
+                                .padding(.bottom)
+                                
+                            }
+                            .padding(.horizontal)
+                            .padding(.top)
+                            .background(RoundedRectangle(cornerRadius: proxy.size.width/40)
+                                .fill(!settingVM.isDarkMode ? .gray.opacity(0.1) : .gray.opacity(0.4))
+                            )
+                            .padding(.bottom)
+                            
+                            VStack(alignment: .leading) {
+                                Text("Info")
+                                    .bold()
+                                    .padding(.bottom)
+                                    .font(contentFont)
+                                
+                                HStack {
+                                    Button(action: {}) {
+                                        Image(systemName: "info.circle")
+                                            .resizable()
+                                            .aspectRatio(contentMode: .fill)
+                                            .frame(width: imageSize, height: imageSize)
+                                        
+                                        Text("About us")
+                                            .font(contentFont)
+                                        
+                                        Spacer()
+                                        
+                                        Image(systemName: "arrow.right.square")
+                                            .resizable()
+                                            .aspectRatio(contentMode: .fill)
+                                            .frame(width: imageSize, height: imageSize)
+                                            .padding(.vertical)
+                                    }
+                                    .padding(.bottom)
+                                }
+                            }
+                            .padding(.horizontal)
+                            .padding(.top)
+                            .background(RoundedRectangle(cornerRadius: proxy.size.width/40)
+                                .fill(!settingVM.isDarkMode ? .gray.opacity(0.1) : .gray.opacity(0.4))
+                            )
+                            .padding(.bottom)
+                            
+                            Spacer()
+                            
+                            HStack {
+                                Spacer()
+                                Button(action: {isShowingSignOutAlert.toggle()}) {
+                                    Text("Sign Out")
+                                        .foregroundColor(.red)
+                                        .bold()
+                                        .font(settingVM.signOutText)
+                                        .padding(.vertical)
+                                }
+                                .alert(isPresented: $isShowingSignOutAlert) {
+                                    Alert(
+                                        title: Text("Sign Out"),
+                                        message: Text("Are you sure you want to sign out?"),
+                                        primaryButton: .default(
+                                            Text("Sign Out")
+                                        ) {
+                                            isSignOut.toggle()
+                                        },
+                                        secondaryButton: .cancel()
+                                    )
+                                    
+                                }
+                                Spacer()
+                            }
+                            
+                            
+                            Spacer()
                         }
                         .padding(.horizontal)
-                        .padding(.top)
-                        .background(RoundedRectangle(cornerRadius: proxy.size.width/40)
-                            .fill(!settingVM.isDarkMode ? .gray.opacity(0.1) : .gray.opacity(0.4))
-                        )
-                        
-                        Spacer()
-                    }
-                    
-                    Button(action: {isShowingSignOutAlert.toggle()}) {
-                        Text("Sign Out")
-                            .foregroundColor(.red)
-                            .bold()
-                            .font(.title3)
-                    }
-                    .alert(isPresented: $isShowingSignOutAlert) {
-                        Alert(
-                            title: Text("Sign Out"),
-                            message: Text("Are you sure you want to sign out?"),
-                            primaryButton: .default(
-                                Text("Sign Out")
-                            ) {
-                                isSignOut.toggle()
-                            },
-                            secondaryButton: .cancel()
-                        )
-
-                    }
-
-                    
-                    Spacer()
-                }
-                .padding(.horizontal)
-                .sheet(isPresented: $isSheetPresented) {
-                    NavigationView {
-                        SettingSheet(isSheetPresented: $isSheetPresented, settingVM: settingVM)
-                    }
-                }
-                .foregroundColor(settingVM.isDarkMode ? .white : .black)
-                .background(!settingVM.isDarkMode ? .white : .black)
-            }
-        }
-    }
-    
-    @ViewBuilder
-    func CustomTextFieldPass(icon: String,title: String, hint: String,value: Binding<String>,showPassword: Binding<Bool>) -> some View{
-        // the custom textfied design
-        VStack(alignment: .leading,spacing: 12){
-            HStack{
-                Label{
-                    Text(isChange ? title : "Change " + title)
-                        .font(.custom("Junegull-Regular", size: 14))
-                } icon: {
-                    Image(systemName: icon)
-                }
-                .foregroundColor(Color.black.opacity(0.8))
-                Spacer()
-                HStack{
-                    VStack{
-                        if (title.contains("Password")){
-                            HStack{
-                                Image(systemName: "pencil.line")
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fit)
-                                    .onTapGesture {
-                                        isChange = false
-                                        withAnimation{
-                                            isCancel = true
-                                        }
-                                        print(isChange)
-                                    }
+                        .sheet(isPresented: $isSheetPresented) {
+                            NavigationView {
+                                SettingSheet(isSheetPresented: $isSheetPresented, settingVM: settingVM)
                             }
                         }
-                    }
-                    .frame(width: 20)
-                    
-                    if (isCancel){
-                        Text("Cancel")
-                            .font(.custom("Junegull-Regular", size: 14))
-                            .onTapGesture {
-                                isChange = true
-                                withAnimation{
-                                    isCancel = false
-                                }
-                            }
-                    }
-                }
-            }
-            if (title.contains("Password") && !showPassword.wrappedValue){
-                SecureField(hint,text:value)
-                //                    .frame(width: 100)
-                    .disabled(isChange)
-                    .disableAutocorrection(true)
-                    .textInputAutocapitalization(.never)
-            }
-            else{
-                TextField(hint, text: value)
-                    .padding(.top,2)
-                //                    .frame(width: 100)
-                    .disableAutocorrection(true)
-                    .textInputAutocapitalization(.never)
-            }
-            Divider()
-                .background(Color.white.opacity(0))
-                .frame(width: 0)
-            
-        }
-        // showing password
-        .overlay(alignment: .trailing){
-            Group{
-                if (title.contains("Password")){
-                    Button(action: {
-                        showPassword.wrappedValue.toggle()
-                    },label: {
-                        Text(showPassword.wrappedValue ? "Hide" : "Show")
-                            .font(.custom("Junegull-Regular", size: 13))
-                            .foregroundColor(Color.black)
-                    })
-                    .offset(y:8)
-                }
-            }
-            
-        }
-    }
-    
-    @ViewBuilder
-    func CustomTextFieldUserName(icon: String,title: String, hint: String,value: Binding<String>,showPassword: Binding<Bool>) -> some View{
-        // the custom textfied design
-        VStack(alignment: .leading,spacing: 12){
-            HStack{
-                Label{
-                    Text(isChangeUserName ? title : "Change " + title)
-                        .font(.custom("Junegull-Regular", size: 14))
-                } icon: {
-                    Image(systemName: icon)
-                }
-                .foregroundColor(Color.black.opacity(0.8))
-                Spacer()
-                HStack{
-                    VStack{
-                        if (title.contains("User Name")){
-                            HStack{
-                                Image(systemName: "pencil.line")
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fit)
-                                    .onTapGesture {
-                                        isChangeUserName = false
-                                        withAnimation{
-                                            isCancelUserName = true
-                                        }
-                                        print(isChange)
-                                    }
+                        .onAppear {
+                            if UIDevice.current.userInterfaceIdiom == .phone {
+                                self.cornerRadiusSize = proxy.size.width/40
+                                self.accountSettingSizeHeight = proxy.size.width/4
+                                self.accountSettingImageSizeWidth = proxy.size.width / 8
+                                self.accountSettingUsernameFont = .title3
+                                self.accountSettingEmailFont = .body
+                                self.contentFont = .body
+                                self.imageSize = proxy.size.width/18
+                                self.signOutText = .title
+                            } else {
+                                self.cornerRadiusSize = proxy.size.width/50
+                                self.accountSettingSizeHeight = proxy.size.height/8
+                                self.accountSettingImageSizeWidth = proxy.size.width/12
+                                self.accountSettingUsernameFont = .title
+                                self.accountSettingEmailFont = .body
+                                self.contentFont = .title3
+                                self.imageSize = proxy.size.width / 28
+                                self.signOutText = .title
                             }
                         }
-                    }
-                    .frame(width: 20)
-                    
-                    if (isCancelUserName){
-                        Text("Cancel")
-                            .font(.custom("Junegull-Regular", size: 14))
-                            .onTapGesture {
-                                isChangeUserName = true
-                                withAnimation{
-                                    isCancelUserName = false
-                                }
-                            }
-                    }
+                   
                 }
+                
             }
-            
-            TextField(hint, text: value)
-                .padding(.top,2)
-            //                    .frame(width: 100)
-                .disableAutocorrection(true)
-                .textInputAutocapitalization(.never)
-                .disabled(isChangeUserName)
-            Divider()
-                .background(Color.white.opacity(0))
-                .frame(width: 0)
-            
+            .foregroundColor(settingVM.isDarkMode ? .white : .black)
+            .background(!settingVM.isDarkMode ? .white : .black)
         }
     }
 }

@@ -21,6 +21,7 @@ struct Login: View {
     @State var isSignUp = false
     // View Model
     @EnvironmentObject var authVM :AuthenticationViewModel
+    @ObservedObject var settingVM = SettingViewModel()
     
     var body: some View {
         NavigationStack {
@@ -31,7 +32,7 @@ struct Login: View {
                         Spacer()
                         
                         //Logo
-                        Image(authVM.isDarkMode ? Constants.darkThemeAppLogo : Constants.lightThemeAppLogo)
+                        Image(settingVM.isDarkMode ? Constants.darkThemeAppLogo : Constants.lightThemeAppLogo)
                             .resizable()
                             .aspectRatio(contentMode: .fill)
                             .frame(width: authVM.logoImageSize, height: 0)
@@ -58,7 +59,7 @@ struct Login: View {
                             textFieldCorner: $authVM.textFieldCorner,
                             textFieldBorderWidth: $authVM.textFieldBorderWidth,
                             isPassword: .constant(false),
-                            textFieldPlaceHolderFont: $authVM.textFieldPlaceHolderFont
+                            textFieldPlaceHolderFont: $authVM.textFieldPlaceHolderFont, isDarkMode: $settingVM.isDarkMode
                         )
                         .padding(.bottom)
                         
@@ -71,14 +72,16 @@ struct Login: View {
                             textFieldCorner: $authVM.textFieldCorner,
                             textFieldBorderWidth: $authVM.textFieldBorderWidth,
                             isPassword: .constant(true),
-                            textFieldPlaceHolderFont: $authVM.textFieldPlaceHolderFont
+                            textFieldPlaceHolderFont: $authVM.textFieldPlaceHolderFont,
+                            isDarkMode: $settingVM.isDarkMode
                         )
                         .padding(.bottom)
                         
                         // Login button
                         Button(action: {
-
+                            
                             Task {
+                                authVM.isLoading = true
                                 try await authVM.signIn(withEmail: accountText, password: passwordText)
                             }
                         }) {
@@ -91,7 +94,7 @@ struct Login: View {
                                 .frame(height: authVM.loginButtonSizeHeight)
                                 .background(
                                     RoundedRectangle(cornerRadius: authVM.textFieldCorner)
-                                        .fill(authVM.isDarkMode ? Constants.darkThemeColor : Constants.lightThemeColor)
+                                        .fill(settingVM.isDarkMode ? Constants.darkThemeColor : Constants.lightThemeColor)
                                 )
                                 .padding(.horizontal)
                         }
@@ -101,6 +104,10 @@ struct Login: View {
                                 message: Text("Invalid username or password.\nPlease check again"),
                                 dismissButton: .default(Text("Close"))
                             )
+                        }
+                        .navigationDestination(isPresented: $authVM.isUnlocked) {
+                            HomeView(uploadVM: authVM.uploadVM)
+                                .navigationBarBackButtonHidden(true)
                         }
                         
                         // Helpers
@@ -170,6 +177,10 @@ struct Login: View {
                                                     )
                                             )
                                     }
+                                    .navigationDestination(isPresented: $authVM.isUnlocked) {
+                                        HomeView(uploadVM: authVM.uploadVM)
+                                            .navigationBarBackButtonHidden(true)
+                                    }
                                 }
                                 .padding(.vertical)
                                 
@@ -189,7 +200,7 @@ struct Login: View {
                                                 .resizable()
                                                 .aspectRatio(contentMode: .fit)
                                                 .frame(width: authVM.faceIdImageSize)
-                                                .foregroundColor(authVM.isDarkMode ? Constants.darkThemeColor : Constants.lightThemeColor)
+                                                .foregroundColor(settingVM.isDarkMode ? Constants.darkThemeColor : Constants.lightThemeColor)
                                         }
                                     }
                                     Spacer()
@@ -199,7 +210,7 @@ struct Login: View {
                             Spacer()
                         }
                     }
-                    .foregroundColor(authVM.isDarkMode ? .white : .black)
+                    .foregroundColor(settingVM.isDarkMode ? .white : .black)
                     .padding(.horizontal)
                     .onAppear {
                         if UIDevice.current.userInterfaceIdiom == .phone {
@@ -219,25 +230,20 @@ struct Login: View {
                             authVM.loginButtonSizeHeight = authVM.textFieldSizeHeight
                             authVM.conentFont = .title2
                             authVM.textFieldTitleFont = .title
-                            authVM.loginTextFont = .largeTitle
+                            authVM.loginTextFont = .title
                             authVM.captionFont = .title3
-                            authVM.textFieldPlaceHolderFont = .title2
+                            authVM.textFieldPlaceHolderFont = .largeTitle
                         }
-                    }
-                    .onChange(of: accountText) { newValue in
-                        isValidUserName = authVM.validateUsername(newValue)
-                    }
-                    .onChange(of: passwordText) { newValue in
-                        isValidPassword = authVM.validatePassword(newValue)
                     }
                     
                     if authVM.isLoading {
-                        Color.gray.opacity(0.3).ignoresSafeArea()
+                        Color.gray.opacity(0.3).edgesIgnoringSafeArea(.all)
                         ProgressView("Loading...")
                     }
                 }
+                .background(settingVM.isDarkMode ? .black : .white)
             }
-            .background(authVM.isDarkMode ? .black : .white)
+            .ignoresSafeArea(.keyboard)
         }
     }
 }

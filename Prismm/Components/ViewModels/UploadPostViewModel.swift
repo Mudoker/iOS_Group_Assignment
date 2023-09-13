@@ -15,7 +15,7 @@ import AVFoundation
 import FirebaseFirestoreSwift
 
 class UploadPostViewModel: ObservableObject {
-//    @Published var fetched_media = [Media]()
+    //@Published var fetched_media = [Media]()
     @Published var fetched_post = [Post]()
 
     @Published var selectedMedia: PhotosPickerItem? {
@@ -101,16 +101,20 @@ class UploadPostViewModel: ObservableObject {
                 return nil
             }
         }
-        for each in fetched_post {
-            print(each.mimeType ?? "")
+        
+        for i in 0..<fetched_post.count {
+            let post = fetched_post[i]
+            let owner = post.owner
+            let postUser = try await UserService.fetchUser(withUid: owner)
+            fetched_post[i].user = postUser
         }
     }
     
     func uploadingPost() async throws {
-//        guard let uid = Auth.auth().currentUser?.uid else {
-//            print("No user account")
-//            return
-//        }
+        guard let uid = Auth.auth().currentUser?.uid else {
+            print("No user account")
+            return
+        }
         
         guard let media = selectedMedia else { return }
         
@@ -121,7 +125,7 @@ class UploadPostViewModel: ObservableObject {
         } else {
             guard let mediaUrl = try await uploadMediaToFireBase(data: mediaData) else { return }
             let postRef = Firestore.firestore().collection("posts").document()
-            let post = Post(id: postRef.documentID, owner: "", postCaption: "Hello", likers: [], mediaURL: mediaUrl, mimeType: mimeType(for: mediaData), date: Timestamp())
+            let post = Post(id: postRef.documentID, owner: uid, postCaption: "Hello", likers: [], mediaURL: mediaUrl, mimeType: mimeType(for: mediaData), date: Timestamp())
             guard let encodedPost = try? Firestore.Encoder().encode(post) else {return}
             try await postRef.setData(encodedPost)
         }

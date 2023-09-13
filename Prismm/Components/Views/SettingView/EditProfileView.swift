@@ -20,6 +20,11 @@ struct EditProfileView: View {
         GeometryReader { proxy in
             ScrollView(showsIndicators: false) {
                 VStack {
+                    Text("Profile Settings")
+                        .bold()
+                        .font(.title)
+                        .padding(.horizontal)
+                    
                     VStack(alignment: .center) {
                         Button(action: {}) {
                             Image("testAvt")
@@ -144,11 +149,10 @@ struct EditProfileView: View {
                     }
                     .frame(maxWidth: .infinity, alignment: .leading) // Align text to the left
                 }
-                .foregroundColor(settingVM.isDarkMode ? .white : .black)
-                .background(!settingVM.isDarkMode ? .white : .black)
-            .navigationTitle("Profile Settings")
             }
         }
+        .foregroundColor(settingVM.isDarkMode ? .white : .black)
+        .background(!settingVM.isDarkMode ? .white : .black)
     }
 }
 
