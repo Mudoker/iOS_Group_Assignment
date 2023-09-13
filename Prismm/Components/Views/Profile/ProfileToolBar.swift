@@ -36,7 +36,6 @@ struct ProfileToolBar: View {
             }
         }
     }
-    
 }
 
 struct ProfileToolBar_Previews: PreviewProvider {

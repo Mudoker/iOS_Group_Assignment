@@ -11,7 +11,7 @@ import SwiftUI
 struct SettingView : View {
     @State private var name = "Quang Anh"
     @State var selectedTheme : String = "Dark"
-    @State var selectedLanguage : String = "vn"
+    @State var selectedLanguage : String = "en"
     @State private var isRePassword = ""
     @State private var password : Bool = false
     @State private var rePassword : Bool = false
@@ -21,196 +21,193 @@ struct SettingView : View {
     @State private var isCancelUserName = false
     //    @AppStorage("password") private var isPassword = ""
     @State private var isPassword = "12345"
+    @State private var searchText = ""
+    @ObservedObject var settingVM = SettingViewModel()
+    @State private var isSheetPresented = false
+    var languages = ["English, Vietnamese"]
+    @State private var isShowingSignOutAlert = false
+    @State private var isSignOut = false
     
     var body: some View {
         NavigationStack{
-            GeometryReader{ geometry in
-                ZStack{
-                    //                    Color(.gray)
-                    //                        .opacity(0.3)
-                    //                        .edgesIgnoringSafeArea(.bottom)
-                    
-                    ScrollView{
-                        LazyVStack(spacing : 10){
-                            VStack{
-                                CustomTextFieldUserName(icon: "person.fill" , title: "User Name", hint: "quanganh87", value: $name, showPassword: .constant(false))
-                                    .padding(.top,10)
+            GeometryReader{ proxy in
+                VStack {
+                    VStack (alignment: .leading, spacing: 0) {
+                        // Title and search field
+                        Text("Settings")
+                            .font(.largeTitle)
+                            .bold()
+                            .padding(.bottom, 8)
+                            .padding(.top)
+                        
+                        Button(action: {isSheetPresented.toggle()}) {
+                            ZStack {
+                                RoundedRectangle(cornerRadius: proxy.size.width/40)
+                                    .fill(!settingVM.isDarkMode ? .gray.opacity(0.1) : .gray.opacity(0.4))
+
+                                    .frame(height: proxy.size.height/8)
                                 
-                                CustomTextFieldPass(icon: "lock.fill" , title: "Password", hint: "12345", value: $isPassword, showPassword: $password)
-                                    .padding(.top,10)
-                                
+                                HStack {
+                                    Image(systemName: "person.circle")
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fit)
+                                        .frame(width: proxy.size.width/10)
+                                    
+                                    VStack(alignment: .leading) {
+                                        Text("Quoc Doan")
+                                            .font(.title3)
+                                            .bold()
+                                        
+                                        Text("@huuquoc7603")
+                                            .opacity(0.8)
+                                            .accentColor(.white)
+                                    }
+                                    
+                                    Spacer()
+                                }
+                                .padding(.horizontal)
                             }
-                            .padding(.horizontal,10)
-                            .background(.white)
+                            .padding(.vertical)
+                        }
+                        .padding(.bottom)
+                        
+                        VStack(alignment: .leading) {
+                            Text("System")
+                                .bold()
                             
-                            Rectangle()
-                                .frame(height: 10)                                 .foregroundColor(Color.gray.opacity(0.06))
-                            
-                            VStack{
-                                Text("Theme")
-                                    .foregroundColor(.black)
-                                    .font(.title)
-                                    .padding(.top)
-                                if selectedTheme == "system" {
-                                    Text("Ensure system theme has been updated!")
-                                        .foregroundColor(.black)
-                                        .opacity(0.7)
-                                        .font(.title)
-                                        .italic()
-                                }
-                                
-                                Picker("Theme", selection: $selectedTheme) {
-                                    Text("Light")
-                                        .tag("light")
-                                    Text("Dark")
-                                        .tag("dark")
-                                    Text("System")
-                                        .tag("system")
-                                }
-                                .pickerStyle(SegmentedPickerStyle())
+                            HStack {
+                                Image(systemName: "globe.asia.australia.fill")
                                 
                                 Text("Language")
-                                    .font(.title)
-                                    .padding(.top)
                                 
-                                Picker("Language", selection: $selectedLanguage) {
+                                Spacer()
+                                
+                                Picker("", selection: $selectedLanguage) {
                                     Text("English").tag("en")
                                     Text("Vietnamese").tag("vi")
                                 }
-                                .pickerStyle(SegmentedPickerStyle())
+                                .pickerStyle(MenuPickerStyle())
                             }
-                            .padding(.horizontal,10)
-                            .background(.white)
                             
-                            Rectangle()
-                                .frame(height: 10)                                 .foregroundColor(Color.gray.opacity(0.06))
-                                .padding(.top,20)
+                            Divider()
                             
-                            VStack{
-                                HStack{
-                                    VStack{
-                                        Image(systemName: "info.bubble")
-                                            .resizable()
-                                            .aspectRatio(contentMode: .fit)
-                                            .foregroundColor(.black)
-                                    }
-                                    .frame(width: 20)
-                                    Text("About Us")
-                                        .font(.title2)
-                                    Spacer()
-                                    NavigationLink(destination: AboutUs()){
-                                        VStack{
-                                            Image(systemName: "chevron.right")
-                                                .resizable()
-                                                .aspectRatio(contentMode: .fit)
-                                                .foregroundColor(.blue)
-                                        }
-                                        .frame(width : 7)
-                                    }
-                                    
-                                }
-                                .padding(.top,10)
-                                HStack{
-                                    VStack{
-                                        Image(systemName: "questionmark.circle")
-                                            .resizable()
-                                            .aspectRatio(contentMode: .fit)
-                                            .foregroundColor(.black)
-                                    }
-                                    .frame(width: 20)
-                                    Text("Help")
-                                        .font(.title2)
-                                    Spacer()
-                                    VStack{
-                                        Image(systemName: "chevron.right")
-                                            .resizable()
-                                            .aspectRatio(contentMode: .fit)
-                                            .foregroundColor(.blue)
-                                    }
-                                    .frame(width: 7)
-                                    
-                                }
-                                .padding(.top,10)
+                            HStack {
+                                Image(systemName: "moon")
                                 
-                                HStack{
-                                    VStack{
-                                        Image(systemName: "x.square")
-                                            .resizable()
-                                            .aspectRatio(contentMode: .fit)
-                                            .foregroundColor(.black)
-                                    }
-                                    .frame(width: 20)
-                                    Text("Delete Account")
-                                        .foregroundColor(.black)
-                                        .font(.title2)
-                                    Spacer()
-                                    VStack{
-                                        Image(systemName: "chevron.right")
-                                            .resizable()
-                                            .aspectRatio(contentMode: .fit)
-                                            .foregroundColor(.blue)
-                                        //                                            .fontWeight(.bold)
-                                    }
-                                    .frame(width: 7)
-                                }
-                                .padding(.bottom,10)
-                            }
-                            .padding(.horizontal,10)
-                            .frame(width: geometry.size.width, height: 150)
-                            .background(.white)
-                            
-                            VStack{
-                                Button() {
-                                    
-                                } label:{
-                                    Text("Let's begin")
-                                        .fontWeight(.bold)
-                                        .foregroundColor(.black)
-                                }
-                                .frame(maxWidth: geometry.size.width, minHeight: 55)
-                                .background(Color.blue)
-                                .tint(.white)
-                                .clipShape(RoundedRectangle(cornerRadius:18))
-                                .padding()
+                                Text("Dark Mode")
                                 
-//                                NavigationLink(destination: test1()
-//                                    .navigationBarTitle("")
-//                                    .navigationBarHidden(true)) {
-//                                        ZStack {
-//                                            Text("Sign out")
-//                                                .foregroundColor(.red)
-//                                                .bold()
-//                                        }
-//                                    }
-//                                    .simultaneousGesture(
-//                                        TapGesture()
-//                                            .onEnded {
-//
-//                                            }
-//                                    )
+                                Spacer()
+                                
+                                Toggle("", isOn: $settingVM.isDarkMode)
+                                    .padding(.bottom)
                             }
                         }
-                        .toolbar{
-                            ToolbarItem(placement: .navigationBarLeading) {
-                                HStack(spacing: 25){
-                                    Button{
+                        .padding(.horizontal)
+                        .padding(.top)
+                        .background(RoundedRectangle(cornerRadius: proxy.size.width/40)
+                            .fill(!settingVM.isDarkMode ? .gray.opacity(0.1) : .gray.opacity(0.4))
+                        )
+                        .padding(.bottom)
+                        
+                        VStack(alignment: .leading) {
+                            Text("Notification")
+                                .bold()
+                                .padding(.bottom)
+                            
+                            HStack {
+                                Button(action: {}) {
+                                    Image(systemName: "bell")
+                                    
+                                    Text("Notifications")
+                                    
+                                    Spacer()
+                                    
+                                    Image(systemName: "arrow.right.square")
+                                }
+                                .padding(.bottom)
+                            }
+                        }
+                        .padding(.horizontal)
+                        .padding(.top)
+                        .background(RoundedRectangle(cornerRadius: proxy.size.width/40)
+                            .fill(!settingVM.isDarkMode ? .gray.opacity(0.1) : .gray.opacity(0.4))
+                        )
+                        .padding(.bottom)
+                        
+                        VStack(alignment: .leading) {
+                            Text("Social")
+                                .bold()
+                                .padding(.bottom)
+                            
+                            HStack {
+                                Button(action: {}) {
+                                    Image(systemName: "person.fill.xmark")
+                                    
+                                    Text("Blocked")
+                                    
+                                    Spacer()
+                                    
+                                    Image(systemName: "arrow.right.square")
+                                        .font(Font.body)
                                         
-                                    } label : {
-                                        Image(systemName: "arrow.left")
-                                    }
-                                    HStack(spacing: 10){
-                                        Text("tranvuquanganh87")
-                                        VStack{
-                                            Image(systemName: "chevron.down")
-                                                .scaleEffect(0.6)
-                                        }
-                                        .frame(width: 5, height: 5)
-                                    }
+                                }
+                            }
+                            
+                            Divider()
+
+                            HStack {
+                                Button(action: {}) {
+                                    Image(systemName: "rectangle.portrait.slash")
+
+                                    Text("Hide story from")
+
+                                    Spacer()
+
+                                    Image(systemName: "arrow.right.square")
+                                        .padding(.vertical)
                                 }
                             }
                         }
+                        .padding(.horizontal)
+                        .padding(.top)
+                        .background(RoundedRectangle(cornerRadius: proxy.size.width/40)
+                            .fill(!settingVM.isDarkMode ? .gray.opacity(0.1) : .gray.opacity(0.4))
+                        )
+                        
+                        Spacer()
+                    }
+                    
+                    Button(action: {isShowingSignOutAlert.toggle()}) {
+                        Text("Sign Out")
+                            .foregroundColor(.red)
+                            .bold()
+                            .font(.title3)
+                    }
+                    .alert(isPresented: $isShowingSignOutAlert) {
+                        Alert(
+                            title: Text("Sign Out"),
+                            message: Text("Are you sure you want to sign out?"),
+                            primaryButton: .default(
+                                Text("Sign Out")
+                            ) {
+                                isSignOut.toggle()
+                            },
+                            secondaryButton: .cancel()
+                        )
+
+                    }
+
+                    
+                    Spacer()
+                }
+                .padding(.horizontal)
+                .sheet(isPresented: $isSheetPresented) {
+                    NavigationView {
+                        SettingSheet(isSheetPresented: $isSheetPresented, settingVM: settingVM)
                     }
                 }
+                .foregroundColor(settingVM.isDarkMode ? .white : .black)
+                .background(!settingVM.isDarkMode ? .white : .black)
             }
         }
     }

@@ -43,7 +43,6 @@
 		E1BB6F142AAEBE0100051687 /* AboutUsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BB6F062AAEBDA900051687 /* AboutUsView.swift */; };
 		E1BB6F152AAEBE0500051687 /* PersonalAboutUs.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BB6F072AAEBDA900051687 /* PersonalAboutUs.swift */; };
 		E1BB6F1E2AAEBEE900051687 /* SplashScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BB6F092AAEBDA900051687 /* SplashScreen.swift */; };
-		E1BB6F1F2AAEBF0E00051687 /* SettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BB6F132AAEBDA900051687 /* SettingView.swift */; };
 		E1BB6F202AAEC01800051687 /* PersonalChat.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BB6F0B2AAEBDA900051687 /* PersonalChat.swift */; };
 		E1BB6F212AAEC01A00051687 /* PreviewUserChat.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BB6F0C2AAEBDA900051687 /* PreviewUserChat.swift */; };
 		E1BB6F222AAEC01D00051687 /* UserActiveChat.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BB6F0D2AAEBDA900051687 /* UserActiveChat.swift */; };
@@ -55,6 +54,11 @@
 		E1BB6F2F2AAEC1C700051687 /* FollowerRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BB6F2A2AAEC1C700051687 /* FollowerRow.swift */; };
 		E1BB6F302AAEC1C700051687 /* FollowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BB6F2B2AAEC1C700051687 /* FollowView.swift */; };
 		E1BB6F322AAEC1DF00051687 /* FollowViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BB6F312AAEC1DF00051687 /* FollowViewModel.swift */; };
+		E1C6652C2AB170F40095B388 /* SettingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1C6652B2AB170F40095B388 /* SettingViewModel.swift */; };
+		E1C6652E2AB1710E0095B388 /* EditProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1C6652D2AB1710E0095B388 /* EditProfileView.swift */; };
+		E1C665302AB171180095B388 /* EditSecurityField.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1C6652F2AB171180095B388 /* EditSecurityField.swift */; };
+		E1C665322AB171240095B388 /* SettingSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1C665312AB171230095B388 /* SettingSheet.swift */; };
+		E1C665362AB1714C0095B388 /* SettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1C665352AB1714C0095B388 /* SettingView.swift */; };
 		E1CED5132AAB42BB00F7F94E /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1CED5122AAB42BB00F7F94E /* Constants.swift */; };
 /* End PBXBuildFile section */
 
@@ -95,7 +99,6 @@
 		E1BB6F0E2AAEBDA900051687 /* AllChat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllChat.swift; sourceTree = "<group>"; };
 		E1BB6F102AAEBDA900051687 /* progressBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = progressBarController.swift; sourceTree = "<group>"; };
 		E1BB6F112AAEBDA900051687 /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
-		E1BB6F132AAEBDA900051687 /* SettingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingView.swift; sourceTree = "<group>"; };
 		E1BB6F242AAEC12F00051687 /* HomeViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
 		E1BB6F272AAEC1C700051687 /* FollowingRow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FollowingRow.swift; sourceTree = "<group>"; };
 		E1BB6F282AAEC1C700051687 /* FollowerList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FollowerList.swift; sourceTree = "<group>"; };
@@ -104,6 +107,11 @@
 		E1BB6F2B2AAEC1C700051687 /* FollowView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FollowView.swift; sourceTree = "<group>"; };
 		E1BB6F312AAEC1DF00051687 /* FollowViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FollowViewModel.swift; sourceTree = "<group>"; };
 		E1BB6F352AAEC4C800051687 /* junegull_rg.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = junegull_rg.ttf; sourceTree = "<group>"; };
+		E1C6652B2AB170F40095B388 /* SettingViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingViewModel.swift; sourceTree = "<group>"; };
+		E1C6652D2AB1710E0095B388 /* EditProfileView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditProfileView.swift; sourceTree = "<group>"; };
+		E1C6652F2AB171180095B388 /* EditSecurityField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditSecurityField.swift; sourceTree = "<group>"; };
+		E1C665312AB171230095B388 /* SettingSheet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingSheet.swift; sourceTree = "<group>"; };
+		E1C665352AB1714C0095B388 /* SettingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingView.swift; sourceTree = "<group>"; };
 		E1CED5122AAB42BB00F7F94E /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -234,6 +242,7 @@
 		E12FA02E2AAC298A007890A3 /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
+				E1C6652B2AB170F40095B388 /* SettingViewModel.swift */,
 				E12FA02F2AAC29A0007890A3 /* AuthenticationViewModel.swift */,
 				E1BB6F242AAEC12F00051687 /* HomeViewModel.swift */,
 				E1BB6F312AAEC1DF00051687 /* FollowViewModel.swift */,
@@ -321,7 +330,10 @@
 		E1BB6F122AAEBDA900051687 /* SettingView */ = {
 			isa = PBXGroup;
 			children = (
-				E1BB6F132AAEBDA900051687 /* SettingView.swift */,
+				E1C665352AB1714C0095B388 /* SettingView.swift */,
+				E1C665312AB171230095B388 /* SettingSheet.swift */,
+				E1C6652F2AB171180095B388 /* EditSecurityField.swift */,
+				E1C6652D2AB1710E0095B388 /* EditProfileView.swift */,
 			);
 			path = SettingView;
 			sourceTree = "<group>";
@@ -441,8 +453,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				E1BB6F1E2AAEBEE900051687 /* SplashScreen.swift in Sources */,
+				E1C6652C2AB170F40095B388 /* SettingViewModel.swift in Sources */,
 				E12FA0262AAC2915007890A3 /* Main.swift in Sources */,
 				E17E8CE32AAC6B5200EF5EFB /* PostModel.swift in Sources */,
+				E1C665302AB171180095B388 /* EditSecurityField.swift in Sources */,
 				E1BB6F302AAEC1C700051687 /* FollowView.swift in Sources */,
 				E1BB6F232AAEC01F00051687 /* AllChat.swift in Sources */,
 				E1BB6F2F2AAEC1C700051687 /* FollowerRow.swift in Sources */,
@@ -450,9 +464,10 @@
 				E19D96832AAB2C0000E2CFAC /* Extension+String.swift in Sources */,
 				E1BB6F2C2AAEC1C700051687 /* FollowingRow.swift in Sources */,
 				E10C0E452AAB1DDA00AEB220 /* SignUp.swift in Sources */,
-				E1BB6F1F2AAEBF0E00051687 /* SettingView.swift in Sources */,
 				E1BB6F322AAEC1DF00051687 /* FollowViewModel.swift in Sources */,
+				E1C665322AB171240095B388 /* SettingSheet.swift in Sources */,
 				E1BB6F152AAEBE0500051687 /* PersonalAboutUs.swift in Sources */,
+				E1C665362AB1714C0095B388 /* SettingView.swift in Sources */,
 				E10C0E432AAAFFA300AEB220 /* Login.swift in Sources */,
 				E17E8CE12AAC6ABF00EF5EFB /* SettingModel.swift in Sources */,
 				E12FA0362AAC2EE3007890A3 /* HomeView.swift in Sources */,
@@ -463,6 +478,7 @@
 				E1CED5132AAB42BB00F7F94E /* Constants.swift in Sources */,
 				E1BB6F2D2AAEC1C700051687 /* FollowerList.swift in Sources */,
 				E1BB6F202AAEC01800051687 /* PersonalChat.swift in Sources */,
+				E1C6652E2AB1710E0095B388 /* EditProfileView.swift in Sources */,
 				E17E8CE52AAC6C5800EF5EFB /* CommentModel.swift in Sources */,
 				AB72B97A2AB019C900DA73F5 /* Extension+CustomCorner.swift in Sources */,
 				E17E8CE72AAC6CA400EF5EFB /* StoryModel.swift in Sources */,
