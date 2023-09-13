@@ -13,4 +13,10 @@ struct UserService {
         let snapshot = try await Firestore.firestore().collection("users").document(withUid).getDocument()
         return try snapshot.data(as: User.self)
     }
+    
+    static func fetchComment(withUid: String) async throws -> Comment {
+        let snapshot = try await Firestore.firestore().collection("test_comments").document(withUid).getDocument()
+        return try snapshot.data(as: Comment.self)
+    }
+
 }

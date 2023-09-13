@@ -10,18 +10,18 @@ import Foundation
 struct User: Identifiable, Codable {
     let id: String
     var username: String
-    var fullName: String
+    var fullName: String?
     var password: String
-    var phoneNumber: String
+    var phoneNumber: String?
     var bio: String?
     var profileImageURL: String?
     var facebookLink: String?
-    var followers: [String] //
-    var following: [String] //
-    var posts: [String] //
-    var favoritePost: [String] //
-    var stories: [String] //
-    var message: [String] //
+    var followers: [String?] //
+    var following: [String?] //
+    var posts: [String?] //
+    var favoritePost: [String?] //
+    var stories: [String?] //
+    var message: [String?] //
     //var setting: Setting
     
     init(id: String, password: String, username: String) {
