@@ -16,13 +16,16 @@ struct Test_UploadImg_Video: View {
         NavigationStack {
             ScrollView {
                 ForEach(uploadVM.fetched_post) { post in
-                    Text(post.postCaption)
-                    if let mediaUrl = URL(string: post.mediaURL ?? "") {
+//                    Text(post.postCaption)
+                    if let user = post.user {
+                        Text(user.username)
+                    }
+
+                    if let mediaURL = URL(string: post.mediaURL ?? "") {
                         if let mimeType = post.mimeType {
                             if !mimeType.hasPrefix("image") {
-                                // This condition checks if the mimeType does not start with "image" (i.e., it's not an image).
-                                
-                                let playerItem = AVPlayerItem(url: mediaUrl)
+                                // Handle video
+                                let playerItem = AVPlayerItem(url: mediaURL)
                                 let player = AVPlayer(playerItem: playerItem)
                                 
                                 VideoPlayer(player: player)
@@ -32,7 +35,8 @@ struct Test_UploadImg_Video: View {
                                         player.play()
                                     }
                             } else {
-                                AsyncImage(url: mediaUrl) { phase in
+                                // Handle image
+                                AsyncImage(url: mediaURL) { phase in
                                     switch phase {
                                     case .empty:
                                         // Placeholder while loading

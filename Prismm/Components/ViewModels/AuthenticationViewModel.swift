@@ -27,6 +27,8 @@ class AuthenticationViewModel: ObservableObject {
     
     @Published var isUnlocked = false
     @Published var isDarkMode = false
+    @Published var currentEmail = ""
+    
     @Published var userToken: String {
         didSet {
             UserDefaults.standard.set(userToken, forKey: "userToken")
@@ -35,6 +37,7 @@ class AuthenticationViewModel: ObservableObject {
     
     @Published var userSession : FirebaseAuth.User?
     @Published var currentUser : User?
+    
     
     // set user token for bio metric login
     init() {
@@ -74,7 +77,7 @@ class AuthenticationViewModel: ObservableObject {
         do {
             let result = try await Auth.auth().createUser(withEmail: email, password: password)
             self.userSession = result.user
-            let user = User(id: result.user.uid, password: password)
+            let user = User(id: result.user.uid, password: password, username: email)
             let encodedUser = try Firestore.Encoder().encode(user)
             try await Firestore.firestore().collection("users").document(user.id).setData(encodedUser)
             signUpError = false
@@ -122,19 +125,15 @@ class AuthenticationViewModel: ObservableObject {
         
         if !snapshot.exists {
             do{
-                let user = User(id: uid, password: "password")
+                let user = User(id: uid, password: "password", username: currentEmail)
                 let encodedUser = try Firestore.Encoder().encode(user)
                 try await Firestore.firestore().collection("users").document(user.id).setData(encodedUser)
             }catch{
-                
+               print("ERROR 001")
             }
-            print("User data do not exist!! Create new user")
         }else{
             self.currentUser = try? snapshot.data(as: User.self)
         }
-        
-        
-
     }
     
     // FaceId login
@@ -200,7 +199,7 @@ class AuthenticationViewModel: ObservableObject {
             let result = try await Auth.auth().signIn(with: credential)
             
             let firebaseUser = result.user
-            
+            currentEmail=firebaseUser.email ?? ""
             print("User \(firebaseUser.uid) signed in with \(firebaseUser.email ?? "unknown" )")
             await fetchUserData()
 

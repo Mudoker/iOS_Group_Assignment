@@ -10,6 +10,7 @@ import SwiftUI
 
 struct HomeView: View {
     @StateObject var homeViewModel = HomeViewModel()
+    @StateObject var uploadVM = UploadPostViewModel()
 
     var body: some View {
         GeometryReader {proxy in
@@ -27,36 +28,36 @@ struct HomeView: View {
                     
                     Divider()
                     
-                    VStack {
-                        ForEach(0..<3, id: \.self) { _ in
-                            PostView(homeViewModel: homeViewModel)
+                    LazyVStack {
+                        ForEach(uploadVM.fetched_post) { post in
+                            PostView(post: post, homeViewModel: homeViewModel)
                                 .frame(height: proxy.size.height)
                                 .padding(.bottom)
                             
                             if proxy.size.height == 1322 {
                                 VStack{}
-                                    .frame(height: proxy.size.height/22)
+                                    .frame(height: proxy.size.height/15)
                             }
                         }
                     }
                 }
-//                .navigationBarTitle("", displayMode: .inline)
-//                .toolbar(content: {
-//                    ToolbarItem(placement: .navigationBarLeading) {
-//                        Image("logolight")
-//                            .resizable()
-//                        .frame(width: homeViewModel.appLogoSize, height: homeViewModel.appLogoSize)
-//
-//                    }
-//                    ToolbarItem(placement: .navigationBarTrailing) {
-//                          NavigationLink(destination: EmptyView()) {
-//                                Image(systemName: "message")
-//                                    .resizable()
-//                                    .scaledToFill()
-//                                    .frame(width: homeViewModel.messageLogoSize)
-//                            }
-//                    }
-//                })
+                //.navigationBarTitle("", displayMode: .inline)
+                .toolbar(content: {
+                    ToolbarItem(placement: .navigationBarLeading) {
+                        Image("logolight")
+                            .resizable()
+                        .frame(width: homeViewModel.appLogoSize, height: homeViewModel.appLogoSize)
+
+                    }
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                          NavigationLink(destination: EmptyView()) {
+                                Image(systemName: "message")
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(width: homeViewModel.messageLogoSize)
+                            }
+                    }
+                })
                 .onAppear {
                     if UIDevice.current.userInterfaceIdiom == .phone {
                         homeViewModel.storyViewSizeWidth = proxy.size.width * 0.2

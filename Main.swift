@@ -17,7 +17,7 @@ struct PrismmApp: App {
 //            Login()
 //                .environmentObject(viewModel)
 //            UploadPostView()
-            Test_UploadImg_Video()
+            HomeView()
         }
     }
     
