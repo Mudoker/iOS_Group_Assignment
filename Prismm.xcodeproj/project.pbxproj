@@ -18,7 +18,6 @@
 		994153592AAEC873001815C5 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 994153582AAEC873001815C5 /* FirebaseStorage */; };
 		9941535B2AAEC873001815C5 /* FirebaseStorageCombine-Community in Frameworks */ = {isa = PBXBuildFile; productRef = 9941535A2AAEC873001815C5 /* FirebaseStorageCombine-Community */; };
 		AB72B97A2AB019C900DA73F5 /* Extension+CustomCorner.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB72B9792AB019C900DA73F5 /* Extension+CustomCorner.swift */; };
-		AB72B97C2AB01D4700DA73F5 /* Test in Resources */ = {isa = PBXBuildFile; fileRef = AB72B97B2AB01D4700DA73F5 /* Test */; };
 		AB72B97E2AB01DC700DA73F5 /* SignInWithGoogleHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB72B97D2AB01DC700DA73F5 /* SignInWithGoogleHelper.swift */; };
 		AB72B9822AB022E800DA73F5 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = AB72B9812AB022E800DA73F5 /* GoogleService-Info.plist */; };
 		E10C0E292AAAEDBD00AEB220 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E10C0E282AAAEDBD00AEB220 /* Assets.xcassets */; };
@@ -59,6 +58,8 @@
 		E1C665302AB171180095B388 /* EditSecurityField.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1C6652F2AB171180095B388 /* EditSecurityField.swift */; };
 		E1C665322AB171240095B388 /* SettingSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1C665312AB171230095B388 /* SettingSheet.swift */; };
 		E1C665362AB1714C0095B388 /* SettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1C665352AB1714C0095B388 /* SettingView.swift */; };
+		E1C665392AB176630095B388 /* Test+Post.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1C665382AB176630095B388 /* Test+Post.swift */; };
+		E1C6653B2AB176B60095B388 /* UploadPostViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1C6653A2AB176B50095B388 /* UploadPostViewModel.swift */; };
 		E1CED5132AAB42BB00F7F94E /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1CED5122AAB42BB00F7F94E /* Constants.swift */; };
 /* End PBXBuildFile section */
 
@@ -66,7 +67,6 @@
 		2FF0ACC32AAAFA3C0033AEEB /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		2FF0ACC52AAB05120033AEEB /* ProfileToolBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileToolBar.swift; sourceTree = "<group>"; };
 		AB72B9792AB019C900DA73F5 /* Extension+CustomCorner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extension+CustomCorner.swift"; sourceTree = "<group>"; };
-		AB72B97B2AB01D4700DA73F5 /* Test */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Test; sourceTree = "<group>"; };
 		AB72B97D2AB01DC700DA73F5 /* SignInWithGoogleHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignInWithGoogleHelper.swift; sourceTree = "<group>"; };
 		AB72B9812AB022E800DA73F5 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		E10C0E212AAAEDBC00AEB220 /* Prismm.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Prismm.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -112,6 +112,8 @@
 		E1C6652F2AB171180095B388 /* EditSecurityField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditSecurityField.swift; sourceTree = "<group>"; };
 		E1C665312AB171230095B388 /* SettingSheet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingSheet.swift; sourceTree = "<group>"; };
 		E1C665352AB1714C0095B388 /* SettingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingView.swift; sourceTree = "<group>"; };
+		E1C665382AB176630095B388 /* Test+Post.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Test+Post.swift"; sourceTree = "<group>"; };
+		E1C6653A2AB176B50095B388 /* UploadPostViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UploadPostViewModel.swift; sourceTree = "<group>"; };
 		E1CED5122AAB42BB00F7F94E /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -154,7 +156,7 @@
 		E10C0E232AAAEDBC00AEB220 /* Prismm */ = {
 			isa = PBXGroup;
 			children = (
-				AB72B97B2AB01D4700DA73F5 /* Test */,
+				E1C665372AB176100095B388 /* Test */,
 				E1CED5112AAB42A700F7F94E /* Constants */,
 				E19D96812AAB2BEE00E2CFAC /* Extensions */,
 				E17CBF572AAB25DA004A97E7 /* Info.plist */,
@@ -246,6 +248,7 @@
 				E12FA02F2AAC29A0007890A3 /* AuthenticationViewModel.swift */,
 				E1BB6F242AAEC12F00051687 /* HomeViewModel.swift */,
 				E1BB6F312AAEC1DF00051687 /* FollowViewModel.swift */,
+				E1C6653A2AB176B50095B388 /* UploadPostViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -358,6 +361,14 @@
 			path = Fonts;
 			sourceTree = "<group>";
 		};
+		E1C665372AB176100095B388 /* Test */ = {
+			isa = PBXGroup;
+			children = (
+				E1C665382AB176630095B388 /* Test+Post.swift */,
+			);
+			path = Test;
+			sourceTree = "<group>";
+		};
 		E1CED5112AAB42A700F7F94E /* Constants */ = {
 			isa = PBXGroup;
 			children = (
@@ -438,7 +449,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AB72B97C2AB01D4700DA73F5 /* Test in Resources */,
 				E10C0E2C2AAAEDBD00AEB220 /* Preview Assets.xcassets in Resources */,
 				E10C0E292AAAEDBD00AEB220 /* Assets.xcassets in Resources */,
 				AB72B9822AB022E800DA73F5 /* GoogleService-Info.plist in Resources */,
@@ -462,7 +472,9 @@
 				E1BB6F2F2AAEC1C700051687 /* FollowerRow.swift in Sources */,
 				E10C0E412AAAF53E00AEB220 /* CustomTextField.swift in Sources */,
 				E19D96832AAB2C0000E2CFAC /* Extension+String.swift in Sources */,
+				E1C6653B2AB176B60095B388 /* UploadPostViewModel.swift in Sources */,
 				E1BB6F2C2AAEC1C700051687 /* FollowingRow.swift in Sources */,
+				E1C665392AB176630095B388 /* Test+Post.swift in Sources */,
 				E10C0E452AAB1DDA00AEB220 /* SignUp.swift in Sources */,
 				E1BB6F322AAEC1DF00051687 /* FollowViewModel.swift in Sources */,
 				E1C665322AB171240095B388 /* SettingSheet.swift in Sources */,

@@ -26,6 +26,9 @@ class AuthenticationViewModel: ObservableObject {
     @Published var isAlert = false
     
     @Published var isUnlocked = false
+    
+    @ObservedObject var settingVM = SettingViewModel()
+    
     @Published var isDarkMode = false
     @Published var userToken: String {
         didSet {
@@ -40,6 +43,8 @@ class AuthenticationViewModel: ObservableObject {
     init() {
         self.userToken = UserDefaults.standard.string(forKey: "userToken") ?? ""
         //self.userSession = Auth.auth().currentUser
+        
+        self.isDarkMode = settingVM.isDarkMode
     }
     
     // Responsive

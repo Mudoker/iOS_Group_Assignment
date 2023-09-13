@@ -6,13 +6,16 @@
 //
 
 import Foundation
+import Firebase
 
-struct Post {
-    let id: UUID
-    let Date: Date
-    let op: UUID
-    var likers: [UUID]
-    var postImage: String
-    var postcaption: String
-    var postComment: [Comment]
+struct Post: Identifiable, Codable {
+    let id: String
+    let owner: String
+    let postCaption: String
+    var likers: [String]
+    let mediaURL: String?
+    let mimeType: String?
+    let date: Timestamp
+    var user: User?
+    //var postComment: [String]
 }
