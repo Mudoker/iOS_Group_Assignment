@@ -7,8 +7,11 @@
 
 import Foundation
 
-struct Setting {
-    let id: UUID
+struct Setting: Codable {
+    let id: String
     var isDarkMode: Bool
     var isEnglish: Bool
+    var isFaceId: Bool
+    var isPushNotification: Bool
+    var isMessageNotification: Bool
 }
