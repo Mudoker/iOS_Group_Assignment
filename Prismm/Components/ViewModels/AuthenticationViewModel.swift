@@ -39,7 +39,7 @@ class AuthenticationViewModel: ObservableObject {
     
     @Published var userSession : FirebaseAuth.User?
     @Published var currentUser : User?
-    @Published var currentSetting: Setting
+    @Published var currentSetting: Setting?
     
     
     // set user token for bio metric login
@@ -48,7 +48,6 @@ class AuthenticationViewModel: ObservableObject {
         self.userSession = Auth.auth().currentUser
         
         //init setting data
-        self.currentSetting = Setting(id: "m52oyZNbCxVx5SsvFAEPwankeAP2", isDarkMode: false, isEnglish: true, isFaceId: false, isPushNotification: false, isMessageNotification: false)
     }
     
     // Responsive

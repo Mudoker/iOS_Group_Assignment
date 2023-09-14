@@ -13,50 +13,34 @@ import FirebaseFirestoreSwift
 
 class SettingViewModel: ObservableObject{
     //New: update setting data on change of in app setting
-    @Published var isDarkMode = false{
-        didSet{
-            Task{
-                await updateSettingData()
-            }
-        }
-    }
-    @Published var isFaceId = false{
-        didSet{
-            Task{
-                await updateSettingData()
-            }
-        }
-    }
-    @Published var isPushNotification = false{
-        didSet{
-            Task{
-                await updateSettingData()
-            }
-        }
-    }
-    @Published var isMessageNotification = false{
-        didSet{
-            Task{
-                await updateSettingData()
-            }
-        }
-    }
-    @Published var language = "en"{
-        didSet{
-            Task{
-                await updateSettingData()
-            }
-        }
-    }
+    @Published var isDarkMode = false
+    @Published var isFaceId = false
+    @Published var isPushNotification = false
+    @Published var isMessageNotification = false
+    @Published var language = "en"
+    
+//    {
+//        didSet{
+//            Task{
+//                await updateSettingData()
+//            }
+//        }
+//    }
+    
+    
     
     //BE setting test
-    let uid = "m52oyZNbCxVx5SsvFAEPwankeAP2" //user id will be set when login
-    init(isDarkMode: Bool = false, isFaceId: Bool = false, isPushNotification: Bool = false, isMessageNotification: Bool = false, language: String = "en") {
-        self.isDarkMode = isDarkMode
-        self.isFaceId = isFaceId
-        self.isPushNotification = isPushNotification
-        self.isMessageNotification = isMessageNotification
-        self.language = language
+    @Published var  uid : String = "m52oyZNbCxVx5SsvFAEPwankeAP2"//hard code the data need to consider about the data flow from beginning
+    
+    func setSetting(currentSetting: Setting) {
+
+        self.uid = currentSetting.id
+        self.isDarkMode = currentSetting.isDarkMode
+        self.isFaceId = currentSetting.isFaceId
+        self.isPushNotification = currentSetting.isPushNotification
+        self.isMessageNotification = currentSetting.isMessageNotification
+        self.language = currentSetting.isEnglish ? "en" : "vi"
+        
     }
     
     
@@ -72,7 +56,7 @@ class SettingViewModel: ObservableObject{
     
     func updateSettingData() async{
         guard let snapshot = try? await Firestore.firestore().collection("settings").document(uid).getDocument() else {return}
-        let setting = Setting(id: self.uid, isDarkMode: self.isDarkMode, isEnglish: language == "en" ? true : false, isFaceId: self.isFaceId, isPushNotification: self.isPushNotification, isMessageNotification: self.isMessageNotification)
+        let setting = Setting(id: self.uid, isDarkMode: self.isDarkMode, isEnglish: self.language == "en" ? true : false, isFaceId: self.isFaceId, isPushNotification: self.isPushNotification, isMessageNotification: self.isMessageNotification)
         do{
             let encodedsetting = try Firestore.Encoder().encode(setting)
             
@@ -86,6 +70,6 @@ class SettingViewModel: ObservableObject{
          }
         
         
-
+        print("Updated succcessfully")
     }
 }

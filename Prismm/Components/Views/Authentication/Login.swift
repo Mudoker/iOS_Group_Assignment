@@ -106,7 +106,8 @@ struct Login: View {
                             )
                         }
                         .navigationDestination(isPresented: $authVM.isUnlocked) {
-                            HomeView(uploadVM: authVM.uploadVM)
+                            //HomeView(uploadVM: authVM.uploadVM)
+                            SettingView( authenVM: authVM)
                                 .navigationBarBackButtonHidden(true)
                         }
                         

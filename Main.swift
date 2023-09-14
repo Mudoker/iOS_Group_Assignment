@@ -15,8 +15,8 @@ struct PrismmApp: App {
     var body: some Scene {
         WindowGroup {
             //HomeView()
-            //Login()
-            SettingView()
+            Login()
+            //SettingView()
                 .environmentObject(viewModel)
         }
     }

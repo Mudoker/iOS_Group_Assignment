@@ -9,11 +9,11 @@ import SwiftUI
 
 struct SettingSheet: View {
     @Binding var isSheetPresented: Bool
-    @ObservedObject var settingVM = SettingViewModel()
+    @ObservedObject var settingVM:SettingViewModel
     var body: some View {
 //        NavigationView {
         VStack (alignment: .center) {
-                Text("Accont Manager")
+                Text("Account Manager")
                 .bold()
                 .padding(.horizontal)
                 .font(.title)
@@ -101,6 +101,6 @@ struct ConnectionsView: View {
 
 struct SettingSheet_Previews: PreviewProvider {
     static var previews: some View {
-        SettingSheet(isSheetPresented: .constant(true))
+        SettingSheet(isSheetPresented: .constant(true),settingVM: SettingViewModel())
     }
 }

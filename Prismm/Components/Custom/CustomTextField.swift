@@ -105,6 +105,8 @@ struct CustomTextField: View {
             .foregroundColor(isDarkMode ? .white : .black)
             .padding(.horizontal)
             .onAppear {
+                
+                
                 textFieldSizeHeight = textFieldSizeHeight
                 textFieldCorner = textFieldCorner
             }

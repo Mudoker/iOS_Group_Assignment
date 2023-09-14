@@ -24,7 +24,7 @@ struct SettingView : View {
     var languages = ["English, Vietnamese"]
     @State private var isShowingSignOutAlert = false
     @State private var isSignOut = false
-    @ObservedObject var authenVM = AuthenticationViewModel()
+    @ObservedObject var authenVM :AuthenticationViewModel
     @StateObject var settingVM = SettingViewModel()
     
     @State private var cornerRadiusSize: CGFloat = 0
@@ -104,6 +104,12 @@ struct SettingView : View {
                                         Text("Vietnamese").tag("vi")
                                     }
                                     .pickerStyle(MenuPickerStyle())
+                                    .onChange(of: settingVM.language) { newValue in
+                                        Task{
+                                            await settingVM.updateSettingData()
+                                        }
+                                        
+                                    }
                                     
                                 }
                                 .padding(.bottom)
@@ -122,6 +128,12 @@ struct SettingView : View {
                                     
                                     Toggle("", isOn: $settingVM.isDarkMode)
                                         .padding(.vertical)
+                                        .onChange(of: settingVM.isDarkMode) { newValue in
+                                            Task{
+                                                await settingVM.updateSettingData()
+                                            }
+                                            
+                                        }
                                 }
                                 .padding(.bottom)
                                 
@@ -151,6 +163,13 @@ struct SettingView : View {
                                     Spacer()
                                     
                                     Toggle("", isOn: $settingVM.isPushNotification)
+                                        .onChange(of: settingVM.isPushNotification) { newValue in
+                                            Task{
+                                                await settingVM.updateSettingData()
+                                            }
+                                            
+                                        }
+                                    
                                 }
                                 .padding(.bottom)
                                 
@@ -170,6 +189,12 @@ struct SettingView : View {
                                     
                                     Toggle("", isOn: $settingVM.isMessageNotification)
                                         .padding(.vertical)
+                                        .onChange(of: settingVM.isMessageNotification) { newValue in
+                                            Task{
+                                                await settingVM.updateSettingData()
+                                            }
+                                            
+                                        }
                                 }
                                 .padding(.bottom)
                                 
@@ -309,6 +334,8 @@ struct SettingView : View {
                             }
                         }
                         .onAppear {
+                            settingVM.setSetting(currentSetting: authenVM.currentSetting ??  Setting(id: "asdasd", isDarkMode: false, isEnglish: true, isFaceId: false, isPushNotification: false, isMessageNotification: false))
+                            
                             if UIDevice.current.userInterfaceIdiom == .phone {
                                 self.cornerRadiusSize = proxy.size.width/40
                                 self.accountSettingSizeHeight = proxy.size.width/4
@@ -339,8 +366,8 @@ struct SettingView : View {
     }
 }
 
-struct SettingView_Previews: PreviewProvider {
-    static var previews: some View {
-        SettingView()
-    }
-}
+//struct SettingView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        SettingView()
+//    }
+//}
