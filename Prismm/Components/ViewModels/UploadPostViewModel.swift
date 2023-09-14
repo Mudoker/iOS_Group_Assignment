@@ -88,48 +88,136 @@ class UploadPostViewModel: ObservableObject {
 //        }
 //    }
     
-    @MainActor
-    func fetchPost() async throws {
-        let post = try await Firestore.firestore().collection("posts").getDocuments()
-        self.fetched_post = post.documents.compactMap { document in
-            do {
-                
-            
-                return try document.data(as: Post.self)
-            } catch {
-                print("Error decoding document: \(error)")
-                return nil
-            }
+    
+    
+    func createComment(content: String, commentor: String) async throws -> Comment?{
+            let commentRef = Firestore.firestore().collection("test_comments").document()
+            let comment = Comment(id: commentRef.documentID, content: content, commentor: commentor)
+            guard let encodedComment = try? Firestore.Encoder().encode(comment) else {return nil}
+            try await commentRef.setData(encodedComment)
+            return comment
         }
         
-        for i in 0..<fetched_post.count {
-            let post = fetched_post[i]
-            let owner = post.owner
-            let postUser = try await UserService.fetchUser(withUid: owner)
-            fetched_post[i].user = postUser
-        }
+    func createPost(owner: String, postCaption: String?, mediaURL: String?, mimeType: String?) async throws -> Post? {
+        let postRef = Firestore.firestore().collection("test_posts").document()
+        let post = Post(id: postRef.documentID, owner: owner, postCaption: postCaption, mediaURL: mediaURL, mimeType: mimeType, date: Timestamp())
+        guard let encodedPost = try? Firestore.Encoder().encode(post) else {return nil}
+        try await postRef.setData(encodedPost)
+        return post
     }
     
+    func addCommentToPost(comment: Comment, postID: String) async throws {
+            do {
+                // Fetch the post document
+                let postRef = Firestore.firestore().collection("test_posts").document(postID)
+                let post = try await postRef.getDocument().data(as: Post.self)
+                
+                // Ensure you have successfully fetched the post data
+                var updatedPost = post
+                
+                // Update the post's comment array
+                updatedPost.postComment.append(comment.id)
+                
+                // Update the Firestore document with the updated data
+                try postRef.setData(from: updatedPost) { error in
+                    if let error = error {
+                        print("Error updating document: \(error)")
+                    } else {
+                        print("Document successfully updated.")
+                    }
+                }
+            } catch {
+                throw error
+            }
+        }
+    
+    
+    
+    
+    @MainActor
+        func fetchPost() async throws {
+            let post = try await Firestore.firestore().collection("test_posts").getDocuments()
+            self.fetched_post = post.documents.compactMap { document in
+                do {
+                    
+                
+                    return try document.data(as: Post.self)
+                } catch {
+                    print("Error decoding document: \(error)")
+                    return nil
+                }
+            }
+            
+            for i in 0..<fetched_post.count {
+                for likerID in fetched_post[i].likers {
+                    let liker = try await UserService.fetchUser(withUid: likerID ?? "")
+                    fetched_post[i].unwrapLikers.append(liker)
+                }
+                
+                for commentID in fetched_post[i].postComment {
+                    let comment = try await UserService.fetchComment(withUid: commentID ?? "")
+                    fetched_post[i].unwrapComments.append(comment)
+                }
+                
+                let post = fetched_post[i]
+                let owner = post.owner
+                let postUser = try await UserService.fetchUser(withUid: owner)
+                fetched_post[i].user = postUser
+            }
+        }
+
+        func followOtherUser(userID: String) async throws {
+            //var followingUser = try await UserService.fetchUser(withUid: userID)
+            //authVM.currentUser?.following.append(userID)
+            //followingUser.followers.append(authVM.currentUser?.id)
+
+            let currentUserRef = Firestore.firestore().collection("users").document("3WBgDcMgEQfodIbaXWTBHvtjYCl2")
+            var currentUser = try await currentUserRef.getDocument().data(as: User.self)
+            currentUser.following.append(userID)
+
+            let otherUserRef = Firestore.firestore().collection("users").document(userID)
+            var otherUser = try await otherUserRef.getDocument().data(as: User.self)
+            otherUser.followers.append(currentUser.id)
+
+            try currentUserRef.setData(from: currentUser) { error in
+                if let error = error {
+                    print("Error updating document: \(error)")
+                } else {
+                    print("Document successfully updated.")
+                }
+            }
+
+            try otherUserRef.setData(from: otherUser) { error in
+                if let error = error {
+                    print("Error updating document: \(error)")
+                } else {
+                    print("Document successfully updated.")
+                }
+            }
+        }
+    
+    
+    
     func uploadingPost() async throws {
-        guard let uid = Auth.auth().currentUser?.uid else {
-            print("No user account")
-            return
+            guard let uid = Auth.auth().currentUser?.uid else {
+                print("No user account")
+                return
+            }
+            
+            guard let media = selectedMedia else { return }
+            
+            guard let mediaData = try await media.loadTransferable(type: Data.self) else { return }
+            
+            if mediaData.count > 25_000_000 {
+                print("Selected file too large: \(mediaData)")
+            } else {
+                guard let mediaUrl = try await uploadMediaToFireBase(data: mediaData) else { return }
+                let postRef = Firestore.firestore().collection("posts").document()
+                let post = try? await createPost(owner: uid, postCaption: "Hello world", mediaURL: mediaUrl, mimeType: mimeType(for: mediaData))
+                guard let encodedPost = try? Firestore.Encoder().encode(post) else {return}
+                try await postRef.setData(encodedPost)
+            }
         }
-        
-        guard let media = selectedMedia else { return }
-        
-        guard let mediaData = try await media.loadTransferable(type: Data.self) else { return }
-        
-        if mediaData.count > 25_000_000 {
-            print("Selected file too large: \(mediaData)")
-        } else {
-            guard let mediaUrl = try await uploadMediaToFireBase(data: mediaData) else { return }
-            let postRef = Firestore.firestore().collection("posts").document()
-            let post = Post(id: postRef.documentID, owner: uid, postCaption: "Hello", likers: [], mediaURL: mediaUrl, mimeType: mimeType(for: mediaData), date: Timestamp())
-            guard let encodedPost = try? Firestore.Encoder().encode(post) else {return}
-            try await postRef.setData(encodedPost)
-        }
-    }
     
     func mimeType(for data: Data) -> String {
         var b: UInt8 = 0

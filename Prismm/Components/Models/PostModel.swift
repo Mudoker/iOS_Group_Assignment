@@ -11,11 +11,13 @@ import Firebase
 struct Post: Identifiable, Codable {
     let id: String
     let owner: String
-    let postCaption: String
-    var likers: [String]
+    let postCaption: String?
+    var likers: [String?] = []
     let mediaURL: String?
     let mimeType: String?
     let date: Timestamp
+    var postComment: [String?] = []
     var user: User?
-    //var postComment: [String]
+    var unwrapLikers: [User?] = []
+    var unwrapComments: [Comment?] = []
 }

@@ -9,6 +9,7 @@ import Foundation
 import SwiftUI
 import AVKit
 import Kingfisher
+import Firebase
 
 struct PostView: View {
     @State private var commentContent = ""
@@ -19,7 +20,6 @@ struct PostView: View {
     @ObservedObject var uploadVM = UploadPostViewModel()
     
     var body: some View {
-        //        GeometryReader {proxy in
         VStack {
             //Post info.
             HStack {
@@ -33,7 +33,8 @@ struct PostView: View {
                                 .background(Circle().foregroundColor(Color.gray))
                         } else {
                             // Handle image
-                            Text("Video detected!")
+                            Image(systemName: "person.circle.fill")
+                                .font(.system(size: 48))
                         }
                     } else {
                         // Handle the case where the mimeType is nil
@@ -45,13 +46,13 @@ struct PostView: View {
                 }
                 
                 
-                VStack (alignment: .leading, spacing: 1) {
+                VStack (alignment: .leading, spacing: UIScreen.main.bounds.height * 0.01) {
                     if let user = post.user {
                         Text(user.username)
                             .font(Font.system(size: homeViewModel.usernameFont, weight: .semibold))
                     }
                     
-                    Text("8th September ")
+                    Text(formatTimeDifference(from: post.date))
                         .font(Font.system(size: homeViewModel.usernameFont, weight: .medium))
                         .opacity(0.3)
                 }
@@ -69,7 +70,7 @@ struct PostView: View {
             
             //Caption
             HStack {
-                Text(post.postCaption)
+                Text(post.postCaption ?? "")
                     .font(homeViewModel.captionFont)
                 
                 Spacer()
@@ -87,7 +88,7 @@ struct PostView: View {
                             
                             VideoPlayer(player: player)
                                 .frame(width: UIScreen.main.bounds.width)
-                                .frame(minHeight: UIScreen.main.bounds.height / 4)
+                                .frame(minHeight: UIScreen.main.bounds.height * 0.4)
                                 .frame(maxHeight: UIScreen.main.bounds.height * 0.5)
                                 .onAppear {
                                     // Optionally, you can play the video when it appears on the screen.
@@ -97,6 +98,7 @@ struct PostView: View {
                             KFImage(mediaURL)
                                 .resizable()
                                 .frame(width: UIScreen.main.bounds.width)
+                                .frame(minHeight: UIScreen.main.bounds.height * 0.4)
                                 .frame(maxHeight: UIScreen.main.bounds.height * 0.5)
                                 .background(Color.gray)
                                 .clipShape(Rectangle())
@@ -113,7 +115,7 @@ struct PostView: View {
             
             
             //Operations menu.
-            HStack {
+            HStack (spacing: UIScreen.main.bounds.width * 0.02) {
                 HStack {
                     Image(systemName: "hand.thumbsup")
                         .resizable()
@@ -186,6 +188,30 @@ struct PostView: View {
                     )
             }
             .padding(.horizontal)
+        }
+    }
+    
+    func formatTimeDifference(from date: Timestamp) -> String {
+        let currentDate = Date()
+        let postDate = date.dateValue()
+        
+        let calendar = Calendar.current
+        let components = calendar.dateComponents([.year, .month, .day, .hour, .minute, .second], from: postDate, to: currentDate)
+        
+        if let year = components.year, year > 0 {
+            return "\(year)y ago"
+        } else if let month = components.month, month > 0 {
+            return "\(month)m ago"
+        } else if let day = components.day, day > 0 {
+            return "\(day)d ago"
+        } else if let hour = components.hour, hour > 0 {
+            return "\(hour)h ago"
+        } else if let minute = components.minute, minute > 0 {
+            return "\(minute)m ago"
+        } else if let second = components.second, second > 0 {
+            return "\(second)s ago"
+        } else {
+            return "Just now"
         }
     }
 }
