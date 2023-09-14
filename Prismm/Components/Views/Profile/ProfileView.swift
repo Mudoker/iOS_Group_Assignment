@@ -101,60 +101,60 @@ struct ProfileView: View {
                 
                 
                 //Highlight stories
-//                if haveHighlight {
-//
-//                }else{
-//                    VStack(alignment: .leading){
-//                        HStack{
-//
-//                            Text(LocalizedStringKey("Story highlights"))
-//                                .fontWeight(.bold)
-//
-//                            Spacer()
-//
-//                            Button {
-//
-//                                isSample.toggle()
-//
-//
-//                            } label: {
-//                                Image(systemName: isSample ? "chevron.up" : "chevron.down")
-//                                    .foregroundColor(.black)
-//                            }
-//
-//                        }
-//
-//                        //Stories sample
-//                        if isSample {
-//
-//                            Text(LocalizedStringKey("Keep your favourite stories on your profile"))
-//
-//                            VStack{
-//
-//                                ZStack{
-//                                    Image(systemName: "plus")
-//                                        .resizable()
-//                                        .scaledToFit()
-//                                        .frame(width: 40)
-//                                }
-//                                .frame(width: reader.size.width/5,height: reader.size.width/5)
-//                                .clipShape(Circle())
-//                                .overlay(Circle().stroke(Color.black).shadow(radius: 5))
-//
-//                                Text(LocalizedStringKey("New"))
-//                            }
-//
-//                        }else{
-//                            Divider()
-//                                .frame(height: 2)
-//                        }
-//
-//
-//                    }
-//                    .padding(.top,20)
-//
-//
-//                }
+                if haveHighlight {
+
+                }else{
+                    VStack(alignment: .leading){
+                        HStack{
+
+                            Text(LocalizedStringKey("Story highlights"))
+                                .fontWeight(.bold)
+
+                            Spacer()
+
+                            Button {
+
+                                isSample.toggle()
+
+
+                            } label: {
+                                Image(systemName: isSample ? "chevron.up" : "chevron.down")
+                                    .foregroundColor(.black)
+                            }
+
+                        }
+
+                        //Stories sample
+                        if isSample {
+
+                            Text(LocalizedStringKey("Keep your favourite stories on your profile"))
+
+                            VStack{
+
+                                ZStack{
+                                    Image(systemName: "plus")
+                                        .resizable()
+                                        .scaledToFit()
+                                        .frame(width: 40)
+                                }
+                                .frame(width: reader.size.width/5,height: reader.size.width/5)
+                                .clipShape(Circle())
+                                .overlay(Circle().stroke(Color.black).shadow(radius: 5))
+
+                                Text(LocalizedStringKey("New"))
+                            }
+
+                        }else{
+                            Divider()
+                                .frame(height: 2)
+                        }
+
+
+                    }
+                    .padding(.top,20)
+
+
+                }
                 
                 //tab changing
                 HStack{
