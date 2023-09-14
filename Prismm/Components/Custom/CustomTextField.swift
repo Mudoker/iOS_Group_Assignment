@@ -24,7 +24,7 @@ struct CustomTextField: View {
     @Binding var isPassword: Bool
     @Binding var textFieldPlaceHolderFont: Font
     @Binding var isDarkMode: Bool
-    
+    var horizontalPaddingSize: CGFloat = 16
     // ViewModel
     @ObservedObject var authenticationViewModel = AuthenticationViewModel()
     @ObservedObject var settingVM = SettingViewModel()
@@ -103,7 +103,7 @@ struct CustomTextField: View {
                 }
             }
             .foregroundColor(isDarkMode ? .white : .black)
-            .padding(.horizontal)
+            .padding(.horizontal, horizontalPaddingSize)
             .onAppear {
                 textFieldSizeHeight = textFieldSizeHeight
                 textFieldCorner = textFieldCorner
