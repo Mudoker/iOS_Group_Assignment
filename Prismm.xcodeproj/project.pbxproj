@@ -15,6 +15,10 @@
 		990334FC2AB237CC00159F22 /* Test+Comment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 990334FB2AB237CC00159F22 /* Test+Comment.swift */; };
 		990334FE2AB2C55B00159F22 /* ProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 990334FD2AB2C55B00159F22 /* ProfileViewModel.swift */; };
 		990335002AB2EB9200159F22 /* Test+Profile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 990334FF2AB2EB9200159F22 /* Test+Profile.swift */; };
+		990335022AB2FD5600159F22 /* Test+DeleteComment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 990335012AB2FD5600159F22 /* Test+DeleteComment.swift */; };
+		990335042AB3122A00159F22 /* Test+DeletePost.swift in Sources */ = {isa = PBXBuildFile; fileRef = 990335032AB3122A00159F22 /* Test+DeletePost.swift */; };
+		990335082AB40EF700159F22 /* Test+Like+Unlike.swift in Sources */ = {isa = PBXBuildFile; fileRef = 990335072AB40EF700159F22 /* Test+Like+Unlike.swift */; };
+		9903350B2AB41A7600159F22 /* Test+EditPost.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9903350A2AB41A7600159F22 /* Test+EditPost.swift */; };
 		994153512AAEC873001815C5 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 994153502AAEC873001815C5 /* FirebaseAuth */; };
 		994153532AAEC873001815C5 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 994153522AAEC873001815C5 /* FirebaseFirestore */; };
 		994153552AAEC873001815C5 /* FirebaseFirestoreCombine-Community in Frameworks */ = {isa = PBXBuildFile; productRef = 994153542AAEC873001815C5 /* FirebaseFirestoreCombine-Community */; };
@@ -82,6 +86,10 @@
 		990334FB2AB237CC00159F22 /* Test+Comment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Test+Comment.swift"; sourceTree = "<group>"; };
 		990334FD2AB2C55B00159F22 /* ProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewModel.swift; sourceTree = "<group>"; };
 		990334FF2AB2EB9200159F22 /* Test+Profile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Test+Profile.swift"; sourceTree = "<group>"; };
+		990335012AB2FD5600159F22 /* Test+DeleteComment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Test+DeleteComment.swift"; sourceTree = "<group>"; };
+		990335032AB3122A00159F22 /* Test+DeletePost.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Test+DeletePost.swift"; sourceTree = "<group>"; };
+		990335072AB40EF700159F22 /* Test+Like+Unlike.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Test+Like+Unlike.swift"; sourceTree = "<group>"; };
+		9903350A2AB41A7600159F22 /* Test+EditPost.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Test+EditPost.swift"; sourceTree = "<group>"; };
 		AB72B9792AB019C900DA73F5 /* Extension+CustomCorner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extension+CustomCorner.swift"; sourceTree = "<group>"; };
 		AB72B97D2AB01DC700DA73F5 /* SignInWithGoogleHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignInWithGoogleHelper.swift; sourceTree = "<group>"; };
 		AB72B9812AB022E800DA73F5 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
@@ -416,6 +424,10 @@
 				990334F92AB2375300159F22 /* Test+Follow.swift */,
 				990334FB2AB237CC00159F22 /* Test+Comment.swift */,
 				990334FF2AB2EB9200159F22 /* Test+Profile.swift */,
+				990335012AB2FD5600159F22 /* Test+DeleteComment.swift */,
+				990335032AB3122A00159F22 /* Test+DeletePost.swift */,
+				990335072AB40EF700159F22 /* Test+Like+Unlike.swift */,
+				9903350A2AB41A7600159F22 /* Test+EditPost.swift */,
 			);
 			path = Test;
 			sourceTree = "<group>";
@@ -538,6 +550,7 @@
 				E1C665422AB1BBCF0095B388 /* UserService.swift in Sources */,
 				E1C6653B2AB176B60095B388 /* UploadPostViewModel.swift in Sources */,
 				E1BB6F2C2AAEC1C700051687 /* FollowingRow.swift in Sources */,
+				990335042AB3122A00159F22 /* Test+DeletePost.swift in Sources */,
 				E1C665392AB176630095B388 /* Test+Post.swift in Sources */,
 				E10C0E452AAB1DDA00AEB220 /* SignUp.swift in Sources */,
 				E11F6E962AB32DB300989514 /* SearchView.swift in Sources */,
@@ -549,6 +562,7 @@
 				E10C0E432AAAFFA300AEB220 /* Login.swift in Sources */,
 				E17E8CE12AAC6ABF00EF5EFB /* SettingModel.swift in Sources */,
 				E12FA0362AAC2EE3007890A3 /* HomeView.swift in Sources */,
+				990335082AB40EF700159F22 /* Test+Like+Unlike.swift in Sources */,
 				E1BB6F252AAEC12F00051687 /* HomeViewModel.swift in Sources */,
 				E17E8CF92AAC85E500EF5EFB /* PostGridView.swift in Sources */,
 				E12FA03A2AAC2EFB007890A3 /* StoryView.swift in Sources */,
@@ -561,6 +575,7 @@
 				E11F6E982AB32F6200989514 /* NotificationView.swift in Sources */,
 				990334FC2AB237CC00159F22 /* Test+Comment.swift in Sources */,
 				E17E8CE52AAC6C5800EF5EFB /* CommentModel.swift in Sources */,
+				9903350B2AB41A7600159F22 /* Test+EditPost.swift in Sources */,
 				AB72B97A2AB019C900DA73F5 /* Extension+CustomCorner.swift in Sources */,
 				E17E8CE72AAC6CA400EF5EFB /* StoryModel.swift in Sources */,
 				AB72B97E2AB01DC700DA73F5 /* SignInWithGoogleHelper.swift in Sources */,
@@ -576,6 +591,7 @@
 				990335002AB2EB9200159F22 /* Test+Profile.swift in Sources */,
 				2FF0ACC42AAAFA3C0033AEEB /* ProfileView.swift in Sources */,
 				E1BB6F212AAEC01A00051687 /* PreviewUserChat.swift in Sources */,
+				990335022AB2FD5600159F22 /* Test+DeleteComment.swift in Sources */,
 				E17E8CF82AAC85E500EF5EFB /* ProfileInfoBlock.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
