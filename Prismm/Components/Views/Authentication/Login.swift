@@ -178,7 +178,7 @@ struct Login: View {
                                             )
                                     }
                                     .navigationDestination(isPresented: $authVM.isUnlockedGoogle) {
-                                        HomeView(uploadVM: authVM.uploadVM)
+                                        TabBar(uploadVM: authVM.uploadVM)
                                             .navigationBarBackButtonHidden(true)
                                     }
                                 }

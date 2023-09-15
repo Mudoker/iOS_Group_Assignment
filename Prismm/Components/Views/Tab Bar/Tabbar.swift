@@ -15,7 +15,8 @@ import SwiftUI
 struct TabBar: View {
     // Control state
     @State private var tabSelection = 0
-    
+    @ObservedObject var uploadVM = UploadPostViewModel()
+
     // Localization
     @AppStorage("selectedLanguage") var selectedLanguage = "en"
     
@@ -33,14 +34,19 @@ struct TabBar: View {
                 .tag(1)
                 
                 NavigationView {
-                    NotificationView()
+                    AllChat()
                 }
                 .tag(2)
                 
                 NavigationView {
-                    ProfileView()
+                    NotificationView()
                 }
                 .tag(3)
+                
+                NavigationView {
+                    ProfileView()
+                }
+                .tag(4)
             }
             .environment(\.locale, Locale(identifier: selectedLanguage)) // Localization
             .overlay(alignment: .bottom) {
@@ -60,14 +66,19 @@ struct TabBar: View {
                     .tag(1)
                     
                     NavigationView {
+                        AllChat()
+                    }
+                    .tag(2)
+                    
+                    NavigationView {
                         NotificationView()
                     }
-                    .tag(1)
+                    .tag(3)
                     
                     NavigationView {
                         ProfileView()
                     }
-                    .tag(3)
+                    .tag(4)
                     
                 }
                 .environment(\.locale, Locale(identifier: selectedLanguage)) // Localization
@@ -93,6 +104,7 @@ struct CustomTabbar: View {
     let tabItems: [(image: String, page: String)] = [
         ("house", "Dashboard"),
         ("message", "Message"),
+        ("magnifyingglass", "Explore"),
         ("bell", "Notification"),
         ("person", "Profile"),
     ]
@@ -108,10 +120,11 @@ struct CustomTabbar: View {
                     // Push view
                     Spacer()
                     
-                    HStack(spacing: (proxy.size.width / 2) / CGFloat(tabItems.count + 1)) {
-                        ForEach(0..<4) { index in // Use tabItems.count here
+                    HStack(spacing: (proxy.size.width / 2.5) / CGFloat(tabItems.count + 1)) {
+                        ForEach(0..<5) { index in // Use tabItems.count here
                             Button {
                                 tabSelection = index // Update the binding
+                                print(tabSelection)
                             } label: {
                                 VStack {
                                     Image(systemName: tabItems[index].image)

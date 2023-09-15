@@ -18,6 +18,8 @@ struct PostView: View {
     // View model
     @ObservedObject var homeViewModel = HomeViewModel()
     @ObservedObject var uploadVM = UploadPostViewModel()
+    @State var isCommentViewIphone: Bool = false
+    @State var isCommentViewIpad: Bool = false
     
     var body: some View {
         VStack {
@@ -117,7 +119,7 @@ struct PostView: View {
             //Operations menu.
             HStack (spacing: UIScreen.main.bounds.width * 0.02) {
                 HStack {
-                    Image(systemName: "hand.thumbsup")
+                    Image(systemName: "heart")
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                         .frame(width: homeViewModel.postStatsImageSize)
@@ -128,20 +130,28 @@ struct PostView: View {
                 }
                 .padding(.horizontal)
                 
-                HStack {
-                    Image(systemName: "bubble.right")
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: homeViewModel.postStatsImageSize)
-                    
-                    Text("15")
-                        .font(Font.system(size: homeViewModel.postStatsFontSize, weight: .light))
-                        .opacity(0.6)
+                Button(action: {
+                    if UIDevice.current.userInterfaceIdiom == .pad {
+                        isCommentViewIpad.toggle()
+                    } else {
+                        isCommentViewIphone.toggle()
+                    }                    
+                }) {
+                    HStack {
+                        Image(systemName: "bubble.right")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: homeViewModel.postStatsImageSize)
+                        
+                        Text("15")
+                            .font(Font.system(size: homeViewModel.postStatsFontSize, weight: .light))
+                            .opacity(0.6)
+                    }
                 }
                 
                 Spacer()
                 
-                Image(systemName: "heart")
+                Image(systemName: "archivebox")
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(width: homeViewModel.postStatsImageSize)
@@ -188,6 +198,12 @@ struct PostView: View {
                     )
             }
             .padding(.horizontal)
+        }
+        .sheet(isPresented: $isCommentViewIpad) {
+            CommentView(isShowComment: $isCommentViewIpad)
+        }
+        .fullScreenCover(isPresented: $isCommentViewIphone) {
+            CommentView(isShowComment: $isCommentViewIphone)
         }
     }
     

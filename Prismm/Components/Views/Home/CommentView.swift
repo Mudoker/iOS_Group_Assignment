@@ -24,7 +24,7 @@ struct CommentView: View {
     @State var isDarkMode = false
     @State var isAddingComment = false
     @State var selectedFilter = "Newest"
-    
+    @Binding var isShowComment: Bool
     let emojis = ["👍", "❤️", "😍", "🤣", "😯", "😭", "😡", "👽", "💩", "💀"]
     
     var body: some View {
@@ -37,7 +37,6 @@ struct CommentView: View {
                         .bold()
                     
                     HStack {
-                        Spacer()
                         Menu {
                             Picker(selection: $selectedFilter, label: Text("Please choose a sorting option")) {
                                 Text("Newest").tag("Newest")
@@ -46,9 +45,17 @@ struct CommentView: View {
                         } label: {
                             Image(systemName: "line.3.horizontal.decrease")
                                 .font(.title)
-                                .padding(.horizontal)
+                        }
+                        Spacer()
+                        
+                        Button(action: {
+                            isShowComment = false // Close the sheet
+                        }) {
+                            Image(systemName: "xmark.circle.fill") // You can use any close button icon
+                                .font(.title)
                         }
                     }
+                    .padding(.horizontal)
                 }
                 
                 ScrollView(showsIndicators: false) {
@@ -139,6 +146,6 @@ struct CommentView: View {
 
 struct CommentView_Previews: PreviewProvider {
     static var previews: some View {
-        CommentView()
+        CommentView(isShowComment: .constant(true))
     }
 }
