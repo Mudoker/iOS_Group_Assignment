@@ -13,6 +13,7 @@ struct HomeView: View {
     @State var isCommentViewIphone = false
     @State var isCommentViewIpad = false
 
+    
     var body: some View {
         GeometryReader { proxy in
             VStack {
@@ -49,10 +50,7 @@ struct HomeView: View {
                 }
                 ScrollView(.vertical, showsIndicators: false) {
                     Divider()
-                    
-                    
-                    //                            Divider()
-                    
+                                
                     ScrollView(.horizontal, showsIndicators: false) {
                         HStack(spacing: 40) {
                             ForEach(0..<5, id: \.self) { _ in
@@ -106,10 +104,13 @@ struct HomeView: View {
                         homeViewModel.usernameFont = 25
                         homeViewModel.captionFont = .title
                     }
+                    Task {
+                        uploadVM.fetchPostRealTime()
+                    }
                 }
                 .refreshable {
                     Task {
-                        try await uploadVM.fetchPost()
+                        uploadVM.fetchPostRealTime()
                     }
                 }
             }

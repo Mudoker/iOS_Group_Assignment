@@ -17,7 +17,7 @@ import FirebaseFirestoreSwift
 class UploadPostViewModel: ObservableObject {
     //@Published var fetched_media = [Media]()
     @Published var fetched_post = [Post]()
-    
+    private var listenerRegistration: ListenerRegistration?
     @Published var selectedMedia: PhotosPickerItem? {
         didSet {
             Task {
@@ -28,13 +28,31 @@ class UploadPostViewModel: ObservableObject {
     
     init() {
         Task {
-            try await fetchPost()
+            try await fetchPostRealTime()
         }
     }
     
     @Published var postImage: Image?
     @Published var selectedVideoURL: URL? // Store the video URL
-
+    
+    //    func uploadMediaFromLocal() async throws {
+    //        guard let media = selectedMedia else { return }
+    //
+    //        guard let mediaData = try await media.loadTransferable(type: Data.self) else { return }
+    //
+    //        if mediaData.count > 25_000_000 {
+    //            print("Selected file too large: \(mediaData)")
+    //        } else {
+    //            print("Approved: \(mediaData)")
+    //        }
+    //
+    //        guard let mediaUrl = try await uploadMediaToFireBase(data: mediaData) else { return }
+    //
+    //        try await Firestore.firestore().collection("media").document().setData(["mediaUrl" : mediaUrl, "mimeType" : mimeType(for: mediaData)])
+    //
+    //
+    //        print (" load ok ")
+    //    }
     
     func uploadMediaToFireBase(data: Data) async throws -> String? {
         let fileName = UUID().uuidString
@@ -88,20 +106,41 @@ class UploadPostViewModel: ObservableObject {
         return post
     }
     
+    func editPost(postID: String, postCaption: String?, mediaURL: String?, mimeType: String?) async throws {
+        do {
+            let postRef = Firestore.firestore().collection("test_posts").document(postID)
+            var post = try await postRef.getDocument().data(as: Post.self)
+            
+            post.postCaption = postCaption
+            post.mediaURL = mediaURL
+            post.mimeType = mimeType
+            post.date = Timestamp()
+            
+            try postRef.setData(from: post) { error in
+                if let error = error {
+                    print("Error updating document: \(error)")
+                } else {
+                    print("Document successfully updated.")
+                }
+            }
+        } catch {
+            throw error
+        }
+    }
+    
+    // Add comment to post
     func addCommentToPost(comment: Comment, postID: String) async throws {
         do {
             // Fetch the post document
             let postRef = Firestore.firestore().collection("test_posts").document(postID)
-            let post = try await postRef.getDocument().data(as: Post.self)
+            var post = try await postRef.getDocument().data(as: Post.self)
             
-            // Ensure you have successfully fetched the post data
-            var updatedPost = post
             
             // Update the post's comment array
-            updatedPost.postComment.append(comment.id)
+            post.postComment.append(comment.id)
             
             // Update the Firestore document with the updated data
-            try postRef.setData(from: updatedPost) { error in
+            try postRef.setData(from: post) { error in
                 if let error = error {
                     print("Error updating document: \(error)")
                 } else {
@@ -114,37 +153,219 @@ class UploadPostViewModel: ObservableObject {
     }
     
     @MainActor
-    func fetchPost() async throws {
-        let post = try await Firestore.firestore().collection("test_posts").getDocuments()
-        self.fetched_post = post.documents.compactMap { document in
-            do {
+    func fetchPostRealTime() {
+        if listenerRegistration == nil {
+            listenerRegistration = Firestore.firestore().collection("test_posts").addSnapshotListener { [weak self] querySnapshot, error in
+                guard let self = self else { return }
                 
+                if let error = error {
+                    print("Error fetching posts: \(error)")
+                    return
+                }
                 
-                return try document.data(as: Post.self)
-            } catch {
-                print("Error decoding document: \(error)")
-                return nil
+                guard let documents = querySnapshot?.documents else {
+                    print("No documents")
+                    return
+                }
+                
+                self.fetched_post = documents.compactMap { queryDocumentSnapshot in
+                    try? queryDocumentSnapshot.data(as: Post.self)
+                }
+                self.fetched_post = sortPostByTime(order: "desc", posts: self.fetched_post)
+                for i in 0..<self.fetched_post.count {
+                    for likerID in self.fetched_post[i].likers {
+                        Task {
+                            do {
+                                let liker = try await UserService.fetchUser(withUid: likerID ?? "")
+                                self.fetched_post[i].unwrapLikers.append(liker)
+                            } catch {
+                                print("Error fetching liker: \(error)")
+                            }
+                        }
+                    }
+                    
+                    for commentID in self.fetched_post[i].postComment {
+                        Task {
+                            do {
+                                let comment = try await UserService.fetchComment(withUid: commentID ?? "")
+                                self.fetched_post[i].unwrapComments.append(comment)
+                            } catch {
+                                print("Error fetching comment: \(error)")
+                            }
+                        }
+                    }
+                    
+                    let post = self.fetched_post[i]
+                    let owner = post.owner
+                    Task {
+                        do {
+                            let postUser = try await UserService.fetchUser(withUid: owner)
+                            self.fetched_post[i].user = postUser
+                        } catch {
+                            print("Error fetching post user: \(error)")
+                        }
+                    }
+                }
             }
         }
-        
-        for i in 0..<fetched_post.count {
-            for likerID in fetched_post[i].likers {
-                let liker = try await UserService.fetchUser(withUid: likerID ?? "")
-                fetched_post[i].unwrapLikers.append(liker)
+    }
+
+    func sortPostByTime(order: String, posts: [Post]) -> [Post] {
+        var sortedPosts = posts
+
+        switch order {
+        case "asc":
+            sortedPosts.sort { post1, post2 in
+                return post1.date.dateValue().compare(post2.date.dateValue()) == ComparisonResult.orderedAscending
             }
-            
-            for commentID in fetched_post[i].postComment {
-                let comment = try await UserService.fetchComment(withUid: commentID ?? "")
-                fetched_post[i].unwrapComments.append(comment)
+        case "desc":
+            sortedPosts.sort { post1, post2 in
+                return post1.date.dateValue().compare(post2.date.dateValue()) == ComparisonResult.orderedDescending
             }
+        default:
+            break
+        }
+
+        return sortedPosts
+    }
+    
+    // Delete comment function (delete in comment and in post)
+    func deleteComment(postID: String, commentID: String) async throws {
+        do {
+            let postRef = Firestore.firestore().collection("test_posts").document(postID)
+            let commentRef = Firestore.firestore().collection("test_comments").document(commentID)
+            var post = try await postRef.getDocument().data(as: Post.self)
             
-            let post = fetched_post[i]
-            let owner = post.owner
-            let postUser = try await UserService.fetchUser(withUid: owner)
-            fetched_post[i].user = postUser
+            // Check if the "postComment" field exists and is an array
+            
+            // Remove the comment with the specified commentID
+            post.postComment.removeAll { $0 == commentID }
+            //let updatedData = try Firestore.Encoder().encode(updatedPost)
+            // Update the Firestore document with the modified data
+            try await commentRef.delete()
+            try postRef.setData(from: post) { error in
+                if let error = error {
+                    print("Error deleting comment: \(error)")
+                } else {
+                    print("Comment deleted successfully.")
+                }
+            }
+        } catch {
+            print("Error deleting comment: \(error)")
+            throw error // Rethrow the error for the caller to handle
         }
     }
     
+    // Delele post
+    func deletePost(postID: String) async throws {
+        do {
+            let postRef = Firestore.firestore().collection("test_posts").document(postID)
+            let post = try await postRef.getDocument().data(as: Post.self)
+            // Fetch the post document to get the list of comment IDs
+            
+            for commentID in post.postComment {
+                let commentRef = Firestore.firestore().collection("test_comments").document(commentID ?? "")
+                try await commentRef.delete()
+            }
+            try await postRef.delete()
+        } catch {
+            print("Error deleting post: \(error)")
+            throw error // Rethrow the error for the caller to handle
+        }
+    }
+    
+    // Like post
+    func likePost(likerID: String, postID: String) async throws {
+        do {
+            // Fetch the post document
+            let postRef = Firestore.firestore().collection("test_posts").document(postID)
+            var post = try await postRef.getDocument().data(as: Post.self)
+            
+            // Ensure you have successfully fetched the post data
+            //var updatedPost = post
+            
+            // Update the post's comment array
+            if (!post.likers.contains(likerID)) {
+                post.likers.append(likerID)
+            } else {
+                print("Already like")
+            }
+            
+            // Update the Firestore document with the updated data
+            try postRef.setData(from: post) { error in
+                if let error = error {
+                    print("Error updating document: \(error)")
+                } else {
+                    print("Document successfully updated.")
+                }
+            }
+        } catch {
+            throw error
+        }
+    }
+    
+    // Unlike post
+    func unLikePost(likerID: String, postID: String) async throws {
+        do {
+            let postRef = Firestore.firestore().collection("test_posts").document(postID)
+            var post = try await postRef.getDocument().data(as: Post.self)
+            //var updatedPost = post
+            
+            // Remove the comment with the specified commentID
+            if (post.likers.contains(likerID)) {
+                post.likers.removeAll { $0 == likerID }
+            } else {
+                print("Already unlike")
+            }
+            
+            
+            try postRef.setData(from: post) { error in
+                if let error = error {
+                    print("Error unlike post: \(error)")
+                } else {
+                    print("Post unlike successfully.")
+                }
+            }
+        } catch {
+            print("Error deleting comment: \(error)")
+            throw error // Rethrow the error for the caller to handle
+        }
+    }
+    
+    
+    
+    
+//    @MainActor
+//    func fetchPost() async throws {
+//        let post = try await Firestore.firestore().collection("test_posts").getDocuments()
+//        self.fetched_post = post.documents.compactMap { document in
+//            do {
+//                return try document.data(as: Post.self)
+//            } catch {
+//                print("Error decoding document: \(error)")
+//                return nil
+//            }
+//        }
+//        
+//        for i in 0..<fetched_post.count {
+//            for likerID in fetched_post[i].likers {
+//                let liker = try await UserService.fetchUser(withUid: likerID ?? "")
+//                fetched_post[i].unwrapLikers.append(liker)
+//            }
+//            
+//            for commentID in fetched_post[i].postComment {
+//                let comment = try await UserService.fetchComment(withUid: commentID ?? "")
+//                fetched_post[i].unwrapComments.append(comment)
+//            }
+//            
+//            let post = fetched_post[i]
+//            let owner = post.owner
+//            let postUser = try await UserService.fetchUser(withUid: owner)
+//            fetched_post[i].user = postUser
+//        }
+//    }
+    
+    // Follow
     func followOtherUser(userID: String) async throws {
         //var followingUser = try await UserService.fetchUser(withUid: userID)
         //authVM.currentUser?.following.append(userID)
@@ -175,6 +396,32 @@ class UploadPostViewModel: ObservableObject {
         }
     }
     
+    // Unfollow
+    func unFollowOtherUser(userID: String) async throws {
+        let currentUserRef = Firestore.firestore().collection("users").document("3WBgDcMgEQfodIbaXWTBHvtjYCl2")
+        var currentUser = try await currentUserRef.getDocument().data(as: User.self)
+        currentUser.following.removeAll { $0 == userID }
+        
+        let otherUserRef = Firestore.firestore().collection("users").document(userID)
+        var otherUser = try await otherUserRef.getDocument().data(as: User.self)
+        otherUser.followers.removeAll { $0 == currentUser.id }
+        
+        try currentUserRef.setData(from: currentUser) { error in
+            if let error = error {
+                print("Error updating document: \(error)")
+            } else {
+                print("Document successfully updated.")
+            }
+        }
+        
+        try otherUserRef.setData(from: otherUser) { error in
+            if let error = error {
+                print("Error updating document: \(error)")
+            } else {
+                print("Document successfully updated.")
+            }
+        }
+    }
     
     
     func uploadingPost() async throws {
@@ -197,26 +444,6 @@ class UploadPostViewModel: ObservableObject {
             try await postRef.setData(encodedPost)
         }
     }
-    
-    
-    //    func uploadMediaFromLocal() async throws {
-    //        guard let media = selectedMedia else { return }
-    //
-    //        guard let mediaData = try await media.loadTransferable(type: Data.self) else { return }
-    //
-    //        if mediaData.count > 25_000_000 {
-    //            print("Selected file too large: \(mediaData)")
-    //        } else {
-    //            print("Approved: \(mediaData)")
-    //        }
-    //
-    //        guard let mediaUrl = try await uploadMediaToFireBase(data: mediaData) else { return }
-    //
-    //        try await Firestore.firestore().collection("media").document().setData(["mediaUrl" : mediaUrl, "mimeType" : mimeType(for: mediaData)])
-    //
-    //
-    //        print (" load ok ")
-    //    }
     
     func mimeType(for data: Data) -> String {
         var b: UInt8 = 0
@@ -266,3 +493,4 @@ class UploadPostViewModel: ObservableObject {
         return "application/octet-stream"
     }
 }
+

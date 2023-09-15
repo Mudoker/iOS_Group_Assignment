@@ -19,7 +19,13 @@ struct TabBar: View {
 
     // Localization
     @AppStorage("selectedLanguage") var selectedLanguage = "en"
-    
+//    init(uploadVM: UploadPostViewModel) {
+//        let appearance = UITabBarAppearance()
+//        appearance.configureWithOpaqueBackground()
+//        appearance.backgroundColor = UIColor(red: 0.85, green: 0.95, blue: 1.0, alpha: 1.0)
+//        UITabBar.appearance().standardAppearance = appearance
+//        UITabBar.appearance().scrollEdgeAppearance = appearance
+//    }
     var body: some View {
         if UIDevice.current.userInterfaceIdiom == .phone{
             TabView(selection: $tabSelection) {
@@ -47,6 +53,11 @@ struct TabBar: View {
                     ProfileView()
                 }
                 .tag(4)
+            }
+            .onAppear {
+                let tabBarAppearance = UITabBarAppearance()
+                tabBarAppearance.configureWithDefaultBackground()
+                UITabBar.appearance().scrollEdgeAppearance = tabBarAppearance
             }
             .environment(\.locale, Locale(identifier: selectedLanguage)) // Localization
             .overlay(alignment: .bottom) {
@@ -81,6 +92,11 @@ struct TabBar: View {
                     .tag(4)
                     
                 }
+                .onAppear {
+                    let tabBarAppearance = UITabBarAppearance()
+                    tabBarAppearance.configureWithDefaultBackground()
+                    UITabBar.appearance().scrollEdgeAppearance = tabBarAppearance
+                }
                 .environment(\.locale, Locale(identifier: selectedLanguage)) // Localization
                 .overlay(alignment: .bottom) {
                     CustomTabbar(tabSelection: $tabSelection)
@@ -103,7 +119,7 @@ struct CustomTabbar: View {
     // List of views
     let tabItems: [(image: String, page: String)] = [
         ("house", "Dashboard"),
-        ("message", "Message"),
+        ("bubble.middle.bottom", "Message"),
         ("magnifyingglass", "Explore"),
         ("bell", "Notification"),
         ("person", "Profile"),
@@ -155,6 +171,6 @@ struct CustomTabbar: View {
 
 struct TabBar_Previews: PreviewProvider {
     static var previews: some View {
-        TabBar()
+        TabBar(uploadVM: UploadPostViewModel())
     }
 }

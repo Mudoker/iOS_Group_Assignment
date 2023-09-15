@@ -6,9 +6,11 @@
 //
 
 import SwiftUI
+import Kingfisher
+import Firebase
 
 struct CommentView: View {
-    let comments = [
+    var comments = [
         ("User1", "1d", "Hello world!"),
         ("User2", "2d", "This is a test."),
         ("User3", "3d", "Lorem ipsum dolor sit amet."),
@@ -25,10 +27,16 @@ struct CommentView: View {
     @State var isAddingComment = false
     @State var selectedFilter = "Newest"
     @Binding var isShowComment: Bool
+    @ObservedObject var uploadVM = UploadPostViewModel()
+    @State private var commentor: User? = nil // Create a @State property
+    
+    var post: Post
+    
     let emojis = ["👍", "❤️", "😍", "🤣", "😯", "😭", "😡", "👽", "💩", "💀"]
     
     var body: some View {
         GeometryReader { proxy in
+            
             VStack (spacing: 0) {
                 ZStack(alignment: .centerFirstTextBaseline) {
                     Text("Comment")
@@ -58,29 +66,59 @@ struct CommentView: View {
                     .padding(.horizontal)
                 }
                 
-                ScrollView(showsIndicators: false) {
-                    ForEach(comments, id: \.0) { data in
-                        HStack {
-                            Image("testAvt")
-                                .resizable()
-                                .frame(width: proxy.size.width/8, height: proxy.size.width/8)
-                                .clipShape(Circle())
-                            
-                            VStack(alignment: .leading) {
+                VStack {
+                    
+                    if !post.unwrapComments.isEmpty {
+                        ScrollView(showsIndicators: false) {
+                            ForEach(post.unwrapComments) { comment in
                                 HStack {
-                                    Text(data.0) // User Name
-                                        .bold()
-                                    Text(data.1) // Time
+                                    if let profileURLString = commentor?.profileImageURL, let mediaURL = URL(string: profileURLString) {
+                                        KFImage(mediaURL)
+                                            .resizable()
+                                            .frame(width: proxy.size.width/8, height: proxy.size.width/8)
+                                            .clipShape(Circle())
+                                            .background(Circle().foregroundColor(Color.gray))
+                                    }
+                                    VStack(alignment: .leading) {
+                                        HStack {
+                                            Text(commentor?.fullName ?? "") // User Name
+                                                .bold()
+        //                                    Text(comment.date) // Time
+                                        }
+                                        Text(comment.content) // Message
+                                    }
+                                    Spacer()
                                 }
-                                
-                                Text(data.2) // Message
+                                .padding()
+                                .onAppear {
+                                    // Start the asynchronous task when the view appears
+                                    Task {
+                                        do {
+                                            commentor = try await UserService.fetchUser(withUid: comment.commentor)
+        //                                    post = try await UserService.fetchAPost(withUid: post.id)
+
+                                        } catch {
+                                            print("Error fetching profile image URL: \(error)")
+                                        }
+                                    }
+                                }
                             }
-                            
-                            Spacer()
                         }
-                        .padding()
+                    } else {
+                        Spacer()
+                        Image(systemName: "quote.bubble")
+                            .resizable()
+                            .frame(width: proxy.size.width/5, height: proxy.size.width/5)
+                            .opacity(0.4)
+
+                        Text("Be the first one to comment")
+                            .font(.title)
+                            .opacity(0.4)
+                        Spacer()
+
                     }
                 }
+
                 
                 VStack {
                     ScrollView(.horizontal, showsIndicators: false) {
@@ -110,13 +148,23 @@ struct CommentView: View {
                         TextField("", text: $comment, prompt:  Text("Leave a comment...").foregroundColor(isDarkMode ? .white.opacity(0.5) : .black.opacity(0.5))
                             .font(.title3)
                         )
+                        .autocorrectionDisabled(true)
+                        .textInputAutocapitalization(.never)
                         .padding()
                         .background(
                             Capsule()
                                 .fill(isDarkMode ? Color.gray.opacity(0.3) : Color.white)
                         )
                         
-                        Button(action: {comment = ""}) {
+                        Button(action: {
+                            Task {
+                                let newComment = try await uploadVM.createComment(content: comment, commentor: "3WBgDcMgEQfodIbaXWTBHvtjYCl2")
+                                if let newComment = newComment {
+                                    try await uploadVM.addCommentToPost(comment: newComment, postID: post.id)
+                                }
+                                comment = ""
+                        }
+                        }) {
                             Circle()
                                 .fill(isDarkMode ? .gray.opacity(0.3) : .white)
                                 .frame(width: proxy.size.width/8)
@@ -133,7 +181,6 @@ struct CommentView: View {
                     
                 }
                 .background(.gray.opacity(0.1))
-                
             }
             
             .padding(.vertical)
@@ -144,8 +191,8 @@ struct CommentView: View {
     }
 }
 
-struct CommentView_Previews: PreviewProvider {
-    static var previews: some View {
-        CommentView(isShowComment: .constant(true))
-    }
-}
+//struct CommentView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        CommentView(isShowComment: .constant(true), post: P)
+//    }
+//}

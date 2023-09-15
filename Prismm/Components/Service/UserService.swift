@@ -21,7 +21,13 @@ struct UserService {
     
     static func fetchYourPost(withUid: String) async throws -> [Post] {
         let snapshot = try await Firestore.firestore().collection("test_posts").whereField("owner", isEqualTo: withUid).getDocuments()
-        print(try snapshot.documents.compactMap({try $0.data(as: Post.self)}))
         return try snapshot.documents.compactMap({try $0.data(as: Post.self)})
     }
+    
+    static func fetchAPost(withUid: String) async throws -> Post {
+        let snapshot = try await Firestore.firestore().collection("test_posts").document(withUid).getDocument()
+        return try snapshot.data(as: Post.self)
+        
+    }
+    
 }

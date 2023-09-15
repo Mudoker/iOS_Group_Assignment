@@ -17,7 +17,7 @@ struct CreatePostView: View {
     @State private var searchText = ""
     @State private var users = ["mudoker7603", "user123", "sampleUser", "testUser", "john_doe", "jane_doe", "user007", "newUser", "oldUser", "demoUser"]
     @Binding var isNewPost: Bool
-    
+    @ObservedObject var uploadVM = UploadPostViewModel()
     var filteredUsers: [String] {
         if searchText.isEmpty {
             return users
@@ -141,6 +141,8 @@ struct CreatePostView: View {
                     TextField("", text: $postCaption, prompt:  Text("Share your updates...").foregroundColor(isDarkMode ? .white.opacity(0.5) : .black.opacity(0.5))
                         .font(.title3)
                     )
+                    .autocorrectionDisabled(true)
+                    .textInputAutocapitalization(.never)
                     .padding()
                 }
                 .padding(.vertical)
@@ -200,6 +202,11 @@ struct CreatePostView: View {
                 )
                 
                 Button(action: {
+                    Task {
+                        try await uploadVM.createPost(owner: "3WBgDcMgEQfodIbaXWTBHvtjYCl2", postCaption: postCaption, mediaURL: "", mimeType: "")
+                        isNewPost = false
+                    }
+                    
                     isPost.toggle()
                 }) {
                     RoundedRectangle(cornerRadius: proxy.size.width/40)
@@ -260,7 +267,10 @@ struct CreatePostView: View {
                             
                             TextField("", text: $searchText, prompt:  Text("Search a friend...").foregroundColor(isDarkMode ? .white.opacity(0.5) : .black.opacity(0.5))
                                 .font(.title3)
+                                
                             )
+                            .autocorrectionDisabled(true)
+                            .textInputAutocapitalization(.never)
                             .padding()
                         }
                         .padding([.horizontal, .bottom])
@@ -330,7 +340,10 @@ struct CreatePostView: View {
                             
                             TextField("", text: $searchText, prompt:  Text("Search a friend...").foregroundColor(isDarkMode ? .white.opacity(0.5) : .black.opacity(0.5))
                                 .font(.title3)
+                                
                             )
+                            .autocorrectionDisabled(true)
+                            .textInputAutocapitalization(.never)
                             .padding()
                         }
                         .padding([.horizontal, .bottom])

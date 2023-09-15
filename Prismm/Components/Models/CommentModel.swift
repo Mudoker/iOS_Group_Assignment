@@ -6,9 +6,11 @@
 //
 
 import Foundation
+import Firebase
 
 struct Comment: Identifiable, Codable {
     let id: String
     let content: String
     let commentor: String
+//    let date: Timestamp
 }

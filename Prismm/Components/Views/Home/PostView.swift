@@ -13,7 +13,7 @@ import Firebase
 
 struct PostView: View {
     @State private var commentContent = ""
-    let post: Post
+    var post: Post
     
     // View model
     @ObservedObject var homeViewModel = HomeViewModel()
@@ -54,9 +54,9 @@ struct PostView: View {
                             .font(Font.system(size: homeViewModel.usernameFont, weight: .semibold))
                     }
                     
-                    Text(formatTimeDifference(from: post.date))
-                        .font(Font.system(size: homeViewModel.usernameFont, weight: .medium))
-                        .opacity(0.3)
+//                    Text(formatTimeDifference(from: post.date))
+//                        .font(Font.system(size: homeViewModel.usernameFont, weight: .medium))
+//                        .opacity(0.3)
                 }
                 
                 // In building
@@ -200,10 +200,10 @@ struct PostView: View {
             .padding(.horizontal)
         }
         .sheet(isPresented: $isCommentViewIpad) {
-            CommentView(isShowComment: $isCommentViewIpad)
+            CommentView(isShowComment: $isCommentViewIpad, uploadVM: uploadVM, post: post)
         }
         .fullScreenCover(isPresented: $isCommentViewIphone) {
-            CommentView(isShowComment: $isCommentViewIphone)
+            CommentView(isShowComment: $isCommentViewIphone, uploadVM: uploadVM, post: post)
         }
     }
     
