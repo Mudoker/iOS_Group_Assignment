@@ -24,4 +24,5 @@ struct UserService {
         print(try snapshot.documents.compactMap({try $0.data(as: Post.self)}))
         return try snapshot.documents.compactMap({try $0.data(as: Post.self)})
     }
+    
 }
