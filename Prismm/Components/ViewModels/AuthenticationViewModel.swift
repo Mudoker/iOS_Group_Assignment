@@ -9,6 +9,7 @@ import Foundation
 import LocalAuthentication
 import SwiftUI
 import Firebase
+import FirebaseFirestore
 
 class AuthenticationViewModel: ObservableObject {
     @Published var isUnlocked = false
@@ -76,7 +77,7 @@ class AuthenticationViewModel: ObservableObject {
     }
     // log in
     func login(withEmail email: String, password: String){
-        Auth.auth().signIn(withEmail: email, password: password){
+        FirebaseManager.shared.auth.signIn(withEmail: email, password: password){
             res, err in
             if let err = err {
                 print("Failed to login user", err)
@@ -85,11 +86,13 @@ class AuthenticationViewModel: ObservableObject {
             
             print("log in thanh cong : \(res?.user.uid ?? "" )")
             self.loginStatusMessage = "log in thanh cong: \(res?.user.uid ?? "")"
+            
+            
         }
     }
     // create new account
     func createAccount(withEmail email: String, password  : String){
-        Auth.auth().createUser(withEmail : email, password: password){
+        FirebaseManager.shared.auth.createUser(withEmail : email, password: password){
             res, err in
             if let err = err {
                 print("Failed to create user", err)
@@ -98,9 +101,27 @@ class AuthenticationViewModel: ObservableObject {
             
             print("Dk thanh cong : \(res?.user.uid ?? "" )")
             self.loginStatusMessage = "Dk thanh cong: \(res?.user.uid ?? "")"
+            
+            self.storeUserInformation(withEmail: email, password: password)
         }
     }
-    
+    //up to the firebase
+    func storeUserInformation (withEmail email : String, password : String){
+        guard let uid = FirebaseManager.shared.auth.currentUser?.uid else {
+            return
+        }
+        
+        let userData = ["email" : email, "uid" : uid]
+        FirebaseManager.shared.firestore.collection("users")
+            .document(uid).setData(userData) { err in
+                if let err = err{
+                    print(err)
+                    self.loginStatusMessage = "\(err)"
+                    return  
+                }
+            }
+        print("success")
+    }
     // Fetch userdata from Firebase
     func fetchUserData() {
         // Simulate fetching data with a delay

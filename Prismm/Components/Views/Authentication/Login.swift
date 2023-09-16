@@ -142,7 +142,7 @@ struct Login: View {
                             //                                    .opacity(0.8)
                             //                            }
                             
-                            NavigationLink(destination: SignUp()
+                            NavigationLink(destination: AllChat()
                                 .navigationBarTitle("")
                                 .navigationBarHidden(false)) {
                                     Text("Sign Up")
