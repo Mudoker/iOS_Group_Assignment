@@ -84,7 +84,7 @@ class HomeViewModel: ObservableObject {
     }
 
     var seeMoreButtonSize: CGFloat {
-        UIDevice.current.userInterfaceIdiom == .phone ? proxySize.width * 0.04 : proxySize.width * 0.04
+        UIDevice.current.userInterfaceIdiom == .phone ? proxySize.width * 0.055 : proxySize.width * 0.055
     }
 
     var postStatsFontSize: CGFloat {

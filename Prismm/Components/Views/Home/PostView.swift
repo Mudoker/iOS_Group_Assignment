@@ -56,11 +56,71 @@ struct PostView: View {
                 
                 // In building
                 Spacer()
-                Image(systemName: "ellipsis")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: homeViewModel.seeMoreButtonSize)
-                    .padding(.trailing)
+                Menu {
+                    Button(action: {}) {
+                        HStack {
+                            Image(systemName: "delete.left")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: homeViewModel.seeMoreButtonSize)
+                                .padding(.trailing)
+                            Text("Delete Post")
+                        }
+                    }
+                    
+                    Button(action: {}) {
+                        HStack {
+                            Image(systemName: "person.crop.circle.badge.xmark")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: homeViewModel.seeMoreButtonSize)
+                                .padding(.trailing)
+                            Text("Block this user")
+                        }
+                    }
+                    
+                    Button(action: {}) {
+                        HStack {
+                            Image(systemName: "rectangle.portrait.slash")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: homeViewModel.seeMoreButtonSize)
+                                .padding(.trailing)
+                            Text("Hide this user")
+                        }
+                    }
+                    
+                    Button(action: {}) {
+                        HStack {
+                            Image(systemName: "text.badge.xmark")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: homeViewModel.seeMoreButtonSize)
+                                .padding(.trailing)
+                            Text("Turn off comment")
+                        }
+                    }
+                    
+                    Button(action: {}) {
+                        HStack {
+                            Image(systemName: "square.and.pencil")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: homeViewModel.seeMoreButtonSize)
+                                .padding(.trailing)
+                            Text("Edit post")
+                        }
+                    }
+                    
+                    
+                } label: {
+                    Image(systemName: "ellipsis.circle")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: homeViewModel.seeMoreButtonSize)
+                        .foregroundColor(.black)
+                }
+                
             }
             .padding(.horizontal)
             

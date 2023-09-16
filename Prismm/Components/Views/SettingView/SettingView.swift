@@ -194,7 +194,7 @@ struct SettingView : View {
                                             .aspectRatio(contentMode: .fill)
                                             .frame(width: settingVM.imageSize, height: settingVM.imageSize)
                                         
-                                        Text("Hide story from")
+                                        Text("Hide content from")
                                             .font(settingVM.contentFont)
                                         
                                         Spacer()
