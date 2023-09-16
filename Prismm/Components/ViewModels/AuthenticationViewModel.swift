@@ -20,17 +20,19 @@ protocol SignUpFormProtocol{
 
 @MainActor
 class AuthenticationViewModel: ObservableObject {
-    
     @Published var logInError = false
     @Published var signUpError = false
     @Published var isAlert = false
-    
     @Published var isUnlocked = false
     @Published var isUnlockedGoogle = false
-
-    @Published var isDarkMode = false
+    @Published var isUnlockedBioMetric = false
     @Published var currentEmail = ""
-    @ObservedObject var uploadVM = UploadPostViewModel()
+    @Published var isForgotPassword = false
+    @Published var isSignUp = false
+    @Published var isValidPassword = false
+    @Published var isValidReEnterPassword = false
+    @Published var isValidUserName = false
+    
     @Published var userToken: String {
         didSet {
             UserDefaults.standard.set(userToken, forKey: "userToken")
@@ -48,21 +50,63 @@ class AuthenticationViewModel: ObservableObject {
     }
     
     // Responsive
-    @Published var titleFont: CGFloat = 40
-    @Published var logoImageSize: CGFloat = 0
-    @Published var captionFont: Font = .caption
-    @Published var textFieldTitleFont: Font = .body
-    @Published var textFieldSizeHeight: CGFloat = 0
-    @Published var textFieldCorner: CGFloat = 0
-    @Published var textFieldBorderWidth: CGFloat = 2.5
-    @Published var faceIdImageSize: CGFloat = 0
-    @Published var imagePaddingVertical: CGFloat = 16
-    @Published var loginButtonSizeHeight: CGFloat = 60
-    @Published var conentFont: Font = .body
-    @Published var loginTextFont: Font = .title3
-    @Published var textFieldPlaceHolderFont: Font = .body
-    @Published var isLoading = false
+    @Published var proxySize: CGSize = CGSize(width: 0, height: 0)
 
+    var titleFont: CGFloat {
+        UIDevice.current.userInterfaceIdiom == .phone ? 40 : 60
+    }
+
+    var logoImageSize: CGFloat {
+        UIDevice.current.userInterfaceIdiom == .phone ? proxySize.width/2.2 : proxySize.width/2.8
+    }
+
+    var captionFont: Font {
+        .caption
+    }
+
+    var textFieldTitleFont: Font {
+        .body
+    }
+
+    var textFieldSizeHeight: CGFloat {
+        UIDevice.current.userInterfaceIdiom == .phone ? proxySize.width/7 : proxySize.width/9
+    }
+
+    var textFieldCorner: CGFloat {
+        UIDevice.current.userInterfaceIdiom == .phone ? proxySize.width/50 : proxySize.width/60
+    }
+
+    var textFieldBorderWidth: CGFloat {
+        2.5
+    }
+
+    var faceIdImageSize: CGFloat {
+        UIDevice.current.userInterfaceIdiom == .phone ? proxySize.width/10 : proxySize.width/12
+    }
+
+    var imagePaddingVertical: CGFloat {
+        UIDevice.current.userInterfaceIdiom == .phone ? 16 : 30
+    }
+
+    var loginButtonSizeHeight: CGFloat {
+        UIDevice.current.userInterfaceIdiom == .phone ? textFieldSizeHeight : textFieldSizeHeight
+    }
+
+    var conentFont: Font {
+        UIDevice.current.userInterfaceIdiom == .phone ? .body : .title2
+    }
+
+    var loginTextFont: Font {
+        UIDevice.current.userInterfaceIdiom == .phone ? .title3 : .title
+    }
+
+    var textFieldPlaceHolderFont: Font {
+        UIDevice.current.userInterfaceIdiom == .phone ? .body : .largeTitle
+    }
+
+    var isLoading = false
+
+    
     // Validate username
     func validateUsername(_ username: String) -> Bool{
         isUnlocked = true
@@ -131,7 +175,7 @@ class AuthenticationViewModel: ObservableObject {
                 let encodedUser = try Firestore.Encoder().encode(user)
                 try await Firestore.firestore().collection("users").document(user.id).setData(encodedUser)
             }catch{
-               print("ERROR 001")
+                print("ERROR 001")
             }
         }else{
             self.currentUser = try? snapshot.data(as: User.self)
@@ -148,7 +192,7 @@ class AuthenticationViewModel: ObservableObject {
                 DispatchQueue.main.async {
                     if success {
                         // Biometric authentication was successful
-                        self.isUnlocked = true
+                        self.isUnlockedBioMetric.toggle()
                     } else {
                         // Biometric authentication failed or was canceled
                         if let error = authenticationError {
@@ -175,7 +219,7 @@ class AuthenticationViewModel: ObservableObject {
     }
     
     
-    func signInGoogle() async{
+    func signInGoogle() async {
         guard let clientID = FirebaseApp.app()?.options.clientID else {
             fatalError("No client ID found ")
         }
@@ -212,4 +256,43 @@ class AuthenticationViewModel: ObservableObject {
             return
         }
     }
+    
+    @MainActor
+    static func accountAuthenticationGoogle(viewController: UIViewController? = nil) async throws -> GoogleSignInResult {
+        guard let topViewController = viewController ?? topViewController() else {
+            throw URLError(.notConnectedToInternet)
+        }
+        
+        let gidSignInResult = try await GIDSignIn.sharedInstance.signIn(withPresenting: topViewController)
+        
+        guard let idToken = gidSignInResult.user.idToken?.tokenString else {
+            throw URLError(.badServerResponse)
+        }
+        
+        let accessToken = gidSignInResult.user.accessToken.tokenString
+        return GoogleSignInResult(idToken: idToken, accessToken: accessToken)
+    }
+    
+    @MainActor
+    static func topViewController(controller: UIViewController? = nil) -> UIViewController? {
+        let controller = controller ?? UIApplication.shared.keyWindow?.rootViewController
+        
+        if let navigationController = controller as? UINavigationController {
+            return topViewController(controller: navigationController.visibleViewController)
+        }
+        if let tabController = controller as? UITabBarController {
+            if let selected = tabController.selectedViewController {
+                return topViewController(controller: selected)
+            }
+        }
+        if let presented = controller?.presentedViewController {
+            return topViewController(controller: presented)
+        }
+        return controller
+    }
+}
+
+struct GoogleSignInResult {
+    let idToken: String
+    let accessToken: String
 }

@@ -96,9 +96,6 @@ struct ProfileView: View {
                         Text(LocalizedStringKey("Quote"))
                     }
                 }
-
-                
-                
                 
                 //Highlight stories
                 if haveHighlight {

@@ -12,13 +12,10 @@ import Kingfisher
 import Firebase
 
 struct PostView: View {
-    @State private var commentContent = ""
-    let post: Post
-    
+    var post: Post
     // View model
     @ObservedObject var homeViewModel = HomeViewModel()
-    @ObservedObject var uploadVM = UploadPostViewModel()
-    
+    @ObservedObject var settingVM = SettingViewModel()
     var body: some View {
         VStack {
             //Post info.
@@ -52,9 +49,9 @@ struct PostView: View {
                             .font(Font.system(size: homeViewModel.usernameFont, weight: .semibold))
                     }
                     
-                    Text(formatTimeDifference(from: post.date))
-                        .font(Font.system(size: homeViewModel.usernameFont, weight: .medium))
-                        .opacity(0.3)
+//                    Text(formatTimeDifference(from: post.date))
+//                        .font(Font.system(size: homeViewModel.usernameFont, weight: .medium))
+//                        .opacity(0.3)
                 }
                 
                 // In building
@@ -117,7 +114,7 @@ struct PostView: View {
             //Operations menu.
             HStack (spacing: UIScreen.main.bounds.width * 0.02) {
                 HStack {
-                    Image(systemName: "hand.thumbsup")
+                    Image(systemName: "heart")
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                         .frame(width: homeViewModel.postStatsImageSize)
@@ -128,20 +125,31 @@ struct PostView: View {
                 }
                 .padding(.horizontal)
                 
-                HStack {
-                    Image(systemName: "bubble.right")
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: homeViewModel.postStatsImageSize)
-                    
-                    Text("15")
-                        .font(Font.system(size: homeViewModel.postStatsFontSize, weight: .light))
-                        .opacity(0.6)
+                Button(action: {
+                    if UIDevice.current.userInterfaceIdiom == .pad {
+                        homeViewModel.isCommentViewIpad.toggle()
+                        homeViewModel.fetchAllComments(forPostID: post.id)
+
+                    } else {
+                        homeViewModel.isCommentViewIphone.toggle()
+                        homeViewModel.fetchAllComments(forPostID: post.id)
+                    }
+                }) {
+                    HStack {
+                        Image(systemName: "bubble.right")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: homeViewModel.postStatsImageSize)
+                        
+                        Text("15")
+                            .font(Font.system(size: homeViewModel.postStatsFontSize, weight: .light))
+                            .opacity(0.6)
+                    }
                 }
                 
                 Spacer()
                 
-                Image(systemName: "heart")
+                Image(systemName: "archivebox")
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(width: homeViewModel.postStatsImageSize)
@@ -178,7 +186,7 @@ struct PostView: View {
                 }
                 
                 
-                TextField("Comment..", text: $commentContent)
+                TextField("Comment..", text: $homeViewModel.commentContent)
                     .font(homeViewModel.commentTextFiledFont)
                     .padding(.horizontal) // Add horizontal padding to the text field
                     .background(
@@ -188,6 +196,12 @@ struct PostView: View {
                     )
             }
             .padding(.horizontal)
+        }
+        .sheet(isPresented: $homeViewModel.isCommentViewIpad) {
+            CommentView(isDarkMode: $settingVM.isDarkMode, isShowComment: $homeViewModel.isCommentViewIpad, homeViewModel: homeViewModel, post: post)
+        }
+        .fullScreenCover(isPresented: $homeViewModel.isCommentViewIphone) {
+            CommentView(isDarkMode: $settingVM.isDarkMode, isShowComment: $homeViewModel.isCommentViewIphone, homeViewModel: homeViewModel, post: post)
         }
     }
     

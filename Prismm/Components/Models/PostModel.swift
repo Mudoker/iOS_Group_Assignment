@@ -16,18 +16,8 @@ struct Post: Identifiable, Codable {
     var mediaURL: String?
     var mimeType: String?
     var date: Timestamp
-    var postComment: [String?] = []
+//    var postComment: [String?] = []
     var user: User?
-    var unwrapLikers: [User?] = []
-    var unwrapComments: [Comment?] = []
-    
-//    // Implement the == operator to compare Post instances for equality
-//    static func == (lhs: Post, rhs: Post) -> Bool {
-//        return lhs.id == rhs.id
-//    }
-//
-//    // Implement the hash(into:) method for Hashable conformance
-//    func hash(into hasher: inout Hasher) {
-//        hasher.combine(id)
-//    }
+    var unwrapLikers: [User] = []
+    var unwrapComments: [Comment] = []
 }

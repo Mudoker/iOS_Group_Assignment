@@ -10,7 +10,6 @@ import SwiftUI
 
 struct StoryView: View {
     //let story: Story
-    var gradient = Gradient(colors: [.yellow, .red, .purple, .orange, .pink, .red])
     
     @ObservedObject var homeViewModel = HomeViewModel()
     
@@ -22,7 +21,7 @@ struct StoryView: View {
                     .resizable()
                     .scaledToFit()
                     .clipShape(Circle()) // Apply a circular clipping shape
-                    .overlay(Circle().stroke(LinearGradient( gradient: gradient, startPoint: .bottomLeading, endPoint: .topTrailing) , style: StrokeStyle(lineWidth: 3, lineCap: .round)))
+                    .overlay(Circle().stroke(LinearGradient( gradient: Constants.storyGradientBorder, startPoint: .bottomLeading, endPoint: .topTrailing) , style: StrokeStyle(lineWidth: 3, lineCap: .round)))
                 
                 Text("IamFelixVietNguyen")
                     .truncationMode(.tail)

@@ -20,7 +20,7 @@ class ProfileViewModel: ObservableObject {
     
     @MainActor
     func fetchUserPosts() async throws {
-        self.posts = try await UserService.fetchYourPost(withUid: "3WBgDcMgEQfodIbaXWTBHvtjYCl2")
+        self.posts = try await API_SERVICE.fetchYourPost(withUid: "3WBgDcMgEQfodIbaXWTBHvtjYCl2")
         
 //        for i in 0..<posts.count {
 //            posts[i].user = self.user

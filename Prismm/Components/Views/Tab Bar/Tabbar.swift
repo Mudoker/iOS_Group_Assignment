@@ -15,10 +15,16 @@ import SwiftUI
 struct TabBar: View {
     // Control state
     @State private var tabSelection = 0
-    
+
     // Localization
     @AppStorage("selectedLanguage") var selectedLanguage = "en"
-    
+//    init(uploadVM: UploadPostViewModel) {
+//        let appearance = UITabBarAppearance()
+//        appearance.configureWithOpaqueBackground()
+//        appearance.backgroundColor = UIColor(red: 0.85, green: 0.95, blue: 1.0, alpha: 1.0)
+//        UITabBar.appearance().standardAppearance = appearance
+//        UITabBar.appearance().scrollEdgeAppearance = appearance
+//    }
     var body: some View {
         if UIDevice.current.userInterfaceIdiom == .phone{
             TabView(selection: $tabSelection) {
@@ -33,14 +39,24 @@ struct TabBar: View {
                 .tag(1)
                 
                 NavigationView {
-                    NotificationView()
+                    AllChat()
                 }
                 .tag(2)
                 
                 NavigationView {
-                    ProfileView()
+                    NotificationView()
                 }
                 .tag(3)
+                
+                NavigationView {
+                    ProfileView()
+                }
+                .tag(4)
+            }
+            .onAppear {
+                let tabBarAppearance = UITabBarAppearance()
+                tabBarAppearance.configureWithDefaultBackground()
+                UITabBar.appearance().scrollEdgeAppearance = tabBarAppearance
             }
             .environment(\.locale, Locale(identifier: selectedLanguage)) // Localization
             .overlay(alignment: .bottom) {
@@ -60,15 +76,25 @@ struct TabBar: View {
                     .tag(1)
                     
                     NavigationView {
+                        AllChat()
+                    }
+                    .tag(2)
+                    
+                    NavigationView {
                         NotificationView()
                     }
-                    .tag(1)
+                    .tag(3)
                     
                     NavigationView {
                         ProfileView()
                     }
-                    .tag(3)
+                    .tag(4)
                     
+                }
+                .onAppear {
+                    let tabBarAppearance = UITabBarAppearance()
+                    tabBarAppearance.configureWithDefaultBackground()
+                    UITabBar.appearance().scrollEdgeAppearance = tabBarAppearance
                 }
                 .environment(\.locale, Locale(identifier: selectedLanguage)) // Localization
                 .overlay(alignment: .bottom) {
@@ -92,7 +118,8 @@ struct CustomTabbar: View {
     // List of views
     let tabItems: [(image: String, page: String)] = [
         ("house", "Dashboard"),
-        ("message", "Message"),
+        ("bubble.middle.bottom", "Message"),
+        ("magnifyingglass", "Explore"),
         ("bell", "Notification"),
         ("person", "Profile"),
     ]
@@ -108,10 +135,11 @@ struct CustomTabbar: View {
                     // Push view
                     Spacer()
                     
-                    HStack(spacing: (proxy.size.width / 2) / CGFloat(tabItems.count + 1)) {
-                        ForEach(0..<4) { index in // Use tabItems.count here
+                    HStack(spacing: (proxy.size.width / 2.5) / CGFloat(tabItems.count + 1)) {
+                        ForEach(0..<5) { index in // Use tabItems.count here
                             Button {
                                 tabSelection = index // Update the binding
+                                print(tabSelection)
                             } label: {
                                 VStack {
                                     Image(systemName: tabItems[index].image)
