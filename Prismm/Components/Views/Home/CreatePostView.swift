@@ -8,16 +8,15 @@
 import SwiftUI
 
 struct CreatePostView: View {
-    @State var tagList: [String] = []
-    @State var isShowTagListIphone = false
-    @State var isShowTagListIpad = false
-    @State var postCaption = ""
-    @State var isDarkMode = false
-    @State var isPost = false
+
     @State private var searchText = ""
     @State private var users = ["mudoker7603", "user123", "sampleUser", "testUser", "john_doe", "jane_doe", "user007", "newUser", "oldUser", "demoUser"]
+    
     @Binding var isNewPost: Bool
-    @ObservedObject var uploadVM = UploadPostViewModel()
+    @Binding var isDarkMode: Bool
+    
+    @ObservedObject var homeViewModel = HomeViewModel()
+    
     var filteredUsers: [String] {
         if searchText.isEmpty {
             return users
@@ -25,6 +24,7 @@ struct CreatePostView: View {
             return users.filter { $0.localizedCaseInsensitiveContains(searchText) }
         }
     }
+    
     var body: some View {
         GeometryReader { proxy in
             VStack {
@@ -63,9 +63,9 @@ struct CreatePostView: View {
                         
                         Button(action: {
                             if UIDevice.current.userInterfaceIdiom == .pad {
-                                isShowTagListIpad.toggle()
+                                homeViewModel.isShowTagListIpad.toggle()
                             } else {
-                                isShowTagListIphone.toggle()
+                                homeViewModel.isShowTagListIphone.toggle()
 
                             }
                         }) {
@@ -76,7 +76,7 @@ struct CreatePostView: View {
                                     .frame(width: proxy.size.width/24)
                                     .foregroundColor(!isDarkMode ? Constants.lightThemeColor : Constants.darkThemeColor)
                                 
-                                if tagList.isEmpty {
+                                if homeViewModel.tagList.isEmpty {
                                     Text("Notify your friend")
                                         .font(.callout)
                                         .foregroundColor(!isDarkMode ? Constants.lightThemeColor : Constants.darkThemeColor)
@@ -86,7 +86,7 @@ struct CreatePostView: View {
                                     ScrollView(.horizontal, showsIndicators: false) {
                                         ScrollViewReader { scrollProxy in
                                             HStack(spacing: proxy.size.width/30) {
-                                                ForEach(tagList, id: \.self) { user in
+                                                ForEach(homeViewModel.tagList, id: \.self) { user in
                                                     HStack {
                                                         Text(user)
                                                             .foregroundColor(.white)
@@ -94,8 +94,8 @@ struct CreatePostView: View {
                                                         
                                                         Button(action: {
                                                             // Remove the user from the tagList
-                                                            if let index = tagList.firstIndex(of: user) {
-                                                                tagList.remove(at: index)
+                                                            if let index = homeViewModel.tagList.firstIndex(of: user) {
+                                                                homeViewModel.tagList.remove(at: index)
                                                             }
                                                         }) {
                                                             Image(systemName: "x.circle.fill")
@@ -110,10 +110,10 @@ struct CreatePostView: View {
                                                         .foregroundColor(isDarkMode ? Constants.darkThemeColor : Constants.lightThemeColor))
                                                     .id(user)
                                                 }
-                                                .onChange(of: tagList.count) { _ in
+                                                .onChange(of: homeViewModel.tagList.count) { _ in
                                                     withAnimation {
                                                         // automatically scroll to end
-                                                        scrollProxy.scrollTo(tagList.last, anchor: .trailing)
+                                                        scrollProxy.scrollTo(homeViewModel.tagList.last, anchor: .trailing)
                                                     }
                                                 }
                                             }
@@ -136,9 +136,9 @@ struct CreatePostView: View {
                             startPoint: .topLeading,
                             endPoint: .bottomTrailing
                         ), lineWidth: 1.5)
-                        .frame(height: proxy.size.height/2.5)
+                        .frame(height: proxy.size.height/3.2)
                     
-                    TextField("", text: $postCaption, prompt:  Text("Share your updates...").foregroundColor(isDarkMode ? .white.opacity(0.5) : .black.opacity(0.5))
+                    TextField("", text: $homeViewModel.postCaption, prompt:  Text("Share your updates...").foregroundColor(isDarkMode ? .white.opacity(0.5) : .black.opacity(0.5))
                         .font(.title3)
                     )
                     .autocorrectionDisabled(true)
@@ -203,11 +203,11 @@ struct CreatePostView: View {
                 
                 Button(action: {
                     Task {
-                        try await uploadVM.createPost(owner: "3WBgDcMgEQfodIbaXWTBHvtjYCl2", postCaption: postCaption, mediaURL: "", mimeType: "")
+                        try await homeViewModel.createPost(owner: "3WBgDcMgEQfodIbaXWTBHvtjYCl2", postCaption: homeViewModel.postCaption, mediaURL: "", mimeType: "")
                         isNewPost = false
                     }
                     
-                    isPost.toggle()
+                    homeViewModel.isPost.toggle()
                 }) {
                     RoundedRectangle(cornerRadius: proxy.size.width/40)
                         .frame(height: proxy.size.width/7)
@@ -233,7 +233,7 @@ struct CreatePostView: View {
                 Spacer()
             }
             .padding(.horizontal)
-            .fullScreenCover(isPresented: $isShowTagListIphone) {
+            .fullScreenCover(isPresented: $homeViewModel.isShowTagListIphone) {
                 VStack {
                     HStack (alignment: .firstTextBaseline) {
                         Text("Tag a friend")
@@ -245,7 +245,7 @@ struct CreatePostView: View {
                         Spacer()
                         
                         Button(action: {
-                            isShowTagListIphone = false // Close the sheet
+                            homeViewModel.isShowTagListIphone = false // Close the sheet
                         }) {
                             Image(systemName: "xmark.circle.fill") // You can use any close button icon
                                 .font(.title)
@@ -278,10 +278,10 @@ struct CreatePostView: View {
                         ScrollView {
                             ForEach(filteredUsers, id: \.self) {user in
                                 Button(action: {
-                                    if !tagList.contains(user) {
-                                        tagList.append(user)
+                                    if !homeViewModel.tagList.contains(user) {
+                                        homeViewModel.tagList.append(user)
                                     }
-                                    isShowTagListIphone.toggle()
+                                    homeViewModel.isShowTagListIphone.toggle()
                                 }) {
                                     HStack {
                                         Image("testAvt")
@@ -306,7 +306,7 @@ struct CreatePostView: View {
                 .presentationDetents([.medium, .large])
                 .presentationBackgroundInteraction(.enabled)
             }
-            .sheet(isPresented: $isShowTagListIpad) {
+            .sheet(isPresented: $homeViewModel.isShowTagListIpad) {
                 VStack {
                     HStack (alignment: .firstTextBaseline) {
                         Text("Tag a friend")
@@ -318,7 +318,7 @@ struct CreatePostView: View {
                         Spacer()
                         
                         Button(action: {
-                            isShowTagListIpad = false // Close the sheet
+                            homeViewModel.isShowTagListIpad = false // Close the sheet
                         }) {
                             Image(systemName: "xmark.circle.fill") // You can use any close button icon
                                 .font(.title)
@@ -351,10 +351,10 @@ struct CreatePostView: View {
                         ScrollView {
                             ForEach(filteredUsers, id: \.self) {user in
                                 Button(action: {
-                                    if !tagList.contains(user) {
-                                        tagList.append(user)
+                                    if !homeViewModel.tagList.contains(user) {
+                                        homeViewModel.tagList.append(user)
                                     }
-                                    isShowTagListIpad.toggle()
+                                    homeViewModel.isShowTagListIpad.toggle()
                                 }) {
                                     HStack {
                                         Image("testAvt")
@@ -387,6 +387,6 @@ struct CreatePostView: View {
 
 struct CreatePostView_Previews: PreviewProvider {
     static var previews: some View {
-        CreatePostView(isNewPost: .constant(true))
+        CreatePostView(isNewPost: .constant(true), isDarkMode: .constant(false))
     }
 }

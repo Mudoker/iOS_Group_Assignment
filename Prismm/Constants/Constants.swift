@@ -15,4 +15,5 @@ struct Constants {
     static let buttonGradientColorLight: [Color] = [Color(red: 0.96, green: 0.51, blue: 0.65), Color(red: 0.95, green: 0.00, blue: 0.53), Color(red: 0.44, green: 0.10, blue: 0.46)]
     static let lightThemeAppLogo = "logolight"
     static let darkThemeAppLogo = "logodark"
+    static let storyGradientBorder = Gradient(colors: [.yellow, .red, .purple, .orange, .pink, .red])
 }

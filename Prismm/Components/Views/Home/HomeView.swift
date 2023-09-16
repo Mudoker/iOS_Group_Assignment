@@ -7,12 +7,7 @@ import SwiftUI
 
 struct HomeView: View {
     @StateObject var homeViewModel = HomeViewModel()
-    @ObservedObject var uploadVM = UploadPostViewModel()
-    @State var isNewPostIpad = false
-    @State var isNewPostIphone = false
-    @State var isCommentViewIphone = false
-    @State var isCommentViewIpad = false
-
+    @ObservedObject var settingVM = SettingViewModel()
     
     var body: some View {
         GeometryReader { proxy in
@@ -32,9 +27,9 @@ struct HomeView: View {
                         Spacer()
                         
                         Button(action: {if UIDevice.current.userInterfaceIdiom == .pad {
-                            isNewPostIpad.toggle()
+                            homeViewModel.isNewPostIpad.toggle()
                         } else {
-                            isNewPostIphone.toggle()
+                            homeViewModel.isNewPostIphone.toggle()
                         }}) {
                             Image(systemName: "plus.app")
                                 .resizable()
@@ -63,54 +58,28 @@ struct HomeView: View {
                     
                     
                     VStack {
-                        ForEach(uploadVM.fetched_post) { post in
-                            PostView(post: post, homeViewModel: homeViewModel, uploadVM: uploadVM)
+                        ForEach(homeViewModel.fetched_post) { post in
+                            PostView(post: post, homeViewModel: homeViewModel, settingVM: settingVM)
                                 .padding(.bottom, 50)
                         }
                     }
                 }
                 
-                .sheet(isPresented: $isNewPostIpad) {
-                    CreatePostView(isNewPost: $isNewPostIpad)
+                .sheet(isPresented: $homeViewModel.isNewPostIpad) {
+                    CreatePostView(isNewPost: $homeViewModel.isNewPostIpad, isDarkMode: $settingVM.isDarkMode)
                 }
-                .fullScreenCover(isPresented: $isNewPostIphone) {
-                    CreatePostView(isNewPost: $isNewPostIphone)
+                .fullScreenCover(isPresented: $homeViewModel.isNewPostIphone) {
+                    CreatePostView(isNewPost: $homeViewModel.isNewPostIphone, isDarkMode: $settingVM.isDarkMode)
                 }
                 .onAppear {
-                    // Customize view components based on device type and size
-                    if UIDevice.current.userInterfaceIdiom == .phone {
-                        homeViewModel.storyViewSizeWidth = proxy.size.width * 0.2
-                        homeViewModel.storyViewSizeHeight = proxy.size.width * 0.23
-                        homeViewModel.appLogoSize = proxy.size.width / 2
-                        homeViewModel.messageLogoSize = proxy.size.width / 14
-                        homeViewModel.profileImageSize = proxy.size.width * 0.15
-                        homeViewModel.seeMoreButtonSize = proxy.size.width * 0.04
-                        homeViewModel.postStatsFontSize = proxy.size.width * 0.04
-                        homeViewModel.postStatsImageSize = proxy.size.width * 0.05
-                        homeViewModel.commentProfileImage = proxy.size.width * 0.1
-                        homeViewModel.commentTextFieldSizeHeight = proxy.size.width * 0.1
-                    } else {
-                        homeViewModel.storyViewSizeWidth = proxy.size.width * 0.15
-                        homeViewModel.storyViewSizeHeight = proxy.size.width * 0.15
-                        homeViewModel.appLogoSize = proxy.size.width / 7
-                        homeViewModel.messageLogoSize = proxy.size.width * 0.06
-                        homeViewModel.profileImageSize = proxy.size.width * 0.1
-                        homeViewModel.seeMoreButtonSize = proxy.size.width * 0.04
-                        homeViewModel.postStatsFontSize = proxy.size.width * 0.03
-                        homeViewModel.postStatsImageSize = proxy.size.width * 0.04
-                        homeViewModel.commentProfileImage = proxy.size.width * 0.08
-                        homeViewModel.commentTextFieldSizeHeight = proxy.size.width * 0.08
-                        homeViewModel.commentTextFiledFont = .title
-                        homeViewModel.usernameFont = 25
-                        homeViewModel.captionFont = .title
-                    }
+                    homeViewModel.proxySize = proxy.size
                     Task {
-                        uploadVM.fetchPostRealTime()
+                        homeViewModel.fetchPostRealTime()
                     }
                 }
                 .refreshable {
                     Task {
-                        uploadVM.fetchPostRealTime()
+                        homeViewModel.fetchPostRealTime()
                     }
                 }
             }

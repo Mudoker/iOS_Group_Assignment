@@ -17,14 +17,15 @@ struct CustomTextField: View {
     @State private var isPasswordVisible: Bool = false
 
     // Responsive
-    @Binding var titleFont: Font
-    @Binding var textFieldSizeHeight: CGFloat
-    @Binding var textFieldCorner: CGFloat
-    @Binding var textFieldBorderWidth: CGFloat
-    @Binding var isPassword: Bool
-    @Binding var textFieldPlaceHolderFont: Font
-    @Binding var isDarkMode: Bool
+    var titleFont: Font
+    var textFieldSizeHeight: CGFloat
+    var textFieldCorner: CGFloat
+    var textFieldBorderWidth: CGFloat
+    var isPassword: Bool
+    var textFieldPlaceHolderFont: Font
+    var isDarkMode: Bool
     var horizontalPaddingSize: CGFloat = 16
+    
     // ViewModel
     @ObservedObject var authenticationViewModel = AuthenticationViewModel()
     @ObservedObject var settingVM = SettingViewModel()
@@ -104,10 +105,6 @@ struct CustomTextField: View {
             }
             .foregroundColor(isDarkMode ? .white : .black)
             .padding(.horizontal, horizontalPaddingSize)
-            .onAppear {
-                textFieldSizeHeight = textFieldSizeHeight
-                textFieldCorner = textFieldCorner
-            }
     }
 }
 
@@ -115,10 +112,10 @@ struct CustomTextField_Previews: PreviewProvider {
     static var previews: some View {
         CustomTextField(
             text: .constant("Preview Text"), textFieldTitle: "username",
-            testFieldPlaceHolder: "Username or email", titleFont: .constant(.headline),
-            textFieldSizeHeight: .constant(40.0),
-            textFieldCorner: .constant(10.0),
-            textFieldBorderWidth: .constant(2.0), isPassword: .constant(true), textFieldPlaceHolderFont: .constant(Font.body), isDarkMode: .constant(true)
+            testFieldPlaceHolder: "Username or email", titleFont: .headline,
+            textFieldSizeHeight: 40.0,
+            textFieldCorner: 10.0,
+            textFieldBorderWidth: 2.0, isPassword: true, textFieldPlaceHolderFont: Font.body, isDarkMode: true
         )
     }
 }

@@ -10,25 +10,9 @@ import Kingfisher
 import Firebase
 
 struct CommentView: View {
-    var comments = [
-        ("User1", "1d", "Hello world!"),
-        ("User2", "2d", "This is a test."),
-        ("User3", "3d", "Lorem ipsum dolor sit amet."),
-        ("Viet", "4d", "SwiftUI L!"),
-        ("User5", "5d", "Building apps is fun."),
-        ("User6", "6d", "Explore SwiftUI."),
-        ("User7", "7d", "Learn new things."),
-        ("User8", "8d", "Creating cool designs."),
-        ("User9", "9d", "Welcome to SwiftUI."),
-        ("User10", "10d", "This is the last item.")
-    ]
-    @State var comment = ""
-    @State var isDarkMode = false
-    @State var isAddingComment = false
-    @State var selectedFilter = "Newest"
+    @Binding var isDarkMode: Bool
     @Binding var isShowComment: Bool
-    @ObservedObject var uploadVM = UploadPostViewModel()
-    @State private var commentor: User? = nil // Create a @State property
+    @ObservedObject var homeViewModel = HomeViewModel()
     
     var post: Post
     
@@ -46,7 +30,7 @@ struct CommentView: View {
                     
                     HStack {
                         Menu {
-                            Picker(selection: $selectedFilter, label: Text("Please choose a sorting option")) {
+                            Picker(selection: $homeViewModel.selectedCommentFilter, label: Text("Please choose a sorting option")) {
                                 Text("Newest").tag("Newest")
                                 Text("Oldest").tag("Oldest")
                             }
@@ -67,12 +51,11 @@ struct CommentView: View {
                 }
                 
                 VStack {
-                    
-                    if !post.unwrapComments.isEmpty {
+                    if let commentsForPost = homeViewModel.fetched_comments[post.id], !commentsForPost.isEmpty {
                         ScrollView(showsIndicators: false) {
-                            ForEach(post.unwrapComments) { comment in
+                            ForEach(commentsForPost.sorted{$0.id < $1.id}) { comment in
                                 HStack {
-                                    if let profileURLString = commentor?.profileImageURL, let mediaURL = URL(string: profileURLString) {
+                                    if let profileURLString = homeViewModel.currentCommentor?.profileImageURL, let mediaURL = URL(string: profileURLString) {
                                         KFImage(mediaURL)
                                             .resizable()
                                             .frame(width: proxy.size.width/8, height: proxy.size.width/8)
@@ -81,7 +64,7 @@ struct CommentView: View {
                                     }
                                     VStack(alignment: .leading) {
                                         HStack {
-                                            Text(commentor?.fullName ?? "") // User Name
+                                            Text(homeViewModel.currentCommentor?.fullName ?? "") // User Name
                                                 .bold()
         //                                    Text(comment.date) // Time
                                         }
@@ -94,7 +77,7 @@ struct CommentView: View {
                                     // Start the asynchronous task when the view appears
                                     Task {
                                         do {
-                                            commentor = try await UserService.fetchUser(withUid: comment.commentor)
+                                            homeViewModel.currentCommentor = try await API_SERVICE.fetchUser(withUid: comment.commentor)
         //                                    post = try await UserService.fetchAPost(withUid: post.id)
 
                                         } catch {
@@ -125,7 +108,7 @@ struct CommentView: View {
                         HStack(spacing: 0) {
                             ForEach(emojis, id: \.self) { emoji in
                                 Button(action: {
-                                    comment += emoji
+                                    homeViewModel.commentContent += emoji
                                 }) {
                                     Text(emoji)
                                         .font(.largeTitle)
@@ -145,7 +128,7 @@ struct CommentView: View {
                             .frame(width: proxy.size.width/8, height: proxy.size.width/8)
                             .clipShape(Circle())
                         
-                        TextField("", text: $comment, prompt:  Text("Leave a comment...").foregroundColor(isDarkMode ? .white.opacity(0.5) : .black.opacity(0.5))
+                        TextField("", text: $homeViewModel.commentContent, prompt:  Text("Leave a comment...").foregroundColor(isDarkMode ? .white.opacity(0.5) : .black.opacity(0.5))
                             .font(.title3)
                         )
                         .autocorrectionDisabled(true)
@@ -158,11 +141,11 @@ struct CommentView: View {
                         
                         Button(action: {
                             Task {
-                                let newComment = try await uploadVM.createComment(content: comment, commentor: "3WBgDcMgEQfodIbaXWTBHvtjYCl2")
-                                if let newComment = newComment {
-                                    try await uploadVM.addCommentToPost(comment: newComment, postID: post.id)
-                                }
-                                comment = ""
+                                let newComment = try await homeViewModel.createComment(content: homeViewModel.commentContent, commentor: "3WBgDcMgEQfodIbaXWTBHvtjYCl2", postId: post.id)
+//                                if let newComment = newComment {
+//                                    try await uploadVM.addCommentToPost(comment: newComment, postID: post.id)
+//                                }
+                                homeViewModel.commentContent = ""
                         }
                         }) {
                             Circle()
@@ -182,7 +165,6 @@ struct CommentView: View {
                 }
                 .background(.gray.opacity(0.1))
             }
-            
             .padding(.vertical)
         }
         .foregroundColor(!isDarkMode ? .black : .white)

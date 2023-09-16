@@ -7,8 +7,12 @@
 
 import Foundation
 import Firebase
+import SwiftUI
+import GoogleSignIn
+import GoogleSignInSwift
 
-struct UserService {
+
+struct API_SERVICE {
     static func fetchUser(withUid: String) async throws -> User {
         let snapshot = try await Firestore.firestore().collection("users").document(withUid).getDocument()
         return try snapshot.data(as: User.self)
@@ -27,7 +31,5 @@ struct UserService {
     static func fetchAPost(withUid: String) async throws -> Post {
         let snapshot = try await Firestore.firestore().collection("test_posts").document(withUid).getDocument()
         return try snapshot.data(as: Post.self)
-        
     }
-    
 }

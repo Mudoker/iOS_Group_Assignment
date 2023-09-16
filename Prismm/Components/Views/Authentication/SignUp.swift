@@ -16,14 +16,9 @@ struct SignUp: View {
     @State var confrimPasswordText = ""
     @State private var isPasswordVisible: Bool = false
     
-    @State var isValidPassword = false
-    @State var isValidReEnterPassword = false
-    @State var isValidUserName = false
-
-    
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
     // View Model
-    @EnvironmentObject var authVM:AuthenticationViewModel
+    @ObservedObject var authVM = AuthenticationViewModel()
     @ObservedObject var settingVM = SettingViewModel()
     
     var body: some View {
@@ -39,7 +34,7 @@ struct SignUp: View {
                         .aspectRatio(contentMode: .fill)
                         .frame(width: authVM.logoImageSize, height: 0)
                         .padding(.vertical, authVM.imagePaddingVertical)
-
+                    
                     // Title
                     Text ("Sign Up")
                         .font(.system(size: authVM.titleFont))
@@ -49,20 +44,20 @@ struct SignUp: View {
                         .font(authVM.captionFont)
                         .bold()
                         .opacity(0.7)
-                             
+                    
                     // Text field
                     VStack {
                         CustomTextField(
                             text: $accountText,
                             textFieldTitle: "Username",
                             testFieldPlaceHolder: "Username or Account",
-                            titleFont: $authVM.textFieldTitleFont,
-                            textFieldSizeHeight: $authVM.textFieldSizeHeight,
-                            textFieldCorner: $authVM.textFieldCorner,
-                            textFieldBorderWidth: $authVM.textFieldBorderWidth,
-                            isPassword: .constant(false),
-                            textFieldPlaceHolderFont: $authVM.textFieldPlaceHolderFont,
-                            isDarkMode: $settingVM.isDarkMode
+                            titleFont: authVM.textFieldTitleFont,
+                            textFieldSizeHeight: authVM.textFieldSizeHeight,
+                            textFieldCorner: authVM.textFieldCorner,
+                            textFieldBorderWidth: authVM.textFieldBorderWidth,
+                            isPassword: false,
+                            textFieldPlaceHolderFont: authVM.textFieldPlaceHolderFont,
+                            isDarkMode: settingVM.isDarkMode
                         )
                         .padding(.bottom)
                         
@@ -71,15 +66,15 @@ struct SignUp: View {
                             text: $passwordText,
                             textFieldTitle: "Password",
                             testFieldPlaceHolder: "Password",
-                            titleFont: $authVM.textFieldTitleFont,
-                            textFieldSizeHeight: $authVM.textFieldSizeHeight,
-                            textFieldCorner: $authVM.textFieldCorner,
-                            textFieldBorderWidth: $authVM.textFieldBorderWidth,
-                            isPassword: .constant(true),
-                            textFieldPlaceHolderFont: $authVM.textFieldPlaceHolderFont,
-                            isDarkMode: $settingVM.isDarkMode
+                            titleFont: authVM.textFieldTitleFont,
+                            textFieldSizeHeight: authVM.textFieldSizeHeight,
+                            textFieldCorner: authVM.textFieldCorner,
+                            textFieldBorderWidth: authVM.textFieldBorderWidth,
+                            isPassword: true,
+                            textFieldPlaceHolderFont: authVM.textFieldPlaceHolderFont,
+                            isDarkMode: settingVM.isDarkMode
                         )
-                            
+                        
                         HStack {
                             if passwordText.isEmpty {
                                 Text("At least 8 characters and not contain special symbols")
@@ -87,7 +82,7 @@ struct SignUp: View {
                                     .padding(.bottom, 5)
                                     .opacity(0.7)
                             } else {
-                                if !isValidPassword {
+                                if !authVM.isValidPassword {
                                     Text("Invalid Password")
                                         .font(authVM.captionFont )
                                         .padding(.bottom, 5)
@@ -110,13 +105,13 @@ struct SignUp: View {
                             text: $confrimPasswordText,
                             textFieldTitle: "Confirm Password",
                             testFieldPlaceHolder: "Password",
-                            titleFont: $authVM.textFieldTitleFont,
-                            textFieldSizeHeight: $authVM.textFieldSizeHeight,
-                            textFieldCorner: $authVM.textFieldCorner,
-                            textFieldBorderWidth: $authVM.textFieldBorderWidth,
-                            isPassword: .constant(true),
-                            textFieldPlaceHolderFont: $authVM.textFieldPlaceHolderFont,
-                            isDarkMode: $settingVM.isDarkMode
+                            titleFont: authVM.textFieldTitleFont,
+                            textFieldSizeHeight: authVM.textFieldSizeHeight,
+                            textFieldCorner: authVM.textFieldCorner,
+                            textFieldBorderWidth: authVM.textFieldBorderWidth,
+                            isPassword: true,
+                            textFieldPlaceHolderFont: authVM.textFieldPlaceHolderFont,
+                            isDarkMode: settingVM.isDarkMode
                         )
                         
                         HStack {
@@ -126,7 +121,7 @@ struct SignUp: View {
                                     .padding(.bottom, 5)
                                     .opacity(0.7)
                             } else {
-                                if isValidReEnterPassword {
+                                if authVM.isValidReEnterPassword {
                                     Text("Matched Password!")
                                         .font(authVM.captionFont )
                                         .padding(.bottom, 5)
@@ -147,7 +142,7 @@ struct SignUp: View {
                         .padding(.bottom)
                     }
                     
-                   
+                    
                     // Signup button
                     VStack {
                         Button(action: {
@@ -172,7 +167,7 @@ struct SignUp: View {
                                         .fill(settingVM.isDarkMode ? Constants.darkThemeColor : Constants.lightThemeColor)
                                 )
                                 .padding(.horizontal)
-                                
+                            
                         }
                         .disabled(!formIsValid)
                         .opacity(formIsValid ? 1 : 0.5)
@@ -188,7 +183,7 @@ struct SignUp: View {
                             )
                         }
                         
-
+                        
                     }
                     
                     
@@ -199,12 +194,11 @@ struct SignUp: View {
                 .padding(.horizontal)
                 
                 .onChange(of: passwordText) {newValue in
-                    isValidPassword = authVM.validatePasswordSignUp(newValue)
-                    isValidReEnterPassword = authVM.isMatchPassword(currentPassword: newValue, reEnteredPassword: confrimPasswordText)
+                    authVM.isValidPassword = authVM.validatePasswordSignUp(newValue)
+                    authVM.isValidReEnterPassword = authVM.isMatchPassword(currentPassword: newValue, reEnteredPassword: confrimPasswordText)
                 }
                 .onChange(of: confrimPasswordText) {newValue in
-                    
-                    isValidReEnterPassword = authVM.isMatchPassword(currentPassword: passwordText, reEnteredPassword: newValue)
+                    authVM.isValidReEnterPassword = authVM.isMatchPassword(currentPassword: passwordText, reEnteredPassword: newValue)
                 }
                 
                 if authVM.isLoading {
@@ -221,7 +215,7 @@ struct SignUp: View {
 
 extension SignUp: SignUpFormProtocol{
     var formIsValid: Bool{
-        return accountText.contains("@") && !accountText.isEmpty&&isValidPassword&&isValidReEnterPassword
+        return accountText.contains("@") && !accountText.isEmpty && authVM.isValidPassword && authVM.isValidReEnterPassword
     }
 }
 

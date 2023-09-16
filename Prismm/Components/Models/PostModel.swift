@@ -16,7 +16,7 @@ struct Post: Identifiable, Codable {
     var mediaURL: String?
     var mimeType: String?
     var date: Timestamp
-    var postComment: [String?] = []
+//    var postComment: [String?] = []
     var user: User?
     var unwrapLikers: [User] = []
     var unwrapComments: [Comment] = []

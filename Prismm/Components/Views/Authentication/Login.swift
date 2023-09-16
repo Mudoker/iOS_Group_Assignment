@@ -15,12 +15,9 @@ struct Login: View {
     @State var accountText = ""
     @State var passwordText = ""
     @State private var isPasswordVisible: Bool = false
-    @State var isValidUserName = false
-    @State var isValidPassword = false
-    @State var isForgotPassword = false
-    @State var isSignUp = false
+
     // View Model
-    @EnvironmentObject var authVM :AuthenticationViewModel
+    @StateObject var authVM :AuthenticationViewModel
     @ObservedObject var settingVM = SettingViewModel()
     
     var body: some View {
@@ -54,12 +51,12 @@ struct Login: View {
                             text: $accountText,
                             textFieldTitle: "Username",
                             testFieldPlaceHolder: "Username or Account",
-                            titleFont: $authVM.textFieldTitleFont,
-                            textFieldSizeHeight: $authVM.textFieldSizeHeight,
-                            textFieldCorner: $authVM.textFieldCorner,
-                            textFieldBorderWidth: $authVM.textFieldBorderWidth,
-                            isPassword: .constant(false),
-                            textFieldPlaceHolderFont: $authVM.textFieldPlaceHolderFont, isDarkMode: $settingVM.isDarkMode
+                            titleFont: authVM.textFieldTitleFont,
+                            textFieldSizeHeight: authVM.textFieldSizeHeight,
+                            textFieldCorner: authVM.textFieldCorner,
+                            textFieldBorderWidth: authVM.textFieldBorderWidth,
+                            isPassword: false,
+                            textFieldPlaceHolderFont: authVM.textFieldPlaceHolderFont, isDarkMode: settingVM.isDarkMode
                         )
                         .padding(.bottom)
                         
@@ -67,13 +64,13 @@ struct Login: View {
                             text: $passwordText,
                             textFieldTitle: "Password",
                             testFieldPlaceHolder: "Password",
-                            titleFont: $authVM.textFieldTitleFont,
-                            textFieldSizeHeight: $authVM.textFieldSizeHeight,
-                            textFieldCorner: $authVM.textFieldCorner,
-                            textFieldBorderWidth: $authVM.textFieldBorderWidth,
-                            isPassword: .constant(true),
-                            textFieldPlaceHolderFont: $authVM.textFieldPlaceHolderFont,
-                            isDarkMode: $settingVM.isDarkMode
+                            titleFont: authVM.textFieldTitleFont,
+                            textFieldSizeHeight: authVM.textFieldSizeHeight,
+                            textFieldCorner: authVM.textFieldCorner,
+                            textFieldBorderWidth: authVM.textFieldBorderWidth,
+                            isPassword: true,
+                            textFieldPlaceHolderFont: authVM.textFieldPlaceHolderFont,
+                            isDarkMode: settingVM.isDarkMode
                         )
                         .padding(.bottom)
                         
@@ -106,13 +103,14 @@ struct Login: View {
                             )
                         }
                         .navigationDestination(isPresented: $authVM.isUnlocked) {
-                            HomeView(uploadVM: authVM.uploadVM)
+                            HomeView()
                                 .navigationBarBackButtonHidden(true)
                         }
                         
                         // Helpers
                         HStack {
                             Button(action: {
+                                authVM.isForgotPassword.toggle()
                             }) {
                                 Text("Forgot Password?")
                                     .bold()
@@ -131,7 +129,7 @@ struct Login: View {
                             
                             Spacer()
                             
-                            NavigationLink(destination: SignUp()
+                            NavigationLink(destination: SignUp(authVM: authVM)
                                 .navigationBarTitle("")
                                 .navigationBarHidden(false)) {
                                     Text("Sign Up")
@@ -178,7 +176,7 @@ struct Login: View {
                                             )
                                     }
                                     .navigationDestination(isPresented: $authVM.isUnlockedGoogle) {
-                                        TabBar(uploadVM: authVM.uploadVM)
+                                        TabBar()
                                             .navigationBarBackButtonHidden(true)
                                     }
                                 }
@@ -213,27 +211,7 @@ struct Login: View {
                     .foregroundColor(settingVM.isDarkMode ? .white : .black)
                     .padding(.horizontal)
                     .onAppear {
-                        if UIDevice.current.userInterfaceIdiom == .phone {
-                            authVM.logoImageSize = proxy.size.width/2.2
-                            authVM.textFieldSizeHeight = proxy.size.width/7
-                            authVM.textFieldCorner = proxy.size.width/50
-                            authVM.faceIdImageSize = proxy.size.width/10
-                            authVM.loginButtonSizeHeight = authVM.textFieldSizeHeight
-                        } else {
-                            authVM.logoImageSize = proxy.size.width/2.8
-                            authVM.textFieldSizeHeight = proxy.size.width/9
-                            authVM.textFieldCorner = proxy.size.width/50
-                            authVM.faceIdImageSize = proxy.size.width/12
-                            authVM.imagePaddingVertical = 30
-                            authVM.titleFont = 60
-                            authVM.textFieldCorner = proxy.size.width/60
-                            authVM.loginButtonSizeHeight = authVM.textFieldSizeHeight
-                            authVM.conentFont = .title2
-                            authVM.textFieldTitleFont = .title
-                            authVM.loginTextFont = .title
-                            authVM.captionFont = .title3
-                            authVM.textFieldPlaceHolderFont = .largeTitle
-                        }
+                        authVM.proxySize = proxy.size
                     }
                     
                     if authVM.isLoading {
@@ -250,7 +228,6 @@ struct Login: View {
 
 struct Login_Previews: PreviewProvider {
     static var previews: some View {
-        Login()
-            .environmentObject(AuthenticationViewModel())
+        Login(authVM: AuthenticationViewModel())
     }
 }

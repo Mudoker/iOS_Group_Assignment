@@ -15,7 +15,7 @@ struct EditProfileView: View {
     @State var facebookLink: String = ""
     @State var gmailLink: String = ""
     @State var linkedInLink: String = ""
-
+    
     var body: some View {
         GeometryReader { proxy in
             ScrollView(showsIndicators: false) {
@@ -49,13 +49,13 @@ struct EditProfileView: View {
                         Text("Change photo")
                     }
                     .padding()
-    //                .frame(maxWidth: .infinity, alignment: .center) // Center align this section
+                    //                .frame(maxWidth: .infinity, alignment: .center) // Center align this section
                     
                     VStack(alignment: .leading) { // Align text to the left
                         Text("Update profile")
                             .padding(.vertical)
                             .padding(.horizontal)
-
+                        
                         VStack(alignment: .leading) {
                             Text("Profile")
                                 .bold()
@@ -65,11 +65,11 @@ struct EditProfileView: View {
                                 
                                 Spacer()
                                 
-                                TextField("", text: $accountText, prompt: Text(verbatim: "huuquoc7603@gmail.com").foregroundColor(settingVM.isDarkMode ? .white.opacity(0.5) : .black.opacity(0.3)))
-                                    .multilineTextAlignment(.trailing)
+                                Text(verbatim: "huuquoc7603@gmail.com")
+                                    .foregroundColor(settingVM.isDarkMode ? .white.opacity(0.5) : .black.opacity(0.3))
                             }
                             .padding(.vertical)
-
+                            
                             HStack {
                                 Text("Username")
                                 
@@ -77,9 +77,17 @@ struct EditProfileView: View {
                                 
                                 TextField("", text: $usernameText, prompt: Text(verbatim: "qdoan7603").foregroundColor(settingVM.isDarkMode ? .white.opacity(0.5) : .black.opacity(0.3)))
                                     .multilineTextAlignment(.trailing)
+                                    .onChange(of: usernameText) { _ in
+                                        if settingVM.isProfileSettingChange(username: usernameText, phoneNumber: phoneNumberText, fb: facebookLink, gmail: gmailLink, ld: linkedInLink) {
+                                            settingVM.isChangeProfile = true
+                                        } else {
+                                            settingVM.isChangeProfile = false
+                                            
+                                        }
+                                    }
                             }
                             .padding(.vertical)
-
+                            
                             HStack {
                                 Text("Phone number")
                                 
@@ -87,6 +95,15 @@ struct EditProfileView: View {
                                 
                                 TextField("", text: $phoneNumberText, prompt: Text(verbatim: "qdoan7603").foregroundColor(settingVM.isDarkMode ? .white.opacity(0.5) : .black.opacity(0.3)))
                                     .multilineTextAlignment(.trailing)
+                                    .onChange(of: phoneNumberText) { _ in
+                                        if settingVM.isProfileSettingChange(username: usernameText, phoneNumber: phoneNumberText, fb: facebookLink, gmail: gmailLink, ld: linkedInLink) {
+                                            settingVM.isChangeProfile = true
+                                        } else {
+                                            settingVM.isChangeProfile = false
+                                            
+                                        }
+                                    }
+                                
                             }
                             .padding(.vertical)
                         }
@@ -109,9 +126,17 @@ struct EditProfileView: View {
                                 
                                 TextField("", text: $facebookLink, prompt: Text(verbatim: "example.com").foregroundColor(settingVM.isDarkMode ? .white.opacity(0.5) : .black.opacity(0.3)))
                                     .multilineTextAlignment(.trailing)
+                                    .onChange(of: facebookLink) { _ in
+                                        if settingVM.isProfileSettingChange(username: usernameText, phoneNumber: phoneNumberText, fb: facebookLink, gmail: gmailLink, ld: linkedInLink) {
+                                            settingVM.isChangeProfile = true
+                                        } else {
+                                            settingVM.isChangeProfile = false
+                                            
+                                        }
+                                    }
                             }
                             .padding(.vertical)
-
+                            
                             HStack {
                                 Image("mail")
                                     .resizable()
@@ -124,9 +149,17 @@ struct EditProfileView: View {
                                 
                                 TextField("", text: $gmailLink, prompt: Text(verbatim: "example.com").foregroundColor(settingVM.isDarkMode ? .white.opacity(0.5) : .black.opacity(0.3)))
                                     .multilineTextAlignment(.trailing)
+                                    .onChange(of: gmailLink) { _ in
+                                        if settingVM.isProfileSettingChange(username: usernameText, phoneNumber: phoneNumberText, fb: facebookLink, gmail: gmailLink, ld: linkedInLink) {
+                                            settingVM.isChangeProfile = true
+                                        } else {
+                                            settingVM.isChangeProfile = false
+                                            
+                                        }
+                                    }
                             }
                             .padding(.vertical)
-
+                            
                             HStack {
                                 Image("linkedin")
                                     .resizable()
@@ -139,17 +172,44 @@ struct EditProfileView: View {
                                 
                                 TextField("", text: $linkedInLink, prompt: Text(verbatim: "example.com").foregroundColor(settingVM.isDarkMode ? .white.opacity(0.5) : .black.opacity(0.3)))
                                     .multilineTextAlignment(.trailing)
+                                    .onChange(of: linkedInLink) { _ in
+                                        if settingVM.isProfileSettingChange(username: usernameText, phoneNumber: phoneNumberText, fb: facebookLink, gmail: gmailLink, ld: linkedInLink) {
+                                            settingVM.isChangeProfile = true
+                                        } else {
+                                            settingVM.isChangeProfile = false
+                                            
+                                        }
+                                    }
                             }
                             .padding(.vertical)
+                            
+                            HStack {
+                                Spacer()
+                                
+                                Button(action: {
+                                    if settingVM.isValidProfileURL(facebookLink, platform: "fb") {
+                                        settingVM.isChangeProfile.toggle()
+                                    }
+                                }) {
+                                    Text("Confirm")
+                                        .foregroundColor(settingVM.isChangeProfile ? .white : .gray)
+                                        .padding()
+                                        .frame(width: proxy.size.width/1.2) // Make the button as wide as the HStack
+                                        .background(settingVM.isChangeProfile ? Color.blue : Color.gray.opacity(0.5))
+                                        .cornerRadius(8)
+                                }
+                                .disabled(!settingVM.isChangeProfile) // Disable when no changes
+                                .padding(.top)
+                                Spacer()
+                            }
                         }
                         .padding(.horizontal)
                         .padding(.vertical)
                         
-                        
                     }
-                    .frame(maxWidth: .infinity, alignment: .leading) // Align text to the left
                 }
             }
+            .padding(.top, 0.1)
         }
         .foregroundColor(settingVM.isDarkMode ? .white : .black)
         .background(!settingVM.isDarkMode ? .white : .black)

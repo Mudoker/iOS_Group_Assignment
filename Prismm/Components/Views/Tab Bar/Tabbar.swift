@@ -15,7 +15,6 @@ import SwiftUI
 struct TabBar: View {
     // Control state
     @State private var tabSelection = 0
-    @ObservedObject var uploadVM = UploadPostViewModel()
 
     // Localization
     @AppStorage("selectedLanguage") var selectedLanguage = "en"
@@ -171,6 +170,6 @@ struct CustomTabbar: View {
 
 struct TabBar_Previews: PreviewProvider {
     static var previews: some View {
-        TabBar(uploadVM: UploadPostViewModel())
+        TabBar()
     }
 }
