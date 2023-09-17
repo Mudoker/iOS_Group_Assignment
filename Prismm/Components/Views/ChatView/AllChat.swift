@@ -45,7 +45,7 @@ struct AllChat : View {
                             HStack {
                                 Image(systemName: "magnifyingglass")
                                     .foregroundColor(.gray)
-                                TextField("Search", text: $searchTerm)
+                                TextField("Search message", text: $searchTerm)
                                     .foregroundColor(.black)
                                 
                                 Button(action: {
@@ -59,7 +59,7 @@ struct AllChat : View {
                                 }
                                 
                             }
-                            .frame(width: geometry.size.width - 35, height: 25)
+                            .frame(width: geometry.size.width - 50, height: 25)
                             .padding(8)
                             .background(Color.gray.opacity(0.2))
                             .cornerRadius(10)
@@ -86,11 +86,7 @@ struct AllChat : View {
                                     //                                        UserActiveChat()
                                     //                                            .padding(.horizontal,10)
                                     ForEach(vm.recentMessages) { recentMessage in
-                                        VStack {
-                                            //                                                Text("alo")
-                                            //                                                    .onTapGesture {
-                                            //                                                        print(recentMessage)
-                                            //                                                    }
+                                        VStack(alignment: .leading) {
                                             Button {
                                                 let uid = FirebaseManager.shared.auth.currentUser?.uid == recentMessage.fromId ? recentMessage.toId : recentMessage.fromId
                                                 
@@ -117,10 +113,17 @@ struct AllChat : View {
                                                                 }
                                                                 .frame(width: 80, height:75,alignment: .bottomTrailing)
                                                             }
+                                                        VStack{
+                                                            Text(recentMessage.email.replacingOccurrences(of: "@gmail.com", with: "")  ?? "")
+                                                                .font(.system(size: 16, weight: .none))
+                                                                .foregroundColor(Color(.label))
+                                                        }
+                                                        .frame(width: 80)
                                                     }
                                                 }
                                             }
-                                        }.padding(.horizontal, 5)
+                                        }
+                                        .padding(.trailing,20)
                                     }
                                 }
                                 .frame(height: 130)
@@ -129,37 +132,42 @@ struct AllChat : View {
                             //Message
                             VStack(spacing: 15){
                                 HStack{
-                                    Button{
-                                        self.selected = 0
-                                    } label: {
-                                        Text("Message")
-                                            .foregroundColor(.black)
-                                            .font(.footnote)
-                                            .frame(width: 70)
-                                            .padding(.vertical,12)
-                                            .padding(.horizontal,10)
-                                            .background(self.selected == 0 ? Color.blue : Color.white)
-                                            .clipShape(Capsule())
-                                    }
-                                    
-                                    Button{
-                                        self.selected = 1
-                                    } label: {
-                                        Text("Request")
-                                            .foregroundColor(.black)
-                                            .font(.footnote)
-                                            .frame(width: 70)
-                                            .padding(.vertical,12)
-                                            .padding(.horizontal,10)
-                                            .background(self.selected == 1 ? Color.blue : Color.white)
-                                            .clipShape(Capsule())
-                                        
-                                        
-                                    }
+//                                    Button{
+//                                        self.selected = 0
+//                                    } label: {
+//                                        Text("Message")
+//                                            .foregroundColor(.black)
+//                                            .font(.footnote)
+//                                            .frame(width: 70)
+//                                            .padding(.vertical,12)
+//                                            .padding(.horizontal,10)
+//                                            .background(self.selected == 0 ? Color.blue : Color.white)
+//                                            .clipShape(Capsule())
+//                                    }
+//
+//                                    Button{
+//                                        self.selected = 1
+//                                    } label: {
+//                                        Text("Request")
+//                                            .foregroundColor(.black)
+//                                            .font(.footnote)
+//                                            .frame(width: 70)
+//                                            .padding(.vertical,12)
+//                                            .padding(.horizontal,10)
+//                                            .background(self.selected == 1 ? Color.blue : Color.white)
+//                                            .clipShape(Capsule())
+//
+//
+//                                    }
+                                    Text("Message (\(vm.recentMessages.count))")
+                                        .foregroundColor(.blue)
+                                    Spacer()
+                                    Text("Request (0)")
+                                        .foregroundColor(.blue)
                                 }
-                                .padding(8)
-                                .background(Color.gray.opacity(0.2))
-                                .clipShape(Capsule())
+//                                .padding(8)
+//                                .background(Color.gray.opacity(0.2))
+//                                .clipShape(Capsule())
                                 
                                 // Message List
                                 LazyVStack(spacing: 12){
@@ -203,7 +211,7 @@ struct AllChat : View {
                                                     
                                                     
                                                     VStack(alignment: .leading, spacing: 8) {
-                                                        Text(recentMessage.email)
+                                                        Text(recentMessage.email.replacingOccurrences(of: "@gmail.com", with: "")  ?? "")
                                                             .font(.system(size: 16, weight: .bold))
                                                             .foregroundColor(Color(.label))
                                                         Text(recentMessage.text)
@@ -222,7 +230,8 @@ struct AllChat : View {
                                             
                                             Divider()
                                                 .padding(.vertical, 8)
-                                        }.padding(.horizontal)
+                                        }
+                                        .frame(maxWidth: .infinity)
                                     }
                                 }
                             }
@@ -232,6 +241,7 @@ struct AllChat : View {
                         
                         
                     }
+                    .frame(maxWidth: .infinity)
                     .padding(.horizontal,190)
                     .toolbar{
                         ToolbarItem(placement: .navigationBarLeading) {
@@ -244,6 +254,8 @@ struct AllChat : View {
                                 
                                 HStack(spacing: 10){
                                     Text("\(vm.chatUser?.email.replacingOccurrences(of: "@gmail.com", with: "")  ?? "")")
+                                        .font(.title3)
+                                        .fontWeight(.semibold)
                                     VStack{
                                         Image(systemName: "chevron.down")
                                             .scaleEffect(0.6)
@@ -261,6 +273,7 @@ struct AllChat : View {
                         }
                     }
                 }
+                .padding(.horizontal,10)
             }
         }
     }
@@ -269,7 +282,7 @@ struct AllChat : View {
         Button{
             showNewMessageScreen.toggle()
         } label : {
-            Image(systemName: "plus.app")
+            Image(systemName: "pencil.line")
                 .foregroundColor(.black)
         }
         .fullScreenCover(isPresented: $showNewMessageScreen){

@@ -9,6 +9,9 @@ import Foundation
 import SwiftUI
 
 struct CreateNewMessageView: View {
+    
+    @State var searchTerm : String = ""
+    @State var searchState : Bool = true
     let didSelectChatUser : (ChatUser) ->  ()
     @Environment(\.presentationMode) var presentationMode
     
@@ -16,18 +19,66 @@ struct CreateNewMessageView: View {
     
     var body: some View {
         NavigationView {
-            ScrollView {
-                Text(vm.errorMessage)
-                    .onTapGesture {
-                        print(vm.users)
+            GeometryReader { geometry in
+                ScrollView {
+                    //                Text(vm.errorMessage)
+                    //                    .onTapGesture {
+                    //                        print(vm.users)
+                    //                    }
+                    
+                    HStack {
+                        Image(systemName: "magnifyingglass")
+                            .foregroundColor(.gray)
+                        TextField("Search", text: $searchTerm)
+                            .foregroundColor(.black)
+                        
+                        Button(action: {
+                            
+                            withAnimation(.spring()) {
+                                
+                            }
+                        }) {
+                            Image(systemName: "xmark.circle.fill")
+                                .foregroundColor(.gray)
+                        }
+                        
                     }
-                ForEach(vm.users) { user in
+                    .frame(width: geometry.size.width - 35, height: 25)
+                    .padding(8)
+                    .background(Color.gray.opacity(0.2))
+                    .cornerRadius(10)
+                    .opacity(searchState ? 1 : 0)
+                    .padding(.top,15)
+                    
+                    HStack{
+                        Image(systemName: "person.fill")
+                            .scaleEffect(1.4)
+                        Text("Individual chat")
+                            .fontWeight(.semibold)
+                        Spacer()
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding(.leading,20)
+                    .padding(.vertical,20)
+                    
+                    HStack{
+                        Text("Suggested")
+                            .fontWeight(.semibold)
+                            .foregroundColor(.gray)
+                        Spacer()
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding(.leading,20)
+                    .padding(.vertical,20)
+                    
+                    ForEach(vm.users.filter { user in
+                        searchTerm.isEmpty || user.email.localizedCaseInsensitiveContains(searchTerm)
+                    },id: \.id) { user in
                         Button {
                             presentationMode.wrappedValue.dismiss()
-                            didSelectChatUser(user )
+                            didSelectChatUser(user)
                         } label: {
                             HStack(spacing: 16) {
-                                Text("alo")
                                 Image("testAvt")
                                     .resizable()
                                     .scaledToFill()
@@ -45,17 +96,26 @@ struct CreateNewMessageView: View {
                         }
                         Divider()
                             .padding(.vertical, 8)
+                            .padding(.horizontal,55)
+                            .padding(.leading,25)
+                    }
                 }
-            }.navigationTitle("New Message")
                 .toolbar {
                     ToolbarItemGroup(placement: .navigationBarLeading) {
                         Button {
                             presentationMode.wrappedValue.dismiss()
                         } label: {
-                            Text("Cancel")
+                            Image(systemName: "arrow.left")
                         }
                     }
+                    
+                    ToolbarItemGroup(placement: .navigationBarLeading) {
+                        Text("CreateNew Message")
+                            .font(.title)
+                            .fontWeight(.bold)
+                    }
                 }
+            }
         }
     }
 }
