@@ -203,7 +203,7 @@ struct CreatePostView: View {
                 
                 Button(action: {
                     Task {
-                        try await homeViewModel.createPost(owner: "3WBgDcMgEQfodIbaXWTBHvtjYCl2", postCaption: homeViewModel.postCaption, mediaURL: "", mimeType: "")
+                        _ = try await homeViewModel.createPost(owner: "3WBgDcMgEQfodIbaXWTBHvtjYCl2", postCaption: homeViewModel.postCaption, mediaURL: "", mimeType: "")
                         isNewPost = false
                     }
                     

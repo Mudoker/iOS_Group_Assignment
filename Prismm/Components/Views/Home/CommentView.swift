@@ -141,7 +141,7 @@ struct CommentView: View {
                         
                         Button(action: {
                             Task {
-                                let newComment = try await homeViewModel.createComment(content: homeViewModel.commentContent, commentor: "3WBgDcMgEQfodIbaXWTBHvtjYCl2", postId: post.id)
+                                _ = try await homeViewModel.createComment(content: homeViewModel.commentContent, commentor: "3WBgDcMgEQfodIbaXWTBHvtjYCl2", postId: post.id)
 //                                if let newComment = newComment {
 //                                    try await uploadVM.addCommentToPost(comment: newComment, postID: post.id)
 //                                }

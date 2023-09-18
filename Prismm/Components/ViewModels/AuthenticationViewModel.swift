@@ -106,7 +106,6 @@ class AuthenticationViewModel: ObservableObject {
 
     var isLoading = false
 
-    
     // Validate username
     func validateUsername(_ username: String) -> Bool{
         isUnlocked = true
@@ -133,22 +132,54 @@ class AuthenticationViewModel: ObservableObject {
         }
     }
     
+    func resetPassword(withEmail email: String) async throws {
+        try await Auth.auth().sendPasswordReset(withEmail: email)
+    }
+    
+    func updatePassword(to password: String) async throws {
+        try await Auth.auth().currentUser?.updatePassword(to: password)
+    }
+    
+    func deleteUser() {
+        let user = Auth.auth().currentUser
+        user?.delete { error in
+          if let error = error {
+            // An error happened.
+          } else {
+            // Account deleted.
+          }
+        }
+    }
+    
     func signIn(withEmail email: String, password: String) async throws {
         do {
             let result = try await Auth.auth().signIn(withEmail: email, password: password)
             self.userSession = result.user
-            await fetchUserData()
-            isLoading = false
-            isUnlocked = true // Set isUnlocked to true after successfully fetching posts
+            let isEmailVerified = self.userSession?.isEmailVerified
+            if let isVerified = isEmailVerified {
+                if isVerified {
+                    print("verified")
+                    await fetchUserData()
+                    isLoading = false
+                    isUnlocked = true
+                } else {
+                    print("not verified")
+
+                    try await self.userSession?.sendEmailVerification()
+                    isLoading = false
+                }
+            }
+            
+//            isUnlocked = true // Set isUnlocked to true after successfully fetching posts
         } catch {
             logInError = true
             print("\(error.localizedDescription)")
         }
     }
     
-    // Validate password (at least 8 characters + not contating special symbols)
+    // Validate password (at least 6 characters + not contating special symbols)
     func validatePasswordSignUp(_ password: String) -> Bool {
-        if password.count >= 8 && !password.containsSpecialSymbols() {
+        if password.count >= 6 {
             return true
         } else {
             return false

@@ -22,6 +22,9 @@ struct User: Identifiable, Codable {
     var favoritePost: [String?] //
     var stories: [String?] //
     var message: [String?] //
+    var noti: [String?]
+    var restrictedList: [String?]
+    var blockList: [String?]
     //var setting: Setting
     
     init(id: String, password: String, username: String) {
@@ -39,5 +42,8 @@ struct User: Identifiable, Codable {
         self.favoritePost = []
         self.stories = []
         self.message = []
+        self.noti = []
+        self.restrictedList = []
+        self.blockList = []
     }
 }

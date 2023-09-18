@@ -1,25 +1,12 @@
 import SwiftUI
 
-struct Notification: Identifiable {
-    let id = UUID()
-    let user: String
-    let message: String
-    let time: String
-}
-
 struct NotificationView: View {
-    let notifications: [Notification] = [
-        Notification(user: "John Doe", message: "Liked your post.", time: "1h ago"),
-        Notification(user: "Jane Smith", message: "Commented on your photo.", time: "2h ago"),
-        Notification(user: "Alice Johnson", message: "Started following you.", time: "3h ago"),
-        // Add more notifications here
-    ]
+    @StateObject var notiVM = NotificationViewModel()
+    
     @State var isDarkMode = false
     var body: some View {
         GeometryReader { proxy in
             ZStack {
-//                    Color.white // Set the background color here
-
                     VStack(alignment: .leading) {
                         HStack {
                             Image(systemName: "bell")
@@ -34,13 +21,16 @@ struct NotificationView: View {
                         Divider()
                             .overlay(isDarkMode ? .white : .gray)
                         
-                        ForEach(notifications) { notification in
+                        ForEach(notiVM.fetched_noti) { notification in
                             NotificationRow(notification: notification, imageSize: proxy.size.width/7, isDarkMode: $isDarkMode)
                                 .padding()
                         }
                         
                         Spacer()
                     }
+            }
+            .onAppear {
+                notiVM.fetchNotifcationRealTime(userId: "3WBgDcMgEQfodIbaXWTBHvtjYCl2")
             }
             .foregroundColor(!isDarkMode ? .black : .white)
             .background(isDarkMode ? .black : .white)
@@ -64,16 +54,16 @@ struct NotificationRow: View {
                     .clipShape(Circle())
                 
                 VStack(alignment: .leading) {
-                    Text(notification.user)
+                    Text(notification.senderName)
                         .font(.headline)
-                    
+
                     Text(notification.message)
                         .font(.body)
                 }
                 
                 Spacer()
-                Text(notification.time)
-                    .font(.caption)
+//                Text(notification.time)
+//                    .font(.caption)
             }
         }
         .foregroundColor(!isDarkMode ? .black : .white)

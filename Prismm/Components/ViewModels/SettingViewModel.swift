@@ -73,6 +73,7 @@ class SettingViewModel: ObservableObject {
         }
         return false
     }
+    
     func isProfileSettingChange(username: String, phoneNumber: String, fb: String, gmail: String, ld: String) -> Bool {
         if username != isChangeProfileUsername ||
            phoneNumber != isChangeProfilePhoneNumber ||

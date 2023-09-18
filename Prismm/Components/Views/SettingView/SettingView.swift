@@ -267,7 +267,7 @@ struct SettingView : View {
                                     Button("Sign Out", role: .destructive) {
                                     }
                                 } message: {
-                                    Text("Are you sure?")
+                                    Text("\nConfirm Sign Out?")
                                 }
                                 Spacer()
                             }
