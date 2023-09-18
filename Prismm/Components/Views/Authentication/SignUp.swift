@@ -38,15 +38,15 @@ struct SignUp: View {
                     Spacer()
                     
                     // Logo
-                    Image(settingVM.isDarkMode ? Constants.darkThemeAppLogo : Constants.lightThemeAppLogo)
+                    Image(settingVM.isDarkModeEnabled ? Constants.darkThemeAppLogo : Constants.lightThemeAppLogo)
                         .resizable()
                         .aspectRatio(contentMode: .fill)
                         .frame(width: authVM.logoImageSize, height: 0)
-                        .padding(.vertical, authVM.imagePaddingVertical)
+                        .padding(.vertical, authVM.imageVerticalPadding)
                     
                     // Title
                     Text ("Sign Up")
-                        .font(.system(size: authVM.titleFont))
+                        .font(.system(size: authVM.titleFontSize))
                         .bold()
                     
                     Text("Create a new profile")
@@ -62,11 +62,11 @@ struct SignUp: View {
                             testFieldPlaceHolder: "Username or Account",
                             titleFont: authVM.textFieldTitleFont,
                             textFieldSizeHeight: authVM.textFieldSizeHeight,
-                            textFieldCorner: authVM.textFieldCorner,
+                            textFieldCorner: authVM.textFieldCornerRadius,
                             textFieldBorderWidth: authVM.textFieldBorderWidth,
                             isPassword: false,
                             textFieldPlaceHolderFont: authVM.textFieldPlaceHolderFont,
-                            isDarkMode: settingVM.isDarkMode
+                            isDarkModeEnabled: settingVM.isDarkModeEnabled
                         )
                         .padding(.bottom)
                         
@@ -77,11 +77,11 @@ struct SignUp: View {
                             testFieldPlaceHolder: "Password",
                             titleFont: authVM.textFieldTitleFont,
                             textFieldSizeHeight: authVM.textFieldSizeHeight,
-                            textFieldCorner: authVM.textFieldCorner,
+                            textFieldCorner: authVM.textFieldCornerRadius,
                             textFieldBorderWidth: authVM.textFieldBorderWidth,
                             isPassword: true,
                             textFieldPlaceHolderFont: authVM.textFieldPlaceHolderFont,
-                            isDarkMode: settingVM.isDarkMode
+                            isDarkModeEnabled: settingVM.isDarkModeEnabled
                         )
                         
                         HStack {
@@ -91,7 +91,7 @@ struct SignUp: View {
                                     .padding(.bottom, 5)
                                     .opacity(0.7)
                             } else {
-                                if !authVM.isValidPassword {
+                                if !authVM.isPasswordValid {
                                     Text("Invalid Password")
                                         .font(authVM.captionFont )
                                         .padding(.bottom, 5)
@@ -116,11 +116,11 @@ struct SignUp: View {
                             testFieldPlaceHolder: "Password",
                             titleFont: authVM.textFieldTitleFont,
                             textFieldSizeHeight: authVM.textFieldSizeHeight,
-                            textFieldCorner: authVM.textFieldCorner,
+                            textFieldCorner: authVM.textFieldCornerRadius,
                             textFieldBorderWidth: authVM.textFieldBorderWidth,
                             isPassword: true,
                             textFieldPlaceHolderFont: authVM.textFieldPlaceHolderFont,
-                            isDarkMode: settingVM.isDarkMode
+                            isDarkModeEnabled: settingVM.isDarkModeEnabled
                         )
                         
                         HStack {
@@ -130,7 +130,7 @@ struct SignUp: View {
                                     .padding(.bottom, 5)
                                     .opacity(0.7)
                             } else {
-                                if authVM.isValidReEnterPassword {
+                                if authVM.isReenteredPasswordValid {
                                     Text("Matched Password!")
                                         .font(authVM.captionFont )
                                         .padding(.bottom, 5)
@@ -155,13 +155,13 @@ struct SignUp: View {
                     // Signup button
                     VStack {
                         Button(action: {
-                            authVM.isLoading = true
+                            authVM.isFetchingData = true
                             
                             Task {
-                                try await authVM.signUp(withEmail: accountText, password: passwordText)
+                                try await authVM.createNewUser(withEmail: accountText, password: passwordText)
                                 
-                                authVM.isLoading = false
-                                authVM.isAlert = true
+                                authVM.isFetchingData = false
+                                authVM.isAlertPresent = true
                             }
                         }) {
                             Text("Sign Up")
@@ -170,22 +170,22 @@ struct SignUp: View {
                                 .bold()
                                 .padding()
                                 .frame(maxWidth: .infinity)
-                                .frame(height: authVM.loginButtonSizeHeight)
+                                .frame(height: authVM.loginButtonHeight)
                                 .background(
                                     RoundedRectangle(cornerRadius: 10)
-                                        .fill(settingVM.isDarkMode ? Constants.darkThemeColor : Constants.lightThemeColor)
+                                        .fill(settingVM.isDarkModeEnabled ? Constants.darkThemeColor : Constants.lightThemeColor)
                                 )
                                 .padding(.horizontal)
                             
                         }
                         .disabled(!formIsValid)
                         .opacity(formIsValid ? 1 : 0.5)
-                        .alert(isPresented: $authVM.isAlert) {
+                        .alert(isPresented: $authVM.isAlertPresent) {
                             Alert(
-                                title: Text(authVM.signUpError ? "Sign up failed" : "Sign up successfully!"),
-                                message: Text(authVM.signUpError ? "The email has been used. Please register with another email" : "You have created a new account"),
-                                dismissButton: .default(Text(authVM.signUpError ? "Close" : "OK")) {
-                                    if (!authVM.signUpError) {
+                                title: Text(authVM.hasSignUpError ? "Sign up failed" : "Sign up successfully!"),
+                                message: Text(authVM.hasSignUpError ? "The email has been used. Please register with another email" : "You have created a new account"),
+                                dismissButton: .default(Text(authVM.hasSignUpError ? "Close" : "OK")) {
+                                    if (!authVM.hasSignUpError) {
                                         presentationMode.wrappedValue.dismiss()
                                     }
                                 }
@@ -199,32 +199,32 @@ struct SignUp: View {
                     // Push view
                     Spacer()
                 }
-                .foregroundColor(settingVM.isDarkMode ? .white : .black)
+                .foregroundColor(settingVM.isDarkModeEnabled ? .white : .black)
                 .padding(.horizontal)
                 
                 .onChange(of: passwordText) {newValue in
-                    authVM.isValidPassword = authVM.validatePasswordSignUp(newValue)
-                    authVM.isValidReEnterPassword = authVM.isMatchPassword(currentPassword: newValue, reEnteredPassword: confrimPasswordText)
+                    authVM.isPasswordValid = authVM.isPasswordValidForSignUp(newValue)
+                    authVM.isReenteredPasswordValid = authVM.passwordsMatch(currentPassword: newValue, reEnteredPassword: confrimPasswordText)
                 }
                 .onChange(of: confrimPasswordText) {newValue in
-                    authVM.isValidReEnterPassword = authVM.isMatchPassword(currentPassword: passwordText, reEnteredPassword: newValue)
+                    authVM.isReenteredPasswordValid = authVM.passwordsMatch(currentPassword: passwordText, reEnteredPassword: newValue)
                 }
                 
-                if authVM.isLoading {
+                if authVM.isFetchingData {
                     Color.gray.opacity(0.3).ignoresSafeArea()
                     ProgressView("Loading...")
                 }
             }
         }
         .ignoresSafeArea(.keyboard)
-        .background(settingVM.isDarkMode ? .black : .white)
+        .background(settingVM.isDarkModeEnabled ? .black : .white)
     }
 }
 
 
 extension SignUp: SignUpFormProtocol{
     var formIsValid: Bool{
-        return accountText.contains("@") && !accountText.isEmpty && authVM.isValidPassword && authVM.isValidReEnterPassword
+        return accountText.contains("@") && !accountText.isEmpty && authVM.isPasswordValid && authVM.isReenteredPasswordValid
     }
 }
 

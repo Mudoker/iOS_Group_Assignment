@@ -16,16 +16,11 @@
 
 import Foundation
 
-struct Setting: Codable {
+struct UserSetting: Codable {
     let id: String
-    var isDarkMode: Bool
-    var isEnglish: Bool
-    var isFaceId: Bool
-    var isPushNotification: Bool
-    var isMessageNotification: Bool
-     var isDarkMode: Bool
-     var isEnglish: Bool
-     var isFaceId: Bool
-     var isPushNotification: Bool
-     var isMessageNotification: Bool
+    var darkModeEnabled: Bool
+    var englishLanguageEnabled: Bool
+    var faceIdEnabled: Bool
+    var pushNotificationsEnabled: Bool
+    var messageNotificationsEnabled: Bool
 }

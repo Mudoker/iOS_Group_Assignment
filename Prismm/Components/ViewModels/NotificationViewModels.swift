@@ -15,16 +15,16 @@ import AVFoundation
 import FirebaseFirestoreSwift
 
 class NotificationViewModel: ObservableObject {
-    @Published var fetched_noti = [Notification]()
+    @Published var fetchedAllNotifications = [AppNotification]()
     private var notiListenerRegistration: ListenerRegistration?
 
-    func createNotification(senderName: String, receiver: String, message: String, category: NotificationCategory) async throws -> Notification? {
-        let notiRef = Firestore.firestore().collection("test_noti").document()
-        let noti = Notification(id: notiRef.documentID, senderName: senderName,receiver: receiver, message: message, time: Timestamp(), category: category)
-        guard let encodedNoti = try? Firestore.Encoder().encode(noti) else {return nil}
-        try await notiRef.setData(encodedNoti)
+    func createNotification(senderName: String, receiver: String, message: String, category: NotificationCategory) async throws -> AppNotification? {
+        let notificationRef = Firestore.firestore().collection("test_noti").document()
+        let newNotification = AppNotification(id: notificationRef.documentID, senderName: senderName,receiverId: receiver, messageContent: message, creationDate: Timestamp(), category: category)
+        guard let encodedNotification = try? Firestore.Encoder().encode(newNotification) else {return nil}
+        try await notificationRef.setData(encodedNotification)
         print("ok")
-        return noti
+        return newNotification
     }
     
     func fetchNotifcationRealTime(userId: String) {
@@ -41,8 +41,8 @@ class NotificationViewModel: ObservableObject {
                 return
             }
 
-            self.fetched_noti = documents.compactMap { queryDocumentSnapshot in
-                try? queryDocumentSnapshot.data(as: Notification.self)
+            self.fetchedAllNotifications = documents.compactMap { queryDocumentSnapshot in
+                try? queryDocumentSnapshot.data(as: AppNotification.self)
             }
         }
     }

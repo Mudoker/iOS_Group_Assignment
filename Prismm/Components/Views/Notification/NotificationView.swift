@@ -16,7 +16,7 @@
 import SwiftUI
 
 struct NotificationView: View {
-    @StateObject var notiVM = NotificationViewModel()
+    @StateObject var notificationVM = NotificationViewModel()
     
     @State var isDarkMode = false
     var body: some View {
@@ -36,7 +36,7 @@ struct NotificationView: View {
                         Divider()
                             .overlay(isDarkMode ? .white : .gray)
                         
-                        ForEach(notiVM.fetched_noti) { notification in
+                        ForEach(notificationVM.fetchedAllNotifications) { notification in
                             NotificationRow(notification: notification, imageSize: proxy.size.width/7, isDarkMode: $isDarkMode)
                                 .padding()
                         }
@@ -45,7 +45,7 @@ struct NotificationView: View {
                     }
             }
             .onAppear {
-                notiVM.fetchNotifcationRealTime(userId: "3WBgDcMgEQfodIbaXWTBHvtjYCl2")
+                notificationVM.fetchNotifcationRealTime(userId: "3WBgDcMgEQfodIbaXWTBHvtjYCl2")
             }
             .foregroundColor(!isDarkMode ? .black : .white)
             .background(isDarkMode ? .black : .white)
@@ -55,7 +55,7 @@ struct NotificationView: View {
 }
 
 struct NotificationRow: View {
-    let notification: Notification
+    let notification: AppNotification
     var imageSize: CGFloat = 40
     @Binding var isDarkMode: Bool
 
@@ -72,7 +72,7 @@ struct NotificationRow: View {
                     Text(notification.senderName)
                         .font(.headline)
 
-                    Text(notification.message)
+                    Text(notification.messageContent)
                         .font(.body)
                 }
                 

@@ -19,14 +19,13 @@ import Firebase
 
 struct Post: Identifiable, Codable {
     let id: String
-    let owner: String
-    var postCaption: String?
-    var likers: [String?] = []
+    let ownerID: String
+    var caption: String?
+    var likerIDs: [String?] = []
     var mediaURL: String?
-    var mimeType: String?
-    var date: Timestamp
-//    var postComment: [String?] = []
+    var mediaMimeType: String?
+    var creationDate: Timestamp
+    var author: User?
     var user: User?
-    var unwrapLikers: [User] = []
-    var unwrapComments: [Comment] = []
+    var unwrappedLikers: [User] = []
 }

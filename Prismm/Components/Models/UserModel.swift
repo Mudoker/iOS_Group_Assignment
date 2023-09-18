@@ -24,21 +24,19 @@ struct User: Identifiable, Codable {
     var phoneNumber: String?
     var bio: String?
     var profileImageURL: String?
-    var facebookLink: String?
-    //add gmail link and linked in link
-    var gmailLink: String?
-    var ldLink: String?
+    var facebook: String?
+    var gmail: String?
+    var linkedIn: String?
     
-    var followers: [String?] //
-    var following: [String?] //
-    var posts: [String?] //
-    var favoritePost: [String?] //
-    var stories: [String?] //
-    var message: [String?] //
-    var noti: [String?]
-    var restrictedList: [String?]
-    var blockList: [String?]
-    //var setting: Setting
+    var followers: [String?] // User IDs of followers
+    var following: [String?] // User IDs of users being followed
+    var posts: [String?] // IDs of posts made by the user
+    var favoritePosts: [String?] // IDs of favorite posts
+    var stories: [String?] // IDs of user stories
+    var messages: [String?] // IDs of messages
+    var notifications: [String?]
+    var restrictedList: [String?] // User IDs in restricted list
+    var blockList: [String?] // User IDs in block list
     
     init(id: String, password: String, username: String) {
         self.id = id
@@ -48,17 +46,18 @@ struct User: Identifiable, Codable {
         self.phoneNumber = ""
         self.bio = ""
         self.profileImageURL = ""
-        self.facebookLink = ""
+        self.facebook = ""
+        self.gmail = ""
+        self.linkedIn = ""
         self.followers = []
         self.following = []
         self.posts = []
-        self.favoritePost = []
+        self.favoritePosts = []
         self.stories = []
-        self.message = []
-        self.noti = []
+        self.messages = []
+        self.notifications = []
         self.restrictedList = []
         self.blockList = []
-        self.ldLink = ""
-        self.gmailLink = ""
     }
 }
+

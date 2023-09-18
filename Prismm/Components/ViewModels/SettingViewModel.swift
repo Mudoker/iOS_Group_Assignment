@@ -22,43 +22,37 @@ import FirebaseFirestore
 import FirebaseFirestoreSwift
 
 class SettingViewModel: ObservableObject {
-    @Published var isDarkMode = true
-    @Published var isFaceId = false
-    @Published var isPushNotification = false
-    @Published var isMessageNotification = false
-    @Published var language = "en"
-    
-    
-    @Published var isAccountSettingSheetPresentedIphone = false
-    @Published var isAccountSettingSheetPresentedIpad = false
-    @Published var selectedLanguage = ["English, Vietnamese"]
-    @Published var isShowingSignOutAlert = false
-    @Published var isSignOut = false
-    
-    @Published var isChangePasswordCurrentPassword = ""
-    @Published var isChangePasswordNewPassword = ""
-    @Published var isChangePasswordPasswordVisible = false
-    @Published var isSecuritySettingChange = false // Track changes in fields
-    //@Published var isEnabledFaceId = false
-    
-    @Published var isChangeProfile = false
-    @Published var isChangeProfileUsername: String = ""
-    @Published var isChangeProfilePhoneNumber: String = ""
-    @Published var isChangeProfileFB: String = ""
-    @Published var isChangeProfileGmail: String = ""
-    @Published var isChangeProfileLD: String = ""
+    @Published var isDarkModeEnabled = true
+    @Published var isFaceIdEnabled = false
+    @Published var isPushNotificationEnabled = false
+    @Published var isMessageNotificationEnabled = false
+    @Published var selectedLanguage = "en"
+    @Published var isAccountSettingSheetPresentedOniPhone = false
+    @Published var isAccountSettingSheetPresentedOniPad = false
+    @Published var isSignOutAlertPresented = false
+    @Published var isSigningOut = false
+    @Published var changePasswordCurrentPassword = ""
+    @Published var changePasswordNewPassword = ""
+    @Published var isChangePasswordVisible = false
+    @Published var hasSecuritySettingChanged = false
+    @Published var hasProfileSettingChanged = false
+    @Published var newProfileUsername: String = ""
+    @Published var newProfilePhoneNumber: String = ""
+    @Published var newProfileFacebook: String = ""
+    @Published var newProfileGmail: String = ""
+    @Published var newProfileLinkedIn: String = ""
     
     // Responsive
     @Published var proxySize: CGSize = CGSize(width: 0, height: 0)
-    var cornerRadiusSize: CGFloat {
+    var cornerRadius: CGFloat {
         UIDevice.current.userInterfaceIdiom == .phone ? proxySize.width / 40 : proxySize.width / 50
     }
     
-    var accountSettingSizeHeight: CGFloat {
+    var accountSettingHeight: CGFloat {
         UIDevice.current.userInterfaceIdiom == .phone ? proxySize.width / 4 : proxySize.height / 8
     }
     
-    var accountSettingImageSizeWidth: CGFloat {
+    var accountSettingImageWidth: CGFloat {
         UIDevice.current.userInterfaceIdiom == .phone ? proxySize.width / 8 : proxySize.width / 12
     }
     
@@ -74,110 +68,118 @@ class SettingViewModel: ObservableObject {
         UIDevice.current.userInterfaceIdiom == .phone ? .body : .title3
     }
     
-    var imageSize: CGFloat {
+    var iconSize: CGFloat {
         UIDevice.current.userInterfaceIdiom == .phone ? proxySize.width / 18 : proxySize.width / 28
     }
     
-    var signOutText: Font {
+    var signOutButtonTextFont: Font {
         UIDevice.current.userInterfaceIdiom == .phone ? .title3 : .title
     }
     
     func checkSecuritySettingChange() -> Bool {
-        if isChangePasswordCurrentPassword != "" || isChangePasswordNewPassword != ""{
+        if changePasswordCurrentPassword != "" || changePasswordNewPassword != ""{
             return true
         }
         return false
     }
     
     func isProfileSettingChange() -> Bool {
-        if isChangeProfileUsername != "" ||
-            isChangeProfilePhoneNumber != "" ||
-            isChangeProfileFB != "" ||
-            isChangeProfileGmail != "" ||
-            isChangeProfileLD != "" {
-           isChangeProfilePhoneNumber != "" ||
-           isChangeProfileFB != "" ||
-           isChangeProfileGmail != "" ||
-           isChangeProfileLD != "" {
+        if !newProfileUsername.isEmpty ||
+            !newProfilePhoneNumber.isEmpty ||
+            !newProfileFacebook.isEmpty ||
+            !newProfileGmail.isEmpty ||
+            !newProfileLinkedIn.isEmpty {
             return true // At least one setting has changed
         }
         return false // No settings have changed
     }
     
-    func isValidProfileURL(_ url: String, platform: String) -> Bool {
-        //if the link is not written
-        if url.isEmpty{
-            return true
+    func isValidURL(_ profileURL: String, forPlatform platform: String) -> Bool {
+        // Return false for empty profile URLs
+        guard !profileURL.isEmpty else {
+            return false
         }
         
         switch platform {
         case "fb":
-            return url.hasPrefix("https://www.facebook.com/")
+            return profileURL.hasPrefix("https://www.facebook.com/")
         case "ld":
-            return url.hasPrefix("https://www.linkedin.com/")
+            return profileURL.hasPrefix("https://www.linkedin.com/")
         case "gm":
             let gmailRegex = try! NSRegularExpression(pattern: "^[a-zA-Z0-9._%+-]+@gmail\\.com")
-            let range = NSRange(location: 0, length: url.utf16.count)
-            return gmailRegex.firstMatch(in: url, options: [], range: range) != nil
+            let range = NSRange(location: 0, length: profileURL.utf16.count)
+            return gmailRegex.firstMatch(in: profileURL, options: [], range: range) != nil
         default:
             return false // Invalid platform
         }
     }
     
-    func updateSettingData(uid: String) async{
-        guard let snapshot = try? await Firestore.firestore().collection("settings").document(uid).getDocument() else {return}
-        let setting = Setting(id: uid, isDarkMode: self.isDarkMode, isEnglish: self.language == "en" ? true : false, isFaceId: self.isFaceId, isPushNotification: self.isPushNotification, isMessageNotification: self.isMessageNotification)
-        do{
-            let encodedsetting = try Firestore.Encoder().encode(setting)
+    func updateSettings(forUserID userID: String) async {
+        guard let settingsSnapshot = try? await Firestore.firestore().collection("settings").document(userID).getDocument() else {
+            return
+        }
+        
+        let userSettings = UserSetting(
+            id: userID,
+            darkModeEnabled: self.isDarkModeEnabled,
+            englishLanguageEnabled: self.selectedLanguage == "en",
+            faceIdEnabled: self.isFaceIdEnabled,
+            pushNotificationsEnabled: self.isPushNotificationEnabled,
+            messageNotificationsEnabled: self.isMessageNotificationEnabled
+        )
+        
+        do {
+            let encodedSettings = try Firestore.Encoder().encode(userSettings)
             
-            if !snapshot.exists {
-                try await Firestore.firestore().collection("settings").document(uid).setData(encodedsetting)
-            }else{
-                try await Firestore.firestore().collection("settings").document(uid).updateData(encodedsetting)
-                print("Updated succcessfully")
+            if !settingsSnapshot.exists {
+                try await Firestore.firestore().collection("settings").document(userID).setData(encodedSettings)
+            } else {
+                try await Firestore.firestore().collection("settings").document(userID).updateData(encodedSettings)
+                print("Settings updated successfully")
             }
-        }catch{
-            print("ERROR: Fail to add user data")
+        } catch {
+            print("ERROR: Failed to update user settings")
         }
     }
     
-    func updateUserData(uid: String) async{
-        guard let snapshot = try? await Firestore.firestore().collection("users").document(uid).getDocument() else {return}
+    
+    func updateProfile(forUserID uid: String) async {
+        guard let userSnapshot = try? await Firestore.firestore().collection("users").document(uid).getDocument() else { return }
         
-        do{
-            var user = try snapshot.data(as: User.self)
+        do {
+            var updatedUser = try userSnapshot.data(as: User.self)
             
-            if(user.username != isChangeProfileUsername){
-                user.username = isChangeProfileUsername
-            }
-            if(user.phoneNumber != isChangeProfilePhoneNumber){
-                user.phoneNumber = isChangeProfilePhoneNumber
-            }
-            if(user.facebookLink != isChangeProfileFB){
-                user.facebookLink = isChangeProfileFB
-            }
-            if(user.gmailLink != isChangeProfileGmail){
-                user.gmailLink = isChangeProfileGmail
-            }
-            if(user.ldLink != isChangeProfileLD){
-                user.ldLink = isChangeProfileLD
+            if updatedUser.username != newProfileUsername {
+                updatedUser.username = newProfileUsername
             }
             
-            let encodedUser = try Firestore.Encoder().encode(user)
+            if updatedUser.phoneNumber != newProfilePhoneNumber {
+                updatedUser.phoneNumber = newProfilePhoneNumber
+            }
             
-            if !snapshot.exists {
+            if updatedUser.facebook != newProfileFacebook {
+                updatedUser.facebook = newProfileFacebook
+            }
+            
+            if updatedUser.gmail != newProfileGmail {
+                updatedUser.gmail = newProfileGmail
+            }
+            
+            if updatedUser.linkedIn != newProfileLinkedIn {
+                updatedUser.linkedIn = newProfileLinkedIn
+            }
+            
+            let encodedUser = try Firestore.Encoder().encode(updatedUser)
+            
+            if !userSnapshot.exists {
                 try await Firestore.firestore().collection("users").document(uid).setData(encodedUser)
-            }else{
+            } else {
                 try await Firestore.firestore().collection("users").document(uid).updateData(encodedUser)
-                print("Updated succcessfully2")
+                print("User data updated successfully.")
             }
-        }catch{
-            print("ERROR: Update failed")
+        } catch {
+            print("ERROR: Failed to update user data.")
         }
-    }
-    
-    //not done
-    func updatePassword(uid: String) async {
-        
     }
 }
+

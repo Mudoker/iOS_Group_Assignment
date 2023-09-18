@@ -20,8 +20,8 @@ import Firebase
 struct Comment: Identifiable, Codable, Hashable {
     let id: String
     let content: String
-    let commentor: String
-    let postId: String
+    let commenterID: String
+    let postID: String
 
     func hash(into hasher: inout Hasher) {
         hasher.combine(id)

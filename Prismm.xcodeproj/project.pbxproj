@@ -225,7 +225,6 @@
 		E10C0E332AAAEF4400AEB220 /* Components */ = {
 			isa = PBXGroup;
 			children = (
-				E1C665402AB1BBBD0095B388 /* Service */,
 				E12FA02E2AAC298A007890A3 /* ViewModels */,
 				E12FA0272AAC2953007890A3 /* Models */,
 				E10C0E372AAAEF7C00AEB220 /* Custom */,
@@ -237,6 +236,7 @@
 		E10C0E342AAAEF5900AEB220 /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				E1C665402AB1BBBD0095B388 /* Service */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";

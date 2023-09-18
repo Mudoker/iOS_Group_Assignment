@@ -32,7 +32,7 @@ struct CustomTextField: View {
     var textFieldBorderWidth: CGFloat
     var isPassword: Bool
     var textFieldPlaceHolderFont: Font
-    var isDarkMode: Bool
+    var isDarkModeEnabled: Bool
     var horizontalPaddingSize: CGFloat = 16
     
     // ViewModel
@@ -50,7 +50,7 @@ struct CustomTextField: View {
                 ZStack {
                     RoundedRectangle(cornerRadius: textFieldCorner)
                         .stroke(LinearGradient(
-                            gradient: Gradient(colors: isDarkMode ? Constants.buttonGradientColorDark : Constants.buttonGradientColorLight),
+                            gradient: Gradient(colors: isDarkModeEnabled ? Constants.buttonGradientColorDark : Constants.buttonGradientColorLight),
                             startPoint: .topLeading,
                             endPoint: .bottomTrailing
                         ), lineWidth: textFieldBorderWidth)
@@ -62,7 +62,7 @@ struct CustomTextField: View {
                         if isPasswordVisible {
                             HStack {
                                 TextField("", text: $text, prompt:  Text(testFieldPlaceHolder)
-                                    .foregroundColor(isDarkMode ? .white.opacity(0.5) : .black.opacity(0.5)))
+                                    .foregroundColor(isDarkModeEnabled ? .white.opacity(0.5) : .black.opacity(0.5)))
                                     .font(textFieldPlaceHolderFont)
                                     .padding(.horizontal)
                                     .autocorrectionDisabled(true)
@@ -80,7 +80,7 @@ struct CustomTextField: View {
                             }
                         } else {
                             HStack {
-                                SecureField("", text: $text, prompt:  Text(testFieldPlaceHolder).foregroundColor(isDarkMode ? .white.opacity(0.5) : .black.opacity(0.5)))
+                                SecureField("", text: $text, prompt:  Text(testFieldPlaceHolder).foregroundColor(isDarkModeEnabled ? .white.opacity(0.5) : .black.opacity(0.5)))
                                     .font(textFieldPlaceHolderFont)
                                     .autocorrectionDisabled(true)
                                     .textInputAutocapitalization(.never)
@@ -101,7 +101,7 @@ struct CustomTextField: View {
                     } else {
                         // Username field
                         HStack {
-                            TextField("", text: $text, prompt:  Text(testFieldPlaceHolder).foregroundColor(isDarkMode ? .white.opacity(0.5) : .black.opacity(0.5))
+                            TextField("", text: $text, prompt:  Text(testFieldPlaceHolder).foregroundColor(isDarkModeEnabled ? .white.opacity(0.5) : .black.opacity(0.5))
                                 .font(textFieldPlaceHolderFont)
                             )
                             .padding(.horizontal)
@@ -112,7 +112,7 @@ struct CustomTextField: View {
                     }
                 }
             }
-            .foregroundColor(isDarkMode ? .white : .black)
+            .foregroundColor(isDarkModeEnabled ? .white : .black)
             .padding(.horizontal, horizontalPaddingSize)
     }
 }
@@ -124,7 +124,7 @@ struct CustomTextField_Previews: PreviewProvider {
             testFieldPlaceHolder: "Username or email", titleFont: .headline,
             textFieldSizeHeight: 40.0,
             textFieldCorner: 10.0,
-            textFieldBorderWidth: 2.0, isPassword: true, textFieldPlaceHolderFont: Font.body, isDarkMode: true
+            textFieldBorderWidth: 2.0, isPassword: true, textFieldPlaceHolderFont: Font.body, isDarkModeEnabled: true
         )
     }
 }

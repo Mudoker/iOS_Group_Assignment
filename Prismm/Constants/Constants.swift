@@ -18,7 +18,7 @@ import Foundation
 import SwiftUI
 
 struct Constants {
-    static var uid = ""
+    static var currentUserID = ""
     static let darkThemeColor: Color = Color(red: 0.16, green: 0.67, blue: 0.53)
     static let lightThemeColor: Color = Color.pink
     static let buttonGradientColorDark: [Color] = [Color(red: 0.27, green: 1.00, blue: 0.79), Color(red: 0.59, green: 1.00, blue: 0.96), Color(red: 0.44, green: 0.57, blue: 0.96)]
@@ -26,8 +26,4 @@ struct Constants {
     static let lightThemeAppLogo = "logolight"
     static let darkThemeAppLogo = "logodark"
     static let storyGradientBorder = Gradient(colors: [.yellow, .red, .purple, .orange, .pink, .red])
-    
-//    func setUid(uid: String){
-//        Constants.uid = uid
-//    }
 }

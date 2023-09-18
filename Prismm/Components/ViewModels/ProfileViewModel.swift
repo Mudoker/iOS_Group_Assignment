@@ -17,22 +17,10 @@
 import Foundation
 
 class ProfileViewModel: ObservableObject {
-//    let user: User
     @Published var posts = [Post]()
-    
-//    init(user: User) {
-//        self.user = user
-//        Task {
-//            try await fetchUserPosts()
-//        }
-//    }
     
     @MainActor
     func fetchUserPosts() async throws {
-        self.posts = try await API_SERVICE.fetchYourPost(withUid: "3WBgDcMgEQfodIbaXWTBHvtjYCl2")
-        
-//        for i in 0..<posts.count {
-//            posts[i].user = self.user
-//        }
+        self.posts = try await APIService.fetchPostsOwned(byUserID: "3WBgDcMgEQfodIbaXWTBHvtjYCl2")
     }
 }

@@ -42,7 +42,7 @@ struct SettingSheet: View {
                         }
                         .padding()
                         .background(RoundedRectangle(cornerRadius: 10)
-                            .fill(!settingVM.isDarkMode ? .gray.opacity(0.1) : .gray.opacity(0.4))
+                            .fill(!settingVM.isDarkModeEnabled ? .gray.opacity(0.1) : .gray.opacity(0.4))
                         )
                     }
                     .padding(.top)
@@ -62,7 +62,7 @@ struct SettingSheet: View {
                         }
                         .padding()
                         .background(RoundedRectangle(cornerRadius: 10)
-                            .fill(!settingVM.isDarkMode ? .gray.opacity(0.1) : .gray.opacity(0.4))
+                            .fill(!settingVM.isDarkModeEnabled ? .gray.opacity(0.1) : .gray.opacity(0.4))
                         )
                     }
                     .padding()
@@ -71,8 +71,8 @@ struct SettingSheet: View {
                 Spacer()
             }
             .frame(maxWidth: .infinity)
-            .foregroundColor(settingVM.isDarkMode ? .white : .black)
-            .background(settingVM.isDarkMode ? .black : .white)
+            .foregroundColor(settingVM.isDarkModeEnabled ? .white : .black)
+            .background(settingVM.isDarkModeEnabled ? .black : .white)
             .navigationBarItems(trailing: Button("Close") {
                 isSheetPresented.toggle()
             })

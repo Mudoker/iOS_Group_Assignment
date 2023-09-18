@@ -40,7 +40,7 @@ struct EditSecurityField: View {
                     .padding()
                 
                 CustomTextField(
-                    text: $settingVM.isChangePasswordCurrentPassword,
+                    text: $settingVM.changePasswordCurrentPassword,
                     textFieldTitle: "Current Password",
                     testFieldPlaceHolder: "Current Password",
                     titleFont: .title3,
@@ -49,20 +49,20 @@ struct EditSecurityField: View {
                     textFieldBorderWidth: 1,
                     isPassword: true,
                     textFieldPlaceHolderFont: .body,
-                    isDarkMode: settingVM.isDarkMode
+                    isDarkModeEnabled: settingVM.isDarkModeEnabled
                 )
                 .padding(.bottom)
-                .onChange(of: settingVM.isChangePasswordCurrentPassword) { _ in
+                .onChange(of: settingVM.changePasswordNewPassword) { _ in
                     if settingVM.checkSecuritySettingChange(){
-                        settingVM.isSecuritySettingChange = true
+                        settingVM.hasSecuritySettingChanged = true
                     } else {
-                        settingVM.isSecuritySettingChange = false
+                        settingVM.hasSecuritySettingChanged = false
                     }
                     
                 }
                 
                 CustomTextField(
-                    text: $settingVM.isChangePasswordNewPassword,
+                    text: $settingVM.changePasswordNewPassword,
                     textFieldTitle: "New Password",
                     testFieldPlaceHolder: "New Password",
                     titleFont: .title3,
@@ -71,14 +71,14 @@ struct EditSecurityField: View {
                     textFieldBorderWidth: 1,
                     isPassword: true,
                     textFieldPlaceHolderFont: .body,
-                    isDarkMode: settingVM.isDarkMode
+                    isDarkModeEnabled: settingVM.isDarkModeEnabled
                 )
                 .padding(.bottom)
-                .onChange(of: settingVM.isChangePasswordNewPassword) { _ in
+                .onChange(of: settingVM.changePasswordNewPassword) { _ in
                     if settingVM.checkSecuritySettingChange() {
-                        settingVM.isSecuritySettingChange = true
+                        settingVM.hasSecuritySettingChanged = true
                     } else {
-                        settingVM.isSecuritySettingChange = false
+                        settingVM.hasSecuritySettingChanged = false
                     }
                     
                 }
@@ -101,16 +101,16 @@ struct EditSecurityField: View {
                     
                     Spacer()
                     
-                    Toggle("", isOn: $settingVM.isFaceId)
+                    Toggle("", isOn: $settingVM.isFaceIdEnabled)
                         .padding(.bottom)
-                        .onChange(of: settingVM.isFaceId) { _ in
+                        .onChange(of: settingVM.isFaceIdEnabled) { _ in
                             if settingVM.checkSecuritySettingChange() {
-                                settingVM.isSecuritySettingChange = true
+                                settingVM.hasSecuritySettingChanged = true
                             } else {
-                                settingVM.isSecuritySettingChange = false
+                                settingVM.hasSecuritySettingChanged = false
                             }
                             Task{
-                                await settingVM.updateSettingData(uid: Constants.uid)
+                                await settingVM.updateSettings(forUserID: Constants.currentUserID)
                             }
                         }
                 }
@@ -124,17 +124,17 @@ struct EditSecurityField: View {
                     
                     Button(action: {
                         
-                        settingVM.isSecuritySettingChange.toggle()
+                        settingVM.hasSecuritySettingChanged.toggle()
 
                     }) {
                         Text("Confirm")
-                            .foregroundColor(settingVM.isSecuritySettingChange ? .white : .gray)
+                            .foregroundColor(settingVM.hasSecuritySettingChanged ? .white : .gray)
                             .padding()
                             .frame(width: proxy.size.width/1.2) // Make the button as wide as the HStack
-                            .background(settingVM.isSecuritySettingChange ? Color.blue : Color.gray.opacity(0.5))
+                            .background(settingVM.hasSecuritySettingChanged ? Color.blue : Color.gray.opacity(0.5))
                             .cornerRadius(8)
                     }
-                    .disabled(!settingVM.isSecuritySettingChange) // Disable when no changes
+                    .disabled(!settingVM.hasSecuritySettingChanged) // Disable when no changes
                     
                     Spacer()
                 }
@@ -154,8 +154,8 @@ struct EditSecurityField: View {
                 
                 Spacer()
             }
-            .foregroundColor(settingVM.isDarkMode ? .white : .black)
-            .background(!settingVM.isDarkMode ? .white : .black)
+            .foregroundColor(settingVM.isDarkModeEnabled ? .white : .black)
+            .background(!settingVM.isDarkModeEnabled ? .white : .black)
         }
     }
 }

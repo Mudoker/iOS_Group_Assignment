@@ -19,11 +19,11 @@ import Firebase
 
 struct Story {
     let id: String
-    let date: Timestamp
-    var status: Bool
-    var source: String
-    let poster: [String]
+    let creationDate: Timestamp
+    var isActive: Bool
+    var contentSource: String
+    let author: String
     var likers: [String?]
-    var unwrapPoster: User?
-    var unwrapLikers: [User?]
+    var unwrappedAuthor: User?
+    var unwrappedLikers: [User?]
 }

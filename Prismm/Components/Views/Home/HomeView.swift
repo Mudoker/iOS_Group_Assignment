@@ -37,9 +37,9 @@ struct HomeView: View {
                         Spacer()
                         
                         Button(action: {if UIDevice.current.userInterfaceIdiom == .pad {
-                            homeViewModel.isNewPostIpad.toggle()
+                            homeViewModel.isCreateNewPostOnIpad.toggle()
                         } else {
-                            homeViewModel.isNewPostIphone.toggle()
+                            homeViewModel.isCreateNewPostOnIphone.toggle()
                         }}) {
                             Image(systemName: "plus.app")
                                 .resizable()
@@ -60,7 +60,7 @@ struct HomeView: View {
                         HStack(spacing: 40) {
                             ForEach(0..<5, id: \.self) { _ in
                                 StoryView()
-                                    .frame(width: homeViewModel.storyViewSizeWidth, height: homeViewModel.storyViewSizeHeight)
+                                    .frame(width: homeViewModel.storyViewWidth, height: homeViewModel.storyViewHeight)
                             }
                         }
                         .padding()
@@ -68,28 +68,28 @@ struct HomeView: View {
                     
                     
                     VStack {
-                        ForEach(homeViewModel.fetched_post) { post in
+                        ForEach(homeViewModel.fetchedAllPosts) { post in
                             PostView(post: post, homeViewModel: homeViewModel, settingVM: settingVM)
                                 .padding(.bottom, 50)
                         }
                     }
                 }
                 
-                .sheet(isPresented: $homeViewModel.isNewPostIpad) {
-                    CreatePostView(isNewPost: $homeViewModel.isNewPostIpad, isDarkMode: $settingVM.isDarkMode)
+                .sheet(isPresented: $homeViewModel.isCreateNewPostOnIpad) {
+                    CreatePostView(isNewPost: $homeViewModel.isCreateNewPostOnIpad, isDarkModeEnabled: $settingVM.isDarkModeEnabled)
                 }
-                .fullScreenCover(isPresented: $homeViewModel.isNewPostIphone) {
-                    CreatePostView(isNewPost: $homeViewModel.isNewPostIphone, isDarkMode: $settingVM.isDarkMode)
+                .fullScreenCover(isPresented: $homeViewModel.isCreateNewPostOnIphone) {
+                    CreatePostView(isNewPost: $homeViewModel.isCreateNewPostOnIphone, isDarkModeEnabled: $settingVM.isDarkModeEnabled)
                 }
                 .onAppear {
                     homeViewModel.proxySize = proxy.size
                     Task {
-                        homeViewModel.fetchPostRealTime()
+                        homeViewModel.fetchPostsRealTime()
                     }
                 }
                 .refreshable {
                     Task {
-                        homeViewModel.fetchPostRealTime()
+                        homeViewModel.fetchPostsRealTime()
                     }
                 }
             }

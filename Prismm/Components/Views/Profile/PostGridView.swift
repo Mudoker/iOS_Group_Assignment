@@ -17,18 +17,17 @@
 import SwiftUI
 import Kingfisher
 import AVKit
+
 struct PostGridView: View {
-//    var images: [String] = ["testAvt","fb","mail","testAvt3","testAvt4","testAvt5","testAvt6","testAvt7","testAvt8","testAvt9"]
-    @StateObject var profileVM : ProfileViewModel
-    //@StateObject var authVM : AuthenticationViewModel
+    @StateObject var profileVM: ProfileViewModel
     
+    var columnsGrid: [GridItem] = [GridItem(.flexible(), spacing: 1), GridItem(.flexible(), spacing: 1), GridItem(.flexible(), spacing: 1)]
     
-    var columnsGrid: [GridItem] = [GridItem(.flexible(),spacing: 1),GridItem(.flexible(),spacing: 1),GridItem(.flexible(),spacing: 1)]
     var body: some View {
-        LazyVGrid(columns: columnsGrid,spacing: 1) {
-            ForEach(profileVM.posts) {post in
+        LazyVGrid(columns: columnsGrid, spacing: 1) {
+            ForEach(profileVM.posts) { post in
                 if let mediaURL = URL(string: post.mediaURL ?? "") {
-                    if let mimeType = post.mimeType {
+                    if let mimeType = post.mediaMimeType {
                         if !mimeType.hasPrefix("image") {
                             // Handle video
                             let playerItem = AVPlayerItem(url: mediaURL)
@@ -43,6 +42,7 @@ struct PostGridView: View {
                                     player.play()
                                 }
                         } else {
+                            // Handle images using Kingfisher
                             KFImage(mediaURL)
                                 .resizable()
                                 .frame(width: UIScreen.main.bounds.width)
@@ -63,4 +63,3 @@ struct PostGridView: View {
         }
     }
 }
-
