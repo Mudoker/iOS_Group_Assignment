@@ -20,11 +20,6 @@ import GoogleSignIn
 import GoogleSignInSwift
 
 struct Login: View {
-    // Control state
-    @State var accountText = ""
-    @State var passwordText = ""
-    @State private var isPasswordVisible: Bool = false
-
     // View Model
     @StateObject var authVM :AuthenticationViewModel
     @ObservedObject var settingVM = SettingViewModel()
@@ -57,7 +52,7 @@ struct Login: View {
                         
                         //Text field
                         CustomTextField(
-                            text: $accountText,
+                            text: $authVM.loginAccountText,
                             textFieldTitle: "Username",
                             testFieldPlaceHolder: "Username or Account",
                             titleFont: authVM.textFieldTitleFont,
@@ -70,7 +65,7 @@ struct Login: View {
                         .padding(.bottom)
                         
                         CustomTextField(
-                            text: $passwordText,
+                            text: $authVM.loginPasswordText,
                             textFieldTitle: "Password",
                             testFieldPlaceHolder: "Password",
                             titleFont: authVM.textFieldTitleFont,
@@ -88,7 +83,7 @@ struct Login: View {
                             
                             Task {
                                 authVM.isFetchingData = true
-                                try await authVM.signIn(withEmail: accountText, password: passwordText)
+                                try await authVM.signIn(withEmail: authVM.loginAccountText, password: authVM.loginPasswordText)
                             }
                         }) {
                             Text("Login")

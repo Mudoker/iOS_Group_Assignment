@@ -45,6 +45,14 @@ class AuthenticationViewModel: ObservableObject {
     @Published var currentUser: User?
     @Published var userSettings: UserSetting?
     @Published var isFetchingData = false
+    @Published var loginAccountText = ""
+    @Published var loginPasswordText = ""
+    @Published var isShowloginPassword = ""
+    @Published var signUpAccountText = ""
+    @Published var signUpPasswordText = ""
+    @Published var signUpReEnterPasswordText = ""
+    @Published var isShowSignUpPassword = ""
+    @Published var isShowSignUpReEnterPassword = ""
     @Published var userToken: String {
         didSet {
             UserDefaults.standard.set(userToken, forKey: "userToken")

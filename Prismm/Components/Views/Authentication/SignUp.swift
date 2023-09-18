@@ -16,15 +16,7 @@
 
 import SwiftUI
 
-
-
 struct SignUp: View {
-    // Control state
-    @State var accountText = ""
-    @State var passwordText = ""
-    @State var confrimPasswordText = ""
-    @State private var isPasswordVisible: Bool = false
-    
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
     // View Model
     @ObservedObject var authVM = AuthenticationViewModel()
@@ -57,9 +49,9 @@ struct SignUp: View {
                     // Text field
                     VStack {
                         CustomTextField(
-                            text: $accountText,
-                            textFieldTitle: "Username",
-                            testFieldPlaceHolder: "Username or Account",
+                            text: $authVM.signUpAccountText,
+                            textFieldTitle: "Email",
+                            testFieldPlaceHolder: "Gmail Account",
                             titleFont: authVM.textFieldTitleFont,
                             textFieldSizeHeight: authVM.textFieldSizeHeight,
                             textFieldCorner: authVM.textFieldCornerRadius,
@@ -72,7 +64,7 @@ struct SignUp: View {
                         
                         
                         CustomTextField(
-                            text: $passwordText,
+                            text: $authVM.signUpPasswordText,
                             textFieldTitle: "Password",
                             testFieldPlaceHolder: "Password",
                             titleFont: authVM.textFieldTitleFont,
@@ -85,9 +77,9 @@ struct SignUp: View {
                         )
                         
                         HStack {
-                            if passwordText.isEmpty {
-                                Text("At least 8 characters and not contain special symbols")
-                                    .font(authVM.captionFont )
+                            if authVM.signUpPasswordText.isEmpty {
+                                Text("At least 6 characters and not contain special symbols")
+                                    .font(authVM.captionFont)
                                     .padding(.bottom, 5)
                                     .opacity(0.7)
                             } else {
@@ -111,7 +103,7 @@ struct SignUp: View {
                         .padding(.horizontal)
                         
                         CustomTextField(
-                            text: $confrimPasswordText,
+                            text: $authVM.signUpReEnterPasswordText,
                             textFieldTitle: "Confirm Password",
                             testFieldPlaceHolder: "Password",
                             titleFont: authVM.textFieldTitleFont,
@@ -124,7 +116,7 @@ struct SignUp: View {
                         )
                         
                         HStack {
-                            if confrimPasswordText.isEmpty {
+                            if authVM.signUpReEnterPasswordText.isEmpty {
                                 Text("Re-enter your password")
                                     .font(authVM.captionFont )
                                     .padding(.bottom, 5)
@@ -158,7 +150,7 @@ struct SignUp: View {
                             authVM.isFetchingData = true
                             
                             Task {
-                                try await authVM.createNewUser(withEmail: accountText, password: passwordText)
+                                try await authVM.createNewUser(withEmail: authVM.signUpAccountText, password: authVM.signUpPasswordText)
                                 
                                 authVM.isFetchingData = false
                                 authVM.isAlertPresent = true
@@ -202,12 +194,12 @@ struct SignUp: View {
                 .foregroundColor(settingVM.isDarkModeEnabled ? .white : .black)
                 .padding(.horizontal)
                 
-                .onChange(of: passwordText) {newValue in
+                .onChange(of: authVM.signUpPasswordText) {newValue in
                     authVM.isPasswordValid = authVM.isPasswordValidForSignUp(newValue)
-                    authVM.isReenteredPasswordValid = authVM.passwordsMatch(currentPassword: newValue, reEnteredPassword: confrimPasswordText)
+                    authVM.isReenteredPasswordValid = authVM.passwordsMatch(currentPassword: newValue, reEnteredPassword: authVM.signUpReEnterPasswordText)
                 }
-                .onChange(of: confrimPasswordText) {newValue in
-                    authVM.isReenteredPasswordValid = authVM.passwordsMatch(currentPassword: passwordText, reEnteredPassword: newValue)
+                .onChange(of: authVM.signUpReEnterPasswordText) {newValue in
+                    authVM.isReenteredPasswordValid = authVM.passwordsMatch(currentPassword: authVM.signUpPasswordText, reEnteredPassword: newValue)
                 }
                 
                 if authVM.isFetchingData {
@@ -224,7 +216,7 @@ struct SignUp: View {
 
 extension SignUp: SignUpFormProtocol{
     var formIsValid: Bool{
-        return accountText.contains("@") && !accountText.isEmpty && authVM.isPasswordValid && authVM.isReenteredPasswordValid
+        return authVM.signUpAccountText.contains("@") && !authVM.signUpAccountText.isEmpty && authVM.isPasswordValid && authVM.isReenteredPasswordValid
     }
 }
 
