@@ -23,4 +23,9 @@ struct Setting: Codable {
     var isFaceId: Bool
     var isPushNotification: Bool
     var isMessageNotification: Bool
+     var isDarkMode: Bool
+     var isEnglish: Bool
+     var isFaceId: Bool
+     var isPushNotification: Bool
+     var isMessageNotification: Bool
 }

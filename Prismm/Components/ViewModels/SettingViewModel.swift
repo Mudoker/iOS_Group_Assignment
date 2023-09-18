@@ -95,6 +95,10 @@ class SettingViewModel: ObservableObject {
             isChangeProfileFB != "" ||
             isChangeProfileGmail != "" ||
             isChangeProfileLD != "" {
+           isChangeProfilePhoneNumber != "" ||
+           isChangeProfileFB != "" ||
+           isChangeProfileGmail != "" ||
+           isChangeProfileLD != "" {
             return true // At least one setting has changed
         }
         return false // No settings have changed

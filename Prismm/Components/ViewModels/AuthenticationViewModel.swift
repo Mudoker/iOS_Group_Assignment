@@ -1,9 +1,18 @@
-//
-//  LoginViewModel.swift
-//  Prismm
-//
-//  Created by Quoc Doan Huu on 09/09/2023.
-//
+/*
+  RMIT University Vietnam
+  Course: COSC2659 iOS Development
+  Semester: 2023B
+  Assessment: Assignment 3
+  Author: Apple Men
+  Doan Huu Quoc (s3927776)
+  Tran Vu Quang Anh (s3916566)
+  Nguyen Dinh Viet (s3927291)
+  Nguyen The Bao Ngoc (s3924436)
+
+  Created  date: 09/09/2023
+  Last modified: 09/09/2023
+  Acknowledgement: None
+*/
 
 import Foundation
 import LocalAuthentication
@@ -41,6 +50,8 @@ class AuthenticationViewModel: ObservableObject {
     
     @Published var userSession : FirebaseAuth.User?
     @Published var currentUser : User?
+    
+    @Published var currentSetting: Setting?
     
     
     // set user token for bio metric login
@@ -123,8 +134,13 @@ class AuthenticationViewModel: ObservableObject {
             let result = try await Auth.auth().createUser(withEmail: email, password: password)
             self.userSession = result.user
             let user = User(id: result.user.uid, password: password, username: email)
+            let setting = Setting(id: result.user.uid, isDarkMode: false, isEnglish: true, isFaceId: false, isPushNotification: false, isMessageNotification: false) //new create setting data
             let encodedUser = try Firestore.Encoder().encode(user)
+            
+            let encodedSetting = try Firestore.Encoder().encode(setting)
             try await Firestore.firestore().collection("users").document(user.id).setData(encodedUser)
+
+            try await Firestore.firestore().collection("settings").document(user.id).setData(encodedSetting) //create new setting document on firebase
             signUpError = false
         } catch {
             signUpError = true
@@ -204,13 +220,29 @@ class AuthenticationViewModel: ObservableObject {
             do{
                 let user = User(id: uid, password: "password", username: currentEmail)
                 let encodedUser = try Firestore.Encoder().encode(user)
-                try await Firestore.firestore().collection("users").document(user.id).setData(encodedUser)
+                try await Firestore.firestore().collection("users").document(uid).setData(encodedUser)
+                
             }catch{
-                print("ERROR 001")
+                print("ERROR: Fail to add user data")
             }
-        }else{
-            self.currentUser = try? snapshot.data(as: User.self)
         }
+            
+            
+            //new: fetch setting data
+            guard let snapshot1 = try? await Firestore.firestore().collection("settings").document(uid).getDocument() else {return}
+
+            if !snapshot1.exists {
+                do{
+                    let setting = Setting(id: uid, isDarkMode: false, isEnglish: true, isFaceId: false, isPushNotification: false, isMessageNotification: false) //new: create new setting data
+                    let encodedSetting = try Firestore.Encoder().encode(setting)
+
+                    try await Firestore.firestore().collection("settings").document(uid).setData(encodedSetting)
+                }catch{
+                   print("ERROR: Fail to add setting data")
+                }
+            }else{
+                self.currentSetting = try! snapshot1.data(as: Setting.self)
+            }
     }
     
     // FaceId login
