@@ -91,6 +91,12 @@ struct SettingView : View {
                                         Text("Vietnamese").tag("vi")
                                     }
                                     .pickerStyle(MenuPickerStyle())
+                                    .onChange(of: settingVM.language) { newValue in
+                                        Task{
+                                            await
+                                            settingVM.updateSettingData(uid: Constants.uid)
+                                        }
+                                    }
                                     
                                 }
                                 .padding(.bottom)
@@ -109,6 +115,15 @@ struct SettingView : View {
                                     
                                     Toggle("", isOn: $settingVM.isDarkMode)
                                         .padding(.vertical)
+                                    
+                                    //setting
+                                        .onChange(of: settingVM.isDarkMode) { newValue in
+                                            Task{
+                                                await
+                                                settingVM.updateSettingData(uid: Constants.uid)
+                                            }
+                                            
+                                        }
                                 }
                                 .padding(.bottom)
                                 
@@ -138,6 +153,13 @@ struct SettingView : View {
                                     Spacer()
                                     
                                     Toggle("", isOn: $settingVM.isPushNotification)
+                                        .onChange(of: settingVM.isPushNotification) { newValue in
+                                            Task{
+                                                await
+                                                settingVM.updateSettingData(uid: Constants.uid)
+                                            }
+                                            
+                                        }
                                 }
                                 .padding(.bottom)
                                 
@@ -157,6 +179,13 @@ struct SettingView : View {
                                     
                                     Toggle("", isOn: $settingVM.isMessageNotification)
                                         .padding(.vertical)
+                                        .onChange(of: settingVM.isMessageNotification) { newValue in
+                                            Task{
+                                                await
+                                                settingVM.updateSettingData(uid: Constants.uid)
+                                            }
+                                            
+                                        }
                                 }
                                 .padding(.bottom)
                                 
@@ -297,6 +326,8 @@ struct SettingView : View {
                         }
                         .onAppear {
                             settingVM.proxySize = proxy.size
+                            //set uid
+                            Constants.uid = "m52oyZNbCxVx5SsvFAEPwankeAP2"
                         }
                 }
             }
