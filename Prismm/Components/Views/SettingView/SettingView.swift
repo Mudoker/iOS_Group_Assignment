@@ -87,7 +87,8 @@ struct SettingView : View {
                                 .padding(.bottom)
                                 
                                 Divider()
-                                
+                                    .overlay(settingVM.isDarkMode ? .gray : .gray)
+
                                 HStack {
                                     Image(systemName: "moon")
                                         .resizable()
@@ -134,7 +135,8 @@ struct SettingView : View {
                                 
                                 
                                 Divider()
-                                
+                                    .overlay(settingVM.isDarkMode ? .gray : .gray)
+
                                 HStack {
                                     Image(systemName: "message")
                                         .resizable()
@@ -186,7 +188,8 @@ struct SettingView : View {
                                 }
                                 
                                 Divider()
-                                
+                                    .overlay(settingVM.isDarkMode ? .gray : .gray)
+
                                 HStack {
                                     Button(action: {}) {
                                         Image(systemName: "rectangle.portrait.slash")
