@@ -1,18 +1,18 @@
 /*
-  RMIT University Vietnam
-  Course: COSC2659 iOS Development
-  Semester: 2023B
-  Assessment: Assignment 3
-  Author: Apple Men
-  Doan Huu Quoc (s3927776)
-  Tran Vu Quang Anh (s3916566)
-  Nguyen Dinh Viet (s3927291)
-  Nguyen The Bao Ngoc (s3924436)
-
-  Created  date: 09/09/2023
-  Last modified: 09/09/2023
-  Acknowledgement: None
-*/
+ RMIT University Vietnam
+ Course: COSC2659 iOS Development
+ Semester: 2023B
+ Assessment: Assignment 3
+ Author: Apple Men
+ Doan Huu Quoc (s3927776)
+ Tran Vu Quang Anh (s3916566)
+ Nguyen Dinh Viet (s3927291)
+ Nguyen The Bao Ngoc (s3924436)
+ 
+ Created  date: 09/09/2023
+ Last modified: 09/09/2023
+ Acknowledgement: None
+ */
 
 import SwiftUI
 import Foundation
@@ -53,31 +53,31 @@ class SettingViewModel: ObservableObject {
     var cornerRadiusSize: CGFloat {
         UIDevice.current.userInterfaceIdiom == .phone ? proxySize.width / 40 : proxySize.width / 50
     }
-
+    
     var accountSettingSizeHeight: CGFloat {
         UIDevice.current.userInterfaceIdiom == .phone ? proxySize.width / 4 : proxySize.height / 8
     }
-
+    
     var accountSettingImageSizeWidth: CGFloat {
         UIDevice.current.userInterfaceIdiom == .phone ? proxySize.width / 8 : proxySize.width / 12
     }
-
+    
     var accountSettingUsernameFont: Font {
         UIDevice.current.userInterfaceIdiom == .phone ? .title3 : .title
     }
-
+    
     var accountSettingEmailFont: Font {
         .body
     }
-
+    
     var contentFont: Font {
         UIDevice.current.userInterfaceIdiom == .phone ? .body : .title3
     }
-
+    
     var imageSize: CGFloat {
         UIDevice.current.userInterfaceIdiom == .phone ? proxySize.width / 18 : proxySize.width / 28
     }
-
+    
     var signOutText: Font {
         UIDevice.current.userInterfaceIdiom == .phone ? .title3 : .title
     }
@@ -91,6 +91,10 @@ class SettingViewModel: ObservableObject {
     
     func isProfileSettingChange() -> Bool {
         if isChangeProfileUsername != "" ||
+            isChangeProfilePhoneNumber != "" ||
+            isChangeProfileFB != "" ||
+            isChangeProfileGmail != "" ||
+            isChangeProfileLD != "" {
            isChangeProfilePhoneNumber != "" ||
            isChangeProfileFB != "" ||
            isChangeProfileGmail != "" ||
@@ -99,7 +103,7 @@ class SettingViewModel: ObservableObject {
         }
         return false // No settings have changed
     }
-
+    
     func isValidProfileURL(_ url: String, platform: String) -> Bool {
         //if the link is not written
         if url.isEmpty{
@@ -176,6 +180,4 @@ class SettingViewModel: ObservableObject {
     func updatePassword(uid: String) async {
         
     }
-    
-    
 }

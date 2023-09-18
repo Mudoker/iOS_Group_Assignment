@@ -119,7 +119,10 @@ struct Login: View {
                         // Helpers
                         HStack {
                             Button(action: {
-                                authVM.isForgotPassword.toggle()
+//                                authVM.isForgotPassword.toggle()
+                                Task {
+                                    try await authVM.resetPassword(withEmail: "huuquoc7603@gmail.com")
+                                }
                             }) {
                                 Text("Forgot Password?")
                                     .bold()
@@ -166,11 +169,11 @@ struct Login: View {
                                     }) {
                                         RoundedRectangle(cornerRadius: proxy.size.width / 50)
                                             .frame(width: proxy.size.width / 2, height: proxy.size.height / 17)
-                                            .background(Color.white)
+                                            .background(settingVM.isDarkMode ? Color.clear : Color.white)
                                             .overlay(
                                                 RoundedRectangle(cornerRadius: proxy.size.width / 50)
                                                     .stroke(Color.black, lineWidth: 1)
-                                                    .background(Color.white)
+                                                    .background(settingVM.isDarkMode ? Color.clear : Color.white)
                                                     .overlay(
                                                         HStack {
                                                             Image("mail")
@@ -180,6 +183,7 @@ struct Login: View {
                                                                 .foregroundColor(.black)
                                                             
                                                             Text("Login with Google")
+                                                                .foregroundColor(.black)
                                                         }
                                                     )
                                             )

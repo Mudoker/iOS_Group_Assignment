@@ -40,4 +40,9 @@ struct API_SERVICE {
         let snapshot = try await Firestore.firestore().collection("test_posts").document(withUid).getDocument()
         return try snapshot.data(as: Post.self)
     }
+    
+    static func fetchYourNoti(for userId: String) async throws -> [Notification] {
+        let snapshot = try await Firestore.firestore().collection("test_noti").whereField("owner", isEqualTo: userId).getDocuments()
+        return try snapshot.documents.compactMap({try $0.data(as: Notification.self)})
+    }
 }

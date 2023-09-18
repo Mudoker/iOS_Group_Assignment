@@ -144,6 +144,7 @@ class HomeViewModel: ObservableObject {
             await fetchPostRealTime()
         }
     }
+    
     @MainActor
     func fetchAllComments(forPostID postID: String) {
 //        if commentListenerRegistration == nil {
@@ -203,6 +204,8 @@ class HomeViewModel: ObservableObject {
     //        print (" load ok ")
     //    }
     
+    func blockUser(withId: String) {
+    }
     func uploadMediaToFireBase(data: Data) async throws -> String? {
         let fileName = UUID().uuidString
         let ref = Storage.storage().reference().child("/media/\(fileName)")
@@ -321,6 +324,7 @@ class HomeViewModel: ObservableObject {
                 self.fetched_post = documents.compactMap { queryDocumentSnapshot in
                     try? queryDocumentSnapshot.data(as: Post.self)
                 }
+                
                 self.fetched_post = sortPostByTime(order: "asc", posts: self.fetched_post)
                 for i in 0..<self.fetched_post.count {
                     for likerID in self.fetched_post[i].likers {
@@ -515,6 +519,66 @@ class HomeViewModel: ObservableObject {
 //        }
 //    }
     
+    // Block (not receiving notification + post/story + message)
+    func blockOtherUser(userID: String) async throws {
+        let currentUserRef = Firestore.firestore().collection("users").document("3WBgDcMgEQfodIbaXWTBHvtjYCl2")
+        var currentUser = try await currentUserRef.getDocument().data(as: User.self)
+        currentUser.blockList.append(userID)
+        
+        try currentUserRef.setData(from: currentUser) { error in
+            if let error = error {
+                print("Error updating document: \(error)")
+            } else {
+                print("Document successfully updated.")
+            }
+        }
+    }
+    
+    // Unblock
+    func unBlockOtherUser(userID: String) async throws {
+        let currentUserRef = Firestore.firestore().collection("users").document("3WBgDcMgEQfodIbaXWTBHvtjYCl2")
+        var currentUser = try await currentUserRef.getDocument().data(as: User.self)
+        currentUser.blockList.removeAll { $0 == userID }
+        
+        try currentUserRef.setData(from: currentUser) { error in
+            if let error = error {
+                print("Error updating document: \(error)")
+            } else {
+                print("Document successfully updated.")
+            }
+        }
+    }
+    
+    // restrict (not receiving notification + post/story)
+    func restrictOtherUser(userID: String) async throws {
+        let currentUserRef = Firestore.firestore().collection("users").document("3WBgDcMgEQfodIbaXWTBHvtjYCl2")
+        var currentUser = try await currentUserRef.getDocument().data(as: User.self)
+        currentUser.restrictedList.append(userID)
+        
+        try currentUserRef.setData(from: currentUser) { error in
+            if let error = error {
+                print("Error updating document: \(error)")
+            } else {
+                print("Document successfully updated.")
+            }
+        }
+    }
+    
+    // Un-restrict
+    func unRestrictOtherUserBlockOtherUser(userID: String) async throws {
+        let currentUserRef = Firestore.firestore().collection("users").document("3WBgDcMgEQfodIbaXWTBHvtjYCl2")
+        var currentUser = try await currentUserRef.getDocument().data(as: User.self)
+        currentUser.restrictedList.removeAll { $0 == userID }
+        
+        try currentUserRef.setData(from: currentUser) { error in
+            if let error = error {
+                print("Error updating document: \(error)")
+            } else {
+                print("Document successfully updated.")
+            }
+        }
+    }
+    
     // Follow
     func followOtherUser(userID: String) async throws {
         //var followingUser = try await UserService.fetchUser(withUid: userID)
@@ -642,5 +706,4 @@ class HomeViewModel: ObservableObject {
         
         return "application/octet-stream"
     }
-
 }

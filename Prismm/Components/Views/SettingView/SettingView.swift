@@ -102,7 +102,8 @@ struct SettingView : View {
                                 .padding(.bottom)
                                 
                                 Divider()
-                                
+                                    .overlay(settingVM.isDarkMode ? .gray : .gray)
+
                                 HStack {
                                     Image(systemName: "moon")
                                         .resizable()
@@ -165,7 +166,8 @@ struct SettingView : View {
                                 
                                 
                                 Divider()
-                                
+                                    .overlay(settingVM.isDarkMode ? .gray : .gray)
+
                                 HStack {
                                     Image(systemName: "message")
                                         .resizable()
@@ -224,7 +226,8 @@ struct SettingView : View {
                                 }
                                 
                                 Divider()
-                                
+                                    .overlay(settingVM.isDarkMode ? .gray : .gray)
+
                                 HStack {
                                     Button(action: {}) {
                                         Image(systemName: "rectangle.portrait.slash")
@@ -305,7 +308,7 @@ struct SettingView : View {
                                     Button("Sign Out", role: .destructive) {
                                     }
                                 } message: {
-                                    Text("Are you sure?")
+                                    Text("\nConfirm Sign Out?")
                                 }
                                 Spacer()
                             }

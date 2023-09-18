@@ -100,7 +100,6 @@ struct EditProfileView: View {
                                 
                                 TextField("", text: $settingVM.isChangeProfilePhoneNumber, prompt: Text(verbatim: "qdoan7603").foregroundColor(settingVM.isDarkMode ? .white.opacity(0.5) : .black.opacity(0.3)))
                                     .multilineTextAlignment(.trailing)
-                                    
                                     .onChange(of: settingVM.isChangeProfilePhoneNumber) { _ in
                                         if settingVM.isProfileSettingChange() {
                                             settingVM.isChangeProfile = true
