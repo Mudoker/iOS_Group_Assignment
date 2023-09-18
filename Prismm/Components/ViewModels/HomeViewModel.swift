@@ -123,13 +123,7 @@ class HomeViewModel: ObservableObject {
     private var commentListenerRegistration: ListenerRegistration?
     @Published var fetched_comments = [String: Set<Comment>]()
 
-    @Published var selectedMedia: PhotosPickerItem? {
-        didSet {
-            Task {
-                try await uploadingPost()
-            }
-        }
-    }
+    @Published var selectedMedia: NSURL? 
     
     init() {
         Task {
@@ -239,13 +233,25 @@ class HomeViewModel: ObservableObject {
         return comment
     }
     
-    func createPost(owner: String, postCaption: String?, mediaURL: String?, mimeType: String?) async throws -> Post? {
+    func createPost() async throws{
+        
+//        guard let uid = Auth.auth().currentUser?.uid else {
+//            print("No user account")
+//            return
+//        }
+        print("creating post")
+        let uid = "m52oyZNbCxVx5SsvFAEPwankeAP2"
+        
+        let mediaURL = try await uploadingPost()
+        print("upload media to database")
+        
+        
         let postRef = Firestore.firestore().collection("test_posts").document()
-        let post = Post(id: postRef.documentID, owner: owner, postCaption: postCaption, mediaURL: mediaURL, mimeType: mimeType, date: Timestamp())
-        guard let encodedPost = try? Firestore.Encoder().encode(post) else {return nil}
+        let post = Post(id: postRef.documentID, owner: uid, postCaption: postCaption, mediaURL: mediaURL, mimeType: mimeType(for: try Data(contentsOf: selectedMedia as? URL ?? URL(fileURLWithPath: ""))), date: Timestamp())
+        guard let encodedPost = try? Firestore.Encoder().encode(post) else {return}
         try await postRef.setData(encodedPost)
         print("ok")
-        return post
+        return
     }
     
     func editPost(postID: String, postCaption: String?, mediaURL: String?, mimeType: String?) async throws {
@@ -566,26 +572,37 @@ class HomeViewModel: ObservableObject {
     }
     
     
-    func uploadingPost() async throws {
-        guard let uid = Auth.auth().currentUser?.uid else {
-            print("No user account")
-            return
+    func uploadingPost() async throws -> String{
+        print("uploading media")
+        
+        guard let media = selectedMedia else {
+            print("Failed to get data")
+            return ""
+
         }
         
-        guard let media = selectedMedia else { return }
-        
-        guard let mediaData = try await media.loadTransferable(type: Data.self) else { return }
+        print("1")
+        print(media)
+        print("1")
+        let mediaData = try Data(contentsOf: media as URL)
+        print("Complete convert data")
         
         if mediaData.count > 25_000_000 {
             print("Selected file too large: \(mediaData)")
         } else {
-            guard let mediaUrl = try await uploadMediaToFireBase(data: mediaData) else { return }
-            let postRef = Firestore.firestore().collection("posts").document()
-            let post = try? await createPost(owner: uid, postCaption: "Hello world", mediaURL: mediaUrl, mimeType: mimeType(for: mediaData))
-            guard let encodedPost = try? Firestore.Encoder().encode(post) else {return}
-            try await postRef.setData(encodedPost)
+            guard let mediaUrl = try await uploadMediaToFireBase(data: mediaData) else {
+                
+                return ""
+                
+            }
+            print("uploaded media data to firebase")
+            return mediaUrl
+            
         }
+        print("Failed")
+        return ""
     }
+    
     
     func mimeType(for data: Data) -> String {
         var b: UInt8 = 0

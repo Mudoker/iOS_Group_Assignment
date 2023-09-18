@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2F19D05A2AB84B3E0090EF14 /* ImagePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F19D0592AB84B3E0090EF14 /* ImagePickerView.swift */; };
 		2F68AD7F2AAF753E0059E1AF /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = 2F68AD7E2AAF753E0059E1AF /* GoogleSignIn */; };
 		2F68AD812AAF753E0059E1AF /* GoogleSignInSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 2F68AD802AAF753E0059E1AF /* GoogleSignInSwift */; };
 		2FF0ACC42AAAFA3C0033AEEB /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FF0ACC32AAAFA3C0033AEEB /* ProfileView.swift */; };
@@ -79,6 +80,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		2F19D0592AB84B3E0090EF14 /* ImagePickerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImagePickerView.swift; sourceTree = "<group>"; };
 		2FF0ACC32AAAFA3C0033AEEB /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		2FF0ACC52AAB05120033AEEB /* ProfileToolBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileToolBar.swift; sourceTree = "<group>"; };
 		990334F92AB2375300159F22 /* Test+Follow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Test+Follow.swift"; sourceTree = "<group>"; };
@@ -331,6 +333,7 @@
 				E12FA0392AAC2EFB007890A3 /* StoryView.swift */,
 				E11F6E8F2AB2F6DC00989514 /* CreatePostView.swift */,
 				E11F6E912AB3156B00989514 /* CommentView.swift */,
+				2F19D0592AB84B3E0090EF14 /* ImagePickerView.swift */,
 			);
 			path = Home;
 			sourceTree = "<group>";
@@ -584,6 +587,7 @@
 				990334FA2AB2375300159F22 /* Test+Follow.swift in Sources */,
 				E12FA0292AAC2963007890A3 /* UserModel.swift in Sources */,
 				E17E8CDB2AAC496F00EF5EFB /* CustomAlertView.swift in Sources */,
+				2F19D05A2AB84B3E0090EF14 /* ImagePickerView.swift in Sources */,
 				990335002AB2EB9200159F22 /* Test+Profile.swift in Sources */,
 				2FF0ACC42AAAFA3C0033AEEB /* ProfileView.swift in Sources */,
 				E1BB6F212AAEC01A00051687 /* PreviewUserChat.swift in Sources */,
@@ -717,11 +721,13 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Prismm/Preview Content\"";
-				DEVELOPMENT_TEAM = 96T8MQWD39;
+				DEVELOPMENT_TEAM = 6WK3P49LAJ;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Prismm/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "This app use your camera to take photo and record video";
 				INFOPLIST_KEY_NSFaceIDUsageDescription = "Please proceed to allow fast login";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "This app use your microphone to record video";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -748,11 +754,13 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Prismm/Preview Content\"";
-				DEVELOPMENT_TEAM = 96T8MQWD39;
+				DEVELOPMENT_TEAM = 6WK3P49LAJ;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Prismm/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "This app use your camera to take photo and record video";
 				INFOPLIST_KEY_NSFaceIDUsageDescription = "Please proceed to allow fast login";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "This app use your microphone to record video";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
