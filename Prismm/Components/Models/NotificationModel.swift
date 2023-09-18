@@ -22,6 +22,7 @@ struct AppNotification: Identifiable, Codable {
     let senderName: String
     let receiverId: String
     let messageContent: String
+    let postLink: String
     let creationDate: Timestamp
     let category: NotificationCategory
 }
