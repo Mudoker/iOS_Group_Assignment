@@ -16,6 +16,9 @@ struct User: Identifiable, Codable {
     var bio: String?
     var profileImageURL: String?
     var facebookLink: String?
+    //add gmail link and linked in link
+    var gmailLink: String?
+    var ldLink: String?
     var followers: [String?] //
     var following: [String?] //
     var posts: [String?] //
@@ -45,5 +48,7 @@ struct User: Identifiable, Codable {
         self.noti = []
         self.restrictedList = []
         self.blockList = []
+        self.ldLink = ""
+        self.gmailLink = ""
     }
 }

@@ -78,7 +78,7 @@ struct EditProfileView: View {
                                 TextField("", text: $usernameText, prompt: Text(verbatim: "qdoan7603").foregroundColor(settingVM.isDarkMode ? .white.opacity(0.5) : .black.opacity(0.3)))
                                     .multilineTextAlignment(.trailing)
                                     .onChange(of: usernameText) { _ in
-                                        if settingVM.isProfileSettingChange(username: usernameText, phoneNumber: phoneNumberText, fb: facebookLink, gmail: gmailLink, ld: linkedInLink) {
+                                        if settingVM.isProfileSettingChange() {
                                             settingVM.isChangeProfile = true
                                         } else {
                                             settingVM.isChangeProfile = false
@@ -96,7 +96,7 @@ struct EditProfileView: View {
                                 TextField("", text: $phoneNumberText, prompt: Text(verbatim: "qdoan7603").foregroundColor(settingVM.isDarkMode ? .white.opacity(0.5) : .black.opacity(0.3)))
                                     .multilineTextAlignment(.trailing)
                                     .onChange(of: phoneNumberText) { _ in
-                                        if settingVM.isProfileSettingChange(username: usernameText, phoneNumber: phoneNumberText, fb: facebookLink, gmail: gmailLink, ld: linkedInLink) {
+                                        if settingVM.isProfileSettingChange() {
                                             settingVM.isChangeProfile = true
                                         } else {
                                             settingVM.isChangeProfile = false
