@@ -127,7 +127,7 @@ struct EditProfileView: View {
                                 TextField("", text: $facebookLink, prompt: Text(verbatim: "example.com").foregroundColor(settingVM.isDarkMode ? .white.opacity(0.5) : .black.opacity(0.3)))
                                     .multilineTextAlignment(.trailing)
                                     .onChange(of: facebookLink) { _ in
-                                        if settingVM.isProfileSettingChange(username: usernameText, phoneNumber: phoneNumberText, fb: facebookLink, gmail: gmailLink, ld: linkedInLink) {
+                                        if settingVM.isProfileSettingChange() {
                                             settingVM.isChangeProfile = true
                                         } else {
                                             settingVM.isChangeProfile = false
@@ -150,7 +150,7 @@ struct EditProfileView: View {
                                 TextField("", text: $gmailLink, prompt: Text(verbatim: "example.com").foregroundColor(settingVM.isDarkMode ? .white.opacity(0.5) : .black.opacity(0.3)))
                                     .multilineTextAlignment(.trailing)
                                     .onChange(of: gmailLink) { _ in
-                                        if settingVM.isProfileSettingChange(username: usernameText, phoneNumber: phoneNumberText, fb: facebookLink, gmail: gmailLink, ld: linkedInLink) {
+                                        if settingVM.isProfileSettingChange() {
                                             settingVM.isChangeProfile = true
                                         } else {
                                             settingVM.isChangeProfile = false
@@ -173,7 +173,7 @@ struct EditProfileView: View {
                                 TextField("", text: $linkedInLink, prompt: Text(verbatim: "example.com").foregroundColor(settingVM.isDarkMode ? .white.opacity(0.5) : .black.opacity(0.3)))
                                     .multilineTextAlignment(.trailing)
                                     .onChange(of: linkedInLink) { _ in
-                                        if settingVM.isProfileSettingChange(username: usernameText, phoneNumber: phoneNumberText, fb: facebookLink, gmail: gmailLink, ld: linkedInLink) {
+                                        if settingVM.isProfileSettingChange() {
                                             settingVM.isChangeProfile = true
                                         } else {
                                             settingVM.isChangeProfile = false
