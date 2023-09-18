@@ -13,7 +13,7 @@ struct Test_Notification: View {
         VStack {
             Button(action: {
                 Task {
-                    _ = try await notiVM.createNotification(senderName: "Quoc" ,receiver: "3WBgDcMgEQfodIbaXWTBHvtjYCl2", message: "liked your post", category: .react)
+                    _ = try await notiVM.createNotification(senderName: "Quoc" ,receiver: "3WBgDcMgEQfodIbaXWTBHvtjYCl2", message: "liked your post", postLink: "",category: .react)
                 }
             }) {
                 Text("Create Notification")
