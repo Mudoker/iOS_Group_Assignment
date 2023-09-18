@@ -18,7 +18,8 @@ import Foundation
 
 class ProfileViewModel: ObservableObject {
     @Published var posts = [Post]()
-    
+    @Published var hasStoryHightlight = false
+    @Published var isShowAllUserPost = true
     @MainActor
     func fetchUserPosts() async throws {
         self.posts = try await APIService.fetchPostsOwned(byUserID: "3WBgDcMgEQfodIbaXWTBHvtjYCl2")

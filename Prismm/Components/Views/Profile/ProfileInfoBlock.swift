@@ -18,7 +18,7 @@ import SwiftUI
 
 struct ProfileInfoBlock: View {
     var body: some View {
-        GeometryReader { reader in
+        GeometryReader { proxy in
 
         }
         
