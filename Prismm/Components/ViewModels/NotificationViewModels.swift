@@ -18,9 +18,9 @@ class NotificationViewModel: ObservableObject {
     @Published var fetchedAllNotifications = [AppNotification]()
     private var notiListenerRegistration: ListenerRegistration?
 
-    func createNotification(senderName: String, receiver: String, message: String, category: NotificationCategory) async throws -> AppNotification? {
+    func createNotification(senderName: String, receiver: String, message: String, postLink: String,category: NotificationCategory) async throws -> AppNotification? {
         let notificationRef = Firestore.firestore().collection("test_noti").document()
-        let newNotification = AppNotification(id: notificationRef.documentID, senderName: senderName,receiverId: receiver, messageContent: message, creationDate: Timestamp(), category: category)
+        let newNotification = AppNotification(id: notificationRef.documentID, senderName: senderName,receiverId: receiver, messageContent: message, postLink: postLink,creationDate: Timestamp(), category: category)
         guard let encodedNotification = try? Firestore.Encoder().encode(newNotification) else {return nil}
         try await notificationRef.setData(encodedNotification)
         print("ok")
