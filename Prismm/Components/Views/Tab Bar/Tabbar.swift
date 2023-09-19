@@ -19,6 +19,8 @@ import SwiftUI
 struct TabBar: View {
     // Control state
     @State private var tabSelection = 0
+    @ObservedObject var homeVM: HomeViewModel
+    @ObservedObject var profileVM: ProfileViewModel
 
     // Localization
     @AppStorage("selectedLanguage") var selectedLanguage = "en"
@@ -56,6 +58,7 @@ struct TabBar: View {
                 .tag(3)
                 
                 NavigationView {
+
                     ProfileView(profileVM: ProfileViewModel())
                 }
                 .tag(4)
@@ -93,7 +96,9 @@ struct TabBar: View {
                     .tag(3)
                     
                     NavigationView {
+
                         ProfileView(profileVM: ProfileViewModel())
+
                     }
                     .tag(4)
                     
@@ -177,6 +182,6 @@ struct CustomTabbar: View {
 
 struct TabBar_Previews: PreviewProvider {
     static var previews: some View {
-        TabBar()
+        TabBar(homeVM: HomeViewModel(), profileVM: ProfileViewModel())
     }
 }

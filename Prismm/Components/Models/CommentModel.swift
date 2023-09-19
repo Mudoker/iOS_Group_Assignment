@@ -22,7 +22,8 @@ struct Comment: Identifiable, Codable, Hashable {
     let content: String
     let commenterID: String
     let postID: String
-
+    let creationDate: Timestamp
+    
     func hash(into hasher: inout Hasher) {
         hasher.combine(id)
     }

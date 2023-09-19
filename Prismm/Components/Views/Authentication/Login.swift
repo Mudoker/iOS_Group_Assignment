@@ -23,6 +23,8 @@ struct Login: View {
     // View Model
     @StateObject var authVM :AuthenticationViewModel
     @ObservedObject var settingVM = SettingViewModel()
+    @StateObject var homeVM: HomeViewModel
+    @StateObject var profileVM: ProfileViewModel
     
     var body: some View {
         NavigationStack {
@@ -184,7 +186,7 @@ struct Login: View {
                                             )
                                     }
                                     .navigationDestination(isPresented: $authVM.isGoogleUnlocked) {
-                                        TabBar()
+                                        TabBar(homeVM: homeVM, profileVM: profileVM)
                                             .navigationBarBackButtonHidden(true)
                                     }
                                 }
@@ -236,6 +238,6 @@ struct Login: View {
 
 struct Login_Previews: PreviewProvider {
     static var previews: some View {
-        Login(authVM: AuthenticationViewModel())
+        Login(authVM: AuthenticationViewModel(), homeVM: HomeViewModel(), profileVM: ProfileViewModel())
     }
 }

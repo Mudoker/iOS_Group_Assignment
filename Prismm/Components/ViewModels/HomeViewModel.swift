@@ -28,12 +28,24 @@ class HomeViewModel: ObservableObject {
     @Published var isOpenCommentViewOnIphone = false
     @Published var isOpenCommentViewOnIpad = false
     @Published var commentContent = ""
-    @Published var createNewPostTagList: [String] = []
-    @Published var isShowTagListOnIphone = false
-    @Published var isShowTagListOnIpad = false
+    @Published var selectedPostTag: [String] = []
+    @Published var selectedUserTag: [String] = []
+    @Published var isShowUserTagListOnIphone = false
+    @Published var isShowUserTagListOnIpad = false
+    @Published var userTagListSearchText = ""
+    @Published var postTagListSearchText = ""
+    @Published var isShowPostTagListOnIphone = false
+    @Published var isShowPostTagListOnIpad = false
     @Published var createNewPostCaption = ""
     @Published var isPostOnScreen = false
     @Published var selectedCommentFilter = "Newest"
+    @Published var fetchedAllPosts = [Post]()
+    private var postsListenerRegistration: ListenerRegistration?
+    private var commentListenerRegistration: ListenerRegistration?
+    
+    @Published var fetchedCommentsByPostId = [String: Set<Comment>]()
+    
+    @Published var newPostSelectedMedia: NSURL? = nil
     var currentCommentor: User?
     // Responsive
     @Published var proxySize: CGSize = CGSize(width: 0, height: 0)
@@ -134,21 +146,6 @@ class HomeViewModel: ObservableObject {
         15
     }
     
-    
-    //@Published var fetched_media = [Media]()
-    @Published var fetchedAllPosts = [Post]()
-    private var postsListenerRegistration: ListenerRegistration?
-    private var commentListenerRegistration: ListenerRegistration?
-    @Published var fetchedCommentsByPostId = [String: Set<Comment>]()
-    
-    @Published var newPostSelectedMedia: PhotosPickerItem? {
-        didSet {
-            Task {
-                try await uploadingPost()
-            }
-        }
-    }
-    
     init() {
         Task {
             await fetchPostsRealTime()
@@ -184,7 +181,7 @@ class HomeViewModel: ObservableObject {
             fetchedCommentsByPostId[postID] = existingComments
         }
     }
-        
+    
     func uploadMediaToFireBase(withMedia data: Data) async throws -> String? {
         let fileName = UUID().uuidString
         let mediaRef = Storage.storage().reference().child("/media/\(fileName)")
@@ -203,30 +200,47 @@ class HomeViewModel: ObservableObject {
     
     func createComment(content: String, commentor: String, postId: String) async throws -> Comment?{
         let commentRef = Firestore.firestore().collection("test_comments").document()
-        let newComment = Comment(id: commentRef.documentID, content: content, commenterID: commentor, postID: postId)
+        let newComment = Comment(id: commentRef.documentID, content: content, commenterID: commentor, postID: postId, creationDate: Timestamp())
         guard let encodedComment = try? Firestore.Encoder().encode(newComment) else { return nil }
         try await commentRef.setData(encodedComment)
         return newComment
     }
     
-    func createPost(ownerID: String, postCaption: String?, mediaURL: String?, mimeType: String?) async throws -> Post? {
+    
+    func createPost() async throws {
+        let ownerID = "m52oyZNbCxVx5SsvFAEPwankeAP2"
         let postRef = Firestore.firestore().collection("test_posts").document()
-        let newPost = Post(
-                id: postRef.documentID,
-                ownerID: ownerID,
-                caption: postCaption,
-                likerIDs: [],
-                mediaURL: mediaURL,
-                mediaMimeType: mimeType,
-                creationDate: Timestamp(),
-                author: nil,
-                user: nil,
-                unwrappedLikers: []
-        )
         
-        guard let encodedPost = try? Firestore.Encoder().encode(newPost) else {return nil}
+        var mediaURL = ""
+        var mediaMimeType = ""
+        
+        if newPostSelectedMedia != nil{
+            mediaURL = try await createMediaToFirebase()
+            mediaMimeType = mimeType(for: try Data(contentsOf: newPostSelectedMedia as? URL ?? URL(fileURLWithPath: "")))
+        }
+        
+        print(mediaURL)
+        let newPost = Post(
+            id: postRef.documentID,
+            ownerID: ownerID,
+            caption: createNewPostCaption,
+            likerIDs: [],
+            mediaURL: mediaURL,
+            mediaMimeType: mediaMimeType,
+            tag: selectedPostTag,
+            creationDate: Timestamp(),
+            author: nil,
+            user: nil,
+            unwrappedLikers: []
+        )
+        print("create Post")
+        guard let encodedPost = try? Firestore.Encoder().encode(newPost) else {
+            print("fail to encode Post")
+            return}
         try await postRef.setData(encodedPost)
-        return newPost
+        
+        print("uploaded")
+        return
     }
     
     func editCurrentPost(postID: String, newPostCaption: String?, newMediaURL: String?, newMimeType: String?) async throws {
@@ -250,7 +264,7 @@ class HomeViewModel: ObservableObject {
             throw error
         }
     }
-
+    
     @MainActor
     func fetchPostsRealTime() {
         if postsListenerRegistration == nil {
@@ -318,7 +332,86 @@ class HomeViewModel: ObservableObject {
         
         return sortedPosts
     }
-
+    
+    func sortPostCommentByTime(order: String, comments: [Comment]) -> [Comment] {
+        var sortedComments = comments
+        
+        switch order {
+        case "asc":
+            sortedComments.sort { cmt1, cmt2 in
+                return cmt1.creationDate.dateValue().compare(cmt2.creationDate.dateValue()) == ComparisonResult.orderedAscending
+            }
+        case "desc":
+            sortedComments.sort { cmt1, cmt2 in
+                return cmt1.creationDate.dateValue().compare(cmt2.creationDate.dateValue()) == ComparisonResult.orderedDescending
+            }
+        default:
+            break
+        }
+        
+        return sortedComments
+    }
+    
+    func filterPostByCategory(category: [String], posts: [Post]) -> [Post] {
+        var filteredPosts: [Post] = []
+        
+        for post in posts {
+            // Check if the post has any category tags that match the desired categories
+            let matchingCategories = post.tag.filter { category.contains($0) }
+            
+            if !matchingCategories.isEmpty {
+                // If at least one matching category is found, add the post to the filtered list
+                filteredPosts.append(post)
+            }
+        }
+        
+        return filteredPosts
+    }
+    
+    // Only applied for current User (Hide all post form block list and restriected list)
+    func filterPostsAndCommentsByLists(restrictedList: [String], blockedList: [String], posts: [Post], comments: [Comment]) -> ([Post], [Comment]) {
+        var filteredPosts: [Post] = []
+        var filteredComments: [Comment] = []
+        
+        for post in posts {
+            // Check if the post owner's ID is not in the restricted or blocked list
+            if !restrictedList.contains(post.ownerID) && !blockedList.contains(post.ownerID) {
+                filteredPosts.append(post)
+            }
+        }
+        
+        for comment in comments {
+            // Check if the commenter's ID is not in the restricted or blocked list
+            if !restrictedList.contains(comment.commenterID) && !blockedList.contains(comment.commenterID) {
+                filteredComments.append(comment)
+            }
+        }
+        
+        return (filteredPosts, filteredComments)
+    }
+    
+    // Only applied for other User (if B is blocked by A, then A and B cannot see post each other)
+    func filterPostsAndCommentsByLists(blockedList: [String], posts: [Post], comments: [Comment]) -> ([Post], [Comment]) {
+        var filteredPosts: [Post] = []
+        var filteredComments: [Comment] = []
+        
+        for post in posts {
+            // Check if the post owner's ID is not in the restricted or blocked list
+            if !blockedList.contains(post.ownerID) {
+                filteredPosts.append(post)
+            }
+        }
+        
+        for comment in comments {
+            // Check if the commenter's ID is not in the restricted or blocked list
+            if !blockedList.contains(comment.commenterID) {
+                filteredComments.append(comment)
+            }
+        }
+        
+        return (filteredPosts, filteredComments)
+    }
+    
     // Like post
     func likePost(likerID: String, postID: String) async throws {
         do {
@@ -377,13 +470,24 @@ class HomeViewModel: ObservableObject {
         }
     }
     
-    // Block (not receiving notification + post/story + message)
+    // Block (not receiving notification + post/story + message + other cannot see your post)
     func blockOtherUser(userID: String) async throws {
-        let currentUserRef = Firestore.firestore().collection("users").document("3WBgDcMgEQfodIbaXWTBHvtjYCl2")
+        let currentUserRef = Firestore.firestore().collection("users").document(Constants.currentUserID)
         var currentUser = try await currentUserRef.getDocument().data(as: User.self)
+        let otherUserRef = Firestore.firestore().collection("users").document("3WBgDcMgEQfodIbaXWTBHvtjYCl2")
+        var otherUser = try await currentUserRef.getDocument().data(as: User.self)
         currentUser.blockList.append(userID)
+        otherUser.blockByList.append(Constants.currentUserID)
         
         try currentUserRef.setData(from: currentUser) { error in
+            if let error = error {
+                print("Error updating document: \(error)")
+            } else {
+                print("Document successfully updated.")
+            }
+        }
+        
+        try otherUserRef.setData(from: otherUser) { error in
             if let error = error {
                 print("Error updating document: \(error)")
             } else {
@@ -394,9 +498,13 @@ class HomeViewModel: ObservableObject {
     
     // Unblock
     func unBlockOtherUser(userID: String) async throws {
-        let currentUserRef = Firestore.firestore().collection("users").document("3WBgDcMgEQfodIbaXWTBHvtjYCl2")
+        let currentUserRef = Firestore.firestore().collection("users").document(Constants.currentUserID)
         var currentUser = try await currentUserRef.getDocument().data(as: User.self)
+        let otherUserRef = Firestore.firestore().collection("users").document("3WBgDcMgEQfodIbaXWTBHvtjYCl2")
+        var otherUser = try await currentUserRef.getDocument().data(as: User.self)
+        
         currentUser.blockList.removeAll { $0 == userID }
+        otherUser.blockList.removeAll { $0 == Constants.currentUserID }
         
         try currentUserRef.setData(from: currentUser) { error in
             if let error = error {
@@ -405,15 +513,34 @@ class HomeViewModel: ObservableObject {
                 print("Document successfully updated.")
             }
         }
+        
+        try otherUserRef.setData(from: otherUser) { error in
+            if let error = error {
+                print("Error updating document: \(error)")
+            } else {
+                print("Document successfully updated.")
+            }
+        }
     }
     
-    // restrict (not receiving notification + post/story)
+    // restrict (not receiving notification + post/story + other can still see your posts)
     func restrictOtherUser(userID: String) async throws {
-        let currentUserRef = Firestore.firestore().collection("users").document("3WBgDcMgEQfodIbaXWTBHvtjYCl2")
+        let currentUserRef = Firestore.firestore().collection("users").document(Constants.currentUserID)
         var currentUser = try await currentUserRef.getDocument().data(as: User.self)
-        currentUser.restrictedList.append(userID)
+        let otherUserRef = Firestore.firestore().collection("users").document("3WBgDcMgEQfodIbaXWTBHvtjYCl2")
+        var otherUser = try await currentUserRef.getDocument().data(as: User.self)
+        currentUser.restrictedByList.append(userID)
+        otherUser.restrictedByList.append(Constants.currentUserID)
         
         try currentUserRef.setData(from: currentUser) { error in
+            if let error = error {
+                print("Error updating document: \(error)")
+            } else {
+                print("Document successfully updated.")
+            }
+        }
+        
+        try otherUserRef.setData(from: otherUser) { error in
             if let error = error {
                 print("Error updating document: \(error)")
             } else {
@@ -424,11 +551,22 @@ class HomeViewModel: ObservableObject {
     
     // Un-restrict
     func unRestrictOtherUserBlockOtherUser(userID: String) async throws {
-        let currentUserRef = Firestore.firestore().collection("users").document("3WBgDcMgEQfodIbaXWTBHvtjYCl2")
+        let currentUserRef = Firestore.firestore().collection("users").document(Constants.currentUserID)
         var currentUser = try await currentUserRef.getDocument().data(as: User.self)
+        let otherUserRef = Firestore.firestore().collection("users").document("3WBgDcMgEQfodIbaXWTBHvtjYCl2")
+        var otherUser = try await currentUserRef.getDocument().data(as: User.self)
         currentUser.restrictedList.removeAll { $0 == userID }
+        otherUser.restrictedByList.removeAll { $0 == Constants.currentUserID }
         
         try currentUserRef.setData(from: currentUser) { error in
+            if let error = error {
+                print("Error updating document: \(error)")
+            } else {
+                print("Document successfully updated.")
+            }
+        }
+        
+        try otherUserRef.setData(from: otherUser) { error in
             if let error = error {
                 print("Error updating document: \(error)")
             } else {
@@ -439,10 +577,6 @@ class HomeViewModel: ObservableObject {
     
     // Follow
     func followOtherUser(userID: String) async throws {
-        //var followingUser = try await UserService.fetchUser(withUid: userID)
-        //authVM.currentUser?.following.append(userID)
-        //followingUser.followers.append(authVM.currentUser?.id)
-        
         let currentUserRef = Firestore.firestore().collection("users").document("3WBgDcMgEQfodIbaXWTBHvtjYCl2")
         var currentUser = try await currentUserRef.getDocument().data(as: User.self)
         currentUser.following.append(userID)
@@ -496,24 +630,33 @@ class HomeViewModel: ObservableObject {
     }
     
     
-    func uploadingPost() async throws {
-        guard let uid = Auth.auth().currentUser?.uid else {
-            print("No user account")
-            return
+    func createMediaToFirebase() async throws -> String {
+        print("Uploading media")
+        
+        guard let selectedMedia = newPostSelectedMedia else {
+            print("Failed to get data")
+            return ""
         }
+        print(selectedMedia)
         
-        guard let media = newPostSelectedMedia else { return }
-        
-        guard let mediaData = try await media.loadTransferable(type: Data.self) else { return }
-        
-        if mediaData.count > 25_000_000 {
-            print("Selected file too large: \(mediaData)")
-        } else {
-            guard let mediaUrl = try await uploadMediaToFireBase(withMedia: mediaData) else { return }
-            let postRef = Firestore.firestore().collection("posts").document()
-            let post = try? await createPost(ownerID: uid, postCaption: "Hello world", mediaURL: mediaUrl, mimeType: mimeType(for: mediaData))
-            guard let encodedPost = try? Firestore.Encoder().encode(post) else {return}
-            try await postRef.setData(encodedPost)
+        do {
+            let mediaData = try Data(contentsOf: selectedMedia as URL)
+            print("Completed converting data")
+            
+            if mediaData.count > 25_000_000 {
+                print("Selected file too large: \(mediaData)")
+                return ""
+            }
+            
+            guard let mediaUrl = try await uploadMediaToFireBase(withMedia: mediaData) else {
+                return ""
+            }
+            
+            print("Uploaded media data to Firebase")
+            return mediaUrl
+        } catch {
+            print("Failed to upload post: \(error)")
+            return ""
         }
     }
     
