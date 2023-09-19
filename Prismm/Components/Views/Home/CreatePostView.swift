@@ -340,8 +340,8 @@ struct CreatePostView: View {
                     
                     Button(action: {
                         Task {
-                            let _ = try await homeVM.createPost(ownerID: Constants.currentUserID, postCaption: homeVM.createNewPostCaption, mediaURL: homeVM.uploadMediaToFirebase(), mimeType: homeVM.mimeType(for: try Data(contentsOf: homeVM.selectedMedia as? URL ?? URL(fileURLWithPath: ""))))
-                            let  _ = try await homeVM.createPost(ownerID: "3WBgDcMgEQfodIbaXWTBHvtjYCl2", postCaption: homeVM.createNewPostCaption, mediaURL: "", mimeType: "")
+                            let _ = try await homeVM.createPost(ownerID: Constants.currentUserID, postCaption: homeVM.createNewPostCaption, postTag: homeVM.createNewPostTag, mediaURL: homeVM.uploadMediaToFirebase(), mimeType: homeVM.mimeType(for: try Data(contentsOf: homeVM.selectedMedia as? URL ?? URL(fileURLWithPath: ""))))
+
                             isNewPost = false
                         }
                         

@@ -37,6 +37,7 @@ class HomeViewModel: ObservableObject {
     @Published var isShowPostTagListOnIphone = false
     @Published var isShowPostTagListOnIpad = false
     @Published var createNewPostCaption = ""
+    @Published var createNewPostTag: [String] = []
     @Published var isPostOnScreen = false
     @Published var selectedCommentFilter = "Newest"
     @Published var fetchedAllPosts = [Post]()
@@ -201,8 +202,8 @@ class HomeViewModel: ObservableObject {
         return newComment
     }
     
-    func createPost(ownerID: String, postCaption: String?, mediaURL: String?, mimeType: String?) async throws -> Post? {
-        let postRef = Firestore.firestore().collection("test_posts").document()
+    func createPost(ownerID: String, postCaption: String?, postTag: [String], mediaURL: String?, mimeType: String?) async throws -> Post? {
+        let postRef = Firestore.firestore().collection("test_postTag").document()
         let newPost = Post(
             id: postRef.documentID,
             ownerID: ownerID,
@@ -210,6 +211,7 @@ class HomeViewModel: ObservableObject {
             likerIDs: [],
             mediaURL: mediaURL,
             mediaMimeType: mimeType,
+            tag: postTag,
             creationDate: Timestamp(),
             author: nil,
             user: nil,
@@ -509,7 +511,7 @@ class HomeViewModel: ObservableObject {
             print("Uploaded media data to Firebase")
             
             let postRef = Firestore.firestore().collection("posts").document()
-            let post = try? await createPost(ownerID: Constants.currentUserID, postCaption: "Hello world", mediaURL: mediaUrl, mimeType: mimeType(for: mediaData))
+            let post = try? await createPost(ownerID: Constants.currentUserID, postCaption: "Hello world", postTag: [], mediaURL: mediaUrl, mimeType: mimeType(for: mediaData))
             
             guard let encodedPost = try? Firestore.Encoder().encode(post) else {
                 return ""
