@@ -40,7 +40,7 @@ class HomeViewModel: ObservableObject {
     
     @Published var fetchedCommentsByPostId = [String: Set<Comment>]()
     
-    @Published var newPostSelectedMedia: NSURL?
+    @Published var newPostSelectedMedia: NSURL? = nil
     var currentCommentor: User?
     // Responsive
     @Published var proxySize: CGSize = CGSize(width: 0, height: 0)

@@ -171,7 +171,7 @@ struct CreatePostView: View {
                             .font(.title3)
                         Spacer()
                         
-                        if selected {
+                        if homeVM.newPostSelectedMedia != nil {
                             AsyncImage(url: homeVM.newPostSelectedMedia as? URL) { media in
                                 media
                                     .resizable()
@@ -182,8 +182,17 @@ struct CreatePostView: View {
                                 ProgressView()
                             }
                             
+                            
                             Text((homeVM.newPostSelectedMedia?.absoluteString)!)
-                                .opacity(0.8)
+                                .opacity(0.5)
+                            Button {
+                                homeVM.newPostSelectedMedia = nil
+                            } label: {
+                                Image(systemName: "xmark.circle.fill") // You can use any close button icon
+         
+                            }
+                            .foregroundColor(.gray)
+
                         }else{
                             Button(action: {
                                 shouldPresentCamera = false
@@ -200,7 +209,7 @@ struct CreatePostView: View {
                             
                             Button(action: {
                                 shouldPresentCamera = true
-                                shouldPresentPickerSheet = true
+                                shouldPresentPickerSheet = false
                             }) {
                                 Image(systemName: "camera.fill")
                                     .resizable()
@@ -223,10 +232,13 @@ struct CreatePostView: View {
                     )
                     .padding(.bottom)
                     .sheet(isPresented: $shouldPresentPickerSheet) {
-                        UIImagePickerView(sourceType: shouldPresentCamera ? .camera : .photoLibrary , isPresented: $shouldPresentPickerSheet, selectedMedia: $homeVM.newPostSelectedMedia)
-                            .onDisappear {
-                                selected = true
-                            }
+                        UIImagePickerView(sourceType: .photoLibrary , isPresented: $shouldPresentPickerSheet, selectedMedia: $homeVM.newPostSelectedMedia)
+                            .presentationDetents(shouldPresentCamera ? [.large] : [.medium])
+                            
+                    }
+                    .fullScreenCover(isPresented: $shouldPresentCamera) {
+                        UIImagePickerView(sourceType: .camera , isPresented: $shouldPresentCamera, selectedMedia: $homeVM.newPostSelectedMedia)
+                            .ignoresSafeArea()
                     }
                 
                 
