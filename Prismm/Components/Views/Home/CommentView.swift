@@ -1,16 +1,25 @@
-//
-//  CommentView.swift
-//  Prismm
-//
-//  Created by Quoc Doan Huu on 14/09/2023.
-//
+/*
+  RMIT University Vietnam
+  Course: COSC2659 iOS Development
+  Semester: 2023B
+  Assessment: Assignment 3
+  Author: Apple Men
+  Doan Huu Quoc (s3927776)
+  Tran Vu Quang Anh (s3916566)
+  Nguyen Dinh Viet (s3927291)
+  Nguyen The Bao Ngoc (s3924436)
+
+  Created  date: 14/09/2023
+  Last modified: 16/09/2023
+  Acknowledgement: None
+*/
 
 import SwiftUI
 import Kingfisher
 import Firebase
 
 struct CommentView: View {
-    @Binding var isDarkMode: Bool
+    @Binding var isDarkModeEnabled: Bool
     @Binding var isShowComment: Bool
     @ObservedObject var homeViewModel = HomeViewModel()
     
@@ -51,7 +60,7 @@ struct CommentView: View {
                 }
                 
                 VStack {
-                    if let commentsForPost = homeViewModel.fetched_comments[post.id], !commentsForPost.isEmpty {
+                    if let commentsForPost = homeViewModel.fetchedCommentsByPostId[post.id], !commentsForPost.isEmpty {
                         ScrollView(showsIndicators: false) {
                             ForEach(commentsForPost.sorted{$0.id < $1.id}) { comment in
                                 HStack {
@@ -77,7 +86,7 @@ struct CommentView: View {
                                     // Start the asynchronous task when the view appears
                                     Task {
                                         do {
-                                            homeViewModel.currentCommentor = try await API_SERVICE.fetchUser(withUid: comment.commentor)
+                                            homeViewModel.currentCommentor = try await APIService.fetchUser(withUserID: comment.commenterID)
         //                                    post = try await UserService.fetchAPost(withUid: post.id)
 
                                         } catch {
@@ -113,7 +122,7 @@ struct CommentView: View {
                                     Text(emoji)
                                         .font(.largeTitle)
                                         .padding(8)
-                                        .background(Circle().fill(isDarkMode ? Color.gray.opacity(0.3) : Color.white))
+                                        .background(Circle().fill(isDarkModeEnabled ? Color.gray.opacity(0.3) : Color.white))
                                 }
                                 .padding([.horizontal])
                                 .padding(.top, 8)
@@ -128,7 +137,7 @@ struct CommentView: View {
                             .frame(width: proxy.size.width/8, height: proxy.size.width/8)
                             .clipShape(Circle())
                         
-                        TextField("", text: $homeViewModel.commentContent, prompt:  Text("Leave a comment...").foregroundColor(isDarkMode ? .white.opacity(0.5) : .black.opacity(0.5))
+                        TextField("", text: $homeViewModel.commentContent, prompt:  Text("Leave a comment...").foregroundColor(isDarkModeEnabled ? .white.opacity(0.5) : .black.opacity(0.5))
                             .font(.title3)
                         )
                         .autocorrectionDisabled(true)
@@ -136,12 +145,12 @@ struct CommentView: View {
                         .padding()
                         .background(
                             Capsule()
-                                .fill(isDarkMode ? Color.gray.opacity(0.3) : Color.white)
+                                .fill(isDarkModeEnabled ? Color.gray.opacity(0.3) : Color.white)
                         )
                         
                         Button(action: {
                             Task {
-                                let newComment = try await homeViewModel.createComment(content: homeViewModel.commentContent, commentor: "3WBgDcMgEQfodIbaXWTBHvtjYCl2", postId: post.id)
+                                _ = try await homeViewModel.createComment(content: homeViewModel.commentContent, commentor: "3WBgDcMgEQfodIbaXWTBHvtjYCl2", postId: post.id)
 //                                if let newComment = newComment {
 //                                    try await uploadVM.addCommentToPost(comment: newComment, postID: post.id)
 //                                }
@@ -149,14 +158,14 @@ struct CommentView: View {
                         }
                         }) {
                             Circle()
-                                .fill(isDarkMode ? .gray.opacity(0.3) : .white)
+                                .fill(isDarkModeEnabled ? .gray.opacity(0.3) : .white)
                                 .frame(width: proxy.size.width/8)
                                 .overlay (
                                     Image(systemName: "paperplane.fill")
                                         .resizable()
                                         .aspectRatio(contentMode: .fit)
                                         .frame(width: proxy.size.width/16)
-                                        .foregroundColor(isDarkMode ? Constants.darkThemeColor : Constants.lightThemeColor)
+                                        .foregroundColor(isDarkModeEnabled ? Constants.darkThemeColor : Constants.lightThemeColor)
                                 )
                         }
                     }
@@ -167,8 +176,8 @@ struct CommentView: View {
             }
             .padding(.vertical)
         }
-        .foregroundColor(!isDarkMode ? .black : .white)
-        .background(isDarkMode ? .black : .white)
+        .foregroundColor(!isDarkModeEnabled ? .black : .white)
+        .background(isDarkModeEnabled ? .black : .white)
         .edgesIgnoringSafeArea(.bottom)
     }
 }

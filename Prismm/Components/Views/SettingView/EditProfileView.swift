@@ -1,20 +1,25 @@
-//
-//  EditProfileView.swift
-//  Prismm
-//
-//  Created by Quoc Doan Huu on 11/09/2023.
-//
+/*
+ RMIT University Vietnam
+ Course: COSC2659 iOS Development
+ Semester: 2023B
+ Assessment: Assignment 3
+ Author: Apple Men
+ Doan Huu Quoc (s3927776)
+ Tran Vu Quang Anh (s3916566)
+ Nguyen Dinh Viet (s3927291)
+ Nguyen The Bao Ngoc (s3924436)
+ 
+ Created  date: 11/09/2023
+ Last modified: 15/09/2023
+ Acknowledgement: None
+ */
 
 import SwiftUI
 
 struct EditProfileView: View {
     @ObservedObject var settingVM = SettingViewModel()
     @State var accountText: String = ""
-    @State var usernameText: String = ""
-    @State var phoneNumberText: String = ""
-    @State var facebookLink: String = ""
-    @State var gmailLink: String = ""
-    @State var linkedInLink: String = ""
+    
     
     var body: some View {
         GeometryReader { proxy in
@@ -66,7 +71,7 @@ struct EditProfileView: View {
                                 Spacer()
                                 
                                 Text(verbatim: "huuquoc7603@gmail.com")
-                                    .foregroundColor(settingVM.isDarkMode ? .white.opacity(0.5) : .black.opacity(0.3))
+                                    .foregroundColor(settingVM.isDarkModeEnabled ? .white.opacity(0.5) : .black.opacity(0.3))
                             }
                             .padding(.vertical)
                             
@@ -75,13 +80,13 @@ struct EditProfileView: View {
                                 
                                 Spacer()
                                 
-                                TextField("", text: $usernameText, prompt: Text(verbatim: "qdoan7603").foregroundColor(settingVM.isDarkMode ? .white.opacity(0.5) : .black.opacity(0.3)))
+                                TextField("", text: $settingVM.newProfileUsername, prompt: Text(verbatim: "qdoan7603").foregroundColor(settingVM.isDarkModeEnabled ? .white.opacity(0.5) : .black.opacity(0.3)))
                                     .multilineTextAlignment(.trailing)
-                                    .onChange(of: usernameText) { _ in
-                                        if settingVM.isProfileSettingChange(username: usernameText, phoneNumber: phoneNumberText, fb: facebookLink, gmail: gmailLink, ld: linkedInLink) {
-                                            settingVM.isChangeProfile = true
+                                    .onChange(of: settingVM.newProfileUsername) { _ in
+                                        if settingVM.isProfileSettingChange() {
+                                            settingVM.hasProfileSettingChanged = true
                                         } else {
-                                            settingVM.isChangeProfile = false
+                                            settingVM.hasProfileSettingChanged = false
                                             
                                         }
                                     }
@@ -93,13 +98,13 @@ struct EditProfileView: View {
                                 
                                 Spacer()
                                 
-                                TextField("", text: $phoneNumberText, prompt: Text(verbatim: "qdoan7603").foregroundColor(settingVM.isDarkMode ? .white.opacity(0.5) : .black.opacity(0.3)))
+                                TextField("", text: $settingVM.newProfilePhoneNumber, prompt: Text(verbatim: "qdoan7603").foregroundColor(settingVM.isDarkModeEnabled ? .white.opacity(0.5) : .black.opacity(0.3)))
                                     .multilineTextAlignment(.trailing)
-                                    .onChange(of: phoneNumberText) { _ in
-                                        if settingVM.isProfileSettingChange(username: usernameText, phoneNumber: phoneNumberText, fb: facebookLink, gmail: gmailLink, ld: linkedInLink) {
-                                            settingVM.isChangeProfile = true
+                                    .onChange(of: settingVM.newProfilePhoneNumber) { _ in
+                                        if settingVM.isProfileSettingChange() {
+                                            settingVM.hasProfileSettingChanged = true
                                         } else {
-                                            settingVM.isChangeProfile = false
+                                            settingVM.hasProfileSettingChanged = false
                                             
                                         }
                                     }
@@ -124,13 +129,13 @@ struct EditProfileView: View {
                                 
                                 Spacer()
                                 
-                                TextField("", text: $facebookLink, prompt: Text(verbatim: "example.com").foregroundColor(settingVM.isDarkMode ? .white.opacity(0.5) : .black.opacity(0.3)))
+                                TextField("", text: $settingVM.newProfileFacebook, prompt: Text(verbatim: "example.com").foregroundColor(settingVM.isDarkModeEnabled ? .white.opacity(0.5) : .black.opacity(0.3)))
                                     .multilineTextAlignment(.trailing)
-                                    .onChange(of: facebookLink) { _ in
-                                        if settingVM.isProfileSettingChange(username: usernameText, phoneNumber: phoneNumberText, fb: facebookLink, gmail: gmailLink, ld: linkedInLink) {
-                                            settingVM.isChangeProfile = true
+                                    .onChange(of: settingVM.newProfileFacebook) { _ in
+                                        if settingVM.isProfileSettingChange() {
+                                            settingVM.hasProfileSettingChanged = true
                                         } else {
-                                            settingVM.isChangeProfile = false
+                                            settingVM.hasProfileSettingChanged = false
                                             
                                         }
                                     }
@@ -147,13 +152,13 @@ struct EditProfileView: View {
                                 
                                 Spacer()
                                 
-                                TextField("", text: $gmailLink, prompt: Text(verbatim: "example.com").foregroundColor(settingVM.isDarkMode ? .white.opacity(0.5) : .black.opacity(0.3)))
+                                TextField("", text: $settingVM.newProfileGmail, prompt: Text(verbatim: "example.com").foregroundColor(settingVM.isDarkModeEnabled ? .white.opacity(0.5) : .black.opacity(0.3)))
                                     .multilineTextAlignment(.trailing)
-                                    .onChange(of: gmailLink) { _ in
-                                        if settingVM.isProfileSettingChange(username: usernameText, phoneNumber: phoneNumberText, fb: facebookLink, gmail: gmailLink, ld: linkedInLink) {
-                                            settingVM.isChangeProfile = true
+                                    .onChange(of: settingVM.newProfileGmail) { _ in
+                                        if settingVM.isProfileSettingChange() {
+                                            settingVM.hasProfileSettingChanged = true
                                         } else {
-                                            settingVM.isChangeProfile = false
+                                            settingVM.hasProfileSettingChanged = false
                                             
                                         }
                                     }
@@ -170,13 +175,13 @@ struct EditProfileView: View {
                                 
                                 Spacer()
                                 
-                                TextField("", text: $linkedInLink, prompt: Text(verbatim: "example.com").foregroundColor(settingVM.isDarkMode ? .white.opacity(0.5) : .black.opacity(0.3)))
+                                TextField("", text: $settingVM.newProfileLinkedIn, prompt: Text(verbatim: "example.com").foregroundColor(settingVM.isDarkModeEnabled ? .white.opacity(0.5) : .black.opacity(0.3)))
                                     .multilineTextAlignment(.trailing)
-                                    .onChange(of: linkedInLink) { _ in
-                                        if settingVM.isProfileSettingChange(username: usernameText, phoneNumber: phoneNumberText, fb: facebookLink, gmail: gmailLink, ld: linkedInLink) {
-                                            settingVM.isChangeProfile = true
+                                    .onChange(of: settingVM.newProfileLinkedIn) { _ in
+                                        if settingVM.isProfileSettingChange() {
+                                            settingVM.hasProfileSettingChanged = true
                                         } else {
-                                            settingVM.isChangeProfile = false
+                                            settingVM.hasProfileSettingChanged = false
                                             
                                         }
                                     }
@@ -187,18 +192,15 @@ struct EditProfileView: View {
                                 Spacer()
                                 
                                 Button(action: {
-                                    if settingVM.isValidProfileURL(facebookLink, platform: "fb") {
-                                        settingVM.isChangeProfile.toggle()
-                                    }
                                 }) {
                                     Text("Confirm")
-                                        .foregroundColor(settingVM.isChangeProfile ? .white : .gray)
+                                        .foregroundColor(settingVM.isProfileSettingChange() ? .white : .gray)
                                         .padding()
                                         .frame(width: proxy.size.width/1.2) // Make the button as wide as the HStack
-                                        .background(settingVM.isChangeProfile ? Color.blue : Color.gray.opacity(0.5))
+                                        .background(settingVM.hasProfileSettingChanged ? Color.blue : Color.gray.opacity(0.5))
                                         .cornerRadius(8)
                                 }
-                                .disabled(!settingVM.isChangeProfile) // Disable when no changes
+                                .disabled(!settingVM.hasProfileSettingChanged) // Disable when no changes
                                 .padding(.top)
                                 Spacer()
                             }
@@ -211,8 +213,8 @@ struct EditProfileView: View {
             }
             .padding(.top, 0.1)
         }
-        .foregroundColor(settingVM.isDarkMode ? .white : .black)
-        .background(!settingVM.isDarkMode ? .white : .black)
+        .foregroundColor(settingVM.isDarkModeEnabled ? .white : .black)
+        .background(!settingVM.isDarkModeEnabled ? .white : .black)
     }
 }
 

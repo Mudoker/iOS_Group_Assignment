@@ -17,17 +17,20 @@
 import Foundation
 import Firebase
 
-struct Comment: Identifiable, Codable, Hashable {
+struct AppNotification: Identifiable, Codable {
     let id: String
-    let content: String
-    let commenterID: String
-    let postID: String
+    let senderName: String
+    let receiverId: String
+    let messageContent: String
+    let postLink: String
+    let creationDate: Timestamp
+    let category: NotificationCategory
+}
 
-    func hash(into hasher: inout Hasher) {
-        hasher.combine(id)
-    }
-
-    static func == (lhs: Comment, rhs: Comment) -> Bool {
-        return lhs.id == rhs.id
-    }
+enum NotificationCategory: String, Codable {
+    case follow
+    case comment
+    case react
+    case mention
+    case system
 }

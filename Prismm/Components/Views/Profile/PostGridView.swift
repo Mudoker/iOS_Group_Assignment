@@ -1,25 +1,33 @@
-//
-//  PostGridView.swift
-//  Prismm
-//
-//  Created by Nguyen The Bao Ngoc on 09/09/2023.
-//
+/*
+  RMIT University Vietnam
+  Course: COSC2659 iOS Development
+  Semester: 2023B
+  Assessment: Assignment 3
+  Author: Apple Men
+  Doan Huu Quoc (s3927776)
+  Tran Vu Quang Anh (s3916566)
+  Nguyen Dinh Viet (s3927291)
+  Nguyen The Bao Ngoc (s3924436)
+
+  Created  date: 09/09/2023
+  Last modified: 10/09/2023
+  Acknowledgement: None
+*/
 
 import SwiftUI
 import Kingfisher
 import AVKit
+
 struct PostGridView: View {
-//    var images: [String] = ["testAvt","fb","mail","testAvt3","testAvt4","testAvt5","testAvt6","testAvt7","testAvt8","testAvt9"]
-    @StateObject var profileVM : ProfileViewModel
-    //@StateObject var authVM : AuthenticationViewModel
+    @StateObject var profileVM: ProfileViewModel
     
+    var columnsGrid: [GridItem] = [GridItem(.flexible(), spacing: 1), GridItem(.flexible(), spacing: 1), GridItem(.flexible(), spacing: 1)]
     
-    var columnsGrid: [GridItem] = [GridItem(.flexible(),spacing: 1),GridItem(.flexible(),spacing: 1),GridItem(.flexible(),spacing: 1)]
     var body: some View {
-        LazyVGrid(columns: columnsGrid,spacing: 1) {
-            ForEach(profileVM.posts) {post in
+        LazyVGrid(columns: columnsGrid, spacing: 1) {
+            ForEach(profileVM.posts) { post in
                 if let mediaURL = URL(string: post.mediaURL ?? "") {
-                    if let mimeType = post.mimeType {
+                    if let mimeType = post.mediaMimeType {
                         if !mimeType.hasPrefix("image") {
                             // Handle video
                             let playerItem = AVPlayerItem(url: mediaURL)
@@ -34,6 +42,7 @@ struct PostGridView: View {
                                     player.play()
                                 }
                         } else {
+                            // Handle images using Kingfisher
                             KFImage(mediaURL)
                                 .resizable()
                                 .frame(width: UIScreen.main.bounds.width)
@@ -54,4 +63,3 @@ struct PostGridView: View {
         }
     }
 }
-

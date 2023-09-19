@@ -1,9 +1,18 @@
-//
-//  Login.swift
-//  Prismm
-//
-//  Created by Quoc Doan Huu on 08/09/2023.
-//
+/*
+  RMIT University Vietnam
+  Course: COSC2659 iOS Development
+  Semester: 2023B
+  Assessment: Assignment 3
+  Author: Apple Men
+  Doan Huu Quoc (s3927776)
+  Tran Vu Quang Anh (s3916566)
+  Nguyen Dinh Viet (s3927291)
+  Nguyen The Bao Ngoc (s3924436)
+
+  Created  date: 09/09/2023
+  Last modified: 11/09/2023
+  Acknowledgement: None
+*/
 
 import SwiftUI
 import LocalAuthentication
@@ -11,11 +20,6 @@ import GoogleSignIn
 import GoogleSignInSwift
 
 struct Login: View {
-    // Control state
-    @State var accountText = ""
-    @State var passwordText = ""
-    @State private var isPasswordVisible: Bool = false
-
     // View Model
     @StateObject var authVM :AuthenticationViewModel
     @ObservedObject var settingVM = SettingViewModel()
@@ -29,15 +33,15 @@ struct Login: View {
                         Spacer()
                         
                         //Logo
-                        Image(settingVM.isDarkMode ? Constants.darkThemeAppLogo : Constants.lightThemeAppLogo)
+                        Image(settingVM.isDarkModeEnabled ? Constants.darkThemeAppLogo : Constants.lightThemeAppLogo)
                             .resizable()
                             .aspectRatio(contentMode: .fill)
                             .frame(width: authVM.logoImageSize, height: 0)
-                            .padding(.vertical, authVM.imagePaddingVertical)
+                            .padding(.vertical, authVM.imageVerticalPadding)
                         
                         // Title
                         Text ("Log in")
-                            .font(.system(size: authVM.titleFont))
+                            .font(.system(size: authVM.titleFontSize))
                             .bold()
                         
                         Text("Please sign in to continue")
@@ -48,29 +52,29 @@ struct Login: View {
                         
                         //Text field
                         CustomTextField(
-                            text: $accountText,
+                            text: $authVM.loginAccountText,
                             textFieldTitle: "Username",
                             testFieldPlaceHolder: "Username or Account",
                             titleFont: authVM.textFieldTitleFont,
                             textFieldSizeHeight: authVM.textFieldSizeHeight,
-                            textFieldCorner: authVM.textFieldCorner,
+                            textFieldCorner: authVM.textFieldCornerRadius,
                             textFieldBorderWidth: authVM.textFieldBorderWidth,
                             isPassword: false,
-                            textFieldPlaceHolderFont: authVM.textFieldPlaceHolderFont, isDarkMode: settingVM.isDarkMode
+                            textFieldPlaceHolderFont: authVM.textFieldPlaceHolderFont, isDarkModeEnabled: settingVM.isDarkModeEnabled
                         )
                         .padding(.bottom)
                         
                         CustomTextField(
-                            text: $passwordText,
+                            text: $authVM.loginPasswordText,
                             textFieldTitle: "Password",
                             testFieldPlaceHolder: "Password",
                             titleFont: authVM.textFieldTitleFont,
                             textFieldSizeHeight: authVM.textFieldSizeHeight,
-                            textFieldCorner: authVM.textFieldCorner,
+                            textFieldCorner: authVM.textFieldCornerRadius,
                             textFieldBorderWidth: authVM.textFieldBorderWidth,
                             isPassword: true,
                             textFieldPlaceHolderFont: authVM.textFieldPlaceHolderFont,
-                            isDarkMode: settingVM.isDarkMode
+                            isDarkModeEnabled: settingVM.isDarkModeEnabled
                         )
                         .padding(.bottom)
                         
@@ -78,8 +82,8 @@ struct Login: View {
                         Button(action: {
                             
                             Task {
-                                authVM.isLoading = true
-                                try await authVM.signIn(withEmail: accountText, password: passwordText)
+                                authVM.isFetchingData = true
+                                try await authVM.signIn(withEmail: authVM.loginAccountText, password: authVM.loginPasswordText)
                             }
                         }) {
                             Text("Login")
@@ -88,21 +92,21 @@ struct Login: View {
                                 .font(authVM.loginTextFont)
                                 .padding()
                                 .frame(maxWidth: .infinity)
-                                .frame(height: authVM.loginButtonSizeHeight)
+                                .frame(height: authVM.loginButtonHeight)
                                 .background(
-                                    RoundedRectangle(cornerRadius: authVM.textFieldCorner)
-                                        .fill(settingVM.isDarkMode ? Constants.darkThemeColor : Constants.lightThemeColor)
+                                    RoundedRectangle(cornerRadius: authVM.textFieldCornerRadius)
+                                        .fill(settingVM.isDarkModeEnabled ? Constants.darkThemeColor : Constants.lightThemeColor)
                                 )
                                 .padding(.horizontal)
                         }
-                        .alert(isPresented: $authVM.logInError) {
+                        .alert(isPresented: $authVM.hasLoginError) {
                             Alert(
                                 title: Text("Login Failed"),
                                 message: Text("Invalid username or password.\nPlease check again"),
                                 dismissButton: .default(Text("Close"))
                             )
                         }
-                        .navigationDestination(isPresented: $authVM.isUnlocked) {
+                        .navigationDestination(isPresented: $authVM.isDeviceUnlocked) {
                             HomeView()
                                 .navigationBarBackButtonHidden(true)
                         }
@@ -110,7 +114,10 @@ struct Login: View {
                         // Helpers
                         HStack {
                             Button(action: {
-                                authVM.isForgotPassword.toggle()
+//                                authVM.isForgotPassword.toggle()
+                                Task {
+                                    try await authVM.resetUserPassword(withEmail: "huuquoc7603@gmail.com")
+                                }
                             }) {
                                 Text("Forgot Password?")
                                     .bold()
@@ -119,7 +126,7 @@ struct Login: View {
                                     .padding(.horizontal)
                                     .opacity(0.8)
                             }
-                            .alert(isPresented:$authVM.logInError) {
+                            .alert(isPresented:$authVM.hasLoginError) {
                                 Alert(
                                     title: Text("Login Failed"),
                                     message: Text("Invalid username or password.\nPlease check again"),
@@ -149,19 +156,19 @@ struct Login: View {
                                 HStack {
                                     
                                     Button(action: {
-                                        authVM.isLoading = true
+                                        authVM.isFetchingData = true
                                         Task{
-                                            await authVM.signInGoogle()
-                                            authVM.isLoading = false
+                                            await authVM.signInWithGoogle()
+                                            authVM.isFetchingData = false
                                         }
                                     }) {
                                         RoundedRectangle(cornerRadius: proxy.size.width / 50)
                                             .frame(width: proxy.size.width / 2, height: proxy.size.height / 17)
-                                            .background(Color.white)
+                                            .background(settingVM.isDarkModeEnabled ? Color.clear : Color.white)
                                             .overlay(
                                                 RoundedRectangle(cornerRadius: proxy.size.width / 50)
                                                     .stroke(Color.black, lineWidth: 1)
-                                                    .background(Color.white)
+                                                    .background(settingVM.isDarkModeEnabled ? Color.clear : Color.white)
                                                     .overlay(
                                                         HStack {
                                                             Image("mail")
@@ -171,11 +178,12 @@ struct Login: View {
                                                                 .foregroundColor(.black)
                                                             
                                                             Text("Login with Google")
+                                                                .foregroundColor(.black)
                                                         }
                                                     )
                                             )
                                     }
-                                    .navigationDestination(isPresented: $authVM.isUnlockedGoogle) {
+                                    .navigationDestination(isPresented: $authVM.isGoogleUnlocked) {
                                         TabBar()
                                             .navigationBarBackButtonHidden(true)
                                     }
@@ -192,13 +200,13 @@ struct Login: View {
                                             .font(authVM.conentFont)
                                         
                                         Button(action: {
-                                            authVM.bioMetricAuthenticate()
+                                            authVM.signInWithBiometrics()
                                         }) {
                                             Image(systemName: "faceid")
                                                 .resizable()
                                                 .aspectRatio(contentMode: .fit)
                                                 .frame(width: authVM.faceIdImageSize)
-                                                .foregroundColor(settingVM.isDarkMode ? Constants.darkThemeColor : Constants.lightThemeColor)
+                                                .foregroundColor(settingVM.isDarkModeEnabled ? Constants.darkThemeColor : Constants.lightThemeColor)
                                         }
                                     }
                                     Spacer()
@@ -208,18 +216,18 @@ struct Login: View {
                             Spacer()
                         }
                     }
-                    .foregroundColor(settingVM.isDarkMode ? .white : .black)
+                    .foregroundColor(settingVM.isDarkModeEnabled ? .white : .black)
                     .padding(.horizontal)
                     .onAppear {
                         authVM.proxySize = proxy.size
                     }
                     
-                    if authVM.isLoading {
+                    if authVM.isFetchingData {
                         Color.gray.opacity(0.3).edgesIgnoringSafeArea(.all)
                         ProgressView("Loading...")
                     }
                 }
-                .background(settingVM.isDarkMode ? .black : .white)
+                .background(settingVM.isDarkModeEnabled ? .black : .white)
             }
             .ignoresSafeArea(.keyboard)
         }

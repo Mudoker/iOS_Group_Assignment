@@ -1,9 +1,18 @@
-//
-//  Post.swift
-//  Prismm
-//
-//  Created by Nguyen Dinh Viet on 08/09/2023.
-//
+/*
+  RMIT University Vietnam
+  Course: COSC2659 iOS Development
+  Semester: 2023B
+  Assessment: Assignment 3
+  Author: Apple Men
+  Doan Huu Quoc (s3927776)
+  Tran Vu Quang Anh (s3916566)
+  Nguyen Dinh Viet (s3927291)
+  Nguyen The Bao Ngoc (s3924436)
+
+  Created  date: 08/09/2023
+  Last modified: 13/09/2023
+  Acknowledgement: None
+*/
 
 import Foundation
 import SwiftUI
@@ -21,7 +30,7 @@ struct PostView: View {
             //Post info.
             HStack {
                 if let mediaURL = URL(string: post.mediaURL ?? "") {
-                    if let mimeType = post.mimeType {
+                    if let mimeType = post.mediaMimeType {
                         if mimeType.hasPrefix("image") {
                             KFImage(mediaURL)
                                 .resizable()
@@ -127,7 +136,7 @@ struct PostView: View {
             
             //Caption
             HStack {
-                Text(post.postCaption ?? "")
+                Text(post.caption ?? "")
                     .font(homeViewModel.captionFont)
                 
                 Spacer()
@@ -137,7 +146,7 @@ struct PostView: View {
             VStack {
                 //Image.
                 if let mediaURL = URL(string: post.mediaURL ?? "") {
-                    if let mimeType = post.mimeType {
+                    if let mimeType = post.mediaMimeType {
                         if !mimeType.hasPrefix("image") {
                             // Handle video
                             let playerItem = AVPlayerItem(url: mediaURL)
@@ -179,7 +188,7 @@ struct PostView: View {
                         .aspectRatio(contentMode: .fit)
                         .frame(width: homeViewModel.postStatsImageSize)
                     
-                    Text("\(post.likers.count)")
+                    Text("\(post.likerIDs.count)")
                         .font(Font.system(size: homeViewModel.postStatsFontSize, weight: .light))
                         .opacity(0.6)
                 }
@@ -187,11 +196,11 @@ struct PostView: View {
                 
                 Button(action: {
                     if UIDevice.current.userInterfaceIdiom == .pad {
-                        homeViewModel.isCommentViewIpad.toggle()
+                        homeViewModel.isOpenCommentViewOnIpad.toggle()
                         homeViewModel.fetchAllComments(forPostID: post.id)
 
                     } else {
-                        homeViewModel.isCommentViewIphone.toggle()
+                        homeViewModel.isOpenCommentViewOnIphone.toggle()
                         homeViewModel.fetchAllComments(forPostID: post.id)
                     }
                 }) {
@@ -220,7 +229,7 @@ struct PostView: View {
             
             HStack{
                 if let mediaURL = URL(string: post.mediaURL ?? "") {
-                    if let mimeType = post.mimeType {
+                    if let mimeType = post.mediaMimeType {
                         if mimeType.hasPrefix("image") {
                             AsyncImage(url: mediaURL) { media in
                                 media
@@ -229,7 +238,7 @@ struct PostView: View {
                             } placeholder: {
                                 ProgressView()
                             }
-                            .frame(width: homeViewModel.commentProfileImage, height: homeViewModel.commentProfileImage ) // Set the desired width and height for your circular image
+                            .frame(width: homeViewModel.commentProfileImageSize, height: homeViewModel.commentProfileImageSize ) // Set the desired width and height for your circular image
                             .background(Color.gray)
                             .clipShape(Circle())
                         } else {
@@ -250,18 +259,18 @@ struct PostView: View {
                     .font(homeViewModel.commentTextFiledFont)
                     .padding(.horizontal) // Add horizontal padding to the text field
                     .background(
-                        RoundedRectangle(cornerRadius: homeViewModel.commentTextFieldRoundedCorner) // Adjust the corner radius as needed
+                        RoundedRectangle(cornerRadius: homeViewModel.commentTextFieldCornerRadius) // Adjust the corner radius as needed
                             .fill(Color.gray.opacity(0.1)) // Customize the background color
-                            .frame(height: homeViewModel.commentTextFieldSizeHeight)
+                            .frame(height: homeViewModel.commentTextFieldCornerRadius)
                     )
             }
             .padding(.horizontal)
         }
-        .sheet(isPresented: $homeViewModel.isCommentViewIpad) {
-            CommentView(isDarkMode: $settingVM.isDarkMode, isShowComment: $homeViewModel.isCommentViewIpad, homeViewModel: homeViewModel, post: post)
+        .sheet(isPresented: $homeViewModel.isOpenCommentViewOnIpad) {
+            CommentView(isDarkModeEnabled: $settingVM.isDarkModeEnabled, isShowComment: $homeViewModel.isOpenCommentViewOnIpad, homeViewModel: homeViewModel, post: post)
         }
-        .fullScreenCover(isPresented: $homeViewModel.isCommentViewIphone) {
-            CommentView(isDarkMode: $settingVM.isDarkMode, isShowComment: $homeViewModel.isCommentViewIphone, homeViewModel: homeViewModel, post: post)
+        .fullScreenCover(isPresented: $homeViewModel.isOpenCommentViewOnIphone) {
+            CommentView(isDarkModeEnabled: $settingVM.isDarkModeEnabled, isShowComment: $homeViewModel.isOpenCommentViewOnIphone, homeViewModel: homeViewModel, post: post)
         }
     }
     

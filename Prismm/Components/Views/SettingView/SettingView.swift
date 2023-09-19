@@ -1,9 +1,18 @@
-//
-//  SettingView.swift
-//  Prismm
-//
-//  Created by Tran Vu Quang Anh  on 09/09/2023.
-//
+/*
+  RMIT University Vietnam
+  Course: COSC2659 iOS Development
+  Semester: 2023B
+  Assessment: Assignment 3
+  Author: Apple Men
+  Doan Huu Quoc (s3927776)
+  Tran Vu Quang Anh (s3916566)
+  Nguyen Dinh Viet (s3927291)
+  Nguyen The Bao Ngoc (s3924436)
+
+  Created  date: 09/09/2023
+  Last modified: 15/09/2023
+  Acknowledgement: None
+*/
 
 import Foundation
 import SwiftUI
@@ -25,21 +34,21 @@ struct SettingView : View {
                             
                             Button(action: {
                                 if UIDevice.current.userInterfaceIdiom == .pad {
-                                    settingVM.isAccountSettingSheetPresentedIpad.toggle()
+                                    settingVM.isAccountSettingSheetPresentedOniPad.toggle()
                                 } else {
-                                    settingVM.isAccountSettingSheetPresentedIphone.toggle()
+                                    settingVM.isAccountSettingSheetPresentedOniPhone.toggle()
                                 }
                             }) {
                                 ZStack {
-                                    RoundedRectangle(cornerRadius: settingVM.cornerRadiusSize)
-                                        .fill(!settingVM.isDarkMode ? .gray.opacity(0.1) : .gray.opacity(0.4))
-                                        .frame(height: settingVM.accountSettingSizeHeight)
+                                    RoundedRectangle(cornerRadius: settingVM.cornerRadius)
+                                        .fill(!settingVM.isDarkModeEnabled ? .gray.opacity(0.1) : .gray.opacity(0.4))
+                                        .frame(height: settingVM.accountSettingHeight)
                                     HStack {
                                         
                                         Image(systemName: "person.circle")
                                             .resizable()
                                             .aspectRatio(contentMode: .fit)
-                                            .frame(width: settingVM.accountSettingImageSizeWidth)
+                                            .frame(width: settingVM.accountSettingImageWidth)
                                         
                                         VStack(alignment: .leading) {
                                             Text("Quoc Doan")
@@ -70,36 +79,52 @@ struct SettingView : View {
                                     Image(systemName: "globe.asia.australia.fill")
                                         .resizable()
                                         .aspectRatio(contentMode: .fill)
-                                        .frame(width: settingVM.imageSize, height: settingVM.imageSize)
+                                        .frame(width: settingVM.iconSize, height: settingVM.iconSize)
                                     
                                     Text("Language")
                                         .font(settingVM.contentFont)
                                     
                                     Spacer()
                                     
-                                    Picker("", selection: $settingVM.language) {
+                                    Picker("", selection: $settingVM.selectedLanguage) {
                                         Text("English").tag("en")
                                         Text("Vietnamese").tag("vi")
                                     }
                                     .pickerStyle(MenuPickerStyle())
+                                    .onChange(of: settingVM.selectedLanguage) { _ in
+                                        Task{
+                                            await
+                                            settingVM.updateSettings(forUserID: Constants.currentUserID)
+                                        }
+                                    }
                                     
                                 }
                                 .padding(.bottom)
                                 
                                 Divider()
-                                
+                                    .overlay(settingVM.isDarkModeEnabled ? .gray : .gray)
+
                                 HStack {
                                     Image(systemName: "moon")
                                         .resizable()
                                         .aspectRatio(contentMode: .fill)
-                                        .frame(width: settingVM.imageSize, height: settingVM.imageSize)
+                                        .frame(width: settingVM.iconSize, height: settingVM.iconSize)
                                     Text("Dark Mode")
                                         .font(settingVM.contentFont)
                                     
                                     Spacer()
                                     
-                                    Toggle("", isOn: $settingVM.isDarkMode)
+                                    Toggle("", isOn: $settingVM.isDarkModeEnabled)
                                         .padding(.vertical)
+                                    
+                                    //setting
+                                        .onChange(of: settingVM.isDarkModeEnabled) { _ in
+                                            Task{
+                                                await
+                                                settingVM.updateSettings(forUserID: Constants.currentUserID)
+                                            }
+                                            
+                                        }
                                 }
                                 .padding(.bottom)
                                 
@@ -107,7 +132,7 @@ struct SettingView : View {
                             .padding(.horizontal)
                             .padding(.top)
                             .background(RoundedRectangle(cornerRadius: proxy.size.width/40)
-                                .fill(!settingVM.isDarkMode ? .gray.opacity(0.1) : .gray.opacity(0.4))
+                                .fill(!settingVM.isDarkModeEnabled ? .gray.opacity(0.1) : .gray.opacity(0.4))
                             )
                             .padding(.bottom)
                             
@@ -121,33 +146,48 @@ struct SettingView : View {
                                     Image(systemName: "bell")
                                         .resizable()
                                         .aspectRatio(contentMode: .fill)
-                                        .frame(width: settingVM.imageSize, height: settingVM.imageSize)
+                                        .frame(width: settingVM.iconSize, height: settingVM.iconSize)
                                     
                                     Text("Push Notification")
                                         .font(settingVM.contentFont)
                                     
                                     Spacer()
                                     
-                                    Toggle("", isOn: $settingVM.isPushNotification)
+                                    Toggle("", isOn: $settingVM.isPushNotificationEnabled)
+                                        .onChange(of: settingVM.isPushNotificationEnabled) { _ in
+                                            Task{
+                                                await
+                                                settingVM.updateSettings(forUserID: Constants.currentUserID)
+                                            }
+                                            
+                                        }
                                 }
                                 .padding(.bottom)
                                 
                                 
                                 Divider()
-                                
+                                    .overlay(settingVM.isDarkModeEnabled ? .gray : .gray)
+
                                 HStack {
                                     Image(systemName: "message")
                                         .resizable()
                                         .aspectRatio(contentMode: .fill)
-                                        .frame(width: settingVM.imageSize, height: settingVM.imageSize)
+                                        .frame(width: settingVM.iconSize, height: settingVM.iconSize)
                                     
                                     Text("Message Notification")
                                         .font(settingVM.contentFont)
                                     
                                     Spacer()
                                     
-                                    Toggle("", isOn: $settingVM.isMessageNotification)
+                                    Toggle("", isOn: $settingVM.isMessageNotificationEnabled)
                                         .padding(.vertical)
+                                        .onChange(of: settingVM.isMessageNotificationEnabled) { _ in
+                                            Task{
+                                                await
+                                                settingVM.updateSettings(forUserID: Constants.currentUserID)
+                                            }
+                                            
+                                        }
                                 }
                                 .padding(.bottom)
                                 
@@ -155,7 +195,7 @@ struct SettingView : View {
                             .padding(.horizontal)
                             .padding(.top)
                             .background(RoundedRectangle(cornerRadius: proxy.size.width/40)
-                                .fill(!settingVM.isDarkMode ? .gray.opacity(0.1) : .gray.opacity(0.4))
+                                .fill(!settingVM.isDarkModeEnabled ? .gray.opacity(0.1) : .gray.opacity(0.4))
                             )
                             .padding(.bottom)
                             
@@ -170,7 +210,7 @@ struct SettingView : View {
                                         Image(systemName: "person.crop.circle.badge.xmark")
                                             .resizable()
                                             .aspectRatio(contentMode: .fill)
-                                            .frame(width: settingVM.imageSize, height: settingVM.imageSize)
+                                            .frame(width: settingVM.iconSize, height: settingVM.iconSize)
                                         
                                         Text("Blocked")
                                             .font(settingVM.contentFont)
@@ -180,19 +220,20 @@ struct SettingView : View {
                                         Image(systemName: "arrow.right.square")
                                             .resizable()
                                             .aspectRatio(contentMode: .fill)
-                                            .frame(width: settingVM.imageSize, height: settingVM.imageSize)
+                                            .frame(width: settingVM.iconSize, height: settingVM.iconSize)
                                     }
                                     .padding(.bottom)
                                 }
                                 
                                 Divider()
-                                
+                                    .overlay(settingVM.isDarkModeEnabled ? .gray : .gray)
+
                                 HStack {
                                     Button(action: {}) {
                                         Image(systemName: "rectangle.portrait.slash")
                                             .resizable()
                                             .aspectRatio(contentMode: .fill)
-                                            .frame(width: settingVM.imageSize, height: settingVM.imageSize)
+                                            .frame(width: settingVM.iconSize, height: settingVM.iconSize)
                                         
                                         Text("Hide content from")
                                             .font(settingVM.contentFont)
@@ -202,7 +243,7 @@ struct SettingView : View {
                                         Image(systemName: "arrow.right.square")
                                             .resizable()
                                             .aspectRatio(contentMode: .fill)
-                                            .frame(width: settingVM.imageSize, height: settingVM.imageSize)
+                                            .frame(width: settingVM.iconSize, height: settingVM.iconSize)
                                             .padding(.vertical)
                                     }
                                 }
@@ -212,7 +253,7 @@ struct SettingView : View {
                             .padding(.horizontal)
                             .padding(.top)
                             .background(RoundedRectangle(cornerRadius: proxy.size.width/40)
-                                .fill(!settingVM.isDarkMode ? .gray.opacity(0.1) : .gray.opacity(0.4))
+                                .fill(!settingVM.isDarkModeEnabled ? .gray.opacity(0.1) : .gray.opacity(0.4))
                             )
                             .padding(.bottom)
                             
@@ -227,7 +268,7 @@ struct SettingView : View {
                                         Image(systemName: "info.circle")
                                             .resizable()
                                             .aspectRatio(contentMode: .fill)
-                                            .frame(width: settingVM.imageSize, height: settingVM.imageSize)
+                                            .frame(width: settingVM.iconSize, height: settingVM.iconSize)
                                         
                                         Text("About us")
                                             .font(settingVM.contentFont)
@@ -237,7 +278,7 @@ struct SettingView : View {
                                         Image(systemName: "arrow.right.square")
                                             .resizable()
                                             .aspectRatio(contentMode: .fill)
-                                            .frame(width: settingVM.imageSize, height: settingVM.imageSize)
+                                            .frame(width: settingVM.iconSize, height: settingVM.iconSize)
                                             .padding(.vertical)
                                     }
                                     .padding(.bottom)
@@ -246,7 +287,7 @@ struct SettingView : View {
                             .padding(.horizontal)
                             .padding(.top)
                             .background(RoundedRectangle(cornerRadius: proxy.size.width/40)
-                                .fill(!settingVM.isDarkMode ? .gray.opacity(0.1) : .gray.opacity(0.4))
+                                .fill(!settingVM.isDarkModeEnabled ? .gray.opacity(0.1) : .gray.opacity(0.4))
                             )
                             .padding(.bottom)
                             
@@ -254,20 +295,20 @@ struct SettingView : View {
                             
                             HStack {
                                 Spacer()
-                                Button(action: {settingVM.isShowingSignOutAlert.toggle()}) {
+                                Button(action: {settingVM.isSignOutAlertPresented.toggle()}) {
                                     Text("Sign Out")
                                         .foregroundColor(.red)
                                         .bold()
-                                        .font(settingVM.signOutText)
+                                        .font(settingVM.signOutButtonTextFont)
                                         .padding(.vertical)
                                 }
-                                .alert("Logout", isPresented: $settingVM.isShowingSignOutAlert) {
+                                .alert("Logout", isPresented: $settingVM.isSignOutAlertPresented) {
                                     Button("Cancel", role: .cancel) {
                                     }
                                     Button("Sign Out", role: .destructive) {
                                     }
                                 } message: {
-                                    Text("Are you sure?")
+                                    Text("\nConfirm Sign Out?")
                                 }
                                 Spacer()
                             }
@@ -276,23 +317,25 @@ struct SettingView : View {
                             Spacer()
                         }
                         .padding(.horizontal)
-                        .sheet(isPresented: $settingVM.isAccountSettingSheetPresentedIpad) {
+                        .sheet(isPresented: $settingVM.isAccountSettingSheetPresentedOniPad) {
                             NavigationView {
-                                SettingSheet(isSheetPresented: $settingVM.isAccountSettingSheetPresentedIpad, settingVM: settingVM)
+                                SettingSheet(isSheetPresented: $settingVM.isAccountSettingSheetPresentedOniPad, settingVM: settingVM)
                             }
                         }
-                        .fullScreenCover(isPresented: $settingVM.isAccountSettingSheetPresentedIphone) {
+                        .fullScreenCover(isPresented: $settingVM.isAccountSettingSheetPresentedOniPhone) {
                             NavigationView {
-                                SettingSheet(isSheetPresented: $settingVM.isAccountSettingSheetPresentedIphone, settingVM: settingVM)
+                                SettingSheet(isSheetPresented: $settingVM.isAccountSettingSheetPresentedOniPhone, settingVM: settingVM)
                             }
                         }
                         .onAppear {
                             settingVM.proxySize = proxy.size
+                            //set uid
+                            Constants.currentUserID = "m52oyZNbCxVx5SsvFAEPwankeAP2"
                         }
                 }
             }
-            .foregroundColor(settingVM.isDarkMode ? .white : .black)
-            .background(!settingVM.isDarkMode ? .white : .black)
+            .foregroundColor(settingVM.isDarkModeEnabled ? .white : .black)
+            .background(!settingVM.isDarkModeEnabled ? .white : .black)
         }
     }
 }

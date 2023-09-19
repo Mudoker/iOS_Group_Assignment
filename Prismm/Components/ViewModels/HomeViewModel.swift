@@ -1,10 +1,18 @@
-//
-//  HomeViewModel.swift
-//  Prismm
-//
-//  Created by Quoc Doan Huu on 09/09/2023.
-//
-
+/*
+ RMIT University Vietnam
+ Course: COSC2659 iOS Development
+ Semester: 2023B
+ Assessment: Assignment 3
+ Author: Apple Men
+ Doan Huu Quoc (s3927776)
+ Tran Vu Quang Anh (s3916566)
+ Nguyen Dinh Viet (s3927291)
+ Nguyen The Bao Ngoc (s3924436)
+ 
+ Created  date: 09/09/2023
+ Last modified: 09/09/2023
+ Acknowledgement: None
+ */
 import Foundation
 import PhotosUI
 import SwiftUI
@@ -15,224 +23,182 @@ import AVFoundation
 import FirebaseFirestoreSwift
 
 class HomeViewModel: ObservableObject {
-    @Published var isNewPostIpad = false
-    @Published var isNewPostIphone = false
-    @Published var isCommentViewIphone = false
-    @Published var isCommentViewIpad = false
+    @Published var isCreateNewPostOnIpad = false
+    @Published var isCreateNewPostOnIphone = false
+    @Published var isOpenCommentViewOnIphone = false
+    @Published var isOpenCommentViewOnIpad = false
     @Published var commentContent = ""
-    @Published var tagList: [String] = []
-    @Published var isShowTagListIphone = false
-    @Published var isShowTagListIpad = false
-    @Published var postCaption = ""
-    @Published var isPost = false
+    @Published var createNewPostTagList: [String] = []
+    @Published var isShowTagListOnIphone = false
+    @Published var isShowTagListOnIpad = false
+    @Published var createNewPostCaption = ""
+    @Published var isPostOnScreen = false
     @Published var selectedCommentFilter = "Newest"
-    @Published var currentCommentor: User? = nil
-
+  //@Published var fetched_media = [Media]()
+    @Published var fetchedAllPosts = [Post]()
+    private var postsListenerRegistration: ListenerRegistration?
+    private var commentListenerRegistration: ListenerRegistration?
+    @Published var selectedMedia: NSURL? 
+    @Published var fetchedCommentsByPostId = [String: Set<Comment>]()
+    
+    @Published var newPostSelectedMedia: PhotosPickerItem? {
+        didSet {
+            Task {
+                try await uploadingPost()
+            }
+        }
+    }
+    var currentCommentor: User?
     // Responsive
     @Published var proxySize: CGSize = CGSize(width: 0, height: 0)
-
-    var cornerRadiusSize: CGFloat {
+    
+    var cornerRadius: CGFloat {
         UIDevice.current.userInterfaceIdiom == .phone ? proxySize.width / 40 : proxySize.width / 50
     }
-
-    var accountSettingSizeHeight: CGFloat {
+    
+    var accountSettingHeight: CGFloat {
         UIDevice.current.userInterfaceIdiom == .phone ? proxySize.width / 4 : proxySize.height / 8
     }
-
-    var accountSettingImageSizeWidth: CGFloat {
+    
+    var accountSettingImageWidth: CGFloat {
         UIDevice.current.userInterfaceIdiom == .phone ? proxySize.width / 8 : proxySize.width / 12
     }
-
+    
     var accountSettingUsernameFont: Font {
         UIDevice.current.userInterfaceIdiom == .phone ? .title3 : .title
     }
-
+    
     var accountSettingEmailFont: Font {
         .body
     }
-
+    
     var contentFont: Font {
         UIDevice.current.userInterfaceIdiom == .phone ? .body : .title3
     }
-
+    
     var imageSize: CGFloat {
         UIDevice.current.userInterfaceIdiom == .phone ? proxySize.width / 18 : proxySize.width / 28
     }
-
-    var storyViewSizeWidth: CGFloat {
+    
+    var storyViewWidth: CGFloat {
         UIDevice.current.userInterfaceIdiom == .phone ? proxySize.width * 0.2 : proxySize.width * 0.15
     }
-
-    var storyViewSizeHeight: CGFloat {
+    
+    var storyViewHeight: CGFloat {
         UIDevice.current.userInterfaceIdiom == .phone ? proxySize.width * 0.23 : proxySize.width * 0.15
     }
-
+    
     var appLogoSize: CGFloat {
         UIDevice.current.userInterfaceIdiom == .phone ? proxySize.width / 2 : proxySize.width / 7
     }
-
+    
     var messageLogoSize: CGFloat {
         UIDevice.current.userInterfaceIdiom == .phone ? proxySize.width / 14 : proxySize.width * 0.06
     }
-
+    
     var profileImageSize: CGFloat {
         UIDevice.current.userInterfaceIdiom == .phone ? proxySize.width * 0.15 : proxySize.width * 0.1
     }
-
+    
     var usernameFont: CGFloat {
         UIDevice.current.userInterfaceIdiom == .phone ? 20 : 25
     }
-
+    
     var seeMoreButtonSize: CGFloat {
         UIDevice.current.userInterfaceIdiom == .phone ? proxySize.width * 0.055 : proxySize.width * 0.055
     }
-
+    
     var postStatsFontSize: CGFloat {
         UIDevice.current.userInterfaceIdiom == .phone ? proxySize.width * 0.04 : proxySize.width * 0.03
     }
-
+    
     var postStatsImageSize: CGFloat {
         UIDevice.current.userInterfaceIdiom == .phone ? proxySize.width * 0.05 : proxySize.width * 0.04
     }
-
-    var commentProfileImage: CGFloat {
+    
+    var commentProfileImageSize: CGFloat {
         UIDevice.current.userInterfaceIdiom == .phone ? proxySize.width * 0.1 : proxySize.width * 0.08
     }
-
-    var commentTextFieldSizeHeight: CGFloat {
+    
+    var commentTextFieldHeight: CGFloat {
         UIDevice.current.userInterfaceIdiom == .phone ? proxySize.width * 0.1 : proxySize.width * 0.08
     }
-
+    
     var commentTextFiledFont: Font {
         UIDevice.current.userInterfaceIdiom == .phone ? .caption : .title
     }
     
     var captionFont: Font {
         UIDevice.current.userInterfaceIdiom == .phone ? .title3 : .title
-
+        
     }
     
-    var commentTextFieldRoundedCorner: CGFloat {
+    var commentTextFieldCornerRadius: CGFloat {
         15
     }
-
     
-    //@Published var fetched_media = [Media]()
-    @Published var fetched_post = [Post]()
-    private var listenerRegistration: ListenerRegistration?
-    private var commentListenerRegistration: ListenerRegistration?
-    @Published var fetched_comments = [String: Set<Comment>]()
-
-    @Published var selectedMedia: NSURL? 
+    
+    
     
     init() {
         Task {
-            await fetchPostRealTime()
+            await fetchPostsRealTime()
         }
     }
+    
     @MainActor
     func fetchAllComments(forPostID postID: String) {
-//        if commentListenerRegistration == nil {
-            print("triggered")
-            commentListenerRegistration = Firestore.firestore().collection("test_comments").whereField("postId", isEqualTo: postID).addSnapshotListener { [weak self] querySnapshot, error in
-                guard let self = self else { return }
-                
-                if let error = error {
-                    print("Error fetching posts: \(error)")
-                    return
-                }
-                
-                guard let documents = querySnapshot?.documents else {
-                    print("No documents")
-                    return
-                }
-
-                let commentsToAdd = documents.compactMap { queryDocumentSnapshot in
-                    try? queryDocumentSnapshot.data(as: Comment.self)
-                }
-
-                // Check if "postID" exists in fetched_comments, and if not, create an empty set
-                var existingComments = fetched_comments[postID, default: Set<Comment>()]
-
-                // Add the comments to the existing set
-                existingComments.formUnion(commentsToAdd)
-
-                // Update the fetched_comments dictionary with the merged set of comments
-                fetched_comments[postID] = existingComments
-                
-                print(fetched_comments[postID])
-
-                // self.fetched_comment = sortPostByTime(order: "desc", posts: self.fetched_post)
+        commentListenerRegistration = Firestore.firestore().collection("test_comments").whereField("postId", isEqualTo: postID).addSnapshotListener { [weak self] querySnapshot, error in
+            guard let self = self else { return }
+            
+            if let error = error {
+                print("Error fetching posts: \(error)")
+                return
             }
-//        }
+            
+            guard let documents = querySnapshot?.documents else {
+                print("No documents")
+                return
+            }
+            
+            let commentsToAdd = documents.compactMap { queryDocumentSnapshot in
+                try? queryDocumentSnapshot.data(as: Comment.self)
+            }
+            
+            // Check if "postID" exists in fetched_comments, and if not, create an empty set
+            var existingComments = fetchedCommentsByPostId[postID, default: Set<Comment>()]
+            
+            // Add the comments to the existing set
+            existingComments.formUnion(commentsToAdd)
+            
+            // Update the fetched_comments dictionary with the merged set of comments
+            fetchedCommentsByPostId[postID] = existingComments
+        }
     }
-
-    @Published var postImage: Image?
-    @Published var selectedVideoURL: URL? // Store the video URL
-    
-    //    func uploadMediaFromLocal() async throws {
-    //        guard let media = selectedMedia else { return }
-    //
-    //        guard let mediaData = try await media.loadTransferable(type: Data.self) else { return }
-    //
-    //        if mediaData.count > 25_000_000 {
-    //            print("Selected file too large: \(mediaData)")
-    //        } else {
-    //            print("Approved: \(mediaData)")
-    //        }
-    //
-    //        guard let mediaUrl = try await uploadMediaToFireBase(data: mediaData) else { return }
-    //
-    //        try await Firestore.firestore().collection("media").document().setData(["mediaUrl" : mediaUrl, "mimeType" : mimeType(for: mediaData)])
-    //
-    //
-    //        print (" load ok ")
-    //    }
-    
-    func uploadMediaToFireBase(data: Data) async throws -> String? {
+        
+    func uploadMediaToFireBase(withMedia data: Data) async throws -> String? {
         let fileName = UUID().uuidString
-        let ref = Storage.storage().reference().child("/media/\(fileName)")
+        let mediaRef = Storage.storage().reference().child("/media/\(fileName)")
         let metaData  = StorageMetadata()
         metaData.contentType = mimeType(for: data)
         
         do {
-            let _ = try await ref.putDataAsync(data, metadata: metaData)
-            let url = try await ref.downloadURL()
-            return url.absoluteString
+            let _ = try await mediaRef.putDataAsync(data, metadata: metaData)
+            let downloadURL = try await mediaRef.downloadURL()
+            return downloadURL.absoluteString
         } catch {
             print("Media upload failed: \(error.localizedDescription)")
             return nil
         }
     }
     
-    //    @MainActor
-    //    func fetchMedia() async throws {
-    //        let medias = try await Firestore.firestore().collection("media").getDocuments()
-    //        self.fetched_media = medias.documents.compactMap { document in
-    //            do {
-    //                return try document.data(as: Media.self)
-    //            } catch {
-    //                print("Error decoding document: \(error)")
-    //                return nil
-    //            }
-    //        }
-    //
-    //
-    //        for each in medias.documents {
-    //            print(each)
-    //        }
-    //    }
-    
-    
-    
     func createComment(content: String, commentor: String, postId: String) async throws -> Comment?{
         let commentRef = Firestore.firestore().collection("test_comments").document()
-        let comment = Comment(id: commentRef.documentID, content: content, commentor: commentor, postId: postId)
-        guard let encodedComment = try? Firestore.Encoder().encode(comment) else {return nil}
+        let newComment = Comment(id: commentRef.documentID, content: content, commenterID: commentor, postID: postId)
+        guard let encodedComment = try? Firestore.Encoder().encode(newComment) else { return nil }
         try await commentRef.setData(encodedComment)
-        return comment
+        return newComment
     }
-    
     func createPost() async throws{
         
 //        guard let uid = Auth.auth().currentUser?.uid else {
@@ -252,17 +218,35 @@ class HomeViewModel: ObservableObject {
         try await postRef.setData(encodedPost)
         print("ok")
         return
+    func createPost(ownerID: String, postCaption: String?, mediaURL: String?, mimeType: String?) async throws -> Post? {
+        let postRef = Firestore.firestore().collection("test_posts").document()
+        let newPost = Post(
+                id: postRef.documentID,
+                ownerID: ownerID,
+                caption: postCaption,
+                likerIDs: [],
+                mediaURL: mediaURL,
+                mediaMimeType: mimeType,
+                creationDate: Timestamp(),
+                author: nil,
+                user: nil,
+                unwrappedLikers: []
+        )
+        
+        guard let encodedPost = try? Firestore.Encoder().encode(newPost) else {return nil}
+        try await postRef.setData(encodedPost)
+        return newPost
     }
     
-    func editPost(postID: String, postCaption: String?, mediaURL: String?, mimeType: String?) async throws {
+    func editCurrentPost(postID: String, newPostCaption: String?, newMediaURL: String?, newMimeType: String?) async throws {
         do {
             let postRef = Firestore.firestore().collection("test_posts").document(postID)
             var post = try await postRef.getDocument().data(as: Post.self)
             
-            post.postCaption = postCaption
-            post.mediaURL = mediaURL
-            post.mimeType = mimeType
-            post.date = Timestamp()
+            post.caption = newPostCaption
+            post.mediaURL = newMediaURL
+            post.mediaMimeType = newMimeType
+            post.creationDate = Timestamp()
             
             try postRef.setData(from: post) { error in
                 if let error = error {
@@ -275,35 +259,11 @@ class HomeViewModel: ObservableObject {
             throw error
         }
     }
-    
-//    // Add comment to post
-//    func addCommentToPost(comment: Comment, postID: String) async throws {
-//        do {
-//            // Fetch the post document
-//            let postRef = Firestore.firestore().collection("test_posts").document(postID)
-//            var post = try await postRef.getDocument().data(as: Post.self)
-//
-//
-//            // Update the post's comment array
-//            post.postComment.append(comment.id)
-//
-//            // Update the Firestore document with the updated data
-//            try postRef.setData(from: post) { error in
-//                if let error = error {
-//                    print("Error updating document: \(error)")
-//                } else {
-//                    print("Document successfully updated.")
-//                }
-//            }
-//        } catch {
-//            throw error
-//        }
-//    }
-    
+
     @MainActor
-    func fetchPostRealTime() {
-        if listenerRegistration == nil {
-            listenerRegistration = Firestore.firestore().collection("test_posts").addSnapshotListener { [weak self] querySnapshot, error in
+    func fetchPostsRealTime() {
+        if postsListenerRegistration == nil {
+            postsListenerRegistration = Firestore.firestore().collection("test_posts").addSnapshotListener { [weak self] querySnapshot, error in
                 guard let self = self else { return }
                 
                 if let error = error {
@@ -316,39 +276,30 @@ class HomeViewModel: ObservableObject {
                     return
                 }
                 
-                self.fetched_post = documents.compactMap { queryDocumentSnapshot in
+                self.fetchedAllPosts = documents.compactMap { queryDocumentSnapshot in
                     try? queryDocumentSnapshot.data(as: Post.self)
                 }
-                self.fetched_post = sortPostByTime(order: "asc", posts: self.fetched_post)
-                for i in 0..<self.fetched_post.count {
-                    for likerID in self.fetched_post[i].likers {
+                
+                self.fetchedAllPosts = sortPostByTime(order: "asc", posts: self.fetchedAllPosts)
+                
+                for i in 0..<self.fetchedAllPosts.count {
+                    for likerID in self.fetchedAllPosts[i].likerIDs {
                         Task {
                             do {
-                                let liker = try await API_SERVICE.fetchUser(withUid: likerID ?? "")
-                                self.fetched_post[i].unwrapLikers.append(liker)
+                                let liker = try await APIService.fetchUser(withUserID: likerID ?? "")
+                                self.fetchedAllPosts[i].unwrappedLikers.append(liker)
                             } catch {
                                 print("Error fetching liker: \(error)")
                             }
                         }
                     }
                     
-//                    for commentID in self.fetched_post[i].postComment {
-//                        Task {
-//                            do {
-//                                let comment = try await UserService.fetchComment(withUid: commentID ?? "")
-//                                self.fetched_post[i].unwrapComments.append(comment)
-//                            } catch {
-//                                print("Error fetching comment: \(error)")
-//                            }
-//                        }
-//                    }
-                    
-                    let post = self.fetched_post[i]
-                    let owner = post.owner
+                    let post = self.fetchedAllPosts[i]
+                    let ownerID = post.ownerID
                     Task {
                         do {
-                            let postUser = try await API_SERVICE.fetchUser(withUid: owner)
-                            self.fetched_post[i].user = postUser
+                            let postUser = try await APIService.fetchUser(withUserID: ownerID)
+                            self.fetchedAllPosts[i].user = postUser
                         } catch {
                             print("Error fetching post user: \(error)")
                         }
@@ -357,71 +308,26 @@ class HomeViewModel: ObservableObject {
             }
         }
     }
-
+    
     func sortPostByTime(order: String, posts: [Post]) -> [Post] {
         var sortedPosts = posts
-
+        
         switch order {
         case "asc":
             sortedPosts.sort { post1, post2 in
-                return post1.date.dateValue().compare(post2.date.dateValue()) == ComparisonResult.orderedAscending
+                return post1.creationDate.dateValue().compare(post2.creationDate.dateValue()) == ComparisonResult.orderedAscending
             }
         case "desc":
             sortedPosts.sort { post1, post2 in
-                return post1.date.dateValue().compare(post2.date.dateValue()) == ComparisonResult.orderedDescending
+                return post1.creationDate.dateValue().compare(post2.creationDate.dateValue()) == ComparisonResult.orderedDescending
             }
         default:
             break
         }
-
+        
         return sortedPosts
     }
-    
-    // Delete comment function (delete in comment and in post)
-//    func deleteComment(postID: String, commentID: String) async throws {
-//        do {
-//            let postRef = Firestore.firestore().collection("test_posts").document(postID)
-//            let commentRef = Firestore.firestore().collection("test_comments").document(commentID)
-//            var post = try await postRef.getDocument().data(as: Post.self)
-//
-//            // Check if the "postComment" field exists and is an array
-//
-//            // Remove the comment with the specified commentID
-////            post.postComment.removeAll { $0 == commentID }
-//            //let updatedData = try Firestore.Encoder().encode(updatedPost)
-//            // Update the Firestore document with the modified data
-//            try await commentRef.delete()
-//            try postRef.setData(from: post) { error in
-//                if let error = error {
-//                    print("Error deleting comment: \(error)")
-//                } else {
-//                    print("Comment deleted successfully.")
-//                }
-//            }
-//        } catch {
-//            print("Error deleting comment: \(error)")
-//            throw error // Rethrow the error for the caller to handle
-//        }
-//    }
-    
-    // Delele post
-//    func deletePost(postID: String) async throws {
-//        do {
-//            let postRef = Firestore.firestore().collection("test_posts").document(postID)
-//            let post = try await postRef.getDocument().data(as: Post.self)
-//            // Fetch the post document to get the list of comment IDs
-//
-//            for commentID in post.postComment {
-//                let commentRef = Firestore.firestore().collection("test_comments").document(commentID ?? "")
-//                try await commentRef.delete()
-//            }
-//            try await postRef.delete()
-//        } catch {
-//            print("Error deleting post: \(error)")
-//            throw error // Rethrow the error for the caller to handle
-//        }
-//    }
-    
+
     // Like post
     func likePost(likerID: String, postID: String) async throws {
         do {
@@ -433,8 +339,8 @@ class HomeViewModel: ObservableObject {
             //var updatedPost = post
             
             // Update the post's comment array
-            if (!post.likers.contains(likerID)) {
-                post.likers.append(likerID)
+            if (!post.likerIDs.contains(likerID)) {
+                post.likerIDs.append(likerID)
             } else {
                 print("Already like")
             }
@@ -460,8 +366,8 @@ class HomeViewModel: ObservableObject {
             //var updatedPost = post
             
             // Remove the comment with the specified commentID
-            if (post.likers.contains(likerID)) {
-                post.likers.removeAll { $0 == likerID }
+            if (post.likerIDs.contains(likerID)) {
+                post.likerIDs.removeAll { $0 == likerID }
             } else {
                 print("Already unlike")
             }
@@ -480,38 +386,65 @@ class HomeViewModel: ObservableObject {
         }
     }
     
+    // Block (not receiving notification + post/story + message)
+    func blockOtherUser(userID: String) async throws {
+        let currentUserRef = Firestore.firestore().collection("users").document("3WBgDcMgEQfodIbaXWTBHvtjYCl2")
+        var currentUser = try await currentUserRef.getDocument().data(as: User.self)
+        currentUser.blockList.append(userID)
+        
+        try currentUserRef.setData(from: currentUser) { error in
+            if let error = error {
+                print("Error updating document: \(error)")
+            } else {
+                print("Document successfully updated.")
+            }
+        }
+    }
     
+    // Unblock
+    func unBlockOtherUser(userID: String) async throws {
+        let currentUserRef = Firestore.firestore().collection("users").document("3WBgDcMgEQfodIbaXWTBHvtjYCl2")
+        var currentUser = try await currentUserRef.getDocument().data(as: User.self)
+        currentUser.blockList.removeAll { $0 == userID }
+        
+        try currentUserRef.setData(from: currentUser) { error in
+            if let error = error {
+                print("Error updating document: \(error)")
+            } else {
+                print("Document successfully updated.")
+            }
+        }
+    }
     
+    // restrict (not receiving notification + post/story)
+    func restrictOtherUser(userID: String) async throws {
+        let currentUserRef = Firestore.firestore().collection("users").document("3WBgDcMgEQfodIbaXWTBHvtjYCl2")
+        var currentUser = try await currentUserRef.getDocument().data(as: User.self)
+        currentUser.restrictedList.append(userID)
+        
+        try currentUserRef.setData(from: currentUser) { error in
+            if let error = error {
+                print("Error updating document: \(error)")
+            } else {
+                print("Document successfully updated.")
+            }
+        }
+    }
     
-//    @MainActor
-//    func fetchPost() async throws {
-//        let post = try await Firestore.firestore().collection("test_posts").getDocuments()
-//        self.fetched_post = post.documents.compactMap { document in
-//            do {
-//                return try document.data(as: Post.self)
-//            } catch {
-//                print("Error decoding document: \(error)")
-//                return nil
-//            }
-//        }
-//
-//        for i in 0..<fetched_post.count {
-//            for likerID in fetched_post[i].likers {
-//                let liker = try await UserService.fetchUser(withUid: likerID ?? "")
-//                fetched_post[i].unwrapLikers.append(liker)
-//            }
-//
-//            for commentID in fetched_post[i].postComment {
-//                let comment = try await UserService.fetchComment(withUid: commentID ?? "")
-//                fetched_post[i].unwrapComments.append(comment)
-//            }
-//
-//            let post = fetched_post[i]
-//            let owner = post.owner
-//            let postUser = try await UserService.fetchUser(withUid: owner)
-//            fetched_post[i].user = postUser
-//        }
-//    }
+    // Un-restrict
+    func unRestrictOtherUserBlockOtherUser(userID: String) async throws {
+        let currentUserRef = Firestore.firestore().collection("users").document("3WBgDcMgEQfodIbaXWTBHvtjYCl2")
+        var currentUser = try await currentUserRef.getDocument().data(as: User.self)
+        currentUser.restrictedList.removeAll { $0 == userID }
+        
+        try currentUserRef.setData(from: currentUser) { error in
+            if let error = error {
+                print("Error updating document: \(error)")
+            } else {
+                print("Document successfully updated.")
+            }
+        }
+    }
     
     // Follow
     func followOtherUser(userID: String) async throws {
@@ -580,6 +513,7 @@ class HomeViewModel: ObservableObject {
             return ""
 
         }
+        guard let media = newPostSelectedMedia else { return }
         
         print("1")
         print(media)
@@ -598,6 +532,11 @@ class HomeViewModel: ObservableObject {
             print("uploaded media data to firebase")
             return mediaUrl
             
+            guard let mediaUrl = try await uploadMediaToFireBase(withMedia: mediaData) else { return }
+            let postRef = Firestore.firestore().collection("posts").document()
+            let post = try? await createPost(ownerID: uid, postCaption: "Hello world", mediaURL: mediaUrl, mimeType: mimeType(for: mediaData))
+            guard let encodedPost = try? Firestore.Encoder().encode(post) else {return}
+            try await postRef.setData(encodedPost)
         }
         print("Failed")
         return ""
@@ -651,5 +590,4 @@ class HomeViewModel: ObservableObject {
         
         return "application/octet-stream"
     }
-
 }

@@ -1,25 +1,27 @@
+/*
+  RMIT University Vietnam
+  Course: COSC2659 iOS Development
+  Semester: 2023B
+  Assessment: Assignment 3
+  Author: Apple Men
+  Doan Huu Quoc (s3927776)
+  Tran Vu Quang Anh (s3916566)
+  Nguyen Dinh Viet (s3927291)
+  Nguyen The Bao Ngoc (s3924436)
+
+  Created  date: 11/09/2023
+  Last modified: 18/09/2023
+  Acknowledgement: None
+*/
 import SwiftUI
 
-struct Notification: Identifiable {
-    let id = UUID()
-    let user: String
-    let message: String
-    let time: String
-}
-
 struct NotificationView: View {
-    let notifications: [Notification] = [
-        Notification(user: "John Doe", message: "Liked your post.", time: "1h ago"),
-        Notification(user: "Jane Smith", message: "Commented on your photo.", time: "2h ago"),
-        Notification(user: "Alice Johnson", message: "Started following you.", time: "3h ago"),
-        // Add more notifications here
-    ]
+    @StateObject var notificationVM = NotificationViewModel()
+    
     @State var isDarkMode = false
     var body: some View {
         GeometryReader { proxy in
             ZStack {
-//                    Color.white // Set the background color here
-
                     VStack(alignment: .leading) {
                         HStack {
                             Image(systemName: "bell")
@@ -34,13 +36,16 @@ struct NotificationView: View {
                         Divider()
                             .overlay(isDarkMode ? .white : .gray)
                         
-                        ForEach(notifications) { notification in
+                        ForEach(notificationVM.fetchedAllNotifications) { notification in
                             NotificationRow(notification: notification, imageSize: proxy.size.width/7, isDarkMode: $isDarkMode)
                                 .padding()
                         }
                         
                         Spacer()
                     }
+            }
+            .onAppear {
+                notificationVM.fetchNotifcationRealTime(userId: "3WBgDcMgEQfodIbaXWTBHvtjYCl2")
             }
             .foregroundColor(!isDarkMode ? .black : .white)
             .background(isDarkMode ? .black : .white)
@@ -50,7 +55,7 @@ struct NotificationView: View {
 }
 
 struct NotificationRow: View {
-    let notification: Notification
+    let notification: AppNotification
     var imageSize: CGFloat = 40
     @Binding var isDarkMode: Bool
 
@@ -64,16 +69,16 @@ struct NotificationRow: View {
                     .clipShape(Circle())
                 
                 VStack(alignment: .leading) {
-                    Text(notification.user)
+                    Text(notification.senderName)
                         .font(.headline)
-                    
-                    Text(notification.message)
+
+                    Text(notification.messageContent)
                         .font(.body)
                 }
                 
                 Spacer()
-                Text(notification.time)
-                    .font(.caption)
+//                Text(notification.time)
+//                    .font(.caption)
             }
         }
         .foregroundColor(!isDarkMode ? .black : .white)

@@ -1,9 +1,18 @@
-//
-//  SettingSheet.swift
-//  Prismm
-//
-//  Created by Quoc Doan Huu on 11/09/2023.
-//
+/*
+  RMIT University Vietnam
+  Course: COSC2659 iOS Development
+  Semester: 2023B
+  Assessment: Assignment 3
+  Author: Apple Men
+  Doan Huu Quoc (s3927776)
+  Tran Vu Quang Anh (s3916566)
+  Nguyen Dinh Viet (s3927291)
+  Nguyen The Bao Ngoc (s3924436)
+
+  Created  date: 11/09/2023
+  Last modified: 15/09/2023
+  Acknowledgement: None
+*/
 
 import SwiftUI
 
@@ -33,7 +42,7 @@ struct SettingSheet: View {
                         }
                         .padding()
                         .background(RoundedRectangle(cornerRadius: 10)
-                            .fill(!settingVM.isDarkMode ? .gray.opacity(0.1) : .gray.opacity(0.4))
+                            .fill(!settingVM.isDarkModeEnabled ? .gray.opacity(0.1) : .gray.opacity(0.4))
                         )
                     }
                     .padding(.top)
@@ -53,7 +62,7 @@ struct SettingSheet: View {
                         }
                         .padding()
                         .background(RoundedRectangle(cornerRadius: 10)
-                            .fill(!settingVM.isDarkMode ? .gray.opacity(0.1) : .gray.opacity(0.4))
+                            .fill(!settingVM.isDarkModeEnabled ? .gray.opacity(0.1) : .gray.opacity(0.4))
                         )
                     }
                     .padding()
@@ -62,8 +71,8 @@ struct SettingSheet: View {
                 Spacer()
             }
             .frame(maxWidth: .infinity)
-            .foregroundColor(settingVM.isDarkMode ? .white : .black)
-            .background(settingVM.isDarkMode ? .black : .white)
+            .foregroundColor(settingVM.isDarkModeEnabled ? .white : .black)
+            .background(settingVM.isDarkModeEnabled ? .black : .white)
             .navigationBarItems(trailing: Button("Close") {
                 isSheetPresented.toggle()
             })

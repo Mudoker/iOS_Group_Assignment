@@ -1,9 +1,18 @@
-//
-//  LoginViewModel.swift
-//  Prismm
-//
-//  Created by Quoc Doan Huu on 09/09/2023.
-//
+/*
+ RMIT University Vietnam
+ Course: COSC2659 iOS Development
+ Semester: 2023B
+ Assessment: Assignment 3
+ Author: Apple Men
+ Doan Huu Quoc (s3927776)
+ Tran Vu Quang Anh (s3916566)
+ Nguyen Dinh Viet (s3927291)
+ Nguyen The Bao Ngoc (s3924436)
+ 
+ Created  date: 09/09/2023
+ Last modified: 09/09/2023
+ Acknowledgement: None
+ */
 
 import Foundation
 import LocalAuthentication
@@ -20,185 +29,193 @@ protocol SignUpFormProtocol{
 
 @MainActor
 class AuthenticationViewModel: ObservableObject {
-    @Published var logInError = false
-    @Published var signUpError = false
-    @Published var isAlert = false
-    @Published var isUnlocked = false
-    @Published var isUnlockedGoogle = false
-    @Published var isUnlockedBioMetric = false
-    @Published var currentEmail = ""
-    @Published var isForgotPassword = false
-    @Published var isSignUp = false
-    @Published var isValidPassword = false
-    @Published var isValidReEnterPassword = false
-    @Published var isValidUserName = false
-    
+    @Published var hasLoginError = false
+    @Published var hasSignUpError = false
+    @Published var isAlertPresent = false
+    @Published var isDeviceUnlocked = false
+    @Published var isGoogleUnlocked = false
+    @Published var isBiometricUnlocked = false
+    @Published var userEmail = ""
+    @Published var isPasswordResetRequested = false
+    @Published var isSignUpMode = false
+    @Published var isPasswordValid = false
+    @Published var isReenteredPasswordValid = false
+    @Published var isUserNameValid = false
+    @Published var userSession: FirebaseAuth.User?
+    @Published var currentUser: User?
+    @Published var userSettings: UserSetting?
+    @Published var isFetchingData = false
+    @Published var loginAccountText = ""
+    @Published var loginPasswordText = ""
+    @Published var isShowloginPassword = ""
+    @Published var signUpAccountText = ""
+    @Published var signUpPasswordText = ""
+    @Published var signUpReEnterPasswordText = ""
+    @Published var isShowSignUpPassword = ""
+    @Published var isShowSignUpReEnterPassword = ""
     @Published var userToken: String {
         didSet {
             UserDefaults.standard.set(userToken, forKey: "userToken")
         }
     }
     
-    @Published var userSession : FirebaseAuth.User?
-    @Published var currentUser : User?
+    // Responsive
+    @Published var proxySize: CGSize = CGSize(width: 0, height: 0)
     
+    var titleFontSize: CGFloat {
+        UIDevice.current.userInterfaceIdiom == .phone ? 40 : 60
+    }
+    
+    var logoImageSize: CGFloat {
+        UIDevice.current.userInterfaceIdiom == .phone ? proxySize.width/2.2 : proxySize.width/2.8
+    }
+    
+    var captionFont: Font {
+        .caption
+    }
+    
+    var textFieldTitleFont: Font {
+        .body
+    }
+    
+    var textFieldSizeHeight: CGFloat {
+        UIDevice.current.userInterfaceIdiom == .phone ? proxySize.width/7 : proxySize.width/9
+    }
+    
+    var textFieldCornerRadius: CGFloat {
+        UIDevice.current.userInterfaceIdiom == .phone ? proxySize.width/50 : proxySize.width/60
+    }
+    
+    var textFieldBorderWidth: CGFloat {
+        2.5
+    }
+    
+    var faceIdImageSize: CGFloat {
+        UIDevice.current.userInterfaceIdiom == .phone ? proxySize.width/10 : proxySize.width/12
+    }
+    
+    var imageVerticalPadding: CGFloat {
+        UIDevice.current.userInterfaceIdiom == .phone ? 16 : 30
+    }
+    
+    var loginButtonHeight: CGFloat {
+        UIDevice.current.userInterfaceIdiom == .phone ? textFieldSizeHeight : textFieldSizeHeight
+    }
+    
+    var conentFont: Font {
+        UIDevice.current.userInterfaceIdiom == .phone ? .body : .title2
+    }
+    
+    var loginTextFont: Font {
+        UIDevice.current.userInterfaceIdiom == .phone ? .title3 : .title
+    }
+    
+    var textFieldPlaceHolderFont: Font {
+        UIDevice.current.userInterfaceIdiom == .phone ? .body : .largeTitle
+    }
     
     // set user token for bio metric login
     init() {
         self.userToken = UserDefaults.standard.string(forKey: "userToken") ?? ""
-        //self.userSession = Auth.auth().currentUser
     }
     
-    // Responsive
-    @Published var proxySize: CGSize = CGSize(width: 0, height: 0)
-
-    var titleFont: CGFloat {
-        UIDevice.current.userInterfaceIdiom == .phone ? 40 : 60
-    }
-
-    var logoImageSize: CGFloat {
-        UIDevice.current.userInterfaceIdiom == .phone ? proxySize.width/2.2 : proxySize.width/2.8
-    }
-
-    var captionFont: Font {
-        .caption
-    }
-
-    var textFieldTitleFont: Font {
-        .body
-    }
-
-    var textFieldSizeHeight: CGFloat {
-        UIDevice.current.userInterfaceIdiom == .phone ? proxySize.width/7 : proxySize.width/9
-    }
-
-    var textFieldCorner: CGFloat {
-        UIDevice.current.userInterfaceIdiom == .phone ? proxySize.width/50 : proxySize.width/60
-    }
-
-    var textFieldBorderWidth: CGFloat {
-        2.5
-    }
-
-    var faceIdImageSize: CGFloat {
-        UIDevice.current.userInterfaceIdiom == .phone ? proxySize.width/10 : proxySize.width/12
-    }
-
-    var imagePaddingVertical: CGFloat {
-        UIDevice.current.userInterfaceIdiom == .phone ? 16 : 30
-    }
-
-    var loginButtonSizeHeight: CGFloat {
-        UIDevice.current.userInterfaceIdiom == .phone ? textFieldSizeHeight : textFieldSizeHeight
-    }
-
-    var conentFont: Font {
-        UIDevice.current.userInterfaceIdiom == .phone ? .body : .title2
-    }
-
-    var loginTextFont: Font {
-        UIDevice.current.userInterfaceIdiom == .phone ? .title3 : .title
-    }
-
-    var textFieldPlaceHolderFont: Font {
-        UIDevice.current.userInterfaceIdiom == .phone ? .body : .largeTitle
-    }
-
-    var isLoading = false
-
-    
-    // Validate username
-    func validateUsername(_ username: String) -> Bool{
-        isUnlocked = true
-        return true
-    }
-    
-    // Validate password
-    func validatePassword(_ password: String) -> Bool{
-        isUnlocked = true
-        return true
-    }
-    
-    func signUp (withEmail email: String, password: String) async throws {
+    func createNewUser(withEmail email: String, password: String) async throws {
         do {
-            let result = try await Auth.auth().createUser(withEmail: email, password: password)
-            self.userSession = result.user
-            let user = User(id: result.user.uid, password: password, username: email)
-            let encodedUser = try Firestore.Encoder().encode(user)
-            try await Firestore.firestore().collection("users").document(user.id).setData(encodedUser)
-            signUpError = false
+            let authSnapshot = try await Auth.auth().createUser(withEmail: email, password: password)
+            self.userSession = authSnapshot.user
+            
+            // Create user data
+            let newUser = User(id: authSnapshot.user.uid, password: password, username: email)
+            let encodedUser = try Firestore.Encoder().encode(newUser)
+            
+            // Create initial user settings data
+            let userSettings = UserSetting(id: authSnapshot.user.uid, darkModeEnabled: false, englishLanguageEnabled: true, faceIdEnabled: false, pushNotificationsEnabled: false, messageNotificationsEnabled: false)
+            let encodedSettings = try Firestore.Encoder().encode(userSettings)
+            
+            // Save user and settings data to Firestore
+            try await Firestore.firestore().collection("users").document(newUser.id).setData(encodedUser)
+            try await Firestore.firestore().collection("settings").document(newUser.id).setData(encodedSettings)
         } catch {
-            signUpError = true
-            print("Error: \(error.localizedDescription)")
+            hasSignUpError = true
+            print("Error during sign-up: \(error.localizedDescription)")
         }
+    }
+    
+    func resetUserPassword(withEmail email: String) async throws {
+        try await Auth.auth().sendPasswordReset(withEmail: email)
+    }
+    
+    func updateUserPassword(to password: String) async throws {
+        try await Auth.auth().currentUser?.updatePassword(to: password)
+    }
+    
+    func deleteCurrentUser() {
+        let user = Auth.auth().currentUser
+        user?.delete { error in
+            if let error = error {
+                print("Error deleting user: \(error)")
+            }
+        }
+    }
+    
+    func sendVerificationEmail() async throws {
+        try await self.userSession?.sendEmailVerification()
     }
     
     func signIn(withEmail email: String, password: String) async throws {
         do {
-            let result = try await Auth.auth().signIn(withEmail: email, password: password)
-            self.userSession = result.user
-            await fetchUserData()
-            isLoading = false
-            isUnlocked = true // Set isUnlocked to true after successfully fetching posts
+            let authSnapshot = try await Auth.auth().signIn(withEmail: email, password: password)
+            self.userSession = authSnapshot.user
+            let isEmailVerified = self.userSession?.isEmailVerified
+            if let isVerified = isEmailVerified {
+                if isVerified {
+                    print("verified")
+                    
+                    self.userSettings = try? await APIService.fetchCurrentUserData(withEmail: self.userEmail)
+                    
+                    isFetchingData = false
+                    
+                    Constants.currentUserID = userSession?.uid ?? "undefined"
+                    isDeviceUnlocked = true
+                } else {
+                    // Send a verification email
+                    print("not verified")
+                    
+                    try await sendVerificationEmail()
+                    
+                    isFetchingData = false
+                }
+            }
         } catch {
-            logInError = true
+            hasLoginError = true
             print("\(error.localizedDescription)")
         }
     }
     
-    // Validate password (at least 8 characters + not contating special symbols)
-    func validatePasswordSignUp(_ password: String) -> Bool {
-        if password.count >= 8 && !password.containsSpecialSymbols() {
-            return true
-        } else {
-            return false
-        }
+    func isPasswordValidForSignUp(_ password: String) -> Bool {
+        return password.count >= 6
     }
     
-    func isMatchPassword(currentPassword: String, reEnteredPassword: String) -> Bool {
-        if currentPassword == reEnteredPassword {
-            return true
-        } else {
-            return false
-        }
+    func passwordsMatch(currentPassword: String, reEnteredPassword: String) -> Bool {
+        return currentPassword == reEnteredPassword
     }
-    
-    // Fetch userdata from Firebase
-    func fetchUserData() async {
-        // Simulate fetching data with a delay
-        guard let uid = Auth.auth().currentUser?.uid else {return}
-        guard let snapshot = try? await Firestore.firestore().collection("users").document(uid).getDocument() else {return}
         
-        if !snapshot.exists {
-            do{
-                let user = User(id: uid, password: "password", username: currentEmail)
-                let encodedUser = try Firestore.Encoder().encode(user)
-                try await Firestore.firestore().collection("users").document(user.id).setData(encodedUser)
-            }catch{
-                print("ERROR 001")
-            }
-        }else{
-            self.currentUser = try? snapshot.data(as: User.self)
-        }
-    }
-    
-    // FaceId login
-    func bioMetricAuthenticate() {
+    func signInWithBiometrics() {
         let context = LAContext()
-        var error: NSError?
+        var biometricError: NSError?
         
-        if context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error) {
-            context.evaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, localizedReason: "Login with FaceId") { success, authenticationError in
+        if context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &biometricError) {
+            let localizedReason = "Authenticate using Biometrics"
+            context.evaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, localizedReason: localizedReason) { success, authenticationError in
                 DispatchQueue.main.async {
                     if success {
                         // Biometric authentication was successful
-                        self.isUnlockedBioMetric.toggle()
+                        self.isBiometricUnlocked = true
                     } else {
                         // Biometric authentication failed or was canceled
                         if let error = authenticationError {
                             // Handle the specific error
                             print("Biometric authentication failed: \(error.localizedDescription)")
-                            
                         } else {
                             // Handle the case where authentication was canceled or failed without an error
                             print("Biometric authentication failed.")
@@ -208,7 +225,7 @@ class AuthenticationViewModel: ObservableObject {
             }
         } else {
             // Handle the case where biometric authentication is not available or supported
-            if let error = error {
+            if let error = biometricError {
                 // Handle the error
                 print("Biometric authentication not available: \(error.localizedDescription)")
             } else {
@@ -218,81 +235,42 @@ class AuthenticationViewModel: ObservableObject {
         }
     }
     
-    
-    func signInGoogle() async {
-        guard let clientID = FirebaseApp.app()?.options.clientID else {
+    func signInWithGoogle() async {
+        guard let googleClientID = FirebaseApp.app()?.options.clientID else {
             fatalError("No client ID found ")
         }
         
-        let config = GIDConfiguration(clientID: clientID)
-        GIDSignIn.sharedInstance.configuration = config
+        let googleSignInConfig = GIDConfiguration(clientID: googleClientID)
+        GIDSignIn.sharedInstance.configuration = googleSignInConfig
         
-        guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-              let window = windowScene.windows.first,
-              let rootViewController = window.rootViewController else {
-            print("no root view controller")
+        guard let activeWindow = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+              let window = activeWindow.windows.first,
+              let rootViewController = window.rootViewController
+        else {
+            print("No active root view controller found.")
             return
         }
         
-        do{
-            let userAuth = try await GIDSignIn.sharedInstance.signIn(withPresenting: rootViewController)
-            let user = userAuth.user
-            guard let idToken = user.idToken else{return}
-            let accessToken = user.accessToken
-            let credential = GoogleAuthProvider.credential(withIDToken: idToken.tokenString, accessToken: accessToken.tokenString)
+        do {
+            let googleUserAuth = try await GIDSignIn.sharedInstance.signIn(withPresenting: rootViewController)
+            let googleUser = googleUserAuth.user
+            guard let googleIDToken = googleUser.idToken else { return }
+
+            let googleAccessToken = googleUser.accessToken
+            let googleCredential = GoogleAuthProvider.credential(withIDToken: googleIDToken.tokenString, accessToken: googleAccessToken.tokenString)
             
             
-            let result = try await Auth.auth().signIn(with: credential)
+            let googleSignInResult = try await Auth.auth().signIn(with: googleCredential)
             
-            let firebaseUser = result.user
-            currentEmail=firebaseUser.email ?? ""
+            let firebaseUser = googleSignInResult.user
+            userEmail = firebaseUser.email ?? ""
             print("User \(firebaseUser.uid) signed in with \(firebaseUser.email ?? "unknown" )")
-            await fetchUserData()
             
-            isUnlockedGoogle = true
+            let _ = try? await APIService.fetchCurrentUserData(withEmail: userEmail)
+            isGoogleUnlocked = true
         }
         catch{
-            print(error.localizedDescription)
-            return
+            print("Google Sign-In error: \(error.localizedDescription)")
         }
     }
-    
-    @MainActor
-    static func accountAuthenticationGoogle(viewController: UIViewController? = nil) async throws -> GoogleSignInResult {
-        guard let topViewController = viewController ?? topViewController() else {
-            throw URLError(.notConnectedToInternet)
-        }
-        
-        let gidSignInResult = try await GIDSignIn.sharedInstance.signIn(withPresenting: topViewController)
-        
-        guard let idToken = gidSignInResult.user.idToken?.tokenString else {
-            throw URLError(.badServerResponse)
-        }
-        
-        let accessToken = gidSignInResult.user.accessToken.tokenString
-        return GoogleSignInResult(idToken: idToken, accessToken: accessToken)
-    }
-    
-    @MainActor
-    static func topViewController(controller: UIViewController? = nil) -> UIViewController? {
-        let controller = controller ?? UIApplication.shared.keyWindow?.rootViewController
-        
-        if let navigationController = controller as? UINavigationController {
-            return topViewController(controller: navigationController.visibleViewController)
-        }
-        if let tabController = controller as? UITabBarController {
-            if let selected = tabController.selectedViewController {
-                return topViewController(controller: selected)
-            }
-        }
-        if let presented = controller?.presentedViewController {
-            return topViewController(controller: presented)
-        }
-        return controller
-    }
-}
-
-struct GoogleSignInResult {
-    let idToken: String
-    let accessToken: String
 }

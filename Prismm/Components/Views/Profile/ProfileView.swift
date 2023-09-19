@@ -1,21 +1,28 @@
-//
-//  ProfileView.swift
-//  Prismm
-//
-//  Created by Nguyen The Bao Ngoc on 08/09/2023.
-//
+/*
+  RMIT University Vietnam
+  Course: COSC2659 iOS Development
+  Semester: 2023B
+  Assessment: Assignment 3
+  Author: Apple Men
+  Doan Huu Quoc (s3927776)
+  Tran Vu Quang Anh (s3916566)
+  Nguyen Dinh Viet (s3927291)
+  Nguyen The Bao Ngoc (s3924436)
+
+  Created  date: 09/09/2023
+  Last modified: 10/09/2023
+  Acknowledgement: None
+*/
 
 import SwiftUI
 
 struct ProfileView: View {
-    
-    
-    @State var haveHighlight = false
     @State var isSample = true
-    @State var showingPost = 1
     
+    @StateObject var profileVM: ProfileViewModel
+
     var body: some View {
-        GeometryReader { reader in
+        GeometryReader { proxy in
             VStack(alignment: .leading){
                 ProfileToolBar()
                 
@@ -25,7 +32,7 @@ struct ProfileView: View {
                         Image("testAvt")
                             .resizable()
                             .scaledToFit()
-                            .frame(width: reader.size.width/4)
+                            .frame(width: proxy.size.width/4)
                             .clipShape(Circle())
                         Spacer()
                         
@@ -61,7 +68,7 @@ struct ProfileView: View {
                                     Text(LocalizedStringKey("Edit Profile"))
                                         .fontWeight(.bold)
                                         .foregroundColor(.black)
-                                        .frame(width: reader.size.width / 3.5,height: reader.size.height/20)
+                                        .frame(width: proxy.size.width / 3.5,height: proxy.size.height/20)
                                         .background{
                                             Color.gray
                                                 .opacity(0.3)
@@ -75,7 +82,7 @@ struct ProfileView: View {
                                     Text(LocalizedStringKey("Facebook Link"))
                                         .fontWeight(.bold)
                                         .foregroundColor(.black)
-                                        .frame(width: reader.size.width / 3.5,height: reader.size.height/20)
+                                        .frame(width: proxy.size.width / 3.5,height: proxy.size.height/20)
                                         .background{
                                             Color.gray
                                                 .opacity(0.3)
@@ -98,9 +105,9 @@ struct ProfileView: View {
                 }
                 
                 //Highlight stories
-                if haveHighlight {
+                if profileVM.hasStoryHightlight {
 
-                }else{
+                } else {
                     VStack(alignment: .leading){
                         HStack{
 
@@ -134,14 +141,14 @@ struct ProfileView: View {
                                         .scaledToFit()
                                         .frame(width: 40)
                                 }
-                                .frame(width: reader.size.width/5,height: reader.size.width/5)
+                                .frame(width: proxy.size.width/5,height: proxy.size.width/5)
                                 .clipShape(Circle())
                                 .overlay(Circle().stroke(Color.black).shadow(radius: 5))
 
                                 Text(LocalizedStringKey("New"))
                             }
 
-                        }else{
+                        } else {
                             Divider()
                                 .frame(height: 2)
                         }
@@ -158,7 +165,7 @@ struct ProfileView: View {
                     
                     Button {
                         withAnimation {
-                            showingPost = 1
+                            profileVM.isShowAllUserPost = true
                         }
                     } label: {
                         VStack{
@@ -166,31 +173,31 @@ struct ProfileView: View {
                                 .resizable()
                                 .scaledToFit()
                                 .frame(height: 30) //not responsive
-                                .foregroundColor(showingPost == 1 ? .black : .gray)
+                                .foregroundColor(profileVM.isShowAllUserPost ? .black : .gray)
                             
                             Divider()
-                                .overlay(showingPost == 1 ? .black : .gray)
+                                .overlay(profileVM.isShowAllUserPost ? .black : .gray)
                             
                             
                         }
-                        .frame(width: (reader.size.width-40)/2)
+                        .frame(width: (proxy.size.width-40)/2)
                         
                     }
                     
                     Button {
                         withAnimation {
-                            showingPost = 2
+                            profileVM.isShowAllUserPost = false
                         }
                     } label: {
                         VStack{
                             Image(systemName: "bookmark")
                                 .resizable()
                                 .frame(width: 25,height: 30)    //not responsive
-                                .foregroundColor(showingPost == 2 ? .black : .gray)
+                                .foregroundColor(!profileVM.isShowAllUserPost ? .black : .gray)
 
                             Divider()
-                                .overlay(showingPost == 2 ? .black : .gray)
-                        }.frame(width: (reader.size.width-40)/2)
+                                .overlay(!profileVM.isShowAllUserPost ? .black : .gray)
+                        }.frame(width: (proxy.size.width-40)/2)
                     }
 
                 }
@@ -205,6 +212,6 @@ struct ProfileView: View {
 
 struct ProfileView_Previews: PreviewProvider {
     static var previews: some View {
-        ProfileView()
+        ProfileView(profileVM: ProfileViewModel())
     }
 }
