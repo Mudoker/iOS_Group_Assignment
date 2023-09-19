@@ -39,23 +39,23 @@ struct ProfileView: View {
                         VStack{
                             HStack(spacing: 15){ //should be responsive
                                 VStack{
-                                    Text(LocalizedStringKey("0"))
+                                    Text("0")
                                         .fontWeight(.bold)
-                                    Text(LocalizedStringKey("Posts"))
+                                    Text("Posts")
                                     
                                 }
                                 
                                 VStack{
-                                    Text(LocalizedStringKey("0"))
+                                    Text("0")
                                         .fontWeight(.bold)
-                                    Text(LocalizedStringKey("Followers"))
+                                    Text("Followers")
                                     
                                 }
                                 
                                 VStack{
-                                    Text(LocalizedStringKey("0"))
+                                    Text("0")
                                         .fontWeight(.bold)
-                                    Text(LocalizedStringKey("Following"))
+                                    Text("Following")
                                     
                                 }
                             }
@@ -65,7 +65,7 @@ struct ProfileView: View {
                                     
                                 } label: {
 
-                                    Text(LocalizedStringKey("Edit Profile"))
+                                    Text("Edit Profile")
                                         .fontWeight(.bold)
                                         .foregroundColor(.black)
                                         .frame(width: proxy.size.width / 3.5,height: proxy.size.height/20)
@@ -79,7 +79,7 @@ struct ProfileView: View {
                                 Button {
                                     
                                 } label: {
-                                    Text(LocalizedStringKey("Facebook Link"))
+                                    Text("Facebook Link")
                                         .fontWeight(.bold)
                                         .foregroundColor(.black)
                                         .frame(width: proxy.size.width / 3.5,height: proxy.size.height/20)
@@ -96,11 +96,11 @@ struct ProfileView: View {
                     }
                     
                     HStack{
-                        Text(LocalizedStringKey("FullName"))
+                        Text("FullName")
                             .fontWeight(.bold)
                     }
                     HStack{
-                        Text(LocalizedStringKey("Quote"))
+                        Text("Quote")
                     }
                 }
                 
@@ -111,7 +111,7 @@ struct ProfileView: View {
                     VStack(alignment: .leading){
                         HStack{
 
-                            Text(LocalizedStringKey("Story highlights"))
+                            Text("Story highlights")
                                 .fontWeight(.bold)
 
                             Spacer()
@@ -131,7 +131,7 @@ struct ProfileView: View {
                         //Stories sample
                         if isSample {
 
-                            Text(LocalizedStringKey("Keep your favourite stories on your profile"))
+                            Text("Keep your favourite stories on your profile")
 
                             VStack{
 
@@ -145,7 +145,7 @@ struct ProfileView: View {
                                 .clipShape(Circle())
                                 .overlay(Circle().stroke(Color.black).shadow(radius: 5))
 
-                                Text(LocalizedStringKey("New"))
+                                Text("New")
                             }
 
                         } else {

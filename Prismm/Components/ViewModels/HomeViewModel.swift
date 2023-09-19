@@ -229,6 +229,7 @@ class HomeViewModel: ObservableObject {
             mediaMimeType: mediaMimeType,
             tag: selectedPostTag,
             creationDate: Timestamp(),
+            isAllowComment: true,
             author: nil,
             user: nil,
             unwrappedLikers: []
@@ -241,6 +242,23 @@ class HomeViewModel: ObservableObject {
         
         print("uploaded")
         return
+    }
+    
+    func toggleCommentOnPost(postID: String, isDisable: Bool) async throws {
+        do {
+            let postRef = Firestore.firestore().collection("test_posts").document(postID)
+            var post = try await postRef.getDocument().data(as: Post.self)
+            post.isAllowComment = isDisable
+            try postRef.setData(from: post) { error in
+                if let error = error {
+                    print("Error updating document: \(error)")
+                } else {
+                    print("Document successfully updated.")
+                }
+            }
+        } catch {
+            throw error
+        }
     }
     
     func editCurrentPost(postID: String, newPostCaption: String?, newMediaURL: String?, newMimeType: String?) async throws {

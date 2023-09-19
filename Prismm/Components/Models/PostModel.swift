@@ -26,6 +26,7 @@ struct Post: Identifiable, Codable {
     var mediaMimeType: String?
     var tag: [String] = []
     var creationDate: Timestamp
+    var isAllowComment: Bool
     var author: User?
     var user: User?
     var unwrappedLikers: [User] = []
