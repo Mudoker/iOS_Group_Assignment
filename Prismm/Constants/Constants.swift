@@ -26,5 +26,10 @@ struct Constants {
     static let lightThemeAppLogo = "logolight"
     static let darkThemeAppLogo = "logodark"
     static let storyGradientBorder = Gradient(colors: [.yellow, .red, .purple, .orange, .pink, .red])
-    static let availableTags = ["Wonders", "Technology", "Education", "Trivial", "Personal", "FYP", "Documentation", "Engineering", "Business", "Gaming", "Ask"]
+    static let availableTags = [
+        "Art", "Astronomy", "Books", "Business", "Computers", "Documentation", "Education",
+        "Engineering", "Fashion", "Food", "FYP", "Gaming", "Health", "History", "Mathematics",
+        "Movies", "Music", "Nature", "Personal", "Pets", "Politics", "QnA", "Religion", "Science",
+        "Society", "Sports", "Technology", "Travel", "Trivial", "Wonders"
+    ]
 }
