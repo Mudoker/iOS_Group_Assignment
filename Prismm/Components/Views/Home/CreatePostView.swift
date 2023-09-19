@@ -268,37 +268,61 @@ struct CreatePostView: View {
                         ProgressView()
                     }
                     .frame(width: 200, height: 200 ) // Set the desired width and height for your circular image
-                    
-                } else {
+                
                     HStack {
                         Text("Post Media")
                             .bold()
                             .font(.title3)
                         Spacer()
                         
-                        Button(action: {
-                            shouldPresentCamera = false
-                            shouldPresentPickerSheet = true
-                        }) {
-                            Image(systemName: "photo")
-                                .resizable()
-                                .aspectRatio(contentMode: .fill)
-                                .frame(width: proxy.size.width/12)
-                                .foregroundColor(.green)
+                        if homeVM.newPostSelectedMedia != nil {
+                            AsyncImage(url: homeVM.newPostSelectedMedia as? URL) { media in
+                                media
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(height: proxy.size.height/20 ) // Set the desired width and height for your circular image
+                                    
+                            } placeholder: {
+                                ProgressView()
+                            }
+                            
+                            
+                            Text((homeVM.newPostSelectedMedia?.absoluteString)!)
+                                .opacity(0.5)
+                            Button {
+                                homeVM.newPostSelectedMedia = nil
+                            } label: {
+                                Image(systemName: "xmark.circle.fill") // You can use any close button icon
+         
+                            }
+                            .foregroundColor(.gray)
+
+                        }else{
+                            Button(action: {
+                                shouldPresentCamera = false
+                                shouldPresentPickerSheet = true
+                            }) {
+                                Image(systemName: "photo")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fill)
+                                    .frame(width: proxy.size.width/12)
+                                    .foregroundColor(.green)
+                            }
+                            .padding(.trailing, 8)
+                            
+                            
+                            Button(action: {
+                                shouldPresentCamera = true
+                                shouldPresentPickerSheet = false
+                            }) {
+                                Image(systemName: "camera.fill")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fill)
+                                    .frame(width: proxy.size.width/12)
+                                    .foregroundColor(!isDarkModeEnabled ? Constants.lightThemeColor : Constants.darkThemeColor)
+                            }
                         }
-                        .padding(.trailing, 8)
                         
-                        
-                        Button(action: {
-                            shouldPresentCamera = true
-                            shouldPresentPickerSheet = true
-                        }) {
-                            Image(systemName: "camera.fill")
-                                .resizable()
-                                .aspectRatio(contentMode: .fill)
-                                .frame(width: proxy.size.width/12)
-                                .foregroundColor(!isDarkModeEnabled ? Constants.lightThemeColor : Constants.darkThemeColor)
-                        }
                         
                     }
                     .padding()
@@ -312,13 +336,14 @@ struct CreatePostView: View {
                     )
                     .padding(.bottom)
                     .sheet(isPresented: $shouldPresentPickerSheet) {
-                        UIImagePickerView(sourceType: shouldPresentCamera ? .camera : .photoLibrary , isPresented: $shouldPresentPickerSheet, selectedMedia: $homeVM.selectedMedia)
-                            .onDisappear {
-                                selected = true
-                            }
+                        UIImagePickerView(sourceType: .photoLibrary , isPresented: $shouldPresentPickerSheet, selectedMedia: $homeVM.newPostSelectedMedia)
+                            .presentationDetents(shouldPresentCamera ? [.large] : [.medium])
+                            
                     }
-                }
-                
+                    .fullScreenCover(isPresented: $shouldPresentCamera) {
+                        UIImagePickerView(sourceType: .camera , isPresented: $shouldPresentCamera, selectedMedia: $homeVM.newPostSelectedMedia)
+                            .ignoresSafeArea()
+                    }                
                 VStack(alignment: .leading) {
                     Text ("No Sensitive, Explicit, or Harmful Content")
                         .bold()
@@ -340,7 +365,6 @@ struct CreatePostView: View {
                 Button(action: {
                     Task {
                         let _ = try await homeVM.createPost(ownerID: Constants.currentUserID, postCaption: homeVM.createNewPostCaption, postTag: homeVM.selectedPostTag, mediaURL: homeVM.uploadMediaToFirebase(), mimeType: homeVM.mimeType(for: try Data(contentsOf: homeVM.selectedMedia as? URL ?? URL(fileURLWithPath: ""))))
-                        
                         isNewPost = false
                     }
                     
