@@ -25,7 +25,7 @@ struct NotificationView: View {
                     VStack(alignment: .leading) {
                         HStack {
                             Image(systemName: "bell")
-                                .font(.largeTitle)
+                                .font(.title)
                             
                             Text("Notification")
                                 .bold()

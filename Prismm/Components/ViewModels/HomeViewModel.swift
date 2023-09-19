@@ -50,6 +50,17 @@ class HomeViewModel: ObservableObject {
     // Responsive
     @Published var proxySize: CGSize = CGSize(width: 0, height: 0)
     
+    var buttonCreatePostViewHeight  : CGFloat{
+        UIDevice.current.userInterfaceIdiom == .phone ? proxySize.width / 7 : 100
+    }
+    
+    var iconCreatePostViewWidth1  : CGFloat{
+        UIDevice.current.userInterfaceIdiom == .phone ? proxySize.width / 7.68 : 30
+    }
+    
+    var iconCreatePostViewWidth  : CGFloat{
+        UIDevice.current.userInterfaceIdiom == .phone ? proxySize.width / 7.68 : 50
+    }
     var cornerRadius: CGFloat {
         UIDevice.current.userInterfaceIdiom == .phone ? proxySize.width / 40 : proxySize.width / 50
     }
@@ -91,7 +102,7 @@ class HomeViewModel: ObservableObject {
     }
     
     var messageLogoSize: CGFloat {
-        UIDevice.current.userInterfaceIdiom == .phone ? proxySize.width / 14 : proxySize.width * 0.06
+        UIDevice.current.userInterfaceIdiom == .phone ? proxySize.width / 14 : proxySize.width * 0.03
     }
     
     var profileImageSize: CGFloat {

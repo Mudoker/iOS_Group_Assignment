@@ -24,7 +24,6 @@ struct TabBar: View {
 
     // Localization
     @AppStorage("selectedLanguage") var selectedLanguage = "en"
-
     var body: some View {
         if UIDevice.current.userInterfaceIdiom == .phone{
             TabView(selection: $tabSelection) {
@@ -49,7 +48,8 @@ struct TabBar: View {
                 .tag(3)
                 
                 NavigationView {
-                    ProfileView(profileVM: profileVM)
+
+                    ProfileView(profileVM: ProfileViewModel())
                 }
                 .tag(4)
             }
@@ -86,7 +86,9 @@ struct TabBar: View {
                     .tag(3)
                     
                     NavigationView {
-                        ProfileView(profileVM: profileVM)
+
+                        ProfileView(profileVM: ProfileViewModel())
+
                     }
                     .tag(4)
                     

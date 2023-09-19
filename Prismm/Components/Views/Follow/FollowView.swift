@@ -28,9 +28,12 @@ struct FollowView: View {
                 Text("Username")
                     .font(.system(size: CGFloat(fvm.userNameFontSize)))
                     .fontWeight(.bold)
+                
+                Spacer()
             }
             .foregroundColor(fvm.isDarkMode ? .white : .black)
             .padding(.bottom,10)
+            .padding(.leading, 20 )
             
             HStack{
                 Button {

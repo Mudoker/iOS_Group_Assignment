@@ -41,12 +41,23 @@ struct HomeView: View {
                         } else {
                             homeViewModel.isCreateNewPostOnIphone.toggle()
                         }}) {
-                            Image(systemName: "plus.app")
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                                .frame(width: homeViewModel.messageLogoSize, height: homeViewModel.messageLogoSize)
-                                .foregroundColor(.pink.opacity(0.8))
-                                .padding()
+                            if UIDevice.current.userInterfaceIdiom == .phone{
+                                Image(systemName: "plus.app")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(width: homeViewModel.messageLogoSize, height: homeViewModel.messageLogoSize)
+                                    .foregroundColor(.pink.opacity(0.8))
+                                    .padding()
+                                Text("\( homeViewModel.messageLogoSize)")
+                            }
+                            else{
+                                Image(systemName: "plus.app")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(width:homeViewModel.messageLogoSize , height: homeViewModel.messageLogoSize)
+                                    .foregroundColor(.pink.opacity(0.8))
+                                    .padding()
+                            }
                         }
                         
                     }
@@ -76,10 +87,17 @@ struct HomeView: View {
                 }
                 
                 .sheet(isPresented: $homeViewModel.isCreateNewPostOnIpad) {
+
+                    CreatePostView(isNewPost: $homeViewModel.isCreateNewPostOnIpad, isDarkModeEnabled: $settingVM.isDarkModeEnabled, proxySize: $homeViewModel.proxySize)
+                }
+                .fullScreenCover(isPresented: $homeViewModel.isCreateNewPostOnIphone) {
+                    CreatePostView(isNewPost: $homeViewModel.isCreateNewPostOnIphone, isDarkModeEnabled: $settingVM.isDarkModeEnabled, proxySize: $homeViewModel.proxySize)
+
                     CreatePostView(isNewPost: $homeViewModel.isCreateNewPostOnIpad, isDarkModeEnabled: $settingVM.isDarkModeEnabled, homeVM: homeViewModel)
                 }
                 .fullScreenCover(isPresented: $homeViewModel.isCreateNewPostOnIphone) {
                     CreatePostView(isNewPost: $homeViewModel.isCreateNewPostOnIphone, isDarkModeEnabled: $settingVM.isDarkModeEnabled, homeVM: homeViewModel)
+
                 }
                 .onAppear {
                     homeViewModel.proxySize = proxy.size
