@@ -38,7 +38,7 @@ struct CreatePostView: View {
 
     @Binding var proxySize : CGSize
 
-    @ObservedObject var homeVM: HomeViewModel
+    @ObservedObject var homeVM: homeVM
     @State var isOpenUserListViewOnIphone = false
     @State var isOpenUserListViewOnIpad = false
     @State var isOpenPostTagListViewOnIphone = false
@@ -106,7 +106,7 @@ struct CreatePostView: View {
                                 isOpenUserListViewOnIpad = true
                             } else {
 
-                                homeViewModel.isShowTagListOnIphone.toggle()
+                                homeVM.isShowTagListOnIphone.toggle()
                          
                                 isOpenUserListViewOnIphone = true
 
@@ -204,7 +204,7 @@ struct CreatePostView: View {
                         Image(systemName: "photo")
                             .resizable()
                             .aspectRatio(contentMode: .fit)
-                            .frame(width: homeViewModel.iconCreatePostViewWidth, height: homeViewModel.iconCreatePostViewWidth)
+                            .frame(width: homeVM.iconCreatePostViewWidth, height: homeVM.iconCreatePostViewWidth)
                             .foregroundColor(.green)
 
                     Button(action: {
@@ -290,7 +290,7 @@ struct CreatePostView: View {
                         Image(systemName: "camera.fill")
                             .resizable()
                             .aspectRatio(contentMode: .fit)
-                            .frame(width:  homeViewModel.iconCreatePostViewWidth, height: homeViewModel.iconCreatePostViewWidth)
+                            .frame(width:  homeVM.iconCreatePostViewWidth, height: homeVM.iconCreatePostViewWidth)
                             .foregroundColor(!isDarkModeEnabled ? Constants.lightThemeColor : Constants.darkThemeColor)
 
                 }
@@ -389,7 +389,7 @@ struct CreatePostView: View {
                         Image(systemName: "exclamationmark.triangle")
                             .resizable()
                             .aspectRatio(contentMode: .fit)
-                            .frame(width: homeViewModel.iconCreatePostViewWidth1, height: homeViewModel.iconCreatePostViewWidth1)
+                            .frame(width: homeVM.iconCreatePostViewWidth1, height: homeVM.iconCreatePostViewWidth1)
                             .foregroundColor(!isDarkModeEnabled ? Constants.lightThemeColor : Constants.darkThemeColor)
                     }
                     
@@ -417,7 +417,7 @@ struct CreatePostView: View {
                     homeVM.isPostOnScreen.toggle()
                 }) {
                     RoundedRectangle(cornerRadius: proxy.size.width/40)
-                        .frame(height: homeViewModel.buttonCreatePostViewHeight)
+                        .frame(height: homeVM.buttonCreatePostViewHeight)
                         .foregroundColor(!isDarkModeEnabled ? Constants.lightThemeColor : Constants.darkThemeColor)
                         .overlay(
                             HStack(spacing: 10){
@@ -440,7 +440,7 @@ struct CreatePostView: View {
             }
             .padding(.horizontal)
 
-            .fullScreenCover(isPresented: $homeViewModel.isShowTagListOnIphone) {
+            .fullScreenCover(isPresented: $homeVM.isShowTagListOnIphone) {
                 VStack {
                     HStack (alignment: .firstTextBaseline) {
                         Text("Tag a friend")
@@ -452,7 +452,7 @@ struct CreatePostView: View {
                         Spacer()
                         
                         Button(action: {
-                            homeViewModel.isShowTagListOnIphone = false // Close the sheet
+                            homeVM.isShowTagListOnIphone = false // Close the sheet
                         }) {
                             Image(systemName: "xmark.circle.fill") // You can use any close button icon
                                 .font(.title)
@@ -485,8 +485,8 @@ struct CreatePostView: View {
                         ScrollView {
                             ForEach(filteredUsers, id: \.self) {user in
                                 Button(action: {
-                                    if !homeViewModel.createNewPostTagList.contains(user) {
-                                        homeViewModel.createNewPostTagList.append(user)
+                                    if !homeVM.createNewPostTagList.contains(user) {
+                                        homeVM.createNewPostTagList.append(user)
 
             .fullScreenCover(isPresented: $isOpenUserListViewOnIphone) {
                 UserListView(proxy: $proxySize, isDarkModeEnabled: $isDarkModeEnabled, searchProfileText: $homeVM.userTagListSearchText, selectedUsers: $homeVM.selectedUserTag, isShowUserTagList: $isOpenUserListViewOnIphone, filteredUsers: filteredUsers)
@@ -594,7 +594,7 @@ struct PostTagListView: View {
                 }
             }
 
-            .sheet(isPresented: $homeViewModel.isShowTagListOnIpad) {
+            .sheet(isPresented: $homeVM.isShowTagListOnIpad) {
                 VStack {
                     HStack (alignment: .firstTextBaseline) {
                         Text("Tag a friend")
@@ -606,7 +606,7 @@ struct PostTagListView: View {
                         Spacer()
                         
                         Button(action: {
-                            homeViewModel.isShowTagListOnIpad = false // Close the sheet
+                            homeVM.isShowTagListOnIpad = false // Close the sheet
                         }) {
                             Image(systemName: "xmark.circle.fill") // You can use any close button icon
                                 .font(.title)
@@ -639,10 +639,10 @@ struct PostTagListView: View {
                         ScrollView {
                             ForEach(filteredUsers, id: \.self) {user in
                                 Button(action: {
-                                    if !homeViewModel.createNewPostTagList.contains(user) {
-                                        homeViewModel.createNewPostTagList.append(user)
+                                    if !homeVM.createNewPostTagList.contains(user) {
+                                        homeVM.createNewPostTagList.append(user)
                                     }
-                                    homeViewModel.isShowTagListOnIpad.toggle()
+                                    homeVM.isShowTagListOnIpad.toggle()
                                 }) {
                                     HStack {
                                         Image("testAvt")
@@ -747,7 +747,7 @@ struct UserListView: View {
                 }
             }
             .onAppear {
-                homeViewModel.proxySize = proxy.size
+                homeVM.proxySize = proxy.size
             }
             
         }
