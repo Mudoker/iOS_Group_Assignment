@@ -16,7 +16,7 @@
 import SwiftUI
 
 struct HomeView: View {
-    @StateObject var homeViewModel = HomeViewModel()
+    @ObservedObject var homeViewModel = HomeViewModel()
     @ObservedObject var settingVM = SettingViewModel()
     
     var body: some View {

@@ -24,6 +24,7 @@ struct Post: Identifiable, Codable {
     var likerIDs: [String?] = []
     var mediaURL: String?
     var mediaMimeType: String?
+    var tag: [String] = []
     var creationDate: Timestamp
     var author: User?
     var user: User?
