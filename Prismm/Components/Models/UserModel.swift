@@ -39,6 +39,7 @@ struct User: Identifiable, Codable {
     var blockList: [String?] // User IDs in block list
     var restrictedByList: [String?] // User IDs in restricted list
     var blockByList: [String?] // User IDs in block list
+    
     init(id: String, password: String, username: String) {
         self.id = id
         self.username = username
@@ -59,6 +60,9 @@ struct User: Identifiable, Codable {
         self.notifications = []
         self.restrictedList = []
         self.blockList = []
+        self.restrictedByList = []
+        self.blockByList = []
     }
 }
+
 

@@ -201,11 +201,11 @@ class HomeViewModel: ObservableObject {
         let postRef = Firestore.firestore().collection("test_posts").document()
         
         var mediaURL = ""
-        var mimeTypeS = ""
+        var mediaMimeType = ""
         
         if newPostSelectedMedia != nil{
             mediaURL = try await createMediaToFirebase()
-            mimeTypeS = mimeType(for: try Data(contentsOf: newPostSelectedMedia as? URL ?? URL(fileURLWithPath: "")))
+            mediaMimeType = mimeType(for: try Data(contentsOf: newPostSelectedMedia as? URL ?? URL(fileURLWithPath: "")))
         }
         
         print(mediaURL)
@@ -215,8 +215,8 @@ class HomeViewModel: ObservableObject {
             caption: createNewPostCaption,
             likerIDs: [],
             mediaURL: mediaURL,
-            mediaMimeType: mimeType,
-            tag: postTag,
+            mediaMimeType: mediaMimeType,
+            tag: selectedPostTag,
             creationDate: Timestamp(),
             author: nil,
             user: nil,
@@ -472,8 +472,9 @@ class HomeViewModel: ObservableObject {
         var currentUser = try await currentUserRef.getDocument().data(as: User.self)
         let otherUserRef = Firestore.firestore().collection("users").document("3WBgDcMgEQfodIbaXWTBHvtjYCl2")
         var otherUser = try await currentUserRef.getDocument().data(as: User.self)
+        
         currentUser.blockList.removeAll { $0 == userID }
-        currentUser.blockList.removeAll { $0 == Constants.currentUserID }
+        otherUser.blockList.removeAll { $0 == Constants.currentUserID }
 
         try currentUserRef.setData(from: currentUser) { error in
             if let error = error {
@@ -525,7 +526,7 @@ class HomeViewModel: ObservableObject {
         let otherUserRef = Firestore.firestore().collection("users").document("3WBgDcMgEQfodIbaXWTBHvtjYCl2")
         var otherUser = try await currentUserRef.getDocument().data(as: User.self)
         currentUser.restrictedList.removeAll { $0 == userID }
-        currentUser.restrictedByList.removeAll { $0 == Constants.currentUserID }
+        otherUser.restrictedByList.removeAll { $0 == Constants.currentUserID }
 
         try currentUserRef.setData(from: currentUser) { error in
             if let error = error {
@@ -600,43 +601,34 @@ class HomeViewModel: ObservableObject {
     
     
     func createMediaToFirebase() async throws -> String {
-        print("Uploading media")
-        
-        guard let selectedMedia = newPostSelectedMedia else {
-            print("Failed to get data")
-            return ""
+            print("Uploading media")
+            
+            guard let selectedMedia = newPostSelectedMedia else {
+                print("Failed to get data")
+                return ""
+            }
+            print(selectedMedia)
+            
+            do {
+                let mediaData = try Data(contentsOf: selectedMedia as URL)
+                print("Completed converting data")
+                
+                if mediaData.count > 25_000_000 {
+                    print("Selected file too large: \(mediaData)")
+                    return ""
+                }
+                
+                guard let mediaUrl = try await uploadMediaToFireBase(withMedia: mediaData) else {
+                    return ""
+                }
+                
+                print("Uploaded media data to Firebase")
+                return mediaUrl
+            } catch {
+                print("Failed to upload post: \(error)")
+                return ""
+            }
         }
-        print(selectedMedia)
-        
-        do {
-            let mediaData = try Data(contentsOf: selectedMedia as URL)
-            print("Completed converting data")
-            
-            if mediaData.count > 25_000_000 {
-                print("Selected file too large: \(mediaData)")
-                return ""
-            }
-            
-            guard let mediaUrl = try await uploadMediaToFireBase(withMedia: mediaData) else {
-                return ""
-            }
-            
-            print("Uploaded media data to Firebase")
-            
-            let postRef = Firestore.firestore().collection("posts").document()
-            let post = try? await createPost(ownerID: Constants.currentUserID, postCaption: "Hello world", postTag: [], mediaURL: mediaUrl, mimeType: mimeType(for: mediaData))
-            
-            guard let encodedPost = try? Firestore.Encoder().encode(post) else {
-                return ""
-            }
-            
-            try await postRef.setData(encodedPost)
-            return mediaUrl
-        } catch {
-            print("Failed to upload post: \(error)")
-            return ""
-        }
-    }
     
     func mimeType(for data: Data) -> String {
         var b: UInt8 = 0

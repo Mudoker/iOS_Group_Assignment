@@ -12,6 +12,7 @@
  Created  date: 14/09/2023
  Last modified: 16/09/2023
  Acknowledgement: None
+ https://stackoverflow.com/questions/76235908/how-can-i-send-grid-item-to-next-row-if-there-isnt-enough-space-swiftui
  */
 
 import SwiftUI
@@ -253,97 +254,91 @@ struct CreatePostView: View {
                 )
                 .padding(.bottom)
                 .sheet(isPresented: $shouldPresentPickerSheet) {
-                    UIImagePickerView(sourceType: shouldPresentCamera ? .camera : .photoLibrary , isPresented: $shouldPresentPickerSheet, selectedMedia: $homeVM.selectedMedia)
-                        .onDisappear {
-                            selected = true
-                        }
+                    UIImagePickerView(sourceType: .photoLibrary , isPresented: $shouldPresentPickerSheet, selectedMedia: $homeVM.newPostSelectedMedia)
+                        .presentationDetents(shouldPresentCamera ? [.large] : [.medium])
+                    
+                }
+                .fullScreenCover(isPresented: $shouldPresentCamera) {
+                    UIImagePickerView(sourceType: .camera , isPresented: $shouldPresentCamera, selectedMedia: $homeVM.newPostSelectedMedia)
+                        .ignoresSafeArea()
                 }
                 
-                if selected {
-                    AsyncImage(url: homeVM.selectedMedia as? URL) { media in
-                        media
-                            .resizable()
-                            .scaledToFill()
-                    } placeholder: {
-                        ProgressView()
-                    }
-                    .frame(width: 200, height: 200 ) // Set the desired width and height for your circular image
                 
-                    HStack {
-                        Text("Post Media")
-                            .bold()
-                            .font(.title3)
-                        Spacer()
-                        
-                        if homeVM.newPostSelectedMedia != nil {
-                            AsyncImage(url: homeVM.newPostSelectedMedia as? URL) { media in
-                                media
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(height: proxy.size.height/20 ) // Set the desired width and height for your circular image
-                                    
-                            } placeholder: {
-                                ProgressView()
-                            }
+                HStack {
+                    Text("Post Media")
+                        .bold()
+                        .font(.title3)
+                    Spacer()
+                    
+                    if homeVM.newPostSelectedMedia != nil {
+                        AsyncImage(url: homeVM.newPostSelectedMedia as? URL) { media in
+                            media
+                                .resizable()
+                                .scaledToFit()
+                                .frame(height: proxy.size.height/20 ) // Set the desired width and height for your circular image
                             
-                            
-                            Text((homeVM.newPostSelectedMedia?.absoluteString)!)
-                                .opacity(0.5)
-                            Button {
-                                homeVM.newPostSelectedMedia = nil
-                            } label: {
-                                Image(systemName: "xmark.circle.fill") // You can use any close button icon
-         
-                            }
-                            .foregroundColor(.gray)
-
-                        }else{
-                            Button(action: {
-                                shouldPresentCamera = false
-                                shouldPresentPickerSheet = true
-                            }) {
-                                Image(systemName: "photo")
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fill)
-                                    .frame(width: proxy.size.width/12)
-                                    .foregroundColor(.green)
-                            }
-                            .padding(.trailing, 8)
-                            
-                            
-                            Button(action: {
-                                shouldPresentCamera = true
-                                shouldPresentPickerSheet = false
-                            }) {
-                                Image(systemName: "camera.fill")
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fill)
-                                    .frame(width: proxy.size.width/12)
-                                    .foregroundColor(!isDarkModeEnabled ? Constants.lightThemeColor : Constants.darkThemeColor)
-                            }
+                        } placeholder: {
+                            ProgressView()
                         }
                         
                         
-                    }
-                    .padding()
-                    .background(
-                        RoundedRectangle(cornerRadius: proxy.size.width/40)
-                            .stroke(LinearGradient(
-                                gradient: Gradient(colors: isDarkModeEnabled ? Constants.buttonGradientColorDark : Constants.buttonGradientColorLight),
-                                startPoint: .topLeading,
-                                endPoint: .bottomTrailing
-                            ), lineWidth: 1.5)
-                    )
-                    .padding(.bottom)
-                    .sheet(isPresented: $shouldPresentPickerSheet) {
-                        UIImagePickerView(sourceType: .photoLibrary , isPresented: $shouldPresentPickerSheet, selectedMedia: $homeVM.newPostSelectedMedia)
-                            .presentationDetents(shouldPresentCamera ? [.large] : [.medium])
+                        Text((homeVM.newPostSelectedMedia?.absoluteString)!)
+                            .opacity(0.5)
+                        Button {
+                            homeVM.newPostSelectedMedia = nil
+                        } label: {
+                            Image(systemName: "xmark.circle.fill") // You can use any close button icon
                             
+                        }
+                        .foregroundColor(.gray)
+                        
+                    } else {
+                        Button(action: {
+                            shouldPresentCamera = false
+                            shouldPresentPickerSheet = true
+                        }) {
+                            Image(systemName: "photo")
+                                .resizable()
+                                .aspectRatio(contentMode: .fill)
+                                .frame(width: proxy.size.width/12)
+                                .foregroundColor(.green)
+                        }
+                        .padding(.trailing, 8)
+                        
+                        
+                        Button(action: {
+                            shouldPresentCamera = true
+                            shouldPresentPickerSheet = false
+                        }) {
+                            Image(systemName: "camera.fill")
+                                .resizable()
+                                .aspectRatio(contentMode: .fill)
+                                .frame(width: proxy.size.width/12)
+                                .foregroundColor(!isDarkModeEnabled ? Constants.lightThemeColor : Constants.darkThemeColor)
+                        }
                     }
-                    .fullScreenCover(isPresented: $shouldPresentCamera) {
-                        UIImagePickerView(sourceType: .camera , isPresented: $shouldPresentCamera, selectedMedia: $homeVM.newPostSelectedMedia)
-                            .ignoresSafeArea()
-                    }                
+                }
+                
+                .padding()
+                .background(
+                    RoundedRectangle(cornerRadius: proxy.size.width/40)
+                        .stroke(LinearGradient(
+                            gradient: Gradient(colors: isDarkModeEnabled ? Constants.buttonGradientColorDark : Constants.buttonGradientColorLight),
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        ), lineWidth: 1.5)
+                )
+                .padding(.bottom)
+                .sheet(isPresented: $shouldPresentPickerSheet) {
+                    UIImagePickerView(sourceType: .photoLibrary , isPresented: $shouldPresentPickerSheet, selectedMedia: $homeVM.newPostSelectedMedia)
+                        .presentationDetents(shouldPresentCamera ? [.large] : [.medium])
+                    
+                }
+                .fullScreenCover(isPresented: $shouldPresentCamera) {
+                    UIImagePickerView(sourceType: .camera , isPresented: $shouldPresentCamera, selectedMedia: $homeVM.newPostSelectedMedia)
+                        .ignoresSafeArea()
+                }
+                
                 VStack(alignment: .leading) {
                     Text ("No Sensitive, Explicit, or Harmful Content")
                         .bold()
@@ -364,7 +359,8 @@ struct CreatePostView: View {
                 
                 Button(action: {
                     Task {
-                        let _ = try await homeVM.createPost(ownerID: Constants.currentUserID, postCaption: homeVM.createNewPostCaption, postTag: homeVM.selectedPostTag, mediaURL: homeVM.uploadMediaToFirebase(), mimeType: homeVM.mimeType(for: try Data(contentsOf: homeVM.selectedMedia as? URL ?? URL(fileURLWithPath: ""))))
+                        let _ = try await homeVM.createPost()
+                        
                         isNewPost = false
                     }
                     
@@ -436,7 +432,7 @@ struct PostTagListView: View {
                         .opacity(0.6)
                         .bold()
                 }
-
+                
                 Spacer()
                 
                 Button(action: {
@@ -447,7 +443,7 @@ struct PostTagListView: View {
                 }
             }
             .padding(.horizontal)
-
+            
             TextField("Search Tags", text: $searchTagText)
                 .textFieldStyle(RoundedBorderTextFieldStyle())
                 .padding([.horizontal, .bottom])
@@ -462,11 +458,11 @@ struct PostTagListView: View {
                                         selectedTags.append(tag)
                                     }
                                 } else {
-                                   // Remove the user from the tagList
-                                   if let index = selectedTags.firstIndex(of: tag) {
-                                       selectedTags.remove(at: index)
-                                   }
-                               }
+                                    // Remove the user from the tagList
+                                    if let index = selectedTags.firstIndex(of: tag) {
+                                        selectedTags.remove(at: index)
+                                    }
+                                }
                             }) {
                                 HStack {
                                     Text(tag)
@@ -597,30 +593,29 @@ struct UserListView: View {
 }
 
 struct FlowLayout: Layout {
-    
     func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
         let sizes = subviews.map { $0.sizeThatFits(.unspecified) }
         
         var totalHeight: CGFloat = 0
         var totalWidth: CGFloat = 0
         
-        var lineWidth: CGFloat = 0
-        var lineHeight: CGFloat = 0
+        var currentLineWidth: CGFloat = 0
+        var currentLineHeight: CGFloat = 0
         
         for size in sizes {
-            if lineWidth + size.width > proposal.width ?? 0 {
-                totalHeight += lineHeight
-                lineWidth = size.width
-                lineHeight = size.height
+            if currentLineWidth + size.width > proposal.width ?? 0 {
+                totalHeight += currentLineHeight
+                currentLineWidth = size.width
+                currentLineHeight = size.height
             } else {
-                lineWidth += size.width
-                lineHeight = max(lineHeight, size.height)
+                currentLineWidth += size.width
+                currentLineHeight = max(currentLineHeight, size.height)
             }
             
-            totalWidth = max(totalWidth, lineWidth)
+            totalWidth = max(totalWidth, currentLineWidth)
         }
         
-        totalHeight += lineHeight
+        totalHeight += currentLineHeight
         
         return .init(width: totalWidth, height: totalHeight)
     }
@@ -628,31 +623,32 @@ struct FlowLayout: Layout {
     func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) {
         let sizes = subviews.map { $0.sizeThatFits(.unspecified) }
         
-        var lineX = bounds.minX
-        var lineY = bounds.minY
-        var lineHeight: CGFloat = 0
+        var currentX: CGFloat = bounds.minX
+        var currentY: CGFloat = bounds.minY
+        var currentLineHeight: CGFloat = 0
         
         for index in subviews.indices {
-            if lineX + sizes[index].width > (proposal.width ?? 0) {
-                lineY += lineHeight
-                lineHeight = 0
-                lineX = bounds.minX
+            if currentX + sizes[index].width > (proposal.width ?? 0) {
+                currentY += currentLineHeight
+                currentLineHeight = 0
+                currentX = bounds.minX
             }
             
             subviews[index].place(
                 at: .init(
-                    x: lineX + sizes[index].width / 2,
-                    y: lineY + sizes[index].height / 2
+                    x: currentX + sizes[index].width / 2,
+                    y: currentY + sizes[index].height / 2
                 ),
                 anchor: .center,
                 proposal: ProposedViewSize(sizes[index])
             )
             
-            lineHeight = max(lineHeight, sizes[index].height)
-            lineX += sizes[index].width
+            currentLineHeight = max(currentLineHeight, sizes[index].height)
+            currentX += sizes[index].width
         }
     }
 }
+
 struct CreatePostView_Previews: PreviewProvider {
     static var previews: some View {
         CreatePostView(isNewPost: .constant(true), isDarkModeEnabled: .constant(false), homeVM: HomeViewModel())
