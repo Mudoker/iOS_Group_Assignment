@@ -343,7 +343,7 @@ struct CreatePostView: View {
                     Text ("No Sensitive, Explicit, or Harmful Content")
                         .bold()
                     
-                    Text ("Please refrain from uploading sensitive, explicit, or harmful content, as well as hate speech or harassment.")
+                    Text ("Please refrain from these contents, as well as hate speech or harassment for a safer community.")
                         .opacity(0.8)
                         .fixedSize(horizontal: false, vertical: true)
                 }

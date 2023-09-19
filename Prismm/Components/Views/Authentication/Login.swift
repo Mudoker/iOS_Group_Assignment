@@ -55,8 +55,8 @@ struct Login: View {
                         //Text field
                         CustomTextField(
                             text: $authVM.loginAccountText,
-                            textFieldTitle: "Username",
-                            testFieldPlaceHolder: "Username or Account",
+                            textFieldTitle: "Account",
+                            testFieldPlaceHolder: "Email",
                             titleFont: authVM.textFieldTitleFont,
                             textFieldSizeHeight: authVM.textFieldSizeHeight,
                             textFieldCorner: authVM.textFieldCornerRadius,

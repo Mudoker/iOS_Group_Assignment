@@ -24,13 +24,7 @@ struct TabBar: View {
 
     // Localization
     @AppStorage("selectedLanguage") var selectedLanguage = "en"
-//    init(uploadVM: UploadPostViewModel) {
-//        let appearance = UITabBarAppearance()
-//        appearance.configureWithOpaqueBackground()
-//        appearance.backgroundColor = UIColor(red: 0.85, green: 0.95, blue: 1.0, alpha: 1.0)
-//        UITabBar.appearance().standardAppearance = appearance
-//        UITabBar.appearance().scrollEdgeAppearance = appearance
-//    }
+
     var body: some View {
         if UIDevice.current.userInterfaceIdiom == .phone{
             TabView(selection: $tabSelection) {

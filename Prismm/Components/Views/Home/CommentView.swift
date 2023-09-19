@@ -40,8 +40,8 @@ struct CommentView: View {
                     HStack {
                         Menu {
                             Picker(selection: $homeViewModel.selectedCommentFilter, label: Text("Please choose a sorting option")) {
-                                Text("Newest").tag("Newest")
-                                Text("Oldest").tag("Oldest")
+                                Text("Newest").tag("asc")
+                                Text("Oldest").tag("desc")
                             }
                         } label: {
                             Image(systemName: "line.3.horizontal.decrease")
