@@ -189,13 +189,13 @@ class HomeViewModel: ObservableObject {
     
     func createComment(content: String, commentor: String, postId: String) async throws -> Comment?{
         let commentRef = Firestore.firestore().collection("test_comments").document()
-        let newComment = Comment(id: commentRef.documentID, content: content, commenterID: commentor, postID: postId)
+        let newComment = Comment(id: commentRef.documentID, content: content, commenterID: commentor, postID: postId, creationDate: Timestamp())
         guard let encodedComment = try? Firestore.Encoder().encode(newComment) else { return nil }
         try await commentRef.setData(encodedComment)
         return newComment
     }
     
-
+    
     func createPost() async throws {
         let ownerID = "m52oyZNbCxVx5SsvFAEPwankeAP2"
         let postRef = Firestore.firestore().collection("test_posts").document()
@@ -320,6 +320,25 @@ class HomeViewModel: ObservableObject {
         }
         
         return sortedPosts
+    }
+    
+    func sortPostCommentByTime(order: String, comments: [Comment]) -> [Comment] {
+        var sortedComments = comments
+        
+        switch order {
+        case "asc":
+            sortedComments.sort { cmt1, cmt2 in
+                return cmt1.creationDate.dateValue().compare(cmt2.creationDate.dateValue()) == ComparisonResult.orderedAscending
+            }
+        case "desc":
+            sortedComments.sort { cmt1, cmt2 in
+                return cmt1.creationDate.dateValue().compare(cmt2.creationDate.dateValue()) == ComparisonResult.orderedDescending
+            }
+        default:
+            break
+        }
+        
+        return sortedComments
     }
     
     func filterPostByCategory(category: [String], posts: [Post]) -> [Post] {
@@ -475,7 +494,7 @@ class HomeViewModel: ObservableObject {
         
         currentUser.blockList.removeAll { $0 == userID }
         otherUser.blockList.removeAll { $0 == Constants.currentUserID }
-
+        
         try currentUserRef.setData(from: currentUser) { error in
             if let error = error {
                 print("Error updating document: \(error)")
@@ -527,7 +546,7 @@ class HomeViewModel: ObservableObject {
         var otherUser = try await currentUserRef.getDocument().data(as: User.self)
         currentUser.restrictedList.removeAll { $0 == userID }
         otherUser.restrictedByList.removeAll { $0 == Constants.currentUserID }
-
+        
         try currentUserRef.setData(from: currentUser) { error in
             if let error = error {
                 print("Error updating document: \(error)")
@@ -601,34 +620,34 @@ class HomeViewModel: ObservableObject {
     
     
     func createMediaToFirebase() async throws -> String {
-            print("Uploading media")
-            
-            guard let selectedMedia = newPostSelectedMedia else {
-                print("Failed to get data")
-                return ""
-            }
-            print(selectedMedia)
-            
-            do {
-                let mediaData = try Data(contentsOf: selectedMedia as URL)
-                print("Completed converting data")
-                
-                if mediaData.count > 25_000_000 {
-                    print("Selected file too large: \(mediaData)")
-                    return ""
-                }
-                
-                guard let mediaUrl = try await uploadMediaToFireBase(withMedia: mediaData) else {
-                    return ""
-                }
-                
-                print("Uploaded media data to Firebase")
-                return mediaUrl
-            } catch {
-                print("Failed to upload post: \(error)")
-                return ""
-            }
+        print("Uploading media")
+        
+        guard let selectedMedia = newPostSelectedMedia else {
+            print("Failed to get data")
+            return ""
         }
+        print(selectedMedia)
+        
+        do {
+            let mediaData = try Data(contentsOf: selectedMedia as URL)
+            print("Completed converting data")
+            
+            if mediaData.count > 25_000_000 {
+                print("Selected file too large: \(mediaData)")
+                return ""
+            }
+            
+            guard let mediaUrl = try await uploadMediaToFireBase(withMedia: mediaData) else {
+                return ""
+            }
+            
+            print("Uploaded media data to Firebase")
+            return mediaUrl
+        } catch {
+            print("Failed to upload post: \(error)")
+            return ""
+        }
+    }
     
     func mimeType(for data: Data) -> String {
         var b: UInt8 = 0
