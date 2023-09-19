@@ -177,11 +177,13 @@ struct CreatePostView: View {
                                     .resizable()
                                     .scaledToFit()
                                     .frame(height: proxy.size.height/20 ) // Set the desired width and height for your circular image
+                                    
                             } placeholder: {
                                 ProgressView()
                             }
                             
                             Text((homeVM.newPostSelectedMedia?.absoluteString)!)
+                                .opacity(0.8)
                         }else{
                             Button(action: {
                                 shouldPresentCamera = false
