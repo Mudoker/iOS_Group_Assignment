@@ -76,10 +76,10 @@ struct HomeView: View {
                 }
                 
                 .sheet(isPresented: $homeViewModel.isCreateNewPostOnIpad) {
-                    CreatePostView(isNewPost: $homeViewModel.isCreateNewPostOnIpad, isDarkModeEnabled: $settingVM.isDarkModeEnabled)
+                    CreatePostView(isNewPost: $homeViewModel.isCreateNewPostOnIpad, isDarkModeEnabled: $settingVM.isDarkModeEnabled, homeVM: homeViewModel)
                 }
                 .fullScreenCover(isPresented: $homeViewModel.isCreateNewPostOnIphone) {
-                    CreatePostView(isNewPost: $homeViewModel.isCreateNewPostOnIphone, isDarkModeEnabled: $settingVM.isDarkModeEnabled)
+                    CreatePostView(isNewPost: $homeViewModel.isCreateNewPostOnIphone, isDarkModeEnabled: $settingVM.isDarkModeEnabled, homeVM: homeViewModel)
                 }
                 .onAppear {
                     homeViewModel.proxySize = proxy.size

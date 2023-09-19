@@ -37,7 +37,8 @@ struct User: Identifiable, Codable {
     var notifications: [String?]
     var restrictedList: [String?] // User IDs in restricted list
     var blockList: [String?] // User IDs in block list
-    
+    var restrictedByList: [String?] // User IDs in restricted list
+    var blockByList: [String?] // User IDs in block list
     init(id: String, password: String, username: String) {
         self.id = id
         self.username = username
