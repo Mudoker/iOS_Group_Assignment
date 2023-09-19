@@ -80,6 +80,33 @@ struct SettingSheet: View {
         
     }
 }
+struct PersonalInformationView: View {
+    var body: some View {
+        // Content for Personal Information View
+        Text("Personal Information View")
+    }
+}
+
+struct PasswordSecurityView: View {
+    var body: some View {
+        // Content for Password & Security View
+        Text("Password & Security View")
+    }
+}
+
+struct EmailView: View {
+    var body: some View {
+        // Content for Email View
+        Text("Email View")
+    }
+}
+
+struct ConnectionsView: View {
+    var body: some View {
+        // Content for Connections View
+        Text("Connections View")
+    }
+}
 
 struct SettingSheet_Previews: PreviewProvider {
     static var previews: some View {

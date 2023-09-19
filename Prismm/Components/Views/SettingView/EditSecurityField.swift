@@ -84,7 +84,7 @@ struct EditSecurityField: View {
                 }
 
                 
-                Text("Login with Biometrics")
+                Text("Autofill")
                     .bold()
                     .font(.title3)
                     .padding(.horizontal)

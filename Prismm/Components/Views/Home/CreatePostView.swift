@@ -12,19 +12,12 @@
  Created  date: 14/09/2023
  Last modified: 16/09/2023
  Acknowledgement: None
-
-
  https://stackoverflow.com/questions/76235908/how-can-i-send-grid-item-to-next-row-if-there-isnt-enough-space-swiftui
-
  */
 
 import SwiftUI
 
 struct CreatePostView: View {
-
-    
-    @State private var searchText = ""
-
     @State private var users = ["mudoker7603", "user123", "sampleUser", "testUser", "john_doe", "jane_doe", "user007", "newUser", "oldUser", "demoUser"]
     @State private var selectedTags: Set<String> = []
     
@@ -35,10 +28,7 @@ struct CreatePostView: View {
     
     @Binding var isNewPost: Bool
     @Binding var isDarkModeEnabled: Bool
-
-    @Binding var proxySize : CGSize
-
-    @ObservedObject var homeVM: homeVM
+    @ObservedObject var homeVM: HomeViewModel
     @State var isOpenUserListViewOnIphone = false
     @State var isOpenUserListViewOnIpad = false
     @State var isOpenPostTagListViewOnIphone = false
@@ -69,9 +59,6 @@ struct CreatePostView: View {
                         .bold()
                         .font(.title)
                         .padding(.vertical)
-                        .overlay{
-                            
-                        }
                     
                     HStack {
                         Spacer()
@@ -105,11 +92,7 @@ struct CreatePostView: View {
                             if UIDevice.current.userInterfaceIdiom == .pad {
                                 isOpenUserListViewOnIpad = true
                             } else {
-
-                                homeVM.isShowTagListOnIphone.toggle()
-                         
                                 isOpenUserListViewOnIphone = true
-
                             }
                             print("ok")
                         }) {
@@ -190,23 +173,13 @@ struct CreatePostView: View {
                     .padding()
                 }
                 .padding(.vertical)
-                .padding(.bottom, UIDevice.current.userInterfaceIdiom == .phone ? 0 : 20)
                 
                 HStack {
                     Text("Tags")
                         .bold()
                         .font(.title3)
-                    
                     Spacer()
                     
-
-                    Button(action: {}) {
-                        Image(systemName: "photo")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: homeVM.iconCreatePostViewWidth, height: homeVM.iconCreatePostViewWidth)
-                            .foregroundColor(.green)
-
                     Button(action: {
                         if UIDevice.current.userInterfaceIdiom == .pad {
                             isOpenPostTagListViewOnIpad = true
@@ -268,7 +241,6 @@ struct CreatePostView: View {
                                 .frame(height: proxy.size.height/40)
                             }
                         }
-
                     }
                 }
                 .padding()
@@ -285,14 +257,6 @@ struct CreatePostView: View {
                     UIImagePickerView(sourceType: .photoLibrary , isPresented: $shouldPresentPickerSheet, selectedMedia: $homeVM.newPostSelectedMedia)
                         .presentationDetents(shouldPresentCamera ? [.large] : [.medium])
                     
-
-                    Button(action: {}) {
-                        Image(systemName: "camera.fill")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width:  homeVM.iconCreatePostViewWidth, height: homeVM.iconCreatePostViewWidth)
-                            .foregroundColor(!isDarkModeEnabled ? Constants.lightThemeColor : Constants.darkThemeColor)
-
                 }
                 .fullScreenCover(isPresented: $shouldPresentCamera) {
                     UIImagePickerView(sourceType: .camera , isPresented: $shouldPresentCamera, selectedMedia: $homeVM.newPostSelectedMedia)
@@ -352,7 +316,6 @@ struct CreatePostView: View {
                                 .frame(width: proxy.size.width/12)
                                 .foregroundColor(!isDarkModeEnabled ? Constants.lightThemeColor : Constants.darkThemeColor)
                         }
-
                     }
                 }
                 
@@ -365,10 +328,6 @@ struct CreatePostView: View {
                             endPoint: .bottomTrailing
                         ), lineWidth: 1.5)
                 )
-
-                //                .padding(.bottom)
-                .padding(.bottom, UIDevice.current.userInterfaceIdiom == .phone ? 0 : 20)
-
                 .padding(.bottom)
                 .sheet(isPresented: $shouldPresentPickerSheet) {
                     UIImagePickerView(sourceType: .photoLibrary , isPresented: $shouldPresentPickerSheet, selectedMedia: $homeVM.newPostSelectedMedia)
@@ -379,19 +338,10 @@ struct CreatePostView: View {
                     UIImagePickerView(sourceType: .camera , isPresented: $shouldPresentCamera, selectedMedia: $homeVM.newPostSelectedMedia)
                         .ignoresSafeArea()
                 }
-
                 
                 VStack(alignment: .leading) {
-                    HStack{
-                        Text ("No Sensitive, Explicit, or Harmful Content")
-                            .bold()
-                        Spacer()
-                        Image(systemName: "exclamationmark.triangle")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: homeVM.iconCreatePostViewWidth1, height: homeVM.iconCreatePostViewWidth1)
-                            .foregroundColor(!isDarkModeEnabled ? Constants.lightThemeColor : Constants.darkThemeColor)
-                    }
+                    Text ("No Sensitive, Explicit, or Harmful Content")
+                        .bold()
                     
                     Text ("Please refrain from these contents, as well as hate speech or harassment for a safer community.")
                         .opacity(0.8)
@@ -417,15 +367,19 @@ struct CreatePostView: View {
                     homeVM.isPostOnScreen.toggle()
                 }) {
                     RoundedRectangle(cornerRadius: proxy.size.width/40)
-                        .frame(height: homeVM.buttonCreatePostViewHeight)
+                        .frame(height: proxy.size.width/7)
                         .foregroundColor(!isDarkModeEnabled ? Constants.lightThemeColor : Constants.darkThemeColor)
                         .overlay(
-                            HStack(spacing: 10){
+                            HStack {
                                 
                                 Text("Post")
-                                    .font(UIDevice.current.userInterfaceIdiom == .phone ? .title3 : .title)
+                                    .font(.title3)
                                     .bold()
                                 
+                                Image(systemName: "paperplane.fill")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(width: proxy.size.width/18)
                                 
                             }
                                 .foregroundColor(.white)
@@ -439,55 +393,6 @@ struct CreatePostView: View {
                 proxySize = proxy.size
             }
             .padding(.horizontal)
-
-            .fullScreenCover(isPresented: $homeVM.isShowTagListOnIphone) {
-                VStack {
-                    HStack (alignment: .firstTextBaseline) {
-                        Text("Tag a friend")
-                            .bold()
-                            .font(.title)
-                            .padding(.top)
-                            .padding(.top)
-                        
-                        Spacer()
-                        
-                        Button(action: {
-                            homeVM.isShowTagListOnIphone = false // Close the sheet
-                        }) {
-                            Image(systemName: "xmark.circle.fill") // You can use any close button icon
-                                .font(.title)
-                        }
-                        
-                    }
-                    .padding([.top, .horizontal])
-                    
-                    
-                    VStack {
-                        ZStack (alignment: .topLeading) {
-                            RoundedRectangle(cornerRadius: proxy.size.width/40)
-                                .stroke(LinearGradient(
-                                    gradient: Gradient(colors: isDarkModeEnabled ? Constants.buttonGradientColorDark : Constants.buttonGradientColorLight),
-                                    startPoint: .topLeading,
-                                    endPoint: .bottomTrailing
-                                ), lineWidth: 1.5)
-                                .frame(height: proxy.size.height/15)
-                            
-                            TextField("", text: $searchText, prompt:  Text("Search a friend...").foregroundColor(isDarkModeEnabled ? .white.opacity(0.5) : .black.opacity(0.5))
-                                .font(.title3)
-                                      
-                            )
-                            .autocorrectionDisabled(true)
-                            .textInputAutocapitalization(.never)
-                            .padding()
-                        }
-                        .padding([.horizontal, .bottom])
-                        
-                        ScrollView {
-                            ForEach(filteredUsers, id: \.self) {user in
-                                Button(action: {
-                                    if !homeVM.createNewPostTagList.contains(user) {
-                                        homeVM.createNewPostTagList.append(user)
-
             .fullScreenCover(isPresented: $isOpenUserListViewOnIphone) {
                 UserListView(proxy: $proxySize, isDarkModeEnabled: $isDarkModeEnabled, searchProfileText: $homeVM.userTagListSearchText, selectedUsers: $homeVM.selectedUserTag, isShowUserTagList: $isOpenUserListViewOnIphone, filteredUsers: filteredUsers)
             }
@@ -556,7 +461,6 @@ struct PostTagListView: View {
                                     // Remove the user from the tagList
                                     if let index = selectedTags.firstIndex(of: tag) {
                                         selectedTags.remove(at: index)
-
                                     }
                                 }
                             }) {
@@ -570,9 +474,6 @@ struct PostTagListView: View {
                                     } else {
                                         Image(systemName: "circle")
                                     }
-
-                                    .padding(.horizontal)
-                                 
                                 }
                                 .padding()
                                 .background(
@@ -593,68 +494,6 @@ struct PostTagListView: View {
                     }
                 }
             }
-
-            .sheet(isPresented: $homeVM.isShowTagListOnIpad) {
-                VStack {
-                    HStack (alignment: .firstTextBaseline) {
-                        Text("Tag a friend")
-                            .bold()
-                            .font(.title)
-                            .padding(.top)
-                            .padding(.top)
-                        
-                        Spacer()
-                        
-                        Button(action: {
-                            homeVM.isShowTagListOnIpad = false // Close the sheet
-                        }) {
-                            Image(systemName: "xmark.circle.fill") // You can use any close button icon
-                                .font(.title)
-                        }
-                        
-                    }
-                    .padding([.top, .horizontal])
-                    
-                    
-                    VStack {
-                        ZStack (alignment: .topLeading) {
-                            RoundedRectangle(cornerRadius: proxy.size.width/40)
-                                .stroke(LinearGradient(
-                                    gradient: Gradient(colors: isDarkModeEnabled ? Constants.buttonGradientColorDark : Constants.buttonGradientColorLight),
-                                    startPoint: .topLeading,
-                                    endPoint: .bottomTrailing
-                                ), lineWidth: 1.5)
-                                .frame(height: proxy.size.height/15)
-                            
-                            TextField("", text: $searchText, prompt:  Text("Search a friend...").foregroundColor(isDarkModeEnabled ? .white.opacity(0.5) : .black.opacity(0.5))
-                                .font(.title3)
-                                      
-                            )
-                            .autocorrectionDisabled(true)
-                            .textInputAutocapitalization(.never)
-                            .padding()
-                        }
-                        .padding([.horizontal, .bottom])
-                        
-                        ScrollView {
-                            ForEach(filteredUsers, id: \.self) {user in
-                                Button(action: {
-                                    if !homeVM.createNewPostTagList.contains(user) {
-                                        homeVM.createNewPostTagList.append(user)
-                                    }
-                                    homeVM.isShowTagListOnIpad.toggle()
-                                }) {
-                                    HStack {
-                                        Image("testAvt")
-                                            .resizable()
-                                            .aspectRatio(contentMode: .fill)
-                                            .frame(width: proxy.size.width/7, height: proxy.size.width/7)
-                                            .clipShape(Circle())
-                                        
-                                        Text(user)
-                                        Spacer()
-                                    }
-
             
             Spacer()
         }
@@ -731,7 +570,6 @@ struct UserListView: View {
                                     
                                     Text(user)
                                     Spacer()
-
                                 }
                                 .padding(8)
                                 .background(
@@ -746,12 +584,7 @@ struct UserListView: View {
                     }
                 }
             }
-            .onAppear {
-                homeVM.proxySize = proxy.size
-            }
-            
         }
-        
         .foregroundColor(isDarkModeEnabled ? .white : .black)
         .background(isDarkModeEnabled ? Color.black : Color.white)
         .presentationDetents([.medium, .large])
@@ -818,8 +651,6 @@ struct FlowLayout: Layout {
 
 struct CreatePostView_Previews: PreviewProvider {
     static var previews: some View {
-
-        CreatePostView(isNewPost: .constant(true), isDarkModeEnabled: .constant(false), proxySize: .constant(CGSize(width: 834.0, height: 0.0)))
-
+        CreatePostView(isNewPost: .constant(true), isDarkModeEnabled: .constant(false), homeVM: HomeViewModel())
     }
 }

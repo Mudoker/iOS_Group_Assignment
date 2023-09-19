@@ -50,8 +50,8 @@ struct SignUp: View {
                     VStack {
                         CustomTextField(
                             text: $authVM.signUpAccountText,
-                            textFieldTitle: "Account",
-                            testFieldPlaceHolder: "Email",
+                            textFieldTitle: "Email",
+                            testFieldPlaceHolder: "Gmail Account",
                             titleFont: authVM.textFieldTitleFont,
                             textFieldSizeHeight: authVM.textFieldSizeHeight,
                             textFieldCorner: authVM.textFieldCornerRadius,
@@ -78,7 +78,7 @@ struct SignUp: View {
                         
                         HStack {
                             if authVM.signUpPasswordText.isEmpty {
-                                Text("Password must be at least 6 characters")
+                                Text("At least 6 characters and not contain special symbols")
                                     .font(authVM.captionFont)
                                     .padding(.bottom, 5)
                                     .opacity(0.7)

@@ -48,7 +48,6 @@ struct HomeView: View {
                                     .frame(width: homeViewModel.messageLogoSize, height: homeViewModel.messageLogoSize)
                                     .foregroundColor(.pink.opacity(0.8))
                                     .padding()
-                                Text("\( homeViewModel.messageLogoSize)")
                             }
                             else{
                                 Image(systemName: "plus.app")
@@ -88,12 +87,11 @@ struct HomeView: View {
                 
                 .sheet(isPresented: $homeViewModel.isCreateNewPostOnIpad) {
 
-                    CreatePostView(isNewPost: $homeViewModel.isCreateNewPostOnIpad, isDarkModeEnabled: $settingVM.isDarkModeEnabled, proxySize: $homeViewModel.proxySize)
+                    CreatePostView(isNewPost: $homeViewModel.isCreateNewPostOnIpad, isDarkModeEnabled: $settingVM.isDarkModeEnabled, homeVM: homeViewModel)
+
                 }
                 .fullScreenCover(isPresented: $homeViewModel.isCreateNewPostOnIphone) {
-                    CreatePostView(isNewPost: $homeViewModel.isCreateNewPostOnIphone, isDarkModeEnabled: $settingVM.isDarkModeEnabled, proxySize: $homeViewModel.proxySize)
-
-                    CreatePostView(isNewPost: $homeViewModel.isCreateNewPostOnIpad, isDarkModeEnabled: $settingVM.isDarkModeEnabled, homeVM: homeViewModel)
+                    CreatePostView(isNewPost: $homeViewModel.isCreateNewPostOnIphone, isDarkModeEnabled: $settingVM.isDarkModeEnabled, homeVM: homeViewModel)
                 }
                 .fullScreenCover(isPresented: $homeViewModel.isCreateNewPostOnIphone) {
                     CreatePostView(isNewPost: $homeViewModel.isCreateNewPostOnIphone, isDarkModeEnabled: $settingVM.isDarkModeEnabled, homeVM: homeViewModel)

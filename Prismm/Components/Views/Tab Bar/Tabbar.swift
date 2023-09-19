@@ -24,6 +24,7 @@ struct TabBar: View {
 
     // Localization
     @AppStorage("selectedLanguage") var selectedLanguage = "en"
+
     var body: some View {
         if UIDevice.current.userInterfaceIdiom == .phone{
             TabView(selection: $tabSelection) {

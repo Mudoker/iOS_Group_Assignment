@@ -59,23 +59,11 @@ struct AllChat : View {
                             .opacity(searchState ? 1 : 0) // Toggle opacity based on searchState
                             
                             ScrollView(.horizontal){
-                                LazyHStack{
-                                    UserActiveChat()
-                                        .padding(.horizontal,10)
-                                    UserActiveChat()
-                                        .padding(.horizontal,10)
-                                    UserActiveChat()
-                                        .padding(.horizontal,10)
-                                    UserActiveChat()
-                                        .padding(.horizontal,10)
-                                    UserActiveChat()
-                                        .padding(.horizontal,10)
-                                    UserActiveChat()
-                                        .padding(.horizontal,10)
-                                    UserActiveChat()
-                                        .padding(.horizontal,10)
-                                    UserActiveChat()
-                                        .padding(.horizontal,10)
+                                LazyHStack(spacing: 10) {
+                                    ForEach(0..<9) { index in
+                                        UserActiveChat()
+                                            .padding(.horizontal, index == 0 || index == 8 ? 2 : 10)
+                                    }
                                 }
                                 .frame(height: 130)
                             }
@@ -116,15 +104,10 @@ struct AllChat : View {
                                 .clipShape(Capsule())
                                 
                                 // Message List
-                                LazyVStack(spacing: 12){
-                                    PreviewUserChat()
-                                    PreviewUserChat()
-                                    PreviewUserChat()
-                                    PreviewUserChat()
-                                    PreviewUserChat()
-                                    PreviewUserChat()
-                                    PreviewUserChat()
-                                    PreviewUserChat()
+                                LazyVStack(spacing: 12) {
+                                    ForEach(0..<8) { _ in
+                                        PreviewUserChat()
+                                    }
                                 }
                             }
                         }

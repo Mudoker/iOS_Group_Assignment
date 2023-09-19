@@ -20,7 +20,7 @@ struct ProfileToolBar: View {
     var body: some View {
 
         HStack{
-            Text("UserName")
+            Text(LocalizedStringKey("UserName"))
                 .fontWeight(.bold)
                 .font(.system(size: 20))    //should be responsive
             Spacer()
