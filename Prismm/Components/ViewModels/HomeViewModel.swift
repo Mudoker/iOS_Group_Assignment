@@ -28,9 +28,14 @@ class HomeViewModel: ObservableObject {
     @Published var isOpenCommentViewOnIphone = false
     @Published var isOpenCommentViewOnIpad = false
     @Published var commentContent = ""
-    @Published var createNewPostTagList: [String] = []
-    @Published var isShowTagListOnIphone = false
-    @Published var isShowTagListOnIpad = false
+    @Published var selectedPostTagList: [String] = []
+    @Published var selectedUserTagList: [String] = []
+    @Published var isShowUserTagListOnIphone = false
+    @Published var isShowUserTagListOnIpad = false
+    @Published var userTagListSearchText = ""
+    @Published var postTagListSearchText = ""
+    @Published var isShowPostTagListOnIphone = false
+    @Published var isShowPostTagListOnIpad = false
     @Published var createNewPostCaption = ""
     @Published var isPostOnScreen = false
     @Published var selectedCommentFilter = "Newest"
