@@ -1,28 +1,29 @@
 /*
-  RMIT University Vietnam
-  Course: COSC2659 iOS Development
-  Semester: 2023B
-  Assessment: Assignment 3
-  Author: Apple Men
-  Doan Huu Quoc (s3927776)
-  Tran Vu Quang Anh (s3916566)
-  Nguyen Dinh Viet (s3927291)
-  Nguyen The Bao Ngoc (s3924436)
-
-  Created  date: 14/09/2023
-  Last modified: 16/09/2023
-  Acknowledgement: None
-*/
+ RMIT University Vietnam
+ Course: COSC2659 iOS Development
+ Semester: 2023B
+ Assessment: Assignment 3
+ Author: Apple Men
+ Doan Huu Quoc (s3927776)
+ Tran Vu Quang Anh (s3916566)
+ Nguyen Dinh Viet (s3927291)
+ Nguyen The Bao Ngoc (s3924436)
+ 
+ Created  date: 14/09/2023
+ Last modified: 16/09/2023
+ Acknowledgement: None
+ */
 
 import SwiftUI
 
 struct CreatePostView: View {
-
+    
     @State private var searchText = ""
     @State private var users = ["mudoker7603", "user123", "sampleUser", "testUser", "john_doe", "jane_doe", "user007", "newUser", "oldUser", "demoUser"]
     
     @Binding var isNewPost: Bool
     @Binding var isDarkModeEnabled: Bool
+    @Binding var proxySize : CGSize
     
     @ObservedObject var homeViewModel = HomeViewModel()
     
@@ -42,6 +43,9 @@ struct CreatePostView: View {
                         .bold()
                         .font(.title)
                         .padding(.vertical)
+                        .overlay{
+                            
+                        }
                     
                     HStack {
                         Spacer()
@@ -57,7 +61,7 @@ struct CreatePostView: View {
                 
                 Divider()
                     .overlay(isDarkModeEnabled ? .white : .gray)
-
+                
                 HStack (alignment: .top) {
                     Image("testAvt")
                         .resizable()
@@ -75,7 +79,7 @@ struct CreatePostView: View {
                                 homeViewModel.isShowTagListOnIpad.toggle()
                             } else {
                                 homeViewModel.isShowTagListOnIphone.toggle()
-
+                                
                             }
                         }) {
                             HStack {
@@ -137,7 +141,7 @@ struct CreatePostView: View {
                     Spacer()
                 }
                 .padding(.top)
-                                
+                
                 ZStack (alignment: .topLeading) {
                     RoundedRectangle(cornerRadius: proxy.size.width/40)
                         .stroke(LinearGradient(
@@ -155,19 +159,21 @@ struct CreatePostView: View {
                     .padding()
                 }
                 .padding(.vertical)
+                .padding(.bottom, UIDevice.current.userInterfaceIdiom == .phone ? 0 : 20)
                 
                 
                 HStack {
                     Text("Post Media")
                         .bold()
                         .font(.title3)
+                    
                     Spacer()
                     
                     Button(action: {}) {
                         Image(systemName: "photo")
                             .resizable()
-                            .aspectRatio(contentMode: .fill)
-                            .frame(width: proxy.size.width/12)
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: homeViewModel.iconCreatePostViewWidth, height: homeViewModel.iconCreatePostViewWidth)
                             .foregroundColor(.green)
                     }
                     .padding(.trailing, 8)
@@ -175,8 +181,8 @@ struct CreatePostView: View {
                     Button(action: {}) {
                         Image(systemName: "camera.fill")
                             .resizable()
-                            .aspectRatio(contentMode: .fill)
-                            .frame(width: proxy.size.width/12)
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width:  homeViewModel.iconCreatePostViewWidth, height: homeViewModel.iconCreatePostViewWidth)
                             .foregroundColor(!isDarkModeEnabled ? Constants.lightThemeColor : Constants.darkThemeColor)
                     }
                 }
@@ -189,12 +195,20 @@ struct CreatePostView: View {
                             endPoint: .bottomTrailing
                         ), lineWidth: 1.5)
                 )
-                .padding(.bottom)
-
+                //                .padding(.bottom)
+                .padding(.bottom, UIDevice.current.userInterfaceIdiom == .phone ? 0 : 20)
                 
                 VStack(alignment: .leading) {
-                    Text ("No Sensitive, Explicit, or Harmful Content")
-                        .bold()
+                    HStack{
+                        Text ("No Sensitive, Explicit, or Harmful Content")
+                            .bold()
+                        Spacer()
+                        Image(systemName: "exclamationmark.triangle")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: homeViewModel.iconCreatePostViewWidth1, height: homeViewModel.iconCreatePostViewWidth1)
+                            .foregroundColor(!isDarkModeEnabled ? Constants.lightThemeColor : Constants.darkThemeColor)
+                    }
                     
                     Text ("Please refrain from uploading sensitive, explicit, or harmful content, as well as hate speech or harassment.")
                         .opacity(0.8)
@@ -219,19 +233,15 @@ struct CreatePostView: View {
                     homeViewModel.isPostOnScreen.toggle()
                 }) {
                     RoundedRectangle(cornerRadius: proxy.size.width/40)
-                        .frame(height: proxy.size.width/7)
+                        .frame(height: homeViewModel.buttonCreatePostViewHeight)
                         .foregroundColor(!isDarkModeEnabled ? Constants.lightThemeColor : Constants.darkThemeColor)
                         .overlay(
-                            HStack {
+                            HStack(spacing: 10){
                                 
                                 Text("Post")
-                                    .font(.title3)
+                                    .font(UIDevice.current.userInterfaceIdiom == .phone ? .title3 : .title)
                                     .bold()
                                 
-                                Image(systemName: "paperplane.fill")
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fit)
-                                    .frame(width: proxy.size.width/18)
                                 
                             }
                                 .foregroundColor(.white)
@@ -250,7 +260,7 @@ struct CreatePostView: View {
                             .font(.title)
                             .padding(.top)
                             .padding(.top)
-
+                        
                         Spacer()
                         
                         Button(action: {
@@ -276,7 +286,7 @@ struct CreatePostView: View {
                             
                             TextField("", text: $searchText, prompt:  Text("Search a friend...").foregroundColor(isDarkModeEnabled ? .white.opacity(0.5) : .black.opacity(0.5))
                                 .font(.title3)
-                                
+                                      
                             )
                             .autocorrectionDisabled(true)
                             .textInputAutocapitalization(.never)
@@ -303,7 +313,7 @@ struct CreatePostView: View {
                                         Spacer()
                                     }
                                     .padding(.horizontal)
-
+                                    
                                 }
                             }
                         }
@@ -323,7 +333,7 @@ struct CreatePostView: View {
                             .font(.title)
                             .padding(.top)
                             .padding(.top)
-
+                        
                         Spacer()
                         
                         Button(action: {
@@ -349,7 +359,7 @@ struct CreatePostView: View {
                             
                             TextField("", text: $searchText, prompt:  Text("Search a friend...").foregroundColor(isDarkModeEnabled ? .white.opacity(0.5) : .black.opacity(0.5))
                                 .font(.title3)
-                                
+                                      
                             )
                             .autocorrectionDisabled(true)
                             .textInputAutocapitalization(.never)
@@ -388,7 +398,12 @@ struct CreatePostView: View {
                 .presentationDetents([.medium, .large])
                 .presentationBackgroundInteraction(.enabled)
             }
+            .onAppear {
+                homeViewModel.proxySize = proxy.size
+            }
+            
         }
+        
         .foregroundColor(isDarkModeEnabled ? .white : .black)
         .background(!isDarkModeEnabled ? .white : .black)
     }
@@ -396,6 +411,6 @@ struct CreatePostView: View {
 
 struct CreatePostView_Previews: PreviewProvider {
     static var previews: some View {
-        CreatePostView(isNewPost: .constant(true), isDarkModeEnabled: .constant(false))
+        CreatePostView(isNewPost: .constant(true), isDarkModeEnabled: .constant(false), proxySize: .constant(CGSize(width: 834.0, height: 0.0)))
     }
 }

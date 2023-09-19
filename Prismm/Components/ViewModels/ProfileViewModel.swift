@@ -15,11 +15,25 @@
 */
 
 import Foundation
+import PhotosUI
+import SwiftUI
+import Firebase
+import FirebaseStorage
+import MobileCoreServices
+import AVFoundation
+import FirebaseFirestoreSwift
 
 class ProfileViewModel: ObservableObject {
     @Published var posts = [Post]()
     @Published var hasStoryHightlight = false
     @Published var isShowAllUserPost = true
+    
+    @Published var proxySize: CGSize = CGSize(width: 0, height: 0)
+    
+    var avatarSize : CGFloat{
+        UIDevice.current.userInterfaceIdiom == .phone ? proxySize.width / 4.3 : proxySize.width / 4.3
+    }
+    
     @MainActor
     func fetchUserPosts() async throws {
         self.posts = try await APIService.fetchPostsOwned(byUserID: "3WBgDcMgEQfodIbaXWTBHvtjYCl2")

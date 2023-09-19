@@ -28,11 +28,11 @@ struct ProfileView: View {
                 
                 //Profile info block
                 VStack(alignment: .leading){
-                    HStack{
+                    HStack(alignment: .center){
                         Image("testAvt")
                             .resizable()
                             .scaledToFit()
-                            .frame(width: proxy.size.width/4)
+                            .frame(width: profileVM.avatarSize, height: profileVM.avatarSize)
                             .clipShape(Circle())
                         Spacer()
                         
@@ -139,9 +139,9 @@ struct ProfileView: View {
                                     Image(systemName: "plus")
                                         .resizable()
                                         .scaledToFit()
-                                        .frame(width: 40)
+                                        .frame(width: UIDevice.current.userInterfaceIdiom == .phone ? 20 : 30)
                                 }
-                                .frame(width: proxy.size.width/5,height: proxy.size.width/5)
+                                .frame(width: proxy.size.width/6,height: proxy.size.width/6)
                                 .clipShape(Circle())
                                 .overlay(Circle().stroke(Color.black).shadow(radius: 5))
 
@@ -206,6 +206,9 @@ struct ProfileView: View {
             }
             .padding(.horizontal,20)
             .frame(minWidth: 0,maxWidth: .infinity)
+            .onAppear {
+                profileVM.proxySize = proxy.size
+            }
         }
     }
 }
