@@ -21,6 +21,11 @@ struct CreatePostView: View {
     @State private var searchText = ""
     @State private var users = ["mudoker7603", "user123", "sampleUser", "testUser", "john_doe", "jane_doe", "user007", "newUser", "oldUser", "demoUser"]
     
+    @State var shouldPresentPickerSheet = false
+    @State var shouldPresentCamera = false
+    @State var selected = false
+
+    
     @Binding var isNewPost: Bool
     @Binding var isDarkModeEnabled: Bool
     
@@ -156,22 +161,66 @@ struct CreatePostView: View {
                 }
                 .padding(.vertical)
                 
-                
-                HStack {
-                    Text("Post Media")
-                        .bold()
-                        .font(.title3)
-                    Spacer()
-                    
-                    Button(action: {}) {
-                        Image(systemName: "photo")
+                if selected {
+                    AsyncImage(url: homeViewModel.selectedMedia as? URL) { media in
+                        media
                             .resizable()
-                            .aspectRatio(contentMode: .fill)
-                            .frame(width: proxy.size.width/12)
-                            .foregroundColor(.green)
+                            .scaledToFill()
+                    } placeholder: {
+                        ProgressView()
                     }
-                    .padding(.trailing, 8)
+                    .frame(width: 200, height: 200 ) // Set the desired width and height for your circular image
                     
+                }else{
+                    HStack {
+                        Text("Post Media")
+                            .bold()
+                            .font(.title3)
+                        Spacer()
+                        
+                        Button(action: {
+                            shouldPresentCamera = false
+                            shouldPresentPickerSheet = true
+                        }) {
+                            Image(systemName: "photo")
+                                .resizable()
+                                .aspectRatio(contentMode: .fill)
+                                .frame(width: proxy.size.width/12)
+                                .foregroundColor(.green)
+                        }
+                        .padding(.trailing, 8)
+                        
+                        
+                        Button(action: {
+                            shouldPresentCamera = true
+                            shouldPresentPickerSheet = true
+                        }) {
+                            Image(systemName: "camera.fill")
+                                .resizable()
+                                .aspectRatio(contentMode: .fill)
+                                .frame(width: proxy.size.width/12)
+                                .foregroundColor(!isDarkMode ? Constants.lightThemeColor : Constants.darkThemeColor)
+                        }
+                        
+                    }
+                    .padding()
+                    .background(
+                        RoundedRectangle(cornerRadius: proxy.size.width/40)
+                            .stroke(LinearGradient(
+                                gradient: Gradient(colors: isDarkMode ? Constants.buttonGradientColorDark : Constants.buttonGradientColorLight),
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            ), lineWidth: 1.5)
+                    )
+                    .padding(.bottom)
+                    .sheet(isPresented: $shouldPresentPickerSheet) {
+                        UIImagePickerView(sourceType: shouldPresentCamera ? .camera : .photoLibrary , isPresented: $shouldPresentPickerSheet, selectedMedia: $homeViewModel.selectedMedia)
+                            .onDisappear{
+                                selected = true
+                            }
+                    }
+                }
+                
                     Button(action: {}) {
                         Image(systemName: "camera.fill")
                             .resizable()
@@ -212,6 +261,7 @@ struct CreatePostView: View {
                 
                 Button(action: {
                     Task {
+                        try await homeViewModel.createPost()
                         _ = try await homeViewModel.createPost(ownerID: "3WBgDcMgEQfodIbaXWTBHvtjYCl2", postCaption: homeViewModel.createNewPostCaption, mediaURL: "", mimeType: "")
                         isNewPost = false
                     }
