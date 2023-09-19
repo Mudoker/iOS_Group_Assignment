@@ -194,23 +194,34 @@ class HomeViewModel: ObservableObject {
         let ownerID = "m52oyZNbCxVx5SsvFAEPwankeAP2"
         let postRef = Firestore.firestore().collection("test_posts").document()
         
-        let mediaURL = try await createMediaToFirebase()
+        var mediaURL = ""
+        var mimeTypeS = ""
         
+        if newPostSelectedMedia != nil{
+            mediaURL = try await createMediaToFirebase()
+            mimeTypeS = mimeType(for: try Data(contentsOf: newPostSelectedMedia as? URL ?? URL(fileURLWithPath: "")))
+        }
+        
+        print(mediaURL)
         let newPost = Post(
             id: postRef.documentID,
             ownerID: ownerID,
             caption: createNewPostCaption,
             likerIDs: [],
             mediaURL: mediaURL,
-            mediaMimeType: mimeType(for: try Data(contentsOf: newPostSelectedMedia as? URL ?? URL(fileURLWithPath: ""))),
+            mediaMimeType: mimeTypeS,
             creationDate: Timestamp(),
             author: nil,
             user: nil,
             unwrappedLikers: []
         )
-        
-        guard let encodedPost = try? Firestore.Encoder().encode(newPost) else {return}
+        print("create Post")
+        guard let encodedPost = try? Firestore.Encoder().encode(newPost) else {
+            print("fail to encode Post")
+            return}
         try await postRef.setData(encodedPost)
+        
+        print("uploaded")
         return
     }
     
