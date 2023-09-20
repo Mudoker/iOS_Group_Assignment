@@ -22,7 +22,7 @@ import FirebaseFirestore
 import FirebaseFirestoreSwift
 
 class SettingViewModel: ObservableObject {
-    @Published var isDarkModeEnabled = true
+    @Published var isDarkModeEnabled = false
     @Published var isFaceIdEnabled = false
     @Published var isPushNotificationEnabled = false
     @Published var isMessageNotificationEnabled = false

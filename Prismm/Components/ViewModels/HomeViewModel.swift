@@ -50,7 +50,7 @@ class HomeViewModel: ObservableObject {
     @Published var fetchedCommentsByPostId = [String: Set<Comment>]()
     
     @Published var newPostSelectedMedia: NSURL? = nil
-    var currentCommentor: User?
+    @Published var currentCommentor: User?
     
     // Responsive
     @Published var proxySize: CGSize = CGSize(width: 0, height: 0)
@@ -107,6 +107,10 @@ class HomeViewModel: ObservableObject {
         UIDevice.current.userInterfaceIdiom == .phone ? 20 : 25
     }
     
+    var timeFont: CGFloat {
+        UIDevice.current.userInterfaceIdiom == .phone ? 15 : 20
+    }
+    
     var seeMoreButtonSize: CGFloat {
         UIDevice.current.userInterfaceIdiom == .phone ? proxySize.width * 0.055 : proxySize.width * 0.055
     }
@@ -137,7 +141,7 @@ class HomeViewModel: ObservableObject {
     }
     
     var commentTextFieldCornerRadius: CGFloat {
-        15
+        UIDevice.current.userInterfaceIdiom == .phone ? proxySize.width * 0.1 : proxySize.width * 0.08
     }
     
     init() {
@@ -173,6 +177,7 @@ class HomeViewModel: ObservableObject {
             
             // Update the fetched_comments dictionary with the merged set of comments
             fetchedCommentsByPostId[postID] = existingComments
+            print(existingComments)
         }
     }
     

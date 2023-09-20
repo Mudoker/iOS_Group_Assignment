@@ -18,7 +18,12 @@ struct PrismmApp: App {
     @StateObject var profileVM = ProfileViewModel()
     var body: some Scene {
         WindowGroup {
-            LocalPushNotification()
+            //HomeView()
+            HomeView(homeViewModel: homeVM, settingVM: settingVM)
+                .onAppear{
+                                    print(Auth.auth().currentUser?.uid ?? "Not sign in" )
+                                }
+
         }
     }
     

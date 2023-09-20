@@ -189,6 +189,7 @@ class AuthenticationViewModel: ObservableObject {
             }
         } catch {
             hasLoginError = true
+            isFetchingData = false
             print("\(error.localizedDescription)")
         }
     }
