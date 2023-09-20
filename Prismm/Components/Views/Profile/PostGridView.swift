@@ -19,47 +19,48 @@ import Kingfisher
 import AVKit
 
 struct PostGridView: View {
-    @StateObject var profileVM: ProfileViewModel
+    @ObservedObject var profileVM: ProfileViewModel
     
-    var columnsGrid: [GridItem] = [GridItem(.flexible(), spacing: 1), GridItem(.flexible(), spacing: 1), GridItem(.flexible(), spacing: 1)]
+    var columnsGrid: [GridItem] = [GridItem(.fixed((UIScreen.main.bounds.width/3) - 2), spacing: 2), GridItem(.fixed((UIScreen.main.bounds.width/3) - 2), spacing: 2), GridItem(.fixed((UIScreen.main.bounds.width/3) - 2), spacing: 2)]
     
     var body: some View {
-        LazyVGrid(columns: columnsGrid, spacing: 1) {
-            ForEach(profileVM.posts) { post in
-                if let mediaURL = URL(string: post.mediaURL ?? "") {
-                    if let mimeType = post.mediaMimeType {
-                        if !mimeType.hasPrefix("image") {
-                            // Handle video
-                            let playerItem = AVPlayerItem(url: mediaURL)
-                            let player = AVPlayer(playerItem: playerItem)
-                            
-                            VideoPlayer(player: player)
-                                .frame(width: UIScreen.main.bounds.width)
-                                .frame(minHeight: UIScreen.main.bounds.height * 0.4)
-                                .frame(maxHeight: UIScreen.main.bounds.height * 0.5)
-                                .onAppear {
-                                    // Optionally, you can play the video when it appears on the screen.
-                                    player.play()
-                                }
+        ScrollView{
+            LazyVGrid(columns: columnsGrid, spacing: 2) {
+                ForEach(profileVM.posts) { post in
+                    if let mediaURL = URL(string: post.mediaURL ?? "") {
+                        if let mimeType = post.mediaMimeType {
+                            if !mimeType.hasPrefix("image") {
+                                // Handle video
+                                let playerItem = AVPlayerItem(url: mediaURL)
+                                let player = AVPlayer(playerItem: playerItem)
+                                
+                                VideoPlayer(player: player)
+                                    .scaledToFit()
+                                    .frame(width: (UIScreen.main.bounds.width/3) - 2 , height: (UIScreen.main.bounds.width/3) - 2)
+                                    .onAppear {
+                                        // Optionally, you can play the video when it appears on the screen.
+                                        player.play()
+                                    }
+                            } else {
+                                // Handle images using Kingfisher
+                                KFImage(mediaURL)
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: (UIScreen.main.bounds.width/3) - 2 , height: (UIScreen.main.bounds.width/3) - 2)
+                                    .background(Color.gray)
+                                    .clipShape(Rectangle())
+                            }
                         } else {
-                            // Handle images using Kingfisher
-                            KFImage(mediaURL)
-                                .resizable()
-                                .frame(width: UIScreen.main.bounds.width)
-                                .frame(minHeight: UIScreen.main.bounds.height * 0.4)
-                                .frame(maxHeight: UIScreen.main.bounds.height * 0.5)
-                                .background(Color.gray)
-                                .clipShape(Rectangle())
+                            // Handle the case where the mimeType is nil
+                            Text("Invalid MIME type")
                         }
                     } else {
-                        // Handle the case where the mimeType is nil
-                        Text("Invalid MIME type")
+                        // Handle the case where the media URL is invalid or empty.
+                        Text("Invalid media URL")
                     }
-                } else {
-                    // Handle the case where the media URL is invalid or empty.
-                    Text("Invalid media URL")
                 }
             }
         }
+
     }
 }

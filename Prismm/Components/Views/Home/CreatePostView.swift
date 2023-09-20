@@ -19,6 +19,10 @@ import SwiftUI
 
 struct CreatePostView: View {
     @State private var users = ["mudoker7603", "user123", "sampleUser", "testUser", "john_doe", "jane_doe", "user007", "newUser", "oldUser", "demoUser"]
+    @ObservedObject var authVM :AuthenticationViewModel
+    @ObservedObject var settingVM:SettingViewModel
+    @ObservedObject var homeVM: HomeViewModel
+    
     @State private var selectedTags: Set<String> = []
     
     @State var shouldPresentPickerSheet = false
@@ -27,8 +31,8 @@ struct CreatePostView: View {
     
     
     @Binding var isNewPost: Bool
-    @Binding var isDarkModeEnabled: Bool
-    @ObservedObject var homeVM: HomeViewModel
+    var isDarkModeEnabled: Bool
+    
     @State var isOpenUserListViewOnIphone = false
     @State var isOpenUserListViewOnIpad = false
     @State var isOpenPostTagListViewOnIphone = false
@@ -83,7 +87,7 @@ struct CreatePostView: View {
                         .clipShape(Circle())
                     
                     VStack(alignment: .leading, spacing: 0) {
-                        Text("mudoker_7603")
+                        Text(authVM.currentUser?.username ?? "Failed to get data")
                             .bold()
                             .font(.title3)
                             .padding(.bottom, 8)
@@ -401,15 +405,15 @@ struct CreatePostView: View {
             }
             .padding(.horizontal)
             .fullScreenCover(isPresented: $isOpenUserListViewOnIphone) {
-                UserListView(proxy: $proxySize, isDarkModeEnabled: $isDarkModeEnabled, searchProfileText: $homeVM.userTagListSearchText, selectedUsers: $homeVM.selectedUserTag, isShowUserTagList: $isOpenUserListViewOnIphone, filteredUsers: filteredUsers)
+                UserListView(proxy: $proxySize, isDarkModeEnabled: isDarkModeEnabled, searchProfileText: $homeVM.userTagListSearchText, selectedUsers: $homeVM.selectedUserTag, isShowUserTagList: $isOpenUserListViewOnIphone, filteredUsers: filteredUsers)
             }
             .sheet(isPresented: $isOpenUserListViewOnIpad) {
-                UserListView(proxy: $proxySize, isDarkModeEnabled: $isDarkModeEnabled, searchProfileText: $homeVM.userTagListSearchText, selectedUsers: $homeVM.selectedUserTag, isShowUserTagList: $isOpenUserListViewOnIpad, filteredUsers: filteredUsers)
+                UserListView(proxy: $proxySize, isDarkModeEnabled: isDarkModeEnabled, searchProfileText: $homeVM.userTagListSearchText, selectedUsers: $homeVM.selectedUserTag, isShowUserTagList: $isOpenUserListViewOnIpad, filteredUsers: filteredUsers)
             }.fullScreenCover(isPresented: $isOpenPostTagListViewOnIphone) {
-                PostTagListView(proxy: $proxySize, isDarkModeEnabled: $isDarkModeEnabled, searchTagText: $homeVM.postTagListSearchText, selectedTags: $homeVM.selectedPostTag, isShowPostTagList: $isOpenPostTagListViewOnIphone, filteredTags: filteredTags)
+                PostTagListView(proxy: $proxySize, isDarkModeEnabled: isDarkModeEnabled, searchTagText: $homeVM.postTagListSearchText, selectedTags: $homeVM.selectedPostTag, isShowPostTagList: $isOpenPostTagListViewOnIphone, filteredTags: filteredTags)
             }
             .sheet(isPresented: $isOpenPostTagListViewOnIpad) {
-                PostTagListView(proxy: $proxySize, isDarkModeEnabled: $isDarkModeEnabled, searchTagText: $homeVM.userTagListSearchText, selectedTags: $homeVM.selectedPostTag, isShowPostTagList: $isOpenPostTagListViewOnIpad, filteredTags: filteredTags)
+                PostTagListView(proxy: $proxySize, isDarkModeEnabled: isDarkModeEnabled, searchTagText: $homeVM.userTagListSearchText, selectedTags: $homeVM.selectedPostTag, isShowPostTagList: $isOpenPostTagListViewOnIpad, filteredTags: filteredTags)
             }
         }
         .foregroundColor(isDarkModeEnabled ? .white : .black)
@@ -419,7 +423,7 @@ struct CreatePostView: View {
 
 struct PostTagListView: View {
     @Binding var proxy: CGSize
-    @Binding var isDarkModeEnabled: Bool
+    var isDarkModeEnabled: Bool
     @Binding var searchTagText: String
     @Binding var selectedTags: [String]
     @Binding var isShowPostTagList: Bool
@@ -511,7 +515,7 @@ struct PostTagListView: View {
 
 struct UserListView: View {
     @Binding var proxy: CGSize
-    @Binding var isDarkModeEnabled: Bool
+    var isDarkModeEnabled: Bool
     @Binding var searchProfileText: String
     @Binding var selectedUsers: [String]
     @Binding var isShowUserTagList: Bool
@@ -656,8 +660,8 @@ struct FlowLayout: Layout {
     }
 }
 
-struct CreatePostView_Previews: PreviewProvider {
-    static var previews: some View {
-        CreatePostView(isNewPost: .constant(true), isDarkModeEnabled: .constant(false), homeVM: HomeViewModel())
-    }
-}
+//struct CreatePostView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        CreatePostView(isNewPost: .constant(true), isDarkModeEnabled: .constant(false), homeVM: HomeViewModel())
+//    }
+//}

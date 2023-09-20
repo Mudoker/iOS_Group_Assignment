@@ -16,9 +16,11 @@
 
 import Foundation
 import SwiftUI
+import Firebase
+import FirebaseFirestoreSwift
 
 struct SettingView : View {
-    @StateObject var settingVM = SettingViewModel()
+    @ObservedObject var settingVM:SettingViewModel
     
     var body: some View {
         NavigationStack {
@@ -51,7 +53,7 @@ struct SettingView : View {
                                             .frame(width: settingVM.accountSettingImageWidth)
                                         
                                         VStack(alignment: .leading) {
-                                            Text("Quoc Doan")
+                                            Text("Username")
                                                 .font(settingVM.accountSettingUsernameFont)
                                                 .bold()
                                             
@@ -94,7 +96,7 @@ struct SettingView : View {
                                     .onChange(of: settingVM.selectedLanguage) { _ in
                                         Task{
                                             await
-                                            settingVM.updateSettings(forUserID: Constants.currentUserID)
+                                            settingVM.updateSettings()
                                         }
                                     }
                                     
@@ -121,7 +123,7 @@ struct SettingView : View {
                                         .onChange(of: settingVM.isDarkModeEnabled) { _ in
                                             Task{
                                                 await
-                                                settingVM.updateSettings(forUserID: Constants.currentUserID)
+                                                settingVM.updateSettings()
                                             }
                                             
                                         }
@@ -157,7 +159,7 @@ struct SettingView : View {
                                         .onChange(of: settingVM.isPushNotificationEnabled) { _ in
                                             Task{
                                                 await
-                                                settingVM.updateSettings(forUserID: Constants.currentUserID)
+                                                settingVM.updateSettings()
                                             }
                                             
                                         }
@@ -184,7 +186,7 @@ struct SettingView : View {
                                         .onChange(of: settingVM.isMessageNotificationEnabled) { _ in
                                             Task{
                                                 await
-                                                settingVM.updateSettings(forUserID: Constants.currentUserID)
+                                                settingVM.updateSettings()
                                             }
                                             
                                         }
@@ -306,6 +308,10 @@ struct SettingView : View {
                                     Button("Cancel", role: .cancel) {
                                     }
                                     Button("Sign Out", role: .destructive) {
+                                        Task{
+                                            try Auth.auth().signOut()
+                                        }
+                                        
                                     }
                                 } message: {
                                     Text("\nConfirm Sign Out?")
@@ -340,8 +346,8 @@ struct SettingView : View {
     }
 }
 
-struct SettingView_Previews: PreviewProvider {
-    static var previews: some View {
-        SettingView()
-    }
-}
+//struct SettingView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        SettingView()
+//    }
+//}

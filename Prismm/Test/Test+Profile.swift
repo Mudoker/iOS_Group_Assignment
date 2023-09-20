@@ -13,7 +13,7 @@ struct Test_Profile: View {
         Button(action: {
             Task {
                 do {
-                    try await profileVM.fetchUserPosts()
+                    //try await profileVM.fetchUserPosts()
                 } catch {
                     print("Error following user: \(error)")
                     // Handle the error as needed (e.g., display an error message to the user)

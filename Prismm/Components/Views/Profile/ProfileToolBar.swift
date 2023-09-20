@@ -17,10 +17,14 @@
 import SwiftUI
 
 struct ProfileToolBar: View {
+    @ObservedObject var authVM :AuthenticationViewModel
+    @ObservedObject var settingVM: SettingViewModel
+    
+    @State var isSetting = false
     var body: some View {
 
         HStack{
-            Text(LocalizedStringKey("UserName"))
+            Text(authVM.currentUser?.username ?? "Failed to get data")
                 .fontWeight(.bold)
                 .font(.system(size: 20))    //should be responsive
             Spacer()
@@ -36,7 +40,7 @@ struct ProfileToolBar: View {
                 }
                 
                 Button {
-                    
+                    isSetting = true
                 } label: {
                     Image(systemName: "line.3.horizontal")
                         .foregroundColor(.black)
@@ -44,11 +48,14 @@ struct ProfileToolBar: View {
                 }
             }
         }
+        .fullScreenCover(isPresented: $isSetting) {
+            SettingView(settingVM: settingVM)
+        }
     }
 }
 
-struct ProfileToolBar_Previews: PreviewProvider {
-    static var previews: some View {
-        ProfileToolBar()
-    }
-}
+//struct ProfileToolBar_Previews: PreviewProvider {
+//    static var previews: some View {
+//        ProfileToolBar()
+//    }
+//}
