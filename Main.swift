@@ -12,7 +12,10 @@ import UserNotifications
 
 @main
 struct PrismmApp: App {
-    
+    @StateObject var authVM = AuthenticationViewModel()
+    @StateObject var settingVM = SettingViewModel()
+    @StateObject var homeVM = HomeViewModel()
+    @StateObject var profileVM = ProfileViewModel()
     var body: some Scene {
         WindowGroup {
             LocalPushNotification()

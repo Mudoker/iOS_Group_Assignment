@@ -21,10 +21,10 @@ import GoogleSignInSwift
 
 struct Login: View {
     // View Model
-    @StateObject var authVM :AuthenticationViewModel
-    @ObservedObject var settingVM = SettingViewModel()
-    @StateObject var homeVM: HomeViewModel
-    @StateObject var profileVM: ProfileViewModel
+    @ObservedObject var authVM :AuthenticationViewModel
+    @ObservedObject var settingVM:SettingViewModel
+    @ObservedObject var homeVM: HomeViewModel
+    @ObservedObject var profileVM: ProfileViewModel
     
     var body: some View {
         NavigationStack {
@@ -109,7 +109,7 @@ struct Login: View {
                             )
                         }
                         .navigationDestination(isPresented: $authVM.isDeviceUnlocked) {
-                            HomeView()
+                            TabBar(homeVM: homeVM, profileVM: profileVM, settingVM: settingVM)
                                 .navigationBarBackButtonHidden(true)
                         }
                         
@@ -138,7 +138,7 @@ struct Login: View {
                             
                             Spacer()
                             
-                            NavigationLink(destination: SignUp(authVM: authVM)
+                            NavigationLink(destination: SignUp(authVM: authVM, settingVM: settingVM)
                                 .navigationBarTitle("")
                                 .navigationBarHidden(false)) {
                                     Text("Sign Up")
@@ -186,7 +186,7 @@ struct Login: View {
                                             )
                                     }
                                     .navigationDestination(isPresented: $authVM.isGoogleUnlocked) {
-                                        TabBar(homeVM: homeVM, profileVM: profileVM)
+                                        TabBar(homeVM: homeVM, profileVM: profileVM, settingVM: settingVM)
                                             .navigationBarBackButtonHidden(true)
                                     }
                                 }
@@ -236,8 +236,8 @@ struct Login: View {
     }
 }
 
-struct Login_Previews: PreviewProvider {
-    static var previews: some View {
-        Login(authVM: AuthenticationViewModel(), homeVM: HomeViewModel(), profileVM: ProfileViewModel())
-    }
-}
+//struct Login_Previews: PreviewProvider {
+//    static var previews: some View {
+//        Login(authVM: AuthenticationViewModel(), homeVM: HomeViewModel(), profileVM: ProfileViewModel())
+//    }
+//}

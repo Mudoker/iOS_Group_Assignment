@@ -16,8 +16,8 @@
 import SwiftUI
 
 struct HomeView: View {
-    @ObservedObject var homeViewModel = HomeViewModel()
-    @ObservedObject var settingVM = SettingViewModel()
+    @ObservedObject var homeViewModel:HomeViewModel
+    @ObservedObject var settingVM:SettingViewModel
     
     var body: some View {
         GeometryReader { proxy in
@@ -93,10 +93,7 @@ struct HomeView: View {
                 .fullScreenCover(isPresented: $homeViewModel.isCreateNewPostOnIphone) {
                     CreatePostView(isNewPost: $homeViewModel.isCreateNewPostOnIphone, isDarkModeEnabled: $settingVM.isDarkModeEnabled, homeVM: homeViewModel)
                 }
-                .fullScreenCover(isPresented: $homeViewModel.isCreateNewPostOnIphone) {
-                    CreatePostView(isNewPost: $homeViewModel.isCreateNewPostOnIphone, isDarkModeEnabled: $settingVM.isDarkModeEnabled, homeVM: homeViewModel)
 
-                }
                 .onAppear {
                     homeViewModel.proxySize = proxy.size
                     Task {
@@ -113,8 +110,8 @@ struct HomeView: View {
     }
 }
 
-struct HomeView_Previews: PreviewProvider {
-    static var previews: some View {
-        HomeView()
-    }
-}
+//struct HomeView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        HomeView()
+//    }
+//}

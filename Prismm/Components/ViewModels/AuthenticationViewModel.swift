@@ -41,9 +41,6 @@ class AuthenticationViewModel: ObservableObject {
     @Published var isPasswordValid = false
     @Published var isReenteredPasswordValid = false
     @Published var isUserNameValid = false
-    @Published var userSession: FirebaseAuth.User?
-    @Published var currentUser: User?
-    @Published var userSettings: UserSetting?
     @Published var isFetchingData = false
     @Published var loginAccountText = ""
     @Published var loginPasswordText = ""
@@ -53,6 +50,10 @@ class AuthenticationViewModel: ObservableObject {
     @Published var signUpReEnterPasswordText = ""
     @Published var isShowSignUpPassword = ""
     @Published var isShowSignUpReEnterPassword = ""
+    
+    @Published var userSession: FirebaseAuth.User?
+    @Published var currentUser: User?
+    @Published var userSettings: UserSetting?
     @Published var userToken: String {
         didSet {
             UserDefaults.standard.set(userToken, forKey: "userToken")

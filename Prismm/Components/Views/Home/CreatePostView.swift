@@ -364,6 +364,7 @@ struct CreatePostView: View {
                         isNewPost = false
                     }
                     
+                    //MARK: xiu hoi
                     homeVM.isPostOnScreen.toggle()
                 }) {
                     RoundedRectangle(cornerRadius: proxy.size.width/40)
@@ -391,6 +392,12 @@ struct CreatePostView: View {
             }
             .onAppear {
                 proxySize = proxy.size
+                
+                //reset selected field when create new post
+                homeVM.newPostSelectedMedia = nil
+                homeVM.createNewPostCaption = ""
+                homeVM.selectedPostTag.removeAll()
+                homeVM.selectedUserTag.removeAll()
             }
             .padding(.horizontal)
             .fullScreenCover(isPresented: $isOpenUserListViewOnIphone) {

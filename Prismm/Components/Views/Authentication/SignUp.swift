@@ -19,8 +19,8 @@ import SwiftUI
 struct SignUp: View {
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
     // View Model
-    @ObservedObject var authVM = AuthenticationViewModel()
-    @ObservedObject var settingVM = SettingViewModel()
+    @ObservedObject var authVM:AuthenticationViewModel
+    @ObservedObject var settingVM:SettingViewModel
     
     var body: some View {
         GeometryReader { proxy in
@@ -220,8 +220,8 @@ extension SignUp: SignUpFormProtocol{
     }
 }
 
-struct SignUp_Previews: PreviewProvider {
-    static var previews: some View {
-        SignUp().environmentObject(AuthenticationViewModel())
-    }
-}
+//struct SignUp_Previews: PreviewProvider {
+//    static var previews: some View {
+//        SignUp().environmentObject(AuthenticationViewModel())
+//    }
+//}
