@@ -11,11 +11,14 @@ import FirebaseFirestoreSwift
 
 @main
 struct PrismmApp: App {
-    
+    @StateObject var authVM = AuthenticationViewModel()
+    @StateObject var settingVM = SettingViewModel()
+    @StateObject var homeVM = HomeViewModel()
+    @StateObject var profileVM = ProfileViewModel()
     var body: some Scene {
         WindowGroup {
-            HomeView()
-            
+            //HomeView()
+            Login(authVM: authVM, settingVM: settingVM, homeVM: homeVM, profileVM: profileVM)
         }
     }
     

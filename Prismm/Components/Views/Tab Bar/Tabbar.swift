@@ -20,7 +20,8 @@ struct TabBar: View {
     // Control state
     @State private var tabSelection = 0
     @ObservedObject var homeVM: HomeViewModel
-    @ObservedObject var profileVM: ProfileViewModel
+    @ObservedObject var profileVM : ProfileViewModel
+    @ObservedObject var settingVM : SettingViewModel
 
     // Localization
     @AppStorage("selectedLanguage") var selectedLanguage = "en"
@@ -29,7 +30,7 @@ struct TabBar: View {
         if UIDevice.current.userInterfaceIdiom == .phone{
             TabView(selection: $tabSelection) {
                 NavigationView {
-                    HomeView()
+                    HomeView(homeViewModel: homeVM, settingVM: settingVM)
                 }
                 .tag(0)
                 
@@ -67,7 +68,7 @@ struct TabBar: View {
             NavigationStack {
                 TabView(selection: $tabSelection) {
                     NavigationView {
-                        HomeView()
+                        HomeView(homeViewModel: homeVM, settingVM: settingVM)
                     }
                     .tag(0)
                     
@@ -142,7 +143,7 @@ struct CustomTabbar: View {
                         ForEach(0..<5) { index in // Use tabItems.count here
                             Button {
                                 tabSelection = index // Update the binding
-                                print(tabSelection)
+                                
                             } label: {
                                 VStack {
                                     Image(systemName: tabItems[index].image)
@@ -171,8 +172,8 @@ struct CustomTabbar: View {
     }
 }
 
-struct TabBar_Previews: PreviewProvider {
-    static var previews: some View {
-        TabBar(homeVM: HomeViewModel(), profileVM: ProfileViewModel())
-    }
-}
+//struct TabBar_Previews: PreviewProvider {
+//    static var previews: some View {
+//        TabBar(homeVM: HomeViewModel(), profileVM: ProfileViewModel())
+//    }
+//}

@@ -364,6 +364,7 @@ struct CreatePostView: View {
                         isNewPost = false
                     }
                     
+                    //MARK: xiu hoi
                     homeVM.isPostOnScreen.toggle()
                 }) {
                     RoundedRectangle(cornerRadius: proxy.size.width/40)
