@@ -45,7 +45,6 @@ class ChatLogViewModel : ObservableObject{
     @Published var errorMessage = ""
     @Published var chatMessages = [ChatMessage]()
     
-    
     var  chatUser: ChatUser?
     
     init(chatUser: ChatUser?) {
@@ -189,6 +188,7 @@ struct ChatLogView: View {
 //    }
     
     @ObservedObject var vm : ChatLogViewModel
+    @State var isUserActive : Bool = true
     
     var body: some View {
         VStack {
@@ -212,6 +212,7 @@ struct ChatLogView: View {
                     
                 }
             }
+            .padding(.leading,10)
             //            .background(Color(.init(white: 0.95, alpha: 1)))
             //            .background(.gray)
             HStack{
@@ -250,7 +251,39 @@ struct ChatLogView: View {
             }
             .padding(.top,10)
         }
-        .navigationTitle(vm.chatUser?.email ?? "")
+        .toolbar{
+            ToolbarItem(placement: .navigationBarLeading) {
+                HStack{
+                    Image("testAvt")
+                        .resizable()
+                        .scaledToFill()
+                        .frame(width: 30, height: 30)
+                        .clipped()
+                        .cornerRadius(64)
+                        .overlay(RoundedRectangle(cornerRadius: 64)
+                            .stroke(Color.black, lineWidth: 1))
+                        .shadow(radius: 5)
+                    
+                    VStack(alignment:.leading,spacing: 0){
+                        Text("\(vm.chatUser?.email.replacingOccurrences(of: "@gmail.com", with: "")  ?? "")")
+                            .foregroundColor(.black)
+                            .fontWeight(.bold)
+                        VStack{
+                            HStack(){
+                                VStack{
+                                    Circle()
+                                        .foregroundColor(isUserActive ? .green: .white)
+                                        .frame(width: 10, height: 10)
+                                }
+                                .frame(width: 10, height:10,alignment: .bottomTrailing)
+                                Text(isUserActive ? "Online" : "")
+                            }
+                        }
+                    }
+                }
+            }
+        }
+//        .navigationTitle(vm.chatUser?.email.replacingOccurrences(of: "@gmail.com", with: "")  ?? "")
         .navigationBarTitleDisplayMode(.inline)
         .onDisappear{
             vm.firestoreListener?.remove()
@@ -274,34 +307,59 @@ private struct DescriptionPlaceholder: View {
 private struct MessageView : View{
     let message: ChatMessage
     var body: some View{
-        VStack {
-            if message.fromId == FirebaseManager.shared.auth.currentUser?.uid {
-                HStack {
-                    Spacer()
-                    HStack{
-                        Text(message.text)
-                            .foregroundColor(.white)
-                    }
-                    .padding()
-                    .background(.blue)
-                    .cornerRadius(10)
-                }
-                .padding(.horizontal)
-                .padding(.top,8)
-            }
-            else{
-                HStack {
+//        GeometryReader { geometry in
+            VStack {
+                if message.fromId == FirebaseManager.shared.auth.currentUser?.uid {
                     HStack {
-                        Text(message.text)
-                            .foregroundColor(.black)
+                        Spacer()
+                        HStack{
+                            Text(message.text)
+                                .foregroundColor(.white)
+                        }
+                        .padding()
+                        .background(.blue)
+                        .cornerRadius(20, corners: [.topLeft, .topRight,.bottomLeft])
+    //                    .cornerRadius(10)
+    //                    .clipShape(RoundedRectangle(cornerRadius: 10, corners: [.top, .topTrailing, .bottomTrailing]))
+                        
+                    
                     }
-                    .padding()
-                    .background(Color.gray)
-                    .cornerRadius(8)
-                    Spacer()
+                    .padding(.horizontal)
+                    .padding(.top,8)
+                }
+                else{
+                   
+                    HStack {
+                        HStack {
+                            Text(message.text)
+                                .foregroundColor(.black)
+                        }
+                        .padding()
+                        .background(Color.gray)
+                        .cornerRadius(20, corners: [.topLeft, .topRight,.bottomRight])
+                        
+                        Spacer()
+                    }
                 }
             }
-        }
+//            .frame(width: geometry.size.width)
+//        }
+    }
+}
+extension View {
+    func cornerRadius(_ radius: CGFloat, corners: UIRectCorner) -> some View {
+        clipShape( RoundedCorner(radius: radius, corners: corners) )
     }
 }
 //
+
+struct RoundedCorner: Shape {
+
+    var radius: CGFloat = .infinity
+    var corners: UIRectCorner = .allCorners
+
+    func path(in rect: CGRect) -> Path {
+        let path = UIBezierPath(roundedRect: rect, byRoundingCorners: corners, cornerRadii: CGSize(width: radius, height: radius))
+        return Path(path.cgPath)
+    }
+}

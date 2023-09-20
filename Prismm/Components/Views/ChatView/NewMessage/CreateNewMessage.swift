@@ -18,7 +18,7 @@ struct CreateNewMessageView: View {
     @ObservedObject var vm = CreateNewMessageViewModel()
     
     var body: some View {
-        NavigationView {
+        NavigationStack {
             GeometryReader { geometry in
                 ScrollView {
                     //                Text(vm.errorMessage)
@@ -110,7 +110,7 @@ struct CreateNewMessageView: View {
                     }
                     
                     ToolbarItemGroup(placement: .navigationBarLeading) {
-                        Text("CreateNew Message")
+                        Text("sNew Message")
                             .font(.title)
                             .fontWeight(.bold)
                     }

@@ -28,9 +28,7 @@ class FirebaseManager: NSObject {
 
 @main
 struct PrismmApp: App {
-//    init() {
-//        FirebaseApp.configure()
-//    }
+
     var body: some Scene {
         WindowGroup {
             Login()

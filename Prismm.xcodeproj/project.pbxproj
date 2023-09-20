@@ -20,6 +20,7 @@
 		34C3CE992AB53BDF004E15E6 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 34C3CE982AB53BDF004E15E6 /* FirebaseFirestore */; };
 		34C3CE9B2AB53BDF004E15E6 /* FirebaseFirestoreSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 34C3CE9A2AB53BDF004E15E6 /* FirebaseFirestoreSwift */; };
 		34C3CE9D2AB53BDF004E15E6 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 34C3CE9C2AB53BDF004E15E6 /* FirebaseStorage */; };
+		34C3CE9F2AB7396D004E15E6 /* CustomRoundedRec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34C3CE9E2AB7396D004E15E6 /* CustomRoundedRec.swift */; };
 		E10C0E292AAAEDBD00AEB220 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E10C0E282AAAEDBD00AEB220 /* Assets.xcassets */; };
 		E10C0E2C2AAAEDBD00AEB220 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E10C0E2B2AAAEDBD00AEB220 /* Preview Assets.xcassets */; };
 		E10C0E412AAAF53E00AEB220 /* CustomTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10C0E402AAAF53E00AEB220 /* CustomTextField.swift */; };
@@ -67,6 +68,7 @@
 		34C3CE8E2AB3FC2C004E15E6 /* ChatUserModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatUserModel.swift; sourceTree = "<group>"; };
 		34C3CE912AB41D51004E15E6 /* ChatLog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatLog.swift; sourceTree = "<group>"; };
 		34C3CE932AB42FB7004E15E6 /* ChatLogModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatLogModel.swift; sourceTree = "<group>"; };
+		34C3CE9E2AB7396D004E15E6 /* CustomRoundedRec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomRoundedRec.swift; sourceTree = "<group>"; };
 		E10C0E212AAAEDBC00AEB220 /* Prismm.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Prismm.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E10C0E282AAAEDBD00AEB220 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E10C0E2B2AAAEDBD00AEB220 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
@@ -291,6 +293,7 @@
 			isa = PBXGroup;
 			children = (
 				E19D96822AAB2C0000E2CFAC /* Extension+String.swift */,
+				34C3CE9E2AB7396D004E15E6 /* CustomRoundedRec.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -472,6 +475,7 @@
 				E12FA0362AAC2EE3007890A3 /* HomeView.swift in Sources */,
 				34C3CE922AB41D51004E15E6 /* ChatLog.swift in Sources */,
 				E1BB6F252AAEC12F00051687 /* HomeViewModel.swift in Sources */,
+				34C3CE9F2AB7396D004E15E6 /* CustomRoundedRec.swift in Sources */,
 				E17E8CF92AAC85E500EF5EFB /* PostGridView.swift in Sources */,
 				E12FA03A2AAC2EFB007890A3 /* StoryView.swift in Sources */,
 				E1BB6F222AAEC01D00051687 /* UserActiveChat.swift in Sources */,
