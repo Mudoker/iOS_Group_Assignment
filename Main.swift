@@ -23,6 +23,7 @@ struct PrismmApp: App {
             //HomeView()
             if Auth.auth().currentUser == nil{
                 Login(authVM: authVM, homeVM: homeVM, profileVM: profileVM)
+                    .environmentObject(dataControllerVM)
             }else{
                 TabBar(authVM: authVM, homeVM: homeVM, profileVM: profileVM)
                     .environmentObject(dataControllerVM)
@@ -36,6 +37,7 @@ struct PrismmApp: App {
             }
                 
         }
+        
         
     }
     
