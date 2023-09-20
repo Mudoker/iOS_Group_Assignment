@@ -66,7 +66,7 @@ struct PostView: View {
                 // In building
                 Spacer()
                 Menu {
-                    Button(action: {}) {
+                    Button(action: {homeViewModel.isDeletePostAlert = true}) {
                         HStack {
                             Image(systemName: "delete.left")
                                 .resizable()
@@ -76,8 +76,16 @@ struct PostView: View {
                             Text("Delete Post")
                         }
                     }
+                    .alert("Delete this post?", isPresented: $homeViewModel.isDeletePostAlert) {
+                        Button("Cancel", role: .cancel) {
+                        }
+                        Button("Delete", role: .destructive) {
+                        }
+                    } message: {
+                        Text("\nThis will permanently delete this post")
+                    }
                     
-                    Button(action: {}) {
+                    Button(action: {homeViewModel.isBlockUserAlert = true}) {
                         HStack {
                             Image(systemName: "person.crop.circle.badge.xmark")
                                 .resizable()
@@ -87,19 +95,35 @@ struct PostView: View {
                             Text("Block this user")
                         }
                     }
+                    .alert("Block this user?", isPresented: $homeViewModel.isBlockUserAlert) {
+                        Button("Cancel", role: .cancel) {
+                        }
+                        Button("Block", role: .destructive) {
+                        }
+                    } message: {
+                        Text("\nYou will not see this user again")
+                    }
                     
-                    Button(action: {}) {
+                    Button(action: {homeViewModel.isRestrictUserAlert = true}) {
                         HStack {
                             Image(systemName: "rectangle.portrait.slash")
                                 .resizable()
                                 .scaledToFit()
                                 .frame(width: homeViewModel.seeMoreButtonSize)
                                 .padding(.trailing)
-                            Text("Hide this user")
+                            Text("Restrict this user")
                         }
                     }
+                    .alert("Restrict this user?", isPresented: $settingVM.isSignOutAlertPresented) {
+                        Button("Cancel", role: .cancel) {
+                        }
+                        Button("Restrict", role: .destructive) {
+                        }
+                    } message: {
+                        Text("\nStop receiving notification from this user")
+                    }
                     
-                    Button(action: {}) {
+                    Button(action: {homeViewModel.isTurnOffCommentAlert = true}) {
                         HStack {
                             Image(systemName: "text.badge.xmark")
                                 .resizable()
@@ -108,6 +132,14 @@ struct PostView: View {
                                 .padding(.trailing)
                             Text("Turn off comment")
                         }
+                    }
+                    .alert("Turn off comment?", isPresented: $settingVM.isSignOutAlertPresented) {
+                        Button("Cancel", role: .cancel) {
+                        }
+                        Button("Turn off", role: .destructive) {
+                        }
+                    } message: {
+                        Text("\nDisable comment for this post")
                     }
                     
                     Button(action: {}) {

@@ -38,6 +38,10 @@ class HomeViewModel: ObservableObject {
     @Published var isShowPostTagListOnIpad = false
     @Published var createNewPostCaption = ""
     @Published var isPostOnScreen = false
+    @Published var isRestrictUserAlert = false
+    @Published var isBlockUserAlert = false
+    @Published var isDeletePostAlert = false
+    @Published var isTurnOffCommentAlert = false
     @Published var selectedCommentFilter = "Newest"
     @Published var fetchedAllPosts = [Post]()
     private var postsListenerRegistration: ListenerRegistration?
