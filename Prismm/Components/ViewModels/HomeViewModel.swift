@@ -104,7 +104,7 @@ class HomeViewModel: ObservableObject {
     }
     
     var usernameFont: CGFloat {
-        UIDevice.current.userInterfaceIdiom == .phone ? 20 : 25
+        UIDevice.current.userInterfaceIdiom == .phone ? 18 : 25
     }
     
     var timeFont: CGFloat {

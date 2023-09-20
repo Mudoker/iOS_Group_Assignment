@@ -21,7 +21,7 @@ import Firebase
 struct CommentView: View {
     @Binding var isDarkModeEnabled: Bool
     @Binding var isShowComment: Bool
-    @ObservedObject var homeViewModel = HomeViewModel()
+    @ObservedObject var homeViewModel: HomeViewModel
     
     var post: Post
     
@@ -101,8 +101,6 @@ struct CommentView: View {
                                     // Start the asynchronous task when the view appears
                                     Task {
                                         do {
-                                            print(comment.commenterId)
-                                            homeViewModel.currentCommentor = try await APIService.fetchUser(withUserID: comment.commenterId)
                                             homeViewModel.currentCommentor = try await APIService.fetchUser(withUserID: comment.commenterId)
         //                                    post = try await UserService.fetchAPost(withUid: post.id)
 

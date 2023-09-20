@@ -23,8 +23,10 @@ import Firebase
 struct PostView: View {
     var post: Post
     // View model
-    @ObservedObject var homeViewModel = HomeViewModel()
-    @ObservedObject var settingVM = SettingViewModel()
+    @ObservedObject var homeViewModel: HomeViewModel
+    @ObservedObject var settingVM: SettingViewModel
+    
+    @State var isAlert = false
     var body: some View {
         VStack {
             //Post info.
@@ -66,7 +68,8 @@ struct PostView: View {
                 // In building
                 Spacer()
                 Menu {
-                    Button(action: {homeViewModel.isDeletePostAlert = true}) {
+                    Button(action: {homeViewModel.isDeletePostAlert = true
+                    }) {
                         HStack {
                             Image(systemName: "delete.left")
                                 .resizable()
@@ -76,14 +79,7 @@ struct PostView: View {
                             Text("Delete Post")
                         }
                     }
-                    .alert("Delete this post?", isPresented: $homeViewModel.isDeletePostAlert) {
-                        Button("Cancel", role: .cancel) {
-                        }
-                        Button("Delete", role: .destructive) {
-                        }
-                    } message: {
-                        Text("\nThis will permanently delete this post")
-                    }
+                    
                     
                     Button(action: {homeViewModel.isBlockUserAlert = true}) {
                         HStack {
@@ -95,14 +91,7 @@ struct PostView: View {
                             Text("Block this user")
                         }
                     }
-                    .alert("Block this user?", isPresented: $homeViewModel.isBlockUserAlert) {
-                        Button("Cancel", role: .cancel) {
-                        }
-                        Button("Block", role: .destructive) {
-                        }
-                    } message: {
-                        Text("\nYou will not see this user again")
-                    }
+                    
                     
                     Button(action: {homeViewModel.isRestrictUserAlert = true}) {
                         HStack {
@@ -114,14 +103,6 @@ struct PostView: View {
                             Text("Restrict this user")
                         }
                     }
-                    .alert("Restrict this user?", isPresented: $settingVM.isSignOutAlertPresented) {
-                        Button("Cancel", role: .cancel) {
-                        }
-                        Button("Restrict", role: .destructive) {
-                        }
-                    } message: {
-                        Text("\nStop receiving notification from this user")
-                    }
                     
                     Button(action: {homeViewModel.isTurnOffCommentAlert = true}) {
                         HStack {
@@ -132,14 +113,6 @@ struct PostView: View {
                                 .padding(.trailing)
                             Text("Turn off comment")
                         }
-                    }
-                    .alert("Turn off comment?", isPresented: $settingVM.isSignOutAlertPresented) {
-                        Button("Cancel", role: .cancel) {
-                        }
-                        Button("Turn off", role: .destructive) {
-                        }
-                    } message: {
-                        Text("\nDisable comment for this post")
                     }
                     
                     Button(action: {}) {
@@ -164,6 +137,39 @@ struct PostView: View {
                 
             }
             .padding(.horizontal)
+            .alert("Delete this post?", isPresented: $homeViewModel.isDeletePostAlert) {
+                Button("Cancel", role: .cancel) {
+                }
+                Button("Delete", role: .destructive) {
+                }
+            } message: {
+                Text("\nThis will permanently delete this post")
+            }
+            .alert("Block this user?", isPresented: $homeViewModel.isBlockUserAlert) {
+                Button("Cancel", role: .cancel) {
+                }
+                Button("Block", role: .destructive) {
+                }
+            } message: {
+                Text("\nYou will not see this user again")
+            }
+            .alert("Turn off comment?", isPresented: $homeViewModel.isTurnOffCommentAlert) {
+                Button("Cancel", role: .cancel) {
+                }
+                Button("Turn off", role: .destructive) {
+                }
+            } message: {
+                Text("\nDisable comment for this post")
+            }
+            .alert("Restrict this user?", isPresented: $homeViewModel.isRestrictUserAlert) {
+                Button("Cancel", role: .cancel) {
+                }
+                Button("Restrict", role: .destructive) {
+                }
+            } message: {
+                Text("\nStop receiving notification from this user")
+            }
+            
             
             
             //Caption
