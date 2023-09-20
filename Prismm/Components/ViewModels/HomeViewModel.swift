@@ -189,7 +189,7 @@ class HomeViewModel: ObservableObject {
     
     func createComment(content: String, commentor: String, postId: String) async throws -> Comment?{
         let commentRef = Firestore.firestore().collection("test_comments").document()
-        let newComment = Comment(id: commentRef.documentID, content: content, commenterID: commentor, postID: postId, creationDate: Timestamp())
+        let newComment = Comment(id: commentRef.documentID, content: content, commenterId: commentor, postId: postId, creationDate: Timestamp())
         guard let encodedComment = try? Firestore.Encoder().encode(newComment) else { return nil }
         try await commentRef.setData(encodedComment)
         return newComment
@@ -389,7 +389,7 @@ class HomeViewModel: ObservableObject {
         
         for comment in comments {
             // Check if the commenter's ID is not in the restricted or blocked list
-            if !restrictedList.contains(comment.commenterID) && !blockedList.contains(comment.commenterID) {
+            if !restrictedList.contains(comment.commenterId) && !blockedList.contains(comment.commenterId) {
                 filteredComments.append(comment)
             }
         }
@@ -411,7 +411,7 @@ class HomeViewModel: ObservableObject {
         
         for comment in comments {
             // Check if the commenter's ID is not in the restricted or blocked list
-            if !blockedList.contains(comment.commenterID) {
+            if !blockedList.contains(comment.commenterId) {
                 filteredComments.append(comment)
             }
         }

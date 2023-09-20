@@ -8,14 +8,14 @@
 import SwiftUI
 import Firebase
 import FirebaseFirestoreSwift
+import UserNotifications
 
 @main
 struct PrismmApp: App {
     
     var body: some Scene {
         WindowGroup {
-            HomeView()
-            
+            LocalPushNotification()
         }
     }
     

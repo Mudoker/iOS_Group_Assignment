@@ -32,4 +32,9 @@ struct Constants {
         "Movies", "Music", "Nature", "Personal", "Pets", "Politics", "QnA", "Religion", "Science",
         "Society", "Sports", "Technology", "Travel", "Trivial", "Wonders"
     ]
+    
+    static let notiReact = "liked your post"
+    static let notiComment = "commented on your post"
+    static let notiFollow = "start to follow you"
+    static let notiMention = "mentioned you"
 }

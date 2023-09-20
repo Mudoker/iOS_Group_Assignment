@@ -86,7 +86,7 @@ struct CommentView: View {
                                     // Start the asynchronous task when the view appears
                                     Task {
                                         do {
-                                            homeViewModel.currentCommentor = try await APIService.fetchUser(withUserID: comment.commenterID)
+                                            homeViewModel.currentCommentor = try await APIService.fetchUser(withUserID: comment.commenterId)
         //                                    post = try await UserService.fetchAPost(withUid: post.id)
 
                                         } catch {
@@ -151,9 +151,6 @@ struct CommentView: View {
                         Button(action: {
                             Task {
                                 _ = try await homeViewModel.createComment(content: homeViewModel.commentContent, commentor: "3WBgDcMgEQfodIbaXWTBHvtjYCl2", postId: post.id)
-//                                if let newComment = newComment {
-//                                    try await uploadVM.addCommentToPost(comment: newComment, postID: post.id)
-//                                }
                                 homeViewModel.commentContent = ""
                         }
                         }) {

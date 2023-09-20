@@ -25,6 +25,7 @@ struct AppNotification: Identifiable, Codable {
     let postLink: String
     let creationDate: Timestamp
     let category: NotificationCategory
+    var isNotified: Bool
 }
 
 enum NotificationCategory: String, Codable {
