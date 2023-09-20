@@ -27,7 +27,7 @@ struct User: Identifiable, Codable {
     var facebook: String?
     var gmail: String?
     var linkedIn: String?
-    
+    var likedPost: [String?]
     var followers: [String?] // User IDs of followers
     var following: [String?] // User IDs of users being followed
     var posts: [String?] // IDs of posts made by the user
@@ -62,6 +62,7 @@ struct User: Identifiable, Codable {
         self.blockList = []
         self.restrictedByList = []
         self.blockByList = []
+        self.likedPost = []
     }
 }
 

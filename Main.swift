@@ -28,7 +28,6 @@ struct PrismmApp: App {
                         Task{
                             authVM.currentUser = try? await APIService.fetchCurrentUserData()
                             authVM.userSettings = try? await APIService.fetchCurrentSettingData()
-                            print(authVM.userSettings?.darkModeEnabled)
                         }
                         
                     }

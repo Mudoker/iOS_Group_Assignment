@@ -83,9 +83,63 @@ struct HomeView: View {
                     
                     
                     VStack {
-                        ForEach(homeViewModel.fetchedAllPosts) { post in
-                            PostView(post: post, homeViewModel: homeViewModel, settingVM: settingVM, select: $selectedPost)
-                                .padding(.bottom, 50)
+                        if (homeViewModel.fetchedAllPosts.isEmpty) {
+                            
+                            Image(systemName: "checkmark.circle")
+                                .resizable()
+                                .frame(width: 40, height: 40) // Adjust the size as needed
+                                .overlay(
+                                    LinearGradient(
+                                        gradient: Gradient(
+                                            colors: settingVM.isDarkModeEnabled ? Constants.buttonGradientColorDark : Constants.buttonGradientColorLight
+                                        ),
+                                        startPoint: .topLeading,
+                                        endPoint: .bottomTrailing
+                                    )
+                                    .mask(Image(systemName: "checkmark.circle")
+                                            .resizable()
+                                            .frame(width: 40, height: 40)
+                                    )
+                                )
+                                .padding(.top)
+                            Text("You have caught up !")
+                                .font(.title)
+//                                .opacity(0.5)
+                                .foregroundColor(.pink)
+                            
+                            Text("You've seen all new posts from creators you follow")
+                                .opacity(0.5)
+                        } else {
+                            ForEach(homeViewModel.fetchedAllPosts) { post in
+                                PostView(post: post, homeViewModel: homeViewModel, settingVM: settingVM, select: $selectedPost)
+                                    .padding(.bottom, 50)
+                            }
+                            
+                            Image(systemName: "checkmark.circle")
+                                .resizable()
+                                .frame(width: 40, height: 40) // Adjust the size as needed
+                                .overlay(
+                                    LinearGradient(
+                                        gradient: Gradient(
+                                            colors: settingVM.isDarkModeEnabled ? Constants.buttonGradientColorDark : Constants.buttonGradientColorLight
+                                        ),
+                                        startPoint: .topLeading,
+                                        endPoint: .bottomTrailing
+                                    )
+                                    .mask(Image(systemName: "checkmark.circle")
+                                        .resizable()
+                                        .frame(width: 40, height: 40)
+                                    )
+                                )
+                                .padding(.top)
+                            Text("You have caught up !")
+                                .font(.title)
+                            //                                .opacity(0.5)
+                                .foregroundColor(.pink)
+                            
+                            Text("You've seen all new posts from creators you follow")
+                                .opacity(0.5)
+                                .padding(.bottom)
                         }
                     }
                 }
@@ -122,8 +176,8 @@ struct HomeView: View {
     }
 }
 
-//struct HomeView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        HomeView(homeViewModel: HomeViewModel(), settingVM: SettingViewModel())
-//    }
-//}
+struct HomeView_Previews: PreviewProvider {
+    static var previews: some View {
+        HomeView(authVM: AuthenticationViewModel(), settingVM: SettingViewModel(), homeViewModel: HomeViewModel())
+    }
+}

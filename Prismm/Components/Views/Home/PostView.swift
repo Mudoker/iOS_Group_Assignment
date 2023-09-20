@@ -23,9 +23,10 @@ import Firebase
 struct PostView: View {
     var post: Post
     // View model
-    @ObservedObject var homeViewModel = HomeViewModel()
-    @ObservedObject var settingVM = SettingViewModel()
+    @ObservedObject var homeViewModel : HomeViewModel
+    @ObservedObject var settingVM : SettingViewModel
     @Binding var select: Post
+    @State var isUserLikePost = false
     var body: some View {
         VStack {
             //Post info.
@@ -228,14 +229,33 @@ struct PostView: View {
             //Operations menu.
             HStack (spacing: UIScreen.main.bounds.width * 0.02) {
                 HStack {
-                    Image(systemName: "heart")
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: homeViewModel.postStatsImageSize)
                     
-                    Text("\(post.likerIDs.count)")
-                        .font(Font.system(size: homeViewModel.postStatsFontSize, weight: .light))
-                        .opacity(0.6)
+                    Button(action: {
+                        Task {
+                            
+                            try await homeViewModel.likePost(likerID: "ao2PKDpap4Mq7M5cn3Nrc1Mvoa42", postID: post.id)
+                        }
+                    }) {
+                        
+                            Image(systemName: "heart")
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width: homeViewModel.postStatsImageSize)
+                                //.foregroundColor(post.isCurrentUserLikePost ? .pink : .black)
+                                .overlay (
+                                    Image(systemName: "heart.fill")
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fit)
+                                        .frame(width: homeViewModel.postStatsImageSize)
+                                        //.foregroundColor(post.isCurrentUserLikePost ? .pink : .clear)
+                                )
+                            
+                    }
+                    
+                    //Text("\(post.likerIDs.count)")
+                        //.font(Font.system(size: homeViewModel.postStatsFontSize, weight: .light))
+                        //.opacity(0.6)
+                    
                 }
                 .padding(.horizontal)
                 
@@ -251,14 +271,11 @@ struct PostView: View {
                         homeViewModel.fetchAllComments(forPostID: post.id)
                     }
                 }) {
-                    HStack {
-                        Image(systemName: "bubble.right")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: homeViewModel.postStatsImageSize)
-                            .foregroundColor(.black)
-                        
-                    }
+                    Image(systemName: "bubble.right")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: homeViewModel.postStatsImageSize)
+                        .foregroundColor(.black)
                 }
                 
                 Spacer()

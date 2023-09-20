@@ -47,6 +47,7 @@ class HomeViewModel: ObservableObject {
     private var postsListenerRegistration: ListenerRegistration?
     private var commentListenerRegistration: ListenerRegistration?
     
+    
     @Published var fetchedCommentsByPostId = [String: Set<Comment>]()
     
     @Published var newPostSelectedMedia: NSURL? = nil
@@ -104,7 +105,7 @@ class HomeViewModel: ObservableObject {
     }
     
     var usernameFont: CGFloat {
-        UIDevice.current.userInterfaceIdiom == .phone ? 20 : 25
+        UIDevice.current.userInterfaceIdiom == .phone ? 18 : 25
     }
     
     var timeFont: CGFloat {
@@ -224,7 +225,6 @@ class HomeViewModel: ObservableObject {
             id: postRef.documentID,
             ownerID: ownerID,
             caption: createNewPostCaption,
-            likerIDs: [],
             mediaURL: mediaURL,
             mediaMimeType: mediaMimeType,
             tag: selectedPostTag,
@@ -304,19 +304,7 @@ class HomeViewModel: ObservableObject {
                 }
                 
                 self.fetchedAllPosts = sortPostByTime(order: "asc", posts: self.fetchedAllPosts)
-                
                 for i in 0..<self.fetchedAllPosts.count {
-                    for likerID in self.fetchedAllPosts[i].likerIDs {
-                        Task {
-                            do {
-                                let liker = try await APIService.fetchUser(withUserID: likerID ?? "")
-                                self.fetchedAllPosts[i].unwrappedLikers.append(liker)
-                            } catch {
-                                print("Error fetching liker: \(error)")
-                            }
-                        }
-                    }
-                    
                     let post = self.fetchedAllPosts[i]
                     let ownerID = post.ownerID
                     Task {
@@ -438,59 +426,57 @@ class HomeViewModel: ObservableObject {
     func likePost(likerID: String, postID: String) async throws {
         do {
             // Fetch the post document
-            let postRef = Firestore.firestore().collection("test_posts").document(postID)
-            var post = try await postRef.getDocument().data(as: Post.self)
+            let userRef = Firestore.firestore().collection("users").document(likerID)
+            var user = try await userRef.getDocument().data(as: User.self)
             
-            // Ensure you have successfully fetched the post data
-            //var updatedPost = post
+   
             
             // Update the post's comment array
-            if (!post.likerIDs.contains(likerID)) {
-                post.likerIDs.append(likerID)
+            if (!user.likedPost.contains(postID)) {
+                user.likedPost.append(postID)
             } else {
-                print("Already like")
+                user.likedPost.removeAll { $0 == postID}
             }
-            
             // Update the Firestore document with the updated data
-            try postRef.setData(from: post) { error in
-                if let error = error {
-                    print("Error updating document: \(error)")
-                } else {
-                    print("Document successfully updated.")
-                }
-            }
+//            try postRef.setData(from: post) { error in
+//                if let error = error {
+//                    print("Error updating document: \(error)")
+//                } else {
+//                    print("Document successfully updated.")
+//                }
+//            }
         } catch {
             throw error
         }
     }
     
     // Unlike post
-    func unLikePost(likerID: String, postID: String) async throws {
-        do {
-            let postRef = Firestore.firestore().collection("test_posts").document(postID)
-            var post = try await postRef.getDocument().data(as: Post.self)
-            //var updatedPost = post
-            
-            // Remove the comment with the specified commentID
-            if (post.likerIDs.contains(likerID)) {
-                post.likerIDs.removeAll { $0 == likerID }
-            } else {
-                print("Already unlike")
-            }
-            
-            
-            try postRef.setData(from: post) { error in
-                if let error = error {
-                    print("Error unlike post: \(error)")
-                } else {
-                    print("Post unlike successfully.")
-                }
-            }
-        } catch {
-            print("Error deleting comment: \(error)")
-            throw error // Rethrow the error for the caller to handle
-        }
-    }
+//    func unLikePost(likerID: String, postID: String) async throws {
+//        do {
+//            let postRef = Firestore.firestore().collection("test_posts").document(postID)
+//            var post = try await postRef.getDocument().data(as: Post.self)
+//            //var updatedPost = post
+//
+//            // Remove the comment with the specified commentID
+//            if (post.likerIDs.contains(likerID)) {
+//                post.likerIDs.removeAll { $0 == likerID }
+//            } else {
+//                print("Already unlike")
+//            }
+//
+//
+//            try postRef.setData(from: post) { error in
+//                if let error = error {
+//                    print("Error unlike post: \(error)")
+//                } else {
+//                    print("Post unlike successfully.")
+//                }
+//            }
+//        } catch {
+//            print("Error deleting comment: \(error)")
+//            throw error // Rethrow the error for the caller to handle
+//        }
+//    }
     
     // Block (not receiving notification + post/story + message + other cannot see your post)
     func blockOtherUser(userID: String) async throws {
@@ -596,6 +582,8 @@ class HomeViewModel: ObservableObject {
             }
         }
     }
+    
+//   
     
     // Follow
     func followOtherUser(userID: String) async throws {
