@@ -319,6 +319,12 @@ private struct MessageView : View{
                         .padding()
                         .background(.blue)
                         .cornerRadius(20, corners: [.topLeft, .topRight,.bottomLeft])
+                        
+                        Image("testAvt")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 30, height: 30)
+                            .clipShape(Circle())
     //                    .cornerRadius(10)
     //                    .clipShape(RoundedRectangle(cornerRadius: 10, corners: [.top, .topTrailing, .bottomTrailing]))
                         
@@ -330,6 +336,11 @@ private struct MessageView : View{
                 else{
                    
                     HStack {
+                        Image("testAvt")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 30, height: 30)
+                            .clipShape(Circle())
                         HStack {
                             Text(message.text)
                                 .foregroundColor(.black)

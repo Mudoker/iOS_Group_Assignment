@@ -42,6 +42,9 @@ struct AllChat : View {
                     LazyVStack{
                         VStack (spacing: 10){
                             Text("1000")
+                                .onTapGesture {
+                                    print(vm.recentMessages)
+                                }
                             //                            Text("\(vm.chatUser?.uid ?? "" )")
                             HStack {
                                 Image(systemName: "magnifyingglass")
@@ -159,19 +162,21 @@ struct AllChat : View {
                                                     
                                                     
                                                     VStack(alignment: .leading, spacing: 8) {
-                                                        Text(recentMessage.email.replacingOccurrences(of: "@gmail.com", with: ""))
-                                                            .font(.system(size: 16, weight: .bold))
-                                                            .foregroundColor(Color(.label))
+                                                        HStack{
+                                                            Text(recentMessage.email.replacingOccurrences(of: "@gmail.com", with: ""))
+                                                                .font(.system(size: 16, weight: .bold))
+                                                                .foregroundColor(Color(.label))
+                                                            Spacer()
+                                                            Text("\(recentMessage.timeAgo )")
+                                                                .font(.system(size: 14, weight: .semibold))
+                                                                .foregroundColor(Color(.label))
+                                                        }
                                                         Text(recentMessage.text)
                                                             .font(.system(size: 14))
                                                             .foregroundColor(Color(.darkGray))
                                                             .multilineTextAlignment(.leading)
                                                     }
-                                                    Spacer()
                                                     
-                                                    Text("\(recentMessage.timestamp.description )")
-                                                        .font(.system(size: 14, weight: .semibold))
-                                                        .foregroundColor(Color(.label))
                                                 }
                                             }
                                             
