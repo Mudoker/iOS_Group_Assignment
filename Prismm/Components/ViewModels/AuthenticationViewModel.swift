@@ -269,7 +269,7 @@ class AuthenticationViewModel: ObservableObject {
             let googleSignInResult = try await Auth.auth().signIn(with: googleCredential)
             
             let firebaseUser = googleSignInResult.user
-            let userEmail = firebaseUser.email ?? ""
+            _ = firebaseUser.email ?? ""
             print("User \(firebaseUser.uid) signed in with \(firebaseUser.email ?? "unknown" )")
             
             currentUser = try? await APIService.fetchCurrentUserData()

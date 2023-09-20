@@ -23,8 +23,8 @@ struct CommentView: View {
     @Binding var isShowComment: Bool
     @ObservedObject var homeViewModel: HomeViewModel
     
-    var post: Post
-    
+    @Binding var post: Post
+    @State var id = ""
     let emojis = ["👍", "❤️", "😍", "🤣", "😯", "😭", "😡", "👽", "💩", "💀"]
     
     var body: some View {
@@ -32,7 +32,7 @@ struct CommentView: View {
             
             VStack (spacing: 0) {
                 ZStack(alignment: .centerFirstTextBaseline) {
-                    Text("Comment")
+                    Text(post.id)
                         .font(.title2)
                         .padding(.bottom)
                         .bold()
@@ -60,7 +60,8 @@ struct CommentView: View {
                 }
                 
                 VStack {
-                    if let commentsForPost = homeViewModel.fetchedCommentsByPostId[post.id], !commentsForPost.isEmpty {
+                    let commentsForPost = homeViewModel.fetchedCommentsByPostId
+                    if !commentsForPost.isEmpty {
                         ScrollView(showsIndicators: false) {
                             ForEach(commentsForPost.sorted{$0.id < $1.id}) { comment in
                                 HStack {
@@ -125,7 +126,6 @@ struct CommentView: View {
 
                     }
                 }
-
                 
                 VStack {
                     if (post.isAllowComment) {
@@ -151,7 +151,6 @@ struct CommentView: View {
                             .opacity(0.6)
                             .padding(8)
                             .padding(.top, 8)
-
                     }
                     
                     
@@ -175,6 +174,7 @@ struct CommentView: View {
                         
                         Button(action: {
                             Task {
+//                                print(post.id)
                                 _ = try await homeViewModel.createComment(content: homeViewModel.commentContent, commentor: "3WBgDcMgEQfodIbaXWTBHvtjYCl2", postId: post.id)
                                 homeViewModel.commentContent = ""
                         }
@@ -196,7 +196,13 @@ struct CommentView: View {
                 }
                 .background(.gray.opacity(0.1))
             }
+            .onAppear {
+                print("id2 :" + post.id)
+            }
             .padding(.vertical)
+        }
+        .onAppear {
+            print("comment id: " + id)
         }
         .foregroundColor(!isDarkModeEnabled ? .black : .white)
         .background(isDarkModeEnabled ? .black : .white)

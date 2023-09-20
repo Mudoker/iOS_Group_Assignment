@@ -46,8 +46,7 @@ class HomeViewModel: ObservableObject {
     @Published var fetchedAllPosts = [Post]()
     private var postsListenerRegistration: ListenerRegistration?
     private var commentListenerRegistration: ListenerRegistration?
-    
-    @Published var fetchedCommentsByPostId = [String: Set<Comment>]()
+    @Published var fetchedCommentsByPostId = [Comment]()
     
     @Published var newPostSelectedMedia: NSURL? = nil
     @Published var currentCommentor: User?
@@ -153,6 +152,7 @@ class HomeViewModel: ObservableObject {
     @MainActor
     func fetchAllComments(forPostID postID: String) {
         commentListenerRegistration = Firestore.firestore().collection("test_comments").whereField("postId", isEqualTo: postID).addSnapshotListener { [weak self] querySnapshot, error in
+            print("before id: \(postID)")
             guard let self = self else { return }
             
             if let error = error {
@@ -164,20 +164,22 @@ class HomeViewModel: ObservableObject {
                 print("No documents")
                 return
             }
-            
+            print(documents.count)
+
             let commentsToAdd = documents.compactMap { queryDocumentSnapshot in
                 try? queryDocumentSnapshot.data(as: Comment.self)
             }
             
-            // Check if "postID" exists in fetched_comments, and if not, create an empty set
-            var existingComments = fetchedCommentsByPostId[postID, default: Set<Comment>()]
-            
-            // Add the comments to the existing set
-            existingComments.formUnion(commentsToAdd)
+//            // Check if "postID" exists in fetched_comments, and if not, create an empty set
+//            var existingComments = fetchedCommentsByPostId[Set<Comment>()]
+//
+//            // Add the comments to the existing set
+//            existingComments.formUnion(commentsToAdd)
             
             // Update the fetched_comments dictionary with the merged set of comments
-            fetchedCommentsByPostId[postID] = existingComments
-            print(existingComments)
+            fetchedCommentsByPostId = commentsToAdd
+//            print(fetchedCommentsByPostId.count)
+            print("after id: \(postID)")
         }
     }
     
@@ -200,7 +202,7 @@ class HomeViewModel: ObservableObject {
     
     func createComment(content: String, commentor: String, postId: String) async throws -> Comment?{
         let commentRef = Firestore.firestore().collection("test_comments").document()
-        let newComment = Comment(id: commentRef.documentID, content: content, commenterId: commentor, postId: postId, creationDate: Timestamp())
+        let newComment = Comment(id: commentRef.documentID, content: content, commenterId: commentor, postId: "wxHsLQiGj9U4GqsKmlCP", creationDate: Timestamp())
         guard let encodedComment = try? Firestore.Encoder().encode(newComment) else { return nil }
         try await commentRef.setData(encodedComment)
         return newComment

@@ -82,7 +82,6 @@ struct Login: View {
                         
                         // Login button
                         Button(action: {
-                            
                             Task {
                                 authVM.isFetchingData = true
                                 try await authVM.signIn(withEmail: authVM.loginAccountText, password: authVM.loginPasswordText)

@@ -19,7 +19,7 @@ struct HomeView: View {
     
     @ObservedObject var authVM :AuthenticationViewModel
     @ObservedObject var settingVM:SettingViewModel
-    @ObservedObject var homeViewModel: HomeViewModel
+    @StateObject var homeViewModel = HomeViewModel()
     
     var body: some View {
         GeometryReader { proxy in
@@ -81,16 +81,14 @@ struct HomeView: View {
                     
                     VStack {
                         ForEach(homeViewModel.fetchedAllPosts) { post in
-                            PostView(post: post, homeViewModel: homeViewModel, settingVM: settingVM)
-                                .padding(.bottom, 50)
+                                PostView(post: .constant(post), homeViewModel: homeViewModel, settingVM: settingVM)
+                                    .padding(.bottom, 50)
+                            
                         }
                     }
                 }
-                
                 .sheet(isPresented: $homeViewModel.isCreateNewPostOnIpad) {
-
                     CreatePostView(authVM: authVM, settingVM: settingVM, homeVM: homeViewModel, isNewPost: $homeViewModel.isCreateNewPostOnIpad, isDarkModeEnabled: authVM.userSettings!.darkModeEnabled)
-
                 }
                 .fullScreenCover(isPresented: $homeViewModel.isCreateNewPostOnIphone) {
                     CreatePostView(authVM: authVM, settingVM: settingVM, homeVM: homeViewModel, isNewPost: $homeViewModel.isCreateNewPostOnIphone, isDarkModeEnabled: authVM.userSettings!.darkModeEnabled)
@@ -114,6 +112,6 @@ struct HomeView: View {
 
 struct HomeView_Previews: PreviewProvider {
     static var previews: some View {
-        HomeView(homeViewModel: HomeViewModel(), settingVM: SettingViewModel())
+        HomeView(authVM: AuthenticationViewModel(), settingVM: SettingViewModel(), homeViewModel: HomeViewModel())
     }
 }

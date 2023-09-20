@@ -21,12 +21,15 @@ import Kingfisher
 import Firebase
 
 struct PostView: View {
-    var post: Post
+    @Binding var post: Post
     // View model
     @ObservedObject var homeViewModel: HomeViewModel
     @ObservedObject var settingVM: SettingViewModel
-    
+    let emojis = ["👍", "❤️", "😍", "🤣", "😯", "😭", "😡", "👽", "💩", "💀"]
+    @State var isDarkModeEnabled = false
+
     @State var isAlert = false
+    @State var newPost: Post = Post(id: "", ownerID: "", creationDate: Timestamp(), isAllowComment: true)
     var body: some View {
         VStack {
             //Post info.
@@ -174,7 +177,7 @@ struct PostView: View {
             
             //Caption
             HStack {
-                Text(post.caption ?? "")
+                Text(post.id)
                     .font(homeViewModel.captionFont)
                 
                 Spacer()
@@ -245,14 +248,18 @@ struct PostView: View {
                 .padding(.horizontal)
                 
                 Button(action: {
+                    print("current post id1: " + post.id)
                     if UIDevice.current.userInterfaceIdiom == .pad {
                         homeViewModel.isOpenCommentViewOnIpad.toggle()
                         homeViewModel.fetchAllComments(forPostID: post.id)
 
                     } else {
-                        homeViewModel.isOpenCommentViewOnIphone.toggle()
                         homeViewModel.fetchAllComments(forPostID: post.id)
+
+                        homeViewModel.isOpenCommentViewOnIphone = true
                     }
+                    print("current post id2: " + post.id)
+
                 }) {
                     HStack {
                         Image(systemName: "bubble.right")
@@ -262,6 +269,195 @@ struct PostView: View {
                             .foregroundColor(.black)
                         
                     }
+                }
+//                .navigationDestination(isPresented: $homeViewModel.isOpenCommentViewOnIphone) {
+//                    CommentView(isDarkModeEnabled: $settingVM.isDarkModeEnabled, isShowComment: $homeViewModel.isOpenCommentViewOnIpad, homeViewModel: homeViewModel, post: $newPost)
+//                        .onAppear{
+//                            print("new post2: " + newPost.id)
+//                        }
+//                }
+                .sheet(isPresented: $homeViewModel.isOpenCommentViewOnIpad) {
+//                    CommentView(isDarkModeEnabled: $settingVM.isDarkModeEnabled, isShowComment: $homeViewModel.isOpenCommentViewOnIpad, homeViewModel: homeViewModel, post: $post)
+                }
+                .sheet(isPresented: $homeViewModel.isOpenCommentViewOnIphone) {
+                    GeometryReader { proxy in
+                        
+                        VStack (spacing: 0) {
+                            ZStack(alignment: .centerFirstTextBaseline) {
+                                Text(post.id)
+                                    .font(.title2)
+                                    .padding(.bottom)
+                                    .bold()
+                                
+                                HStack {
+                                    Menu {
+                                        Picker(selection: $homeViewModel.selectedCommentFilter, label: Text("Please choose a sorting option")) {
+                                            Text("Newest").tag("Newest")
+                                            Text("Oldest").tag("Oldest")
+                                        }
+                                    } label: {
+                                        Image(systemName: "line.3.horizontal.decrease")
+                                            .font(.title)
+                                    }
+                                    Spacer()
+                                    
+                                    Button(action: {
+                                        homeViewModel.isOpenCommentViewOnIphone = false // Close the sheet
+                                    }) {
+                                        Image(systemName: "xmark.circle.fill") // You can use any close button icon
+                                            .font(.title)
+                                    }
+                                }
+                                .padding(.horizontal)
+                            }
+                            
+                            VStack {
+                                let commentsForPost = homeViewModel.fetchedCommentsByPostId
+                                if !commentsForPost.isEmpty {
+                                    ScrollView(showsIndicators: false) {
+                                        ForEach(commentsForPost.sorted{$0.id < $1.id}) { comment in
+                                            HStack {
+                                                if let profileURLString = homeViewModel.currentCommentor?.profileImageURL,
+                                                       let mediaURL = URL(string: profileURLString) {
+                                                        
+                                                        KFImage(mediaURL)
+                                                            .resizable()
+                                                            .frame(width: proxy.size.width/8, height: proxy.size.width/8)
+                                                            .clipShape(Circle())
+                                                            .background(Circle().foregroundColor(Color.gray))
+                                                } else {
+                                                        Image(systemName: "person.fill")
+                                                            .resizable()
+                                                            .frame(width: proxy.size.width/12, height: proxy.size.width/12)
+                                                            .padding()
+                                                            .foregroundColor(.gray)
+                                                            .background(Circle().foregroundColor(Color.gray.opacity(0.1))
+                                                                .frame(width: proxy.size.width/7, height: proxy.size.width/7))
+                                                }
+                                                VStack(alignment: .leading) {
+                                                    HStack (alignment: .firstTextBaseline) {
+                                                        Text(homeViewModel.currentCommentor?.username ?? "Blank") // User Name
+                                                            .font(Font.system(size: homeViewModel.usernameFont, weight: .medium))
+                                                            .bold()
+                                                        
+                                                        Text(formatTimeDifference(from: comment.creationDate))
+                                                            .font(Font.system(size: homeViewModel.timeFont, weight: .medium))
+                                                            .opacity(0.3)
+                                                    }
+                                                    Text(comment.content) // Message
+                                                }
+                                                Spacer()
+                                            }
+                                            .padding(.horizontal, 5)
+                                            .padding(.bottom, 5)
+                                            .onAppear {
+                                                // Start the asynchronous task when the view appears
+                                                Task {
+                                                    do {
+                                                        homeViewModel.currentCommentor = try await APIService.fetchUser(withUserID: comment.commenterId)
+                    //                                    post = try await UserService.fetchAPost(withUid: post.id)
+
+                                                    } catch {
+                                                        print("Error fetching profile image URL: \(error)")
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                } else {
+                                    Spacer()
+                                    Image(systemName: "quote.bubble")
+                                        .resizable()
+                                        .frame(width: proxy.size.width/5, height: proxy.size.width/5)
+                                        .opacity(0.4)
+
+                                    Text("Be the first one to comment")
+                                        .font(.title)
+                                        .opacity(0.4)
+                                    Spacer()
+
+                                }
+                            }
+                            
+                            VStack {
+                                if (post.isAllowComment) {
+                                    ScrollView(.horizontal, showsIndicators: false) {
+                                        HStack(spacing: 0) {
+                                            ForEach(emojis, id: \.self) { emoji in
+                                                Button(action: {
+                                                    homeViewModel.commentContent += emoji
+                                                }) {
+                                                    Text(emoji)
+                                                        .font(.largeTitle)
+                                                        .padding(8)
+                                                        .background(Circle().fill(isDarkModeEnabled ? Color.gray.opacity(0.3) : Color.white))
+                                                }
+                                                .padding([.horizontal])
+                                                .padding(.top, 8)
+                                            }
+                                        }
+                                    }
+                                } else {
+                                    Text("Comment is disabled for this post")
+                                        .font(.title3)
+                                        .opacity(0.6)
+                                        .padding(8)
+                                        .padding(.top, 8)
+                                }
+                                
+                                
+                                HStack {
+                                    Image("testAvt")
+                                        .resizable()
+                                        .frame(width: proxy.size.width/8, height: proxy.size.width/8)
+                                        .clipShape(Circle())
+
+                                        TextField("", text: $homeViewModel.commentContent, prompt:  Text("Leave a comment...").foregroundColor(isDarkModeEnabled ? .white.opacity(0.5) : .black.opacity(0.5))
+                                            .font(.title3)
+                                        )
+                                        .autocorrectionDisabled(true)
+                                        .textInputAutocapitalization(.never)
+                                        .padding()
+                                        .disabled(post.isAllowComment ? false : true)
+                                        .background(
+                                            Capsule()
+                                                .fill(isDarkModeEnabled ? Color.gray.opacity(0.3) : Color.white)
+                                        )
+                                    
+                                    Button(action: {
+                                        Task {
+            //                                print(post.id)
+                                            _ = try await homeViewModel.createComment(content: homeViewModel.commentContent, commentor: "3WBgDcMgEQfodIbaXWTBHvtjYCl2", postId: post.id)
+                                            homeViewModel.commentContent = ""
+                                    }
+                                    }) {
+                                        Circle()
+                                            .fill(isDarkModeEnabled ? .gray.opacity(0.3) : .white)
+                                            .frame(width: proxy.size.width/8)
+                                            .overlay (
+                                                Image(systemName: "paperplane.fill")
+                                                    .resizable()
+                                                    .aspectRatio(contentMode: .fit)
+                                                    .frame(width: proxy.size.width/16)
+                                                    .foregroundColor(isDarkModeEnabled ? Constants.darkThemeColor : Constants.lightThemeColor)
+                                            )
+                                    }
+                                }
+                                .padding()
+                                
+                            }
+                            .background(.gray.opacity(0.1))
+                        }
+                        .onAppear {
+                            print("id2 :" + post.id)
+                        }
+                        .padding(.vertical)
+                    }
+
+                    .foregroundColor(!isDarkModeEnabled ? .black : .white)
+                    .background(isDarkModeEnabled ? .black : .white)
+                    .edgesIgnoringSafeArea(.bottom)
+                        
                 }
                 
                 Spacer()
@@ -314,12 +510,11 @@ struct PostView: View {
             }
             .padding(.horizontal)
         }
-        .sheet(isPresented: $homeViewModel.isOpenCommentViewOnIpad) {
-            CommentView(isDarkModeEnabled: $settingVM.isDarkModeEnabled, isShowComment: $homeViewModel.isOpenCommentViewOnIpad, homeViewModel: homeViewModel, post: post)
+        .onAppear {
+            newPost = post
+            print("new post1: " + newPost.id)
         }
-        .fullScreenCover(isPresented: $homeViewModel.isOpenCommentViewOnIphone) {
-            CommentView(isDarkModeEnabled: $settingVM.isDarkModeEnabled, isShowComment: $homeViewModel.isOpenCommentViewOnIphone, homeViewModel: homeViewModel, post: post)
-        }
+        
     }
     
     func formatTimeDifference(from date: Timestamp) -> String {
