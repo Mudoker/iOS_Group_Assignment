@@ -17,7 +17,7 @@ struct RecentMessage: Codable,Identifiable {
     let text, email: String
     let fromId, toId: String 
     let timestamp:  Date 
-    
+    let isSeen : Bool
     
     var username: String {
         email.components(separatedBy: "@").first ?? email
@@ -42,12 +42,34 @@ struct RecentMessage: Codable,Identifiable {
 class MainMessagesViewModel :  ObservableObject {
     @Published var errMessage = ""
     @Published var chatUser : ChatUser?
+    
     init(){
         fetchCurrentUser()
         fetchRecentMessages()
     }
+    
     @Published var recentMessages = [RecentMessage]()
     private var firestoreListener : ListenerRegistration?
+    
+    func updateIsSeen(forMessageWithID messageID: String) {
+        guard let uid = FirebaseManager.shared.auth.currentUser?.uid else { return }
+
+        FirebaseManager.shared.firestore
+            .collection("recent_messages")
+            .document(uid)
+            .collection("messages")
+            .document(messageID)
+            .updateData([FirebaseConstants.isSeen: true]) { error in
+                if let error = error {
+                    print(error)
+                    self.errMessage = "Failed to save message into Firestore: \(error)"
+                } else {
+                    print("Successfully updated isSeen status for the message")
+                }
+            }
+    }
+
+    
     private func fetchRecentMessages() {
         guard let uid = FirebaseManager.shared.auth.currentUser?.uid else { return }
         
@@ -77,6 +99,7 @@ class MainMessagesViewModel :  ObservableObject {
                     do{
                         if let rm = try? change.document.data(as: RecentMessage.self ){
                             self.recentMessages.insert(rm, at: 0)
+                            print(self.recentMessages[0].isSeen)
                         }
                     } catch{
                         print(error)

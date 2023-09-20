@@ -43,7 +43,7 @@ struct AllChat : View {
                         VStack (spacing: 10){
                             Text("1000")
                                 .onTapGesture {
-                                    print(vm.recentMessages)
+                            
                                 }
                             //                            Text("\(vm.chatUser?.uid ?? "" )")
                             HStack {
@@ -130,6 +130,10 @@ struct AllChat : View {
                                 LazyVStack(spacing: 12){
                                     ForEach(vm.recentMessages) { recentMessage in
                                         VStack {
+//                                            Text("alo")
+//                                                .onTapGesture {
+//                                                    print(recentMessage.isSeen)
+//                                                }
                                             Button {
                                                 let uid = FirebaseManager.shared.auth.currentUser?.uid == recentMessage.fromId ? recentMessage.toId : recentMessage.fromId
                                                 
@@ -138,6 +142,10 @@ struct AllChat : View {
                                                 self.chatLogViewModal.chatUser = self.chatUser
                                                 self.chatLogViewModal.fetchMessages()
                                                 self.showChatLogVIew.toggle()
+                                                if let firstMessage = vm.recentMessages.first {
+                                                    vm.updateIsSeen(forMessageWithID: firstMessage.id!)
+
+                                                }
                                                 
                                             } label: {
                                                 HStack(spacing: 16) {
@@ -169,12 +177,32 @@ struct AllChat : View {
                                                             Spacer()
                                                             Text("\(recentMessage.timeAgo )")
                                                                 .font(.system(size: 14, weight: .semibold))
-                                                                .foregroundColor(Color(.label))
+                                                                .foregroundColor(recentMessage.isSeen ? Color(.darkGray) : Color(.label))
                                                         }
-                                                        Text(recentMessage.text)
-                                                            .font(.system(size: 14))
-                                                            .foregroundColor(Color(.darkGray))
-                                                            .multilineTextAlignment(.leading)
+                                                        HStack{
+                                                            if (recentMessage.fromId == FirebaseManager.shared.auth.currentUser?.uid){
+                                                                Text(recentMessage.text)
+                                                                    .font(.system(size: 14))
+                                                                    .foregroundColor(Color(.darkGray))
+                                                                    .multilineTextAlignment(.leading)
+
+                                                            }
+                                                            else{
+                                                                Text(recentMessage.text)
+                                                                    .font(.system(size: 14))
+                                                                    .multilineTextAlignment(.leading)
+                                                                    .fontWeight(recentMessage.isSeen ? .regular : .bold)
+                                                                    .foregroundColor(recentMessage.isSeen ? Color(.darkGray): Color(.black))
+                                                            }
+                                                            
+                                                            Spacer()
+                                                            if (!recentMessage.isSeen){
+                                                                Circle()
+                                                                    .foregroundColor(.blue)
+                                                                    .frame(width: 15, height: 15)
+                                                            }
+                                                            
+                                                        }
                                                     }
                                                     
                                                 }

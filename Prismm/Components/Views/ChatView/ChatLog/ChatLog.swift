@@ -22,6 +22,7 @@ struct FirebaseConstants {
     static let messages = "messages"
     static let users = "users"
     static let recentMessages = "recent_messages"
+    static let isSeen = "isSeen"
 }
  
 struct ChatMessage: Identifiable {
@@ -30,18 +31,20 @@ struct ChatMessage: Identifiable {
     
     let documentId: String
     let fromId, toId, text: String
+    let isSeen : Bool
     
     init(documentId: String, data: [String: Any]) {
         self.documentId = documentId
         self.fromId = data[FirebaseConstants.fromId] as? String ?? ""
         self.toId = data[FirebaseConstants.toId] as? String ?? ""
         self.text = data[FirebaseConstants.text] as? String ?? ""
+        self.isSeen = data[FirebaseConstants.isSeen] as? Bool ?? false
     }
 }
 class ChatLogViewModel : ObservableObject{
     
     @Published var chatText = ""
-    
+    @Published var isSeen = false
     @Published var errorMessage = ""
     @Published var chatMessages = [ChatMessage]()
     
@@ -55,11 +58,12 @@ class ChatLogViewModel : ObservableObject{
     var firestoreListener : ListenerRegistration?
     
     func fetchMessages() {
-        
         guard let fromId = FirebaseManager.shared.auth.currentUser?.uid else { return }
         guard let toId = chatUser?.uid else { return }
+        
         firestoreListener?.remove()
         chatMessages.removeAll()
+        
         firestoreListener = FirebaseManager.shared.firestore
             .collection("messages")
             .document(fromId)
@@ -83,17 +87,20 @@ class ChatLogViewModel : ObservableObject{
                 }
             }
     }
+    
     func sendMessage(){
         print(chatText)
         guard let fromId = FirebaseManager.shared.auth.currentUser?.uid else { return }
         
         guard let toId = chatUser?.uid else { return }
         
+        
         let document = FirebaseManager.shared.firestore.collection("messages")
             .document(fromId)
             .collection(toId)
             .document()
-        let messageData = ["fromId": fromId, "toId": toId, "text": self.chatText, "timestamp": Timestamp()] as [String : Any]
+    
+        let messageData = ["fromId": fromId, "toId": toId, "text": self.chatText, "timestamp": Timestamp(), "isSeen": false] as [String : Any]
         
         document.setData(messageData) { error in
             if let error = error {
@@ -105,8 +112,10 @@ class ChatLogViewModel : ObservableObject{
             print("Successfully saved current user sending message")
             self.persistRecentMessage()
             self.chatText = ""
+            self.isSeen = false
             self.count += 1
         }
+        
         let recipientMessageDocument = FirebaseManager.shared.firestore.collection("messages")
             .document(toId)
             .collection(fromId)
@@ -120,6 +129,48 @@ class ChatLogViewModel : ObservableObject{
             }
             
             print("Recipient saved message as well")
+        }
+    }
+    
+    
+    func updateIsSeen(forMessageWithID messageID: String){
+        guard let fromId = FirebaseManager.shared.auth.currentUser?.uid else { return }
+        
+        guard let toId = chatUser?.uid else { return }
+        
+        
+        let document = FirebaseManager.shared.firestore.collection("messages")
+            .document(fromId)
+            .collection(toId)
+            .document(messageID)
+    
+        let messageData = [FirebaseConstants.isSeen: true]
+        
+        document.updateData(messageData) { error in
+            if let error = error {
+                print(error)
+                self.errorMessage = "Failed to save message into Firestore: \(error)"
+                return
+            }
+            
+            print("Successfully saved current user sending message")
+            self.persistRecentMessage()
+            print()
+            
+            let recipientMessageDocument = FirebaseManager.shared.firestore.collection("messages")
+                .document(toId)
+                .collection(fromId)
+                .document()
+            
+            recipientMessageDocument.setData(messageData) { error in
+                if let error = error {
+                    print(error)
+                    self.errorMessage = "Failed to save message into Firestore: \(error)"
+                    return
+                }
+                
+                print("Recipient saved message as well")
+            }
         }
     }
     
@@ -140,7 +191,8 @@ class ChatLogViewModel : ObservableObject{
             FirebaseConstants.text: self.chatText,
             FirebaseConstants.fromId: uid,
             FirebaseConstants.toId: toId,
-            FirebaseConstants.email: chatUser.email
+            FirebaseConstants.email: chatUser.email,
+            FirebaseConstants.isSeen : self.isSeen
         ] as [String : Any]
         
         // you'll need to save another very similar dictionary for the recipient of this message...how?
@@ -159,7 +211,8 @@ class ChatLogViewModel : ObservableObject{
             FirebaseConstants.text: self.chatText,
             FirebaseConstants.fromId: uid,
             FirebaseConstants.toId: toId,
-            FirebaseConstants.email: currentUser.email
+            FirebaseConstants.email: currentUser.email,
+            FirebaseConstants.isSeen : self.isSeen
         ] as [String : Any]
         
         FirebaseManager.shared.firestore
@@ -199,6 +252,7 @@ struct ChatLogView: View {
                         ForEach(vm.chatMessages) { message in
                             MessageView(message: message)
                         }
+                        
                         HStack{
                             Spacer()
                         }
@@ -250,6 +304,12 @@ struct ChatLogView: View {
                 
             }
             .padding(.top,10)
+        }
+        .onAppear {
+            if let firstMessage = vm.chatMessages.first {
+                vm.updateIsSeen(forMessageWithID: firstMessage.documentId)
+
+            }
         }
         .toolbar{
             ToolbarItem(placement: .navigationBarLeading) {
@@ -316,9 +376,10 @@ private struct MessageView : View{
                             Text(message.text)
                                 .foregroundColor(.white)
                         }
-                        .padding()
+                        .padding(10)
                         .background(.blue)
-                        .cornerRadius(20, corners: [.topLeft, .topRight,.bottomLeft])
+//                        .cornerRadius(20, corners: [.topLeft, .topRight,.bottomLeft])
+                        .clipShape(Capsule())
                         
                         Image("testAvt")
                             .resizable()
@@ -345,9 +406,10 @@ private struct MessageView : View{
                             Text(message.text)
                                 .foregroundColor(.black)
                         }
-                        .padding()
-                        .background(Color.gray)
-                        .cornerRadius(20, corners: [.topLeft, .topRight,.bottomRight])
+                        .padding(10)
+                        .background(Color.gray.opacity(0.3))
+//                        .cornerRadius(20, corners: [.topLeft, .topRight,.bottomRight])
+                        .clipShape(Capsule())
                         
                         Spacer()
                     }
