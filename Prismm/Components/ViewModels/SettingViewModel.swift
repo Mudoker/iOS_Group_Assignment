@@ -22,11 +22,13 @@ import FirebaseFirestore
 import FirebaseFirestoreSwift
 
 class SettingViewModel: ObservableObject {
+    
     @Published var isDarkModeEnabled = false
     @Published var isFaceIdEnabled = false
     @Published var isPushNotificationEnabled = false
     @Published var isMessageNotificationEnabled = false
     @Published var selectedLanguage = "en"
+    
     @Published var isAccountSettingSheetPresentedOniPhone = false
     @Published var isAccountSettingSheetPresentedOniPad = false
     @Published var isSignOutAlertPresented = false
@@ -41,6 +43,28 @@ class SettingViewModel: ObservableObject {
     @Published var newProfileFacebook: String = ""
     @Published var newProfileGmail: String = ""
     @Published var newProfileLinkedIn: String = ""
+    
+    func setValue(setting: UserSetting) {
+        self.isDarkModeEnabled = setting.darkModeEnabled
+        self.isFaceIdEnabled = setting.faceIdEnabled
+        self.isPushNotificationEnabled = setting.pushNotificationsEnabled
+        self.isMessageNotificationEnabled = setting.messageNotificationsEnabled
+        self.selectedLanguage = setting.englishLanguageEnabled ? "en" : "vi"
+        self.isAccountSettingSheetPresentedOniPhone = false
+        self.isAccountSettingSheetPresentedOniPad = false
+        self.isSignOutAlertPresented = false
+        self.isSigningOut = false
+        self.changePasswordCurrentPassword = ""
+        self.changePasswordNewPassword = ""
+        self.isChangePasswordVisible = false
+        self.hasSecuritySettingChanged = false
+        self.hasProfileSettingChanged = false
+        self.newProfileUsername = ""
+        self.newProfilePhoneNumber = ""
+        self.newProfileFacebook = ""
+        self.newProfileGmail = ""
+        self.newProfileLinkedIn = ""
+    }
     
     // Responsive
     @Published var proxySize: CGSize = CGSize(width: 0, height: 0)
@@ -114,23 +138,23 @@ class SettingViewModel: ObservableObject {
         }
     }
     
-    func updateSettings() async {
+    func updateSettings(userSetting: UserSetting) async {
         let userID = Auth.auth().currentUser?.uid ?? ""
         guard let settingsSnapshot = try? await Firestore.firestore().collection("settings").document(userID).getDocument() else {
             return
         }
         
-        let userSettings = UserSetting(
-            id: userID,
-            darkModeEnabled: self.isDarkModeEnabled,
-            englishLanguageEnabled: self.selectedLanguage == "en",
-            faceIdEnabled: self.isFaceIdEnabled,
-            pushNotificationsEnabled: self.isPushNotificationEnabled,
-            messageNotificationsEnabled: self.isMessageNotificationEnabled
-        )
+//        let userSettings = UserSetting(
+//            id: userID,
+//            darkModeEnabled: self.isDarkModeEnabled,
+//            englishLanguageEnabled: self.selectedLanguage == "en",
+//            faceIdEnabled: self.isFaceIdEnabled,
+//            pushNotificationsEnabled: self.isPushNotificationEnabled,
+//            messageNotificationsEnabled: self.isMessageNotificationEnabled
+//        )
         
         do {
-            let encodedSettings = try Firestore.Encoder().encode(userSettings)
+            let encodedSettings = try Firestore.Encoder().encode(userSetting)
             
             if !settingsSnapshot.exists {
                 try await Firestore.firestore().collection("settings").document(userID).setData(encodedSettings)

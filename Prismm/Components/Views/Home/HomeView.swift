@@ -17,6 +17,8 @@ import SwiftUI
 import Firebase
 struct HomeView: View {
     
+    @EnvironmentObject var dataControllerVM: DataControllerViewModel
+    
     @ObservedObject var authVM :AuthenticationViewModel
     @ObservedObject var settingVM:SettingViewModel
     @ObservedObject var homeViewModel: HomeViewModel
@@ -92,18 +94,18 @@ struct HomeView: View {
                 
                 .sheet(isPresented: $homeViewModel.isCreateNewPostOnIpad) {
 
-                    CreatePostView(authVM: authVM, settingVM: settingVM, homeVM: homeViewModel, isNewPost: $homeViewModel.isCreateNewPostOnIpad, isDarkModeEnabled: authVM.userSettings!.darkModeEnabled)
+                    CreatePostView(authVM: authVM, settingVM: settingVM, homeVM: homeViewModel, isNewPost: $homeViewModel.isCreateNewPostOnIpad, isDarkModeEnabled: dataControllerVM.userSettings?.darkModeEnabled ?? false)
 
                 }
                 .fullScreenCover(isPresented: $homeViewModel.isCreateNewPostOnIphone) {
-                    CreatePostView(authVM: authVM, settingVM: settingVM, homeVM: homeViewModel, isNewPost: $homeViewModel.isCreateNewPostOnIphone, isDarkModeEnabled: authVM.userSettings!.darkModeEnabled)
+                    CreatePostView(authVM: authVM, settingVM: settingVM, homeVM: homeViewModel, isNewPost: $homeViewModel.isCreateNewPostOnIphone, isDarkModeEnabled: dataControllerVM.userSettings?.darkModeEnabled ?? false)
                 }
                 
                 .sheet(isPresented: $homeViewModel.isOpenCommentViewOnIpad) {
-                    CommentView(isDarkModeEnabled: $settingVM.isDarkModeEnabled, isShowComment: $homeViewModel.isOpenCommentViewOnIpad, homeViewModel: homeViewModel, post: selectedPost)
+                    CommentView(isDarkModeEnabled: dataControllerVM.userSettings!.darkModeEnabled, isShowComment: $homeViewModel.isOpenCommentViewOnIpad, homeViewModel: homeViewModel, post: selectedPost)
                 }
                 .fullScreenCover(isPresented: $homeViewModel.isOpenCommentViewOnIphone) {
-                    CommentView(isDarkModeEnabled: $settingVM.isDarkModeEnabled, isShowComment: $homeViewModel.isOpenCommentViewOnIphone, homeViewModel: homeViewModel, post: selectedPost)
+                    CommentView(isDarkModeEnabled: dataControllerVM.userSettings!.darkModeEnabled, isShowComment: $homeViewModel.isOpenCommentViewOnIphone, homeViewModel: homeViewModel, post: selectedPost)
                 }
 
                 .onAppear {

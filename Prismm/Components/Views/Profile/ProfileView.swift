@@ -19,14 +19,17 @@ import SwiftUI
 struct ProfileView: View {
     @State var isSample = true
     
-    @ObservedObject var authVM :AuthenticationViewModel
-    @ObservedObject var settingVM:SettingViewModel
-    @ObservedObject var profileVM: ProfileViewModel
+    @EnvironmentObject var dataControllerVM : DataControllerViewModel
+    
+    @ObservedObject var authVM : AuthenticationViewModel
+    @ObservedObject var settingVM : SettingViewModel
+    @ObservedObject var profileVM : ProfileViewModel
     
     var body: some View {
         GeometryReader { proxy in
+            
             VStack(alignment: .leading){
-                ProfileToolBar(authVM: authVM, settingVM: settingVM)
+                ProfileToolBar(authVM: authVM, settingVM: settingVM, isSetting: $profileVM.isSetting)
                 
                 //Profile info block
                 VStack(alignment: .leading){
@@ -41,21 +44,21 @@ struct ProfileView: View {
                         VStack{
                             HStack(spacing: 15){ //should be responsive
                                 VStack{
-                                    Text("\(authVM.currentUser?.posts.count ?? 111)")
+                                    Text("\(dataControllerVM.currentUser?.posts.count ?? 111)")
                                         .fontWeight(.bold)
                                     Text(LocalizedStringKey("Posts"))
                                     
                                 }
                                 
                                 VStack{
-                                    Text("\(authVM.currentUser?.followers.count ?? 111)")
+                                    Text("\(dataControllerVM.currentUser?.posts.count ?? 111)")
                                         .fontWeight(.bold)
                                     Text(LocalizedStringKey("Followers"))
                                     
                                 }
                                 
                                 VStack{
-                                    Text("\(authVM.currentUser?.following.count ?? 111)")
+                                    Text("\(dataControllerVM.currentUser?.posts.count ?? 111)")
                                         .fontWeight(.bold)
                                     Text(LocalizedStringKey("Following"))
                                     
@@ -98,11 +101,11 @@ struct ProfileView: View {
                     }
                     
                     HStack{
-                        Text(authVM.currentUser?.fullName ?? "Failed to get data")
+                        Text(dataControllerVM.currentUser?.username ?? "Failed to get data")
                             .fontWeight(.bold)
                     }
                     HStack{
-                        Text(authVM.currentUser?.bio ?? "Failed to get data")
+                        Text(dataControllerVM.currentUser?.username ?? "Failed to get data")
                     }
                 }
                 
@@ -193,7 +196,7 @@ struct ProfileView: View {
                                 .frame(width: 25,height: 30)    //not responsive
                                 .foregroundColor(!(profileVM.isShowAllUserPost == 1) ? .black : .gray)
                         }
-                    }
+                    }.frame(width: (proxy.size.width-40)/2)
 
                 }
                 .padding(.top)
@@ -201,13 +204,13 @@ struct ProfileView: View {
                 ZStack{
                     Divider()
                         .overlay {
-                            settingVM.isDarkModeEnabled ? Color.white : Color.black
+                            dataControllerVM.userSettings!.darkModeEnabled ? Color.white : Color.black
                         }
                     
                     Divider()
                         .frame(width: UIScreen.main.bounds.width/2,height: 1)
                         .overlay {
-                            settingVM.isDarkModeEnabled ? Color.white : Color.black
+                            dataControllerVM.userSettings!.darkModeEnabled ? Color.white : Color.black
                         }
                         .offset(x: profileVM.indicatorOffset)
                 } //divider
@@ -230,9 +233,12 @@ struct ProfileView: View {
             .onAppear {
                 profileVM.proxySize = proxy.size
                 Task{
-                    try await profileVM.fetchUserPosts(UserID: authVM.currentUser?.id ?? "")
+                    try await profileVM.fetchUserPosts(UserID: dataControllerVM.currentUser?.id ?? "")
                 }
                 
+            }
+            .fullScreenCover(isPresented: $profileVM.isSetting) {
+                SettingView(settingVM: settingVM, isSetting: $profileVM.isSetting)
             }
         }
     }
@@ -240,6 +246,6 @@ struct ProfileView: View {
 
 //struct ProfileView_Previews: PreviewProvider {
 //    static var previews: some View {
-//        ProfileView(profileVM: ProfileViewModel())
+//        ProfileView(authVM: AuthenticationViewModel(), settingVM: SettingViewModel(), profileVM: ProfileViewModel())
 //    }
 //}

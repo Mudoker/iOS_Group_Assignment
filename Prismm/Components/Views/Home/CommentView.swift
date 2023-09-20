@@ -19,7 +19,7 @@ import Kingfisher
 import Firebase
 
 struct CommentView: View {
-    @Binding var isDarkModeEnabled: Bool
+    var isDarkModeEnabled: Bool
     @Binding var isShowComment: Bool
     @ObservedObject var homeViewModel = HomeViewModel()
     

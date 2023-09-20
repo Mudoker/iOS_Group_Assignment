@@ -22,9 +22,10 @@ import GoogleSignInSwift
 struct Login: View {
     // View Model
     @ObservedObject var authVM :AuthenticationViewModel
-    @ObservedObject var settingVM:SettingViewModel
     @ObservedObject var homeVM: HomeViewModel
     @ObservedObject var profileVM: ProfileViewModel
+    
+    @EnvironmentObject var dataControllerVM : DataControllerViewModel
     
     var body: some View {
         NavigationStack {
@@ -35,7 +36,7 @@ struct Login: View {
                         Spacer()
                         
                         //Logo
-                        Image(settingVM.isDarkModeEnabled ? Constants.darkThemeAppLogo : Constants.lightThemeAppLogo)
+                        Image(dataControllerVM.userSettings!.darkModeEnabled ? Constants.darkThemeAppLogo : Constants.lightThemeAppLogo)
                             .resizable()
                             .aspectRatio(contentMode: .fill)
                             .frame(width: authVM.logoImageSize, height: 0)
@@ -62,7 +63,7 @@ struct Login: View {
                             textFieldCorner: authVM.textFieldCornerRadius,
                             textFieldBorderWidth: authVM.textFieldBorderWidth,
                             isPassword: false,
-                            textFieldPlaceHolderFont: authVM.textFieldPlaceHolderFont, isDarkModeEnabled: settingVM.isDarkModeEnabled
+                            textFieldPlaceHolderFont: authVM.textFieldPlaceHolderFont, isDarkModeEnabled: dataControllerVM.userSettings!.darkModeEnabled
                         )
                         .padding(.bottom)
                         
@@ -76,7 +77,7 @@ struct Login: View {
                             textFieldBorderWidth: authVM.textFieldBorderWidth,
                             isPassword: true,
                             textFieldPlaceHolderFont: authVM.textFieldPlaceHolderFont,
-                            isDarkModeEnabled: settingVM.isDarkModeEnabled
+                            isDarkModeEnabled: dataControllerVM.userSettings!.darkModeEnabled
                         )
                         .padding(.bottom)
                         
@@ -97,7 +98,7 @@ struct Login: View {
                                 .frame(height: authVM.loginButtonHeight)
                                 .background(
                                     RoundedRectangle(cornerRadius: authVM.textFieldCornerRadius)
-                                        .fill(settingVM.isDarkModeEnabled ? Constants.darkThemeColor : Constants.lightThemeColor)
+                                        .fill(dataControllerVM.userSettings!.darkModeEnabled ? Constants.darkThemeColor : Constants.lightThemeColor)
                                 )
                                 .padding(.horizontal)
                         }
@@ -135,7 +136,7 @@ struct Login: View {
                             
                             Spacer()
                             
-                            NavigationLink(destination: SignUp(authVM: authVM, settingVM: settingVM)
+                            NavigationLink(destination: SignUp(authVM: authVM)
                                 .navigationBarTitle("")
                                 .navigationBarHidden(false)) {
                                     Text("Sign Up")
@@ -163,11 +164,11 @@ struct Login: View {
                                     }) {
                                         RoundedRectangle(cornerRadius: proxy.size.width / 50)
                                             .frame(width: proxy.size.width / 2, height: proxy.size.height / 17)
-                                            .background(settingVM.isDarkModeEnabled ? Color.clear : Color.white)
+                                            .background(dataControllerVM.userSettings!.darkModeEnabled ? Color.clear : Color.white)
                                             .overlay(
                                                 RoundedRectangle(cornerRadius: proxy.size.width / 50)
                                                     .stroke(Color.black, lineWidth: 1)
-                                                    .background(settingVM.isDarkModeEnabled ? Color.clear : Color.white)
+                                                    .background(dataControllerVM.userSettings!.darkModeEnabled ? Color.clear : Color.white)
                                                     .overlay(
                                                         HStack {
                                                             Image("mail")
@@ -202,7 +203,7 @@ struct Login: View {
                                                 .resizable()
                                                 .aspectRatio(contentMode: .fit)
                                                 .frame(width: authVM.faceIdImageSize)
-                                                .foregroundColor(settingVM.isDarkModeEnabled ? Constants.darkThemeColor : Constants.lightThemeColor)
+                                                .foregroundColor(dataControllerVM.userSettings!.darkModeEnabled ? Constants.darkThemeColor : Constants.lightThemeColor)
                                         }
                                     }
                                     Spacer()
@@ -212,7 +213,7 @@ struct Login: View {
                             Spacer()
                         }
                     }
-                    .foregroundColor(settingVM.isDarkModeEnabled ? .white : .black)
+                    .foregroundColor(dataControllerVM.userSettings!.darkModeEnabled ? .white : .black)
                     .padding(.horizontal)
                     .onAppear {
                         authVM.proxySize = proxy.size
@@ -223,7 +224,7 @@ struct Login: View {
                         ProgressView("Loading...")
                     }
                 }
-                .background(settingVM.isDarkModeEnabled ? .black : .white)
+                .background(dataControllerVM.userSettings!.darkModeEnabled ? .black : .white)
             }
             .ignoresSafeArea(.keyboard)
         }

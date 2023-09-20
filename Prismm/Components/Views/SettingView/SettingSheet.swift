@@ -18,7 +18,9 @@ import SwiftUI
 
 struct SettingSheet: View {
     @Binding var isSheetPresented: Bool
-    @ObservedObject var settingVM = SettingViewModel()
+    
+    @EnvironmentObject var dataControllerVM: DataControllerViewModel
+    @ObservedObject var settingVM:SettingViewModel
     var body: some View {
 //        NavigationView {
         VStack (alignment: .center) {
@@ -42,7 +44,7 @@ struct SettingSheet: View {
                         }
                         .padding()
                         .background(RoundedRectangle(cornerRadius: 10)
-                            .fill(!settingVM.isDarkModeEnabled ? .gray.opacity(0.1) : .gray.opacity(0.4))
+                            .fill(!dataControllerVM.userSettings!.darkModeEnabled ? .gray.opacity(0.1) : .gray.opacity(0.4))
                         )
                     }
                     .padding(.top)
@@ -62,7 +64,7 @@ struct SettingSheet: View {
                         }
                         .padding()
                         .background(RoundedRectangle(cornerRadius: 10)
-                            .fill(!settingVM.isDarkModeEnabled ? .gray.opacity(0.1) : .gray.opacity(0.4))
+                            .fill(!dataControllerVM.userSettings!.darkModeEnabled ? .gray.opacity(0.1) : .gray.opacity(0.4))
                         )
                     }
                     .padding()
@@ -71,8 +73,8 @@ struct SettingSheet: View {
                 Spacer()
             }
             .frame(maxWidth: .infinity)
-            .foregroundColor(settingVM.isDarkModeEnabled ? .white : .black)
-            .background(settingVM.isDarkModeEnabled ? .black : .white)
+            .foregroundColor(dataControllerVM.userSettings!.darkModeEnabled ? .white : .black)
+            .background(dataControllerVM.userSettings!.darkModeEnabled ? .black : .white)
             .navigationBarItems(trailing: Button("Close") {
                 isSheetPresented.toggle()
             })
@@ -108,8 +110,8 @@ struct ConnectionsView: View {
     }
 }
 
-struct SettingSheet_Previews: PreviewProvider {
-    static var previews: some View {
-        SettingSheet(isSheetPresented: .constant(true))
-    }
-}
+//struct SettingSheet_Previews: PreviewProvider {
+//    static var previews: some View {
+//        SettingSheet(isSheetPresented: .constant(true))
+//    }
+//}

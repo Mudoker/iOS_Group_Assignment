@@ -17,40 +17,30 @@
 import SwiftUI
 
 struct ProfileToolBar: View {
+    @EnvironmentObject var dataControllerVM: DataControllerViewModel
+    
     @ObservedObject var authVM :AuthenticationViewModel
     @ObservedObject var settingVM: SettingViewModel
     
-    @State var isSetting = false
+    @Binding var isSetting: Bool
     var body: some View {
 
         HStack{
-            Text(authVM.currentUser?.username ?? "Failed to get data")
+            Text(dataControllerVM.currentUser?.username ?? "Failed to get data")
                 .fontWeight(.bold)
                 .font(.system(size: 20))    //should be responsive
             Spacer()
             
             
-            HStack(spacing: 20){ // should be responsive
-                Button {
-                    
-                } label: {
-                    Image(systemName: "plus.app")
-                        .foregroundColor(.black)
-                        .font(.system(size: 20))    //should be responsive
-                }
-                
-                Button {
-                    isSetting = true
-                } label: {
-                    Image(systemName: "line.3.horizontal")
-                        .foregroundColor(.black)
-                        .font(.system(size: 20))    //should be responsive
-                }
+            Button {
+                isSetting = true
+            } label: {
+                Image(systemName: "line.3.horizontal")
+                    .foregroundColor(.black)
+                    .font(.system(size: 20))    //should be responsive
             }
         }
-        .fullScreenCover(isPresented: $isSetting) {
-            SettingView(settingVM: settingVM)
-        }
+
     }
 }
 
