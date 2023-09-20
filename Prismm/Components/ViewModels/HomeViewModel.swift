@@ -47,6 +47,7 @@ class HomeViewModel: ObservableObject {
     
     @Published var newPostSelectedMedia: NSURL? = nil
     var currentCommentor: User?
+    
     // Responsive
     @Published var proxySize: CGSize = CGSize(width: 0, height: 0)
     
@@ -171,6 +172,7 @@ class HomeViewModel: ObservableObject {
         }
     }
     
+    //upload the media data to database storage
     func uploadMediaToFireBase(withMedia data: Data) async throws -> String? {
         let fileName = UUID().uuidString
         let mediaRef = Storage.storage().reference().child("/media/\(fileName)")
@@ -195,7 +197,7 @@ class HomeViewModel: ObservableObject {
         return newComment
     }
     
-    
+    //create post and upload to firebase collection
     func createPost() async throws {
         let ownerID = "m52oyZNbCxVx5SsvFAEPwankeAP2"
         let postRef = Firestore.firestore().collection("test_posts").document()
@@ -321,6 +323,7 @@ class HomeViewModel: ObservableObject {
         }
     }
     
+    //sort post
     func sortPostByTime(order: String, posts: [Post]) -> [Post] {
         var sortedPosts = posts
         
@@ -340,6 +343,8 @@ class HomeViewModel: ObservableObject {
         return sortedPosts
     }
     
+    
+    //sort the comment
     func sortPostCommentByTime(order: String, comments: [Comment]) -> [Comment] {
         var sortedComments = comments
         
@@ -359,6 +364,7 @@ class HomeViewModel: ObservableObject {
         return sortedComments
     }
     
+    //Filter category of post: show post with the filtered category
     func filterPostByCategory(category: [String], posts: [Post]) -> [Post] {
         var filteredPosts: [Post] = []
         
@@ -636,7 +642,7 @@ class HomeViewModel: ObservableObject {
         }
     }
     
-    
+    //convert the media data and upload to firebase and return the url of the media storage
     func createMediaToFirebase() async throws -> String {
         print("Uploading media")
         
