@@ -16,8 +16,10 @@
 import SwiftUI
 
 struct HomeView: View {
-    @ObservedObject var homeViewModel:HomeViewModel
+    
+    @ObservedObject var authVM :AuthenticationViewModel
     @ObservedObject var settingVM:SettingViewModel
+    @ObservedObject var homeViewModel: HomeViewModel
     
     var body: some View {
         GeometryReader { proxy in
@@ -87,11 +89,11 @@ struct HomeView: View {
                 
                 .sheet(isPresented: $homeViewModel.isCreateNewPostOnIpad) {
 
-                    CreatePostView(isNewPost: $homeViewModel.isCreateNewPostOnIpad, isDarkModeEnabled: $settingVM.isDarkModeEnabled, homeVM: homeViewModel)
+                    CreatePostView(authVM: authVM, settingVM: settingVM, homeVM: homeViewModel, isNewPost: $homeViewModel.isCreateNewPostOnIpad, isDarkModeEnabled: authVM.userSettings!.darkModeEnabled)
 
                 }
                 .fullScreenCover(isPresented: $homeViewModel.isCreateNewPostOnIphone) {
-                    CreatePostView(isNewPost: $homeViewModel.isCreateNewPostOnIphone, isDarkModeEnabled: $settingVM.isDarkModeEnabled, homeVM: homeViewModel)
+                    CreatePostView(authVM: authVM, settingVM: settingVM, homeVM: homeViewModel, isNewPost: $homeViewModel.isCreateNewPostOnIphone, isDarkModeEnabled: authVM.userSettings!.darkModeEnabled)
                 }
 
                 .onAppear {

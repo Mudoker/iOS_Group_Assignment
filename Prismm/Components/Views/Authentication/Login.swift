@@ -108,10 +108,7 @@ struct Login: View {
                                 dismissButton: .default(Text("Close"))
                             )
                         }
-                        .navigationDestination(isPresented: $authVM.isDeviceUnlocked) {
-                            TabBar(homeVM: homeVM, profileVM: profileVM, settingVM: settingVM)
-                                .navigationBarBackButtonHidden(true)
-                        }
+                        
                         
                         // Helpers
                         HStack {
@@ -185,10 +182,7 @@ struct Login: View {
                                                     )
                                             )
                                     }
-                                    .navigationDestination(isPresented: $authVM.isGoogleUnlocked) {
-                                        TabBar(homeVM: homeVM, profileVM: profileVM, settingVM: settingVM)
-                                            .navigationBarBackButtonHidden(true)
-                                    }
+                                    
                                 }
                                 .padding(.vertical)
                                 

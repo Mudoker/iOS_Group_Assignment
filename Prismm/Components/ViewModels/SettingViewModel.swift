@@ -114,7 +114,8 @@ class SettingViewModel: ObservableObject {
         }
     }
     
-    func updateSettings(forUserID userID: String) async {
+    func updateSettings() async {
+        let userID = Auth.auth().currentUser?.uid ?? ""
         guard let settingsSnapshot = try? await Firestore.firestore().collection("settings").document(userID).getDocument() else {
             return
         }
@@ -135,7 +136,7 @@ class SettingViewModel: ObservableObject {
                 try await Firestore.firestore().collection("settings").document(userID).setData(encodedSettings)
             } else {
                 try await Firestore.firestore().collection("settings").document(userID).updateData(encodedSettings)
-                print("Settings updated successfully")
+                print("Settings updated successfully to \(userID)")
             }
         } catch {
             print("ERROR: Failed to update user settings")
@@ -143,8 +144,9 @@ class SettingViewModel: ObservableObject {
     }
     
     
-    func updateProfile(forUserID uid: String) async {
-        guard let userSnapshot = try? await Firestore.firestore().collection("users").document(uid).getDocument() else { return }
+    func updateProfile() async {
+        let userID = Auth.auth().currentUser?.uid ?? ""
+        guard let userSnapshot = try? await Firestore.firestore().collection("users").document(userID).getDocument() else { return }
         
         do {
             var updatedUser = try userSnapshot.data(as: User.self)
@@ -172,10 +174,10 @@ class SettingViewModel: ObservableObject {
             let encodedUser = try Firestore.Encoder().encode(updatedUser)
             
             if !userSnapshot.exists {
-                try await Firestore.firestore().collection("users").document(uid).setData(encodedUser)
+                try await Firestore.firestore().collection("users").document(userID).setData(encodedUser)
             } else {
-                try await Firestore.firestore().collection("users").document(uid).updateData(encodedUser)
-                print("User data updated successfully.")
+                try await Firestore.firestore().collection("users").document(userID).updateData(encodedUser)
+                print("User data updated successfully to \(userID)")
             }
         } catch {
             print("ERROR: Failed to update user data.")

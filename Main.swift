@@ -16,15 +16,26 @@ struct PrismmApp: App {
     @StateObject var settingVM = SettingViewModel()
     @StateObject var homeVM = HomeViewModel()
     @StateObject var profileVM = ProfileViewModel()
+    
     var body: some Scene {
         WindowGroup {
             //HomeView()
-            HomeView(homeViewModel: homeVM, settingVM: settingVM)
-                .onAppear{
-                                    print(Auth.auth().currentUser?.uid ?? "Not sign in" )
-                                }
-
+            if Auth.auth().currentUser == nil{
+                Login(authVM: authVM, settingVM: settingVM, homeVM: homeVM, profileVM: profileVM)
+            }else{
+                TabBar(authVM: authVM, settingVM: settingVM, homeVM: homeVM, profileVM: profileVM)
+                    .onAppear{
+                        Task{
+                            authVM.currentUser = try? await APIService.fetchCurrentUserData()
+                            authVM.userSettings = try? await APIService.fetchCurrentSettingData()
+                            print(authVM.userSettings?.darkModeEnabled)
+                        }
+                        
+                    }
+            }
+                
         }
+        
     }
     
     init(){

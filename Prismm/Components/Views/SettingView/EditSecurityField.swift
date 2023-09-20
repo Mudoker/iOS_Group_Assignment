@@ -110,7 +110,7 @@ struct EditSecurityField: View {
                                 settingVM.hasSecuritySettingChanged = false
                             }
                             Task{
-                                await settingVM.updateSettings(forUserID: Constants.currentUserID)
+                                await settingVM.updateSettings()
                             }
                         }
                 }

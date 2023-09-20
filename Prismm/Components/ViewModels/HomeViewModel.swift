@@ -208,7 +208,7 @@ class HomeViewModel: ObservableObject {
     
     //create post and upload to firebase collection
     func createPost() async throws {
-        let ownerID = "m52oyZNbCxVx5SsvFAEPwankeAP2"
+        let ownerID = Auth.auth().currentUser?.uid ?? "fail"
         let postRef = Firestore.firestore().collection("test_posts").document()
         
         var mediaURL = ""
