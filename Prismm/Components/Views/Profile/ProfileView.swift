@@ -19,12 +19,14 @@ import SwiftUI
 struct ProfileView: View {
     @State var isSample = true
     
-    @StateObject var profileVM: ProfileViewModel
-
+    @ObservedObject var authVM :AuthenticationViewModel
+    @ObservedObject var settingVM:SettingViewModel
+    @ObservedObject var profileVM: ProfileViewModel
+    
     var body: some View {
         GeometryReader { proxy in
             VStack(alignment: .leading){
-                ProfileToolBar()
+                ProfileToolBar(authVM: authVM, settingVM: settingVM)
                 
                 //Profile info block
                 VStack(alignment: .leading){
@@ -39,21 +41,21 @@ struct ProfileView: View {
                         VStack{
                             HStack(spacing: 15){ //should be responsive
                                 VStack{
-                                    Text(LocalizedStringKey("0"))
+                                    Text("\(authVM.currentUser?.posts.count ?? 111)")
                                         .fontWeight(.bold)
                                     Text(LocalizedStringKey("Posts"))
                                     
                                 }
                                 
                                 VStack{
-                                    Text(LocalizedStringKey("0"))
+                                    Text("\(authVM.currentUser?.followers.count ?? 111)")
                                         .fontWeight(.bold)
                                     Text(LocalizedStringKey("Followers"))
                                     
                                 }
                                 
                                 VStack{
-                                    Text(LocalizedStringKey("0"))
+                                    Text("\(authVM.currentUser?.following.count ?? 111)")
                                         .fontWeight(.bold)
                                     Text(LocalizedStringKey("Following"))
                                     
@@ -96,11 +98,11 @@ struct ProfileView: View {
                     }
                     
                     HStack{
-                        Text(LocalizedStringKey("FullName"))
+                        Text(authVM.currentUser?.fullName ?? "Failed to get data")
                             .fontWeight(.bold)
                     }
                     HStack{
-                        Text(LocalizedStringKey("Quote"))
+                        Text(authVM.currentUser?.bio ?? "Failed to get data")
                     }
                 }
                 
@@ -165,7 +167,7 @@ struct ProfileView: View {
                     
                     Button {
                         withAnimation {
-                            profileVM.isShowAllUserPost = true
+                            profileVM.isShowAllUserPost = 1
                         }
                     } label: {
                         VStack{
@@ -173,11 +175,7 @@ struct ProfileView: View {
                                 .resizable()
                                 .scaledToFit()
                                 .frame(height: 30) //not responsive
-                                .foregroundColor(profileVM.isShowAllUserPost ? .black : .gray)
-                            
-                            Divider()
-                                .overlay(profileVM.isShowAllUserPost ? .black : .gray)
-                            
+                                .foregroundColor(profileVM.isShowAllUserPost == 1 ? .black : .gray)
                             
                         }
                         .frame(width: (proxy.size.width-40)/2)
@@ -186,35 +184,62 @@ struct ProfileView: View {
                     
                     Button {
                         withAnimation {
-                            profileVM.isShowAllUserPost = false
+                            profileVM.isShowAllUserPost = 0
                         }
                     } label: {
                         VStack{
                             Image(systemName: "bookmark")
                                 .resizable()
                                 .frame(width: 25,height: 30)    //not responsive
-                                .foregroundColor(!profileVM.isShowAllUserPost ? .black : .gray)
-
-                            Divider()
-                                .overlay(!profileVM.isShowAllUserPost ? .black : .gray)
-                        }.frame(width: (proxy.size.width-40)/2)
+                                .foregroundColor(!(profileVM.isShowAllUserPost == 1) ? .black : .gray)
+                        }
                     }
 
                 }
                 .padding(.top)
+                
+                ZStack{
+                    Divider()
+                        .overlay {
+                            settingVM.isDarkModeEnabled ? Color.white : Color.black
+                        }
+                    
+                    Divider()
+                        .frame(width: UIScreen.main.bounds.width/2,height: 1)
+                        .overlay {
+                            settingVM.isDarkModeEnabled ? Color.white : Color.black
+                        }
+                        .offset(x: profileVM.indicatorOffset)
+                } //divider
+                
+                TabView(selection: $profileVM.isShowAllUserPost) {
+                    PostGridView(profileVM: profileVM)
+                        .tag(1)
+                    
+                    
+                    
+                }
+                .animation(.easeInOut, value: profileVM.isShowAllUserPost)
+                .tabViewStyle(PageTabViewStyle())
+                
+                
                 
             }
             .padding(.horizontal,20)
             .frame(minWidth: 0,maxWidth: .infinity)
             .onAppear {
                 profileVM.proxySize = proxy.size
+                Task{
+                    try await profileVM.fetchUserPosts(UserID: authVM.currentUser?.id ?? "")
+                }
+                
             }
         }
     }
 }
 
-struct ProfileView_Previews: PreviewProvider {
-    static var previews: some View {
-        ProfileView(profileVM: ProfileViewModel())
-    }
-}
+//struct ProfileView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        ProfileView(profileVM: ProfileViewModel())
+//    }
+//}

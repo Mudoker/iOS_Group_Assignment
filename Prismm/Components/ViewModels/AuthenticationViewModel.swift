@@ -35,7 +35,7 @@ class AuthenticationViewModel: ObservableObject {
     @Published var isDeviceUnlocked = false
     @Published var isGoogleUnlocked = false
     @Published var isBiometricUnlocked = false
-    @Published var userEmail = ""
+
     @Published var isPasswordResetRequested = false
     @Published var isSignUpMode = false
     @Published var isPasswordValid = false
@@ -118,6 +118,8 @@ class AuthenticationViewModel: ObservableObject {
     // set user token for bio metric login
     init() {
         self.userToken = UserDefaults.standard.string(forKey: "userToken") ?? ""
+        
+        
     }
     
     func createNewUser(withEmail email: String, password: String) async throws {
@@ -168,11 +170,13 @@ class AuthenticationViewModel: ObservableObject {
             let authSnapshot = try await Auth.auth().signIn(withEmail: email, password: password)
             self.userSession = authSnapshot.user
             let isEmailVerified = self.userSession?.isEmailVerified
+            
             if let isVerified = isEmailVerified {
                 if isVerified {
                     print("verified")
                     
-                    self.userSettings = try? await APIService.fetchCurrentUserData(withEmail: self.userEmail)
+                    currentUser = try? await APIService.fetchCurrentUserData()
+                    userSettings = try? await APIService.fetchCurrentSettingData()
                     
                     isFetchingData = false
                     
@@ -265,10 +269,11 @@ class AuthenticationViewModel: ObservableObject {
             let googleSignInResult = try await Auth.auth().signIn(with: googleCredential)
             
             let firebaseUser = googleSignInResult.user
-            userEmail = firebaseUser.email ?? ""
+            let userEmail = firebaseUser.email ?? ""
             print("User \(firebaseUser.uid) signed in with \(firebaseUser.email ?? "unknown" )")
             
-            let _ = try? await APIService.fetchCurrentUserData(withEmail: userEmail)
+            currentUser = try? await APIService.fetchCurrentUserData()
+            userSettings = try? await APIService.fetchCurrentSettingData()
             isGoogleUnlocked = true
         }
         catch{
