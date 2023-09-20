@@ -8,6 +8,7 @@
 import SwiftUI
 import Firebase
 import FirebaseFirestoreSwift
+import UserNotifications
 
 @main
 struct PrismmApp: App {
@@ -22,6 +23,7 @@ struct PrismmApp: App {
                 .onAppear{
                                     print(Auth.auth().currentUser?.uid ?? "Not sign in" )
                                 }
+
         }
     }
     

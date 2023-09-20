@@ -103,6 +103,8 @@ struct CommentView: View {
                                         do {
                                             print(comment.commenterId)
                                             homeViewModel.currentCommentor = try await APIService.fetchUser(withUserID: comment.commenterId)
+                                            homeViewModel.currentCommentor = try await APIService.fetchUser(withUserID: comment.commenterId)
+        //                                    post = try await UserService.fetchAPost(withUid: post.id)
 
                                         } catch {
                                             print("Error fetching profile image URL: \(error)")
@@ -176,9 +178,6 @@ struct CommentView: View {
                         Button(action: {
                             Task {
                                 _ = try await homeViewModel.createComment(content: homeViewModel.commentContent, commentor: "3WBgDcMgEQfodIbaXWTBHvtjYCl2", postId: post.id)
-//                                if let newComment = newComment {
-//                                    try await uploadVM.addCommentToPost(comment: newComment, postID: post.id)
-//                                }
                                 homeViewModel.commentContent = ""
                         }
                         }) {
