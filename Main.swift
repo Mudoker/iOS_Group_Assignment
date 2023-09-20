@@ -8,6 +8,7 @@
 import SwiftUI
 import Firebase
 import FirebaseFirestoreSwift
+import UserNotifications
 
 @main
 struct PrismmApp: App {
@@ -17,8 +18,7 @@ struct PrismmApp: App {
     @StateObject var profileVM = ProfileViewModel()
     var body: some Scene {
         WindowGroup {
-            //HomeView()
-            Login(authVM: authVM, settingVM: settingVM, homeVM: homeVM, profileVM: profileVM)
+            LocalPushNotification()
         }
     }
     

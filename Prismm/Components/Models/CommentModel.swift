@@ -20,8 +20,8 @@ import Firebase
 struct Comment: Identifiable, Codable, Hashable {
     let id: String
     let content: String
-    let commenterID: String
-    let postID: String
+    let commenterId: String
+    let postId: String
     let creationDate: Timestamp
     
     func hash(into hasher: inout Hasher) {
