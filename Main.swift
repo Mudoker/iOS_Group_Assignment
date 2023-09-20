@@ -18,7 +18,10 @@ struct PrismmApp: App {
     var body: some Scene {
         WindowGroup {
             //HomeView()
-            Login(authVM: authVM, settingVM: settingVM, homeVM: homeVM, profileVM: profileVM)
+            HomeView(homeViewModel: homeVM, settingVM: settingVM)
+                .onAppear{
+                                    print(Auth.auth().currentUser?.uid ?? "Not sign in" )
+                                }
         }
     }
     

@@ -64,30 +64,45 @@ struct CommentView: View {
                         ScrollView(showsIndicators: false) {
                             ForEach(commentsForPost.sorted{$0.id < $1.id}) { comment in
                                 HStack {
-                                    if let profileURLString = homeViewModel.currentCommentor?.profileImageURL, let mediaURL = URL(string: profileURLString) {
-                                        KFImage(mediaURL)
-                                            .resizable()
-                                            .frame(width: proxy.size.width/8, height: proxy.size.width/8)
-                                            .clipShape(Circle())
-                                            .background(Circle().foregroundColor(Color.gray))
+                                    if let profileURLString = homeViewModel.currentCommentor?.profileImageURL,
+                                           let mediaURL = URL(string: profileURLString) {
+                                            
+                                            KFImage(mediaURL)
+                                                .resizable()
+                                                .frame(width: proxy.size.width/8, height: proxy.size.width/8)
+                                                .clipShape(Circle())
+                                                .background(Circle().foregroundColor(Color.gray))
+                                    } else {
+                                            Image(systemName: "person.fill")
+                                                .resizable()
+                                                .frame(width: proxy.size.width/12, height: proxy.size.width/12)
+                                                .padding()
+                                                .foregroundColor(.gray)
+                                                .background(Circle().foregroundColor(Color.gray.opacity(0.1))
+                                                    .frame(width: proxy.size.width/7, height: proxy.size.width/7))
                                     }
                                     VStack(alignment: .leading) {
-                                        HStack {
-                                            Text(homeViewModel.currentCommentor?.fullName ?? "") // User Name
+                                        HStack (alignment: .firstTextBaseline) {
+                                            Text(homeViewModel.currentCommentor?.username ?? "Blank") // User Name
+                                                .font(Font.system(size: homeViewModel.usernameFont, weight: .medium))
                                                 .bold()
-        //                                    Text(comment.date) // Time
+                                            
+                                            Text(formatTimeDifference(from: comment.creationDate))
+                                                .font(Font.system(size: homeViewModel.timeFont, weight: .medium))
+                                                .opacity(0.3)
                                         }
                                         Text(comment.content) // Message
                                     }
                                     Spacer()
                                 }
-                                .padding()
+                                .padding(.horizontal, 5)
+                                .padding(.bottom, 5)
                                 .onAppear {
                                     // Start the asynchronous task when the view appears
                                     Task {
                                         do {
-                                            homeViewModel.currentCommentor = try await APIService.fetchUser(withUserID: comment.commenterID)
-        //                                    post = try await UserService.fetchAPost(withUid: post.id)
+                                            print(comment.commenterId)
+                                            homeViewModel.currentCommentor = try await APIService.fetchUser(withUserID: comment.commenterId)
 
                                         } catch {
                                             print("Error fetching profile image URL: \(error)")
@@ -113,21 +128,30 @@ struct CommentView: View {
 
                 
                 VStack {
-                    ScrollView(.horizontal, showsIndicators: false) {
-                        HStack(spacing: 0) {
-                            ForEach(emojis, id: \.self) { emoji in
-                                Button(action: {
-                                    homeViewModel.commentContent += emoji
-                                }) {
-                                    Text(emoji)
-                                        .font(.largeTitle)
-                                        .padding(8)
-                                        .background(Circle().fill(isDarkModeEnabled ? Color.gray.opacity(0.3) : Color.white))
+                    if (post.isAllowComment) {
+                        ScrollView(.horizontal, showsIndicators: false) {
+                            HStack(spacing: 0) {
+                                ForEach(emojis, id: \.self) { emoji in
+                                    Button(action: {
+                                        homeViewModel.commentContent += emoji
+                                    }) {
+                                        Text(emoji)
+                                            .font(.largeTitle)
+                                            .padding(8)
+                                            .background(Circle().fill(isDarkModeEnabled ? Color.gray.opacity(0.3) : Color.white))
+                                    }
+                                    .padding([.horizontal])
+                                    .padding(.top, 8)
                                 }
-                                .padding([.horizontal])
-                                .padding(.top, 8)
                             }
                         }
+                    } else {
+                        Text("Comment is disabled for this post")
+                            .font(.title3)
+                            .opacity(0.6)
+                            .padding(8)
+                            .padding(.top, 8)
+
                     }
                     
                     
@@ -136,17 +160,18 @@ struct CommentView: View {
                             .resizable()
                             .frame(width: proxy.size.width/8, height: proxy.size.width/8)
                             .clipShape(Circle())
-                        
-                        TextField("", text: $homeViewModel.commentContent, prompt:  Text("Leave a comment...").foregroundColor(isDarkModeEnabled ? .white.opacity(0.5) : .black.opacity(0.5))
-                            .font(.title3)
-                        )
-                        .autocorrectionDisabled(true)
-                        .textInputAutocapitalization(.never)
-                        .padding()
-                        .background(
-                            Capsule()
-                                .fill(isDarkModeEnabled ? Color.gray.opacity(0.3) : Color.white)
-                        )
+
+                            TextField("", text: $homeViewModel.commentContent, prompt:  Text("Leave a comment...").foregroundColor(isDarkModeEnabled ? .white.opacity(0.5) : .black.opacity(0.5))
+                                .font(.title3)
+                            )
+                            .autocorrectionDisabled(true)
+                            .textInputAutocapitalization(.never)
+                            .padding()
+                            .disabled(post.isAllowComment ? false : true)
+                            .background(
+                                Capsule()
+                                    .fill(isDarkModeEnabled ? Color.gray.opacity(0.3) : Color.white)
+                            )
                         
                         Button(action: {
                             Task {
@@ -179,6 +204,30 @@ struct CommentView: View {
         .foregroundColor(!isDarkModeEnabled ? .black : .white)
         .background(isDarkModeEnabled ? .black : .white)
         .edgesIgnoringSafeArea(.bottom)
+    }
+    
+    func formatTimeDifference(from date: Timestamp) -> String {
+        let currentDate = Date()
+        let postDate = date.dateValue()
+        
+        let calendar = Calendar.current
+        let components = calendar.dateComponents([.year, .month, .day, .hour, .minute, .second], from: postDate, to: currentDate)
+        
+        if let year = components.year, year > 0 {
+            return "\(year)y ago"
+        } else if let month = components.month, month > 0 {
+            return "\(month)m ago"
+        } else if let day = components.day, day > 0 {
+            return "\(day)d ago"
+        } else if let hour = components.hour, hour > 0 {
+            return "\(hour)h ago"
+        } else if let minute = components.minute, minute > 0 {
+            return "\(minute)m ago"
+        } else if let second = components.second, second > 0 {
+            return "\(second)s ago"
+        } else {
+            return "Just now"
+        }
     }
 }
 

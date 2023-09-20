@@ -58,9 +58,9 @@ struct PostView: View {
                             .font(Font.system(size: homeViewModel.usernameFont, weight: .semibold))
                     }
                     
-//                    Text(formatTimeDifference(from: post.date))
-//                        .font(Font.system(size: homeViewModel.usernameFont, weight: .medium))
-//                        .opacity(0.3)
+                   Text(formatTimeDifference(from: post.creationDate))
+                        .font(Font.system(size: homeViewModel.timeFont, weight: .medium))
+                        .opacity(0.3)
                 }
                 
                 // In building
@@ -143,6 +143,18 @@ struct PostView: View {
             }
             .padding(.horizontal)
             
+            HStack(spacing: 5) {
+                ForEach(post.tag, id: \.self) { tag in
+                    HStack {
+                        Text("#" + tag)
+                            .foregroundColor(.blue)
+                            .font(.callout)
+                    }
+                }
+                
+                Spacer()
+            }.padding(.horizontal)
+            
             VStack {
                 //Image.
                 if let mediaURL = URL(string: post.mediaURL ?? "") {
@@ -209,10 +221,8 @@ struct PostView: View {
                             .resizable()
                             .aspectRatio(contentMode: .fit)
                             .frame(width: homeViewModel.postStatsImageSize)
+                            .foregroundColor(.black)
                         
-                        Text("15")
-                            .font(Font.system(size: homeViewModel.postStatsFontSize, weight: .light))
-                            .opacity(0.6)
                     }
                 }
                 

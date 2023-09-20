@@ -46,7 +46,7 @@ class HomeViewModel: ObservableObject {
     @Published var fetchedCommentsByPostId = [String: Set<Comment>]()
     
     @Published var newPostSelectedMedia: NSURL? = nil
-    var currentCommentor: User?
+    @Published var currentCommentor: User?
     
     // Responsive
     @Published var proxySize: CGSize = CGSize(width: 0, height: 0)
@@ -103,6 +103,10 @@ class HomeViewModel: ObservableObject {
         UIDevice.current.userInterfaceIdiom == .phone ? 20 : 25
     }
     
+    var timeFont: CGFloat {
+        UIDevice.current.userInterfaceIdiom == .phone ? 15 : 20
+    }
+    
     var seeMoreButtonSize: CGFloat {
         UIDevice.current.userInterfaceIdiom == .phone ? proxySize.width * 0.055 : proxySize.width * 0.055
     }
@@ -133,7 +137,7 @@ class HomeViewModel: ObservableObject {
     }
     
     var commentTextFieldCornerRadius: CGFloat {
-        15
+        UIDevice.current.userInterfaceIdiom == .phone ? proxySize.width * 0.1 : proxySize.width * 0.08
     }
     
     init() {
@@ -169,6 +173,7 @@ class HomeViewModel: ObservableObject {
             
             // Update the fetched_comments dictionary with the merged set of comments
             fetchedCommentsByPostId[postID] = existingComments
+            print(existingComments)
         }
     }
     
@@ -191,7 +196,7 @@ class HomeViewModel: ObservableObject {
     
     func createComment(content: String, commentor: String, postId: String) async throws -> Comment?{
         let commentRef = Firestore.firestore().collection("test_comments").document()
-        let newComment = Comment(id: commentRef.documentID, content: content, commenterID: commentor, postID: postId, creationDate: Timestamp())
+        let newComment = Comment(id: commentRef.documentID, content: content, commenterId: commentor, postId: postId, creationDate: Timestamp())
         guard let encodedComment = try? Firestore.Encoder().encode(newComment) else { return nil }
         try await commentRef.setData(encodedComment)
         return newComment
@@ -395,7 +400,7 @@ class HomeViewModel: ObservableObject {
         
         for comment in comments {
             // Check if the commenter's ID is not in the restricted or blocked list
-            if !restrictedList.contains(comment.commenterID) && !blockedList.contains(comment.commenterID) {
+            if !restrictedList.contains(comment.commenterId) && !blockedList.contains(comment.commenterId) {
                 filteredComments.append(comment)
             }
         }
@@ -417,7 +422,7 @@ class HomeViewModel: ObservableObject {
         
         for comment in comments {
             // Check if the commenter's ID is not in the restricted or blocked list
-            if !blockedList.contains(comment.commenterID) {
+            if !blockedList.contains(comment.commenterId) {
                 filteredComments.append(comment)
             }
         }
