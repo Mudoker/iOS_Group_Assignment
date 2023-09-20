@@ -272,36 +272,48 @@ struct ChatLogView: View {
             HStack{
                 VStack {
                     HStack {
-                        // need to re-consider
-                        HStack {
-                            Image(systemName: "mic")
-                                .foregroundColor(.gray)
-                            TextField("Type here", text: $vm.chatText)
-                                .foregroundColor(.black)
-                            Image(systemName: "photo.on.rectangle.angled")
-                                .foregroundColor(.gray)
-                            Image(systemName: "face.smiling")
-                                .foregroundColor(.gray)
-                        }
-                        .frame(height: 40)
-                        .padding(8)
-                        .background(Color.gray.opacity(0.2))
-                        .cornerRadius(20)
-                        Button{
-                            vm.sendMessage()
-                        } label: {
-                            VStack{
-                                Image("message-icon")
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fit)
+                        HStack(spacing: 16) {
+                            Image(systemName: "photo.on.rectangle")
+                                .font(.system(size: 24))
+                                .foregroundColor(Color(.darkGray))
+                            ZStack {
+                                DescriptionPlaceholder()
+                                TextEditor(text: $vm.chatText)
+                                    .opacity(vm.chatText.isEmpty ? 0.5 : 1)
                             }
-                            .frame(width: 25, height: 25)
+                            .frame(height: 40)
+                            Button{
+                                vm.sendMessage()
+                            } label: {
+                                VStack{
+                                    Image("message-icon")
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fit)
+                                }
+                                .frame(width: 25, height: 25)
+                            }
+                            
                         }
+                        .padding(.horizontal)
+                        .padding(.vertical, 8)
+                        // need to re-consider
+//                        HStack {
+//                            Image(systemName: "mic")
+//                                .foregroundColor(.gray)
+//                            TextField("Type here", text: $vm.chatText)
+//                                .foregroundColor(.black)
+//                            Image(systemName: "photo.on.rectangle.angled")
+//                                .foregroundColor(.gray)
+//                            Image(systemName: "face.smiling")
+//                                .foregroundColor(.gray)
+//                        }
+//                        .frame(height: 40)
+//                        .padding(8)
+//                        .background(Color.gray.opacity(0.2))
+//                        .cornerRadius(20)
                     }
-                    
                 }
                 .padding(.horizontal,10)
-                
             }
             .padding(.top,10)
         }
@@ -379,7 +391,7 @@ private struct MessageView : View{
                         .padding(10)
                         .background(.blue)
 //                        .cornerRadius(20, corners: [.topLeft, .topRight,.bottomLeft])
-                        .clipShape(Capsule())
+                        .clipShape(RoundedRectangle(cornerRadius: 20))
                         
                         Image("testAvt")
                             .resizable()
@@ -409,7 +421,7 @@ private struct MessageView : View{
                         .padding(10)
                         .background(Color.gray.opacity(0.3))
 //                        .cornerRadius(20, corners: [.topLeft, .topRight,.bottomRight])
-                        .clipShape(Capsule())
+                        .clipShape(RoundedRectangle(cornerRadius: 20))
                         
                         Spacer()
                     }
