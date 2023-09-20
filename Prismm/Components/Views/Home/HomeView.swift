@@ -14,12 +14,15 @@
   Acknowledgement: None
 */
 import SwiftUI
-
+import Firebase
 struct HomeView: View {
     
     @ObservedObject var authVM :AuthenticationViewModel
     @ObservedObject var settingVM:SettingViewModel
     @ObservedObject var homeViewModel: HomeViewModel
+    @State var selectedPost = Post(id: "", ownerID: "", creationDate: Timestamp(), isAllowComment: true)
+    
+    
     
     var body: some View {
         GeometryReader { proxy in
@@ -81,7 +84,7 @@ struct HomeView: View {
                     
                     VStack {
                         ForEach(homeViewModel.fetchedAllPosts) { post in
-                            PostView(post: post, homeViewModel: homeViewModel, settingVM: settingVM)
+                            PostView(post: post, homeViewModel: homeViewModel, settingVM: settingVM, select: $selectedPost)
                                 .padding(.bottom, 50)
                         }
                     }
@@ -94,6 +97,13 @@ struct HomeView: View {
                 }
                 .fullScreenCover(isPresented: $homeViewModel.isCreateNewPostOnIphone) {
                     CreatePostView(authVM: authVM, settingVM: settingVM, homeVM: homeViewModel, isNewPost: $homeViewModel.isCreateNewPostOnIphone, isDarkModeEnabled: authVM.userSettings!.darkModeEnabled)
+                }
+                
+                .sheet(isPresented: $homeViewModel.isOpenCommentViewOnIpad) {
+                    CommentView(isDarkModeEnabled: $settingVM.isDarkModeEnabled, isShowComment: $homeViewModel.isOpenCommentViewOnIpad, homeViewModel: homeViewModel, post: selectedPost)
+                }
+                .fullScreenCover(isPresented: $homeViewModel.isOpenCommentViewOnIphone) {
+                    CommentView(isDarkModeEnabled: $settingVM.isDarkModeEnabled, isShowComment: $homeViewModel.isOpenCommentViewOnIphone, homeViewModel: homeViewModel, post: selectedPost)
                 }
 
                 .onAppear {
@@ -112,8 +122,8 @@ struct HomeView: View {
     }
 }
 
-struct HomeView_Previews: PreviewProvider {
-    static var previews: some View {
-        HomeView(homeViewModel: HomeViewModel(), settingVM: SettingViewModel())
-    }
-}
+//struct HomeView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        HomeView(homeViewModel: HomeViewModel(), settingVM: SettingViewModel())
+//    }
+//}

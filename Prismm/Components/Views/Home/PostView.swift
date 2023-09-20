@@ -25,6 +25,7 @@ struct PostView: View {
     // View model
     @ObservedObject var homeViewModel = HomeViewModel()
     @ObservedObject var settingVM = SettingViewModel()
+    @Binding var select: Post
     var body: some View {
         VStack {
             //Post info.
@@ -240,10 +241,12 @@ struct PostView: View {
                 
                 Button(action: {
                     if UIDevice.current.userInterfaceIdiom == .pad {
+                        select = post
                         homeViewModel.isOpenCommentViewOnIpad.toggle()
                         homeViewModel.fetchAllComments(forPostID: post.id)
 
                     } else {
+                        select = post
                         homeViewModel.isOpenCommentViewOnIphone.toggle()
                         homeViewModel.fetchAllComments(forPostID: post.id)
                     }
@@ -307,12 +310,6 @@ struct PostView: View {
                     )
             }
             .padding(.horizontal)
-        }
-        .sheet(isPresented: $homeViewModel.isOpenCommentViewOnIpad) {
-            CommentView(isDarkModeEnabled: $settingVM.isDarkModeEnabled, isShowComment: $homeViewModel.isOpenCommentViewOnIpad, homeViewModel: homeViewModel, post: post)
-        }
-        .fullScreenCover(isPresented: $homeViewModel.isOpenCommentViewOnIphone) {
-            CommentView(isDarkModeEnabled: $settingVM.isDarkModeEnabled, isShowComment: $homeViewModel.isOpenCommentViewOnIphone, homeViewModel: homeViewModel, post: post)
         }
     }
     
