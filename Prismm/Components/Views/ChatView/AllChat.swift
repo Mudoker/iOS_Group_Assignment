@@ -81,6 +81,10 @@ struct AllChat : View {
                                                 self.chatLogViewModal.chatUser = self.chatUser
                                                 self.chatLogViewModal.fetchMessages()
                                                 self.showChatLogVIew.toggle()
+                                                if let firstMessage = vm.recentMessages.first {
+                                                    vm.updateIsSeen(forMessageWithID: firstMessage.id!)
+                                                    
+                                                }
                                                 
                                             } label: {
                                                 HStack(spacing: 16) {
@@ -144,7 +148,7 @@ struct AllChat : View {
                                                 self.showChatLogVIew.toggle()
                                                 if let firstMessage = vm.recentMessages.first {
                                                     vm.updateIsSeen(forMessageWithID: firstMessage.id!)
-
+                                                    
                                                 }
                                                 
                                             } label: {
@@ -193,13 +197,12 @@ struct AllChat : View {
                                                                     .multilineTextAlignment(.leading)
                                                                     .fontWeight(recentMessage.isSeen ? .regular : .bold)
                                                                     .foregroundColor(recentMessage.isSeen ? Color(.darkGray): Color(.black))
-                                                            }
-                                                            
-                                                            Spacer()
-                                                            if (!recentMessage.isSeen){
-                                                                Circle()
-                                                                    .foregroundColor(.blue)
-                                                                    .frame(width: 15, height: 15)
+                                                                Spacer()
+                                                                if (!recentMessage.isSeen){
+                                                                    Circle()
+                                                                        .foregroundColor(.blue)
+                                                                        .frame(width: 15, height: 15)
+                                                                }
                                                             }
                                                             
                                                         }
