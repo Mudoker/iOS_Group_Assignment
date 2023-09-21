@@ -123,7 +123,7 @@ struct CreateNewMessageView: View {
 struct CreateNewMessage_Previews: PreviewProvider {
     static var previews: some View {
         CreateNewMessageView(didSelectChatUser: { user in
-            print(user.gmail)
+            print(user.gmail as Any)
         })
     }
 }
