@@ -504,7 +504,7 @@ class HomeViewModel: ObservableObject {
                     try? queryDocumentSnapshot.data(as: Post.self)
                 }
                 
-                self.fetchedAllPosts = sortPostByTime(order: "asc", posts: self.fetchedAllPosts)
+                self.fetchedAllPosts = sortPostByTime(order: "desc", posts: self.fetchedAllPosts)
                 
                 for i in 0..<self.fetchedAllPosts.count {
                     for likerID in self.fetchedAllPosts[i].likerIDs {
@@ -533,6 +533,46 @@ class HomeViewModel: ObservableObject {
         }
     }
     
+    func fetchPosts() async throws {
+        do {
+            let querySnapshot = try await Firestore.firestore().collection("test_posts").getDocuments()
+            
+            if querySnapshot.isEmpty {
+                print("No documents")
+                return
+            }
+            
+            var fetchedAllPosts = [Post]()
+            
+            for queryDocumentSnapshot in querySnapshot.documents {
+                if let post = try? queryDocumentSnapshot.data(as: Post.self) {
+                    fetchedAllPosts.append(post)
+                }
+            }
+            
+            fetchedAllPosts = sortPostByTime(order: "desc", posts: fetchedAllPosts)
+            
+            for i in 0..<fetchedAllPosts.count {
+                let post = fetchedAllPosts[i]
+                let ownerID = post.ownerID
+                
+                do {
+                    let user = try await APIService.fetchUser(withUserID: ownerID)
+                    fetchedAllPosts[i].user = user
+                } catch {
+                    print("Error fetching user: \(error)")
+                }
+            }
+            
+            self.fetchedAllPosts = fetchedAllPosts
+        } catch {
+            print("Error fetching posts: \(error)")
+            throw error
+        }
+    }
+
+
+
     //sort post
     func sortPostByTime(order: String, posts: [Post]) -> [Post] {
         var sortedPosts = posts
@@ -1007,29 +1047,48 @@ class HomeViewModel: ObservableObject {
     
     // Get like count for current post
     @MainActor
-    func getLikeCount(forPostID postID: String, completion: @escaping (Int, Bool)  -> Void) {
+    func getLikeCount(forPostID postID: String, completion: @escaping (Int)  -> Void) {
         likePostListenerRegistration = Firestore.firestore().collection("test_likes").whereField("postId", isEqualTo: postID).addSnapshotListener { [weak self] querySnapshot, error in
             guard self != nil else { return }
             
             if let error = error {
                 print("Error fetching likes: \(error)")
-                completion(0, false) // Return 0 when there's an error, and false for the boolean
+                completion(0) // Return 0 when there's an error, and false for the boolean
                 return
             }
             
             guard let documents = querySnapshot?.documents else {
                 print("No documents")
-                completion(0, false) // Return 0 when there's an error, and false for the boolean
+                completion(0) // Return 0 when there's an error, and false for the boolean
+                return
+            }
+
+            completion(documents.count)
+        }
+    }
+    
+    func isCurrentUserLikePost (forPostID postID: String, completion: @escaping (Bool)  -> Void) {
+        Firestore.firestore().collection("test_likes").whereField("postId", isEqualTo: postID).addSnapshotListener { [weak self] querySnapshot, error in
+            guard self != nil else { return }
+            
+            if let error = error {
+                print("Error fetching likes: \(error)")
+                completion(false) // Return 0 when there's an error, and false for the boolean
+                return
+            }
+            
+            guard let documents = querySnapshot?.documents else {
+                print("No documents")
+                completion(false) // Return 0 when there's an error, and false for the boolean
                 return
             }
             let hasLikerId = documents.contains { document in
                 let data = document.data()
                 return data["likerId"] as? String == "ao2PKDpap4Mq7M5cn3Nrc1Mvoa42"
             }
-            completion(documents.count, hasLikerId)
+            completion(hasLikerId)
         }
     }
-    
     // Get mime type for images/video
     func mimeType(for data: Data) -> String {
         var b: UInt8 = 0
