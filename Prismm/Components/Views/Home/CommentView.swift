@@ -17,6 +17,7 @@
 import SwiftUI
 import Kingfisher
 import Firebase
+import FirebaseAuth
 
 struct CommentView: View {
     var isDarkModeEnabled: Bool
@@ -103,7 +104,7 @@ struct CommentView: View {
                                         do {
                                             print(comment.commenterId)
                                             homeViewModel.currentCommentor = try await APIService.fetchUser(withUserID: comment.commenterId)
-                                            homeViewModel.currentCommentor = try await APIService.fetchUser(withUserID: comment.commenterId)
+
         //                                    post = try await UserService.fetchAPost(withUid: post.id)
 
                                         } catch {
@@ -177,7 +178,7 @@ struct CommentView: View {
                         
                         Button(action: {
                             Task {
-                                _ = try await homeViewModel.createComment(content: homeViewModel.commentContent, commentor: "3WBgDcMgEQfodIbaXWTBHvtjYCl2", postId: post.id)
+                                _ = try await homeViewModel.createComment(content: homeViewModel.commentContent, commentor: (Auth.auth().currentUser?.uid)! , postId: post.id)
                                 homeViewModel.commentContent = ""
                         }
                         }) {
