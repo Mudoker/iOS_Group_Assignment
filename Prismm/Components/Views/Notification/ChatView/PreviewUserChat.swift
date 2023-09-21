@@ -31,8 +31,6 @@ struct PreviewUserChat: View {
                 }
             }
             .padding(8)
-//            .background(Color.gray.opacity(0.2))
-//            .cornerRadius(20)
     }
 }
 
