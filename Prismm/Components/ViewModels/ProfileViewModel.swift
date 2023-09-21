@@ -51,10 +51,34 @@ class ProfileViewModel: ObservableObject {
     
     @Published var indicatorOffset = -(UIScreen.main.bounds.width/5)
     
+    //MARK: RESPONSIVE VALUE
     @Published var proxySize: CGSize = CGSize(width: 0, height: 0)
     
     var avatarSize : CGFloat{
         UIDevice.current.userInterfaceIdiom == .phone ? proxySize.width / 4.3 : proxySize.width / 4.3
+    }
+    var toolBarUserNameSize : CGFloat{
+        UIDevice.current.userInterfaceIdiom == .phone ? 20 : 40
+    }
+    
+    var toolBarSettingButtonSize : CGFloat{
+        UIDevice.current.userInterfaceIdiom == .phone ? 20 : 40
+    }
+    
+    var infoBlockSpacing : CGFloat{
+        UIDevice.current.userInterfaceIdiom == .phone ? 15 : 20
+    }
+    
+    var editButtonWidth : CGFloat{
+        UIDevice.current.userInterfaceIdiom == .phone ? proxySize.width / 3.5 : proxySize.width / 4.3
+    }
+    
+    var editButtonHeight : CGFloat{
+        UIDevice.current.userInterfaceIdiom == .phone ? proxySize.height/20 : proxySize.height/20
+    }
+
+    var buttonRadiusSize : CGFloat{
+        UIDevice.current.userInterfaceIdiom == .phone ? 30 : proxySize.height/20
     }
     
     @MainActor

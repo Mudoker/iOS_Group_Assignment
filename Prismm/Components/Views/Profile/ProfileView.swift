@@ -15,6 +15,7 @@
 */
 
 import SwiftUI
+import Kingfisher
 
 struct ProfileView: View {
     @State var isSample = true
@@ -25,24 +26,40 @@ struct ProfileView: View {
     @ObservedObject var settingVM : SettingViewModel
     @ObservedObject var profileVM : ProfileViewModel
     
+    
+    
+    
+    
+    
     var body: some View {
         GeometryReader { proxy in
             
             VStack(alignment: .leading){
-                ProfileToolBar(authVM: authVM, settingVM: settingVM, isSetting: $profileVM.isSetting)
                 
-                //Profile info block
+                ProfileToolBar(authVM: authVM, profileVM: profileVM)
+                
+                //MARK: PROFILE INFO BLOCK
                 VStack(alignment: .leading){
                     HStack(alignment: .center){
-                        Image("testAvt")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: profileVM.avatarSize, height: profileVM.avatarSize)
-                            .clipShape(Circle())
+                        if let mediaURL = URL(string: dataControllerVM.currentUser?.profileImageURL ?? "") {
+                            
+                            KFImage(mediaURL)
+                                .resizable()
+                                .frame(width: profileVM.avatarSize, height: profileVM.avatarSize)
+                                .clipShape(Circle())
+                                .background(Circle().foregroundColor(Color.gray))
+
+                        } else {
+                            // Handle the case where the media URL is invalid or empty.
+                            Image(systemName: "person.circle.fill")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: profileVM.avatarSize, height: profileVM.avatarSize)
+                        }
                         Spacer()
                         
                         VStack{
-                            HStack(spacing: 15){ //should be responsive
+                            HStack(spacing: profileVM.infoBlockSpacing){
                                 VStack{
                                     Text("\(dataControllerVM.currentUser?.posts.count ?? 111)")
                                         .fontWeight(.bold)
@@ -73,26 +90,26 @@ struct ProfileView: View {
                                     Text(LocalizedStringKey("Edit Profile"))
                                         .fontWeight(.bold)
                                         .foregroundColor(.black)
-                                        .frame(width: proxy.size.width / 3.5,height: proxy.size.height/20)
+                                        .frame(width: profileVM.editButtonWidth, height: profileVM.editButtonHeight)
                                         .background{
                                             Color.gray
                                                 .opacity(0.3)
                                         }
-                                        .clipShape(RoundedRectangle(cornerRadius: 30))
+                                        .clipShape(RoundedRectangle(cornerRadius: profileVM.buttonRadiusSize))
                                 }
 
                                 Button {
                                     
                                 } label: {
-                                    Text(LocalizedStringKey("Facebook Link"))
-                                        .fontWeight(.bold)
-                                        .foregroundColor(.black)
-                                        .frame(width: proxy.size.width / 3.5,height: proxy.size.height/20)
+                                    Image("facebookIcon")
+                                        .resizable()
+                                        .scaledToFit()
+                                        .frame(width: profileVM.editButtonWidth,height: profileVM.editButtonHeight)
                                         .background{
                                             Color.gray
                                                 .opacity(0.3)
                                         }
-                                        .clipShape(RoundedRectangle(cornerRadius: 30))
+                                        .clipShape(RoundedRectangle(cornerRadius: profileVM.buttonRadiusSize))
                                 }
                                 
 

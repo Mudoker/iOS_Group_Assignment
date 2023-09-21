@@ -50,6 +50,7 @@ class HomeViewModel: ObservableObject {
     @Published var fetchedCommentsByPostId = [String: Set<Comment>]()
     
     @Published var newPostSelectedMedia: NSURL? = nil
+    
     @Published var currentCommentor: User?
     
     // Responsive
