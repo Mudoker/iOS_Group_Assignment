@@ -43,9 +43,21 @@ class MainMessagesViewModel :  ObservableObject {
     @Published var errMessage = ""
     @Published var chatUser : User?
     
-    init(){
-        fetchCurrentUser()
-        fetchRecentMessages()
+//    init(){
+//        chatUser = APIService.fetchCurrentUserData()
+//        fetchCurrentUser()
+//        fetchRecentMessages()
+//    }
+    
+    func setData() async {
+        do{
+            chatUser = try await APIService.fetchCurrentUserData()
+            fetchRecentMessages()
+        }catch{
+            print("failed")
+        }
+        
+        
     }
     
     @Published var recentMessages = [RecentMessage]()

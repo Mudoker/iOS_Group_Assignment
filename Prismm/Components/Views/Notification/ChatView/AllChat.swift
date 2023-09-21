@@ -37,6 +37,7 @@ struct AllChat : View {
         }
     }
     
+    @State var chatUser: User?
     
     var mainMessageScreen : some View{
         NavigationStack{
@@ -73,17 +74,20 @@ struct AllChat : View {
                                     ForEach(vm.recentMessages) { recentMessage in
                                         VStack(alignment: .leading) {
                                             Button {
-                                                let uid = Auth.auth().currentUser?.uid == recentMessage.fromId ? recentMessage.toId : recentMessage.fromId
-                                                
-                                                self.chatUser = .init(data: [FirebaseConstants.email: recentMessage.email,FirebaseConstants.uid : uid])
-                                                
-                                                self.chatLogViewModal.chatUser = self.chatUser
-                                                self.chatLogViewModal.fetchMessages()
-                                                self.showChatLogVIew.toggle()
-                                                if let firstMessage = vm.recentMessages.first {
-                                                    vm.updateIsSeen(forMessageWithID: firstMessage.id!)
+                                                Task{
+//                                                    let uid = Auth.auth().currentUser?.uid == recentMessage.fromId ? recentMessage.toId : recentMessage.fromId
                                                     
+                                                    self.chatUser = try await APIService.fetchCurrentUserData()
+                                                    
+                                                    self.chatLogViewModal.chatUser = self.chatUser
+                                                    self.chatLogViewModal.fetchMessages()
+                                                    self.showChatLogVIew.toggle()
+                                                    if let firstMessage = vm.recentMessages.first {
+                                                        vm.updateIsSeen(forMessageWithID: firstMessage.id!)
+                                                        
+                                                    }
                                                 }
+
                                                 
                                             } label: {
                                                 HStack(spacing: 16) {
@@ -138,17 +142,19 @@ struct AllChat : View {
 //                                                    print(recentMessage.isSeen)
 //                                                }
                                             Button {
-                                                let uid = Auth.auth().currentUser?.uid == recentMessage.fromId ? recentMessage.toId : recentMessage.fromId
-                                                
-                                                self.chatUser = .init(data: [FirebaseConstants.email: recentMessage.email,FirebaseConstants.uid : uid])
-                                                
-                                                self.chatLogViewModal.chatUser = self.chatUser
-                                                self.chatLogViewModal.fetchMessages()
-                                                self.showChatLogVIew.toggle()
-                                                if let firstMessage = vm.recentMessages.first {
-                                                    vm.updateIsSeen(forMessageWithID: firstMessage.id!)
+//                                                let uid = Auth.auth().currentUser?.uid == recentMessage.fromId ? recentMessage.toId : recentMessage.fromId
+                                                Task{
+                                                    self.chatUser = try await APIService.fetchCurrentUserData()
                                                     
+                                                    self.chatLogViewModal.chatUser = self.chatUser
+                                                    self.chatLogViewModal.fetchMessages()
+                                                    self.showChatLogVIew.toggle()
+                                                    if let firstMessage = vm.recentMessages.first {
+                                                        vm.updateIsSeen(forMessageWithID: firstMessage.id!)
+                                                        
+                                                    }
                                                 }
+
                                                 
                                             } label: {
                                                 HStack(spacing: 16) {
@@ -433,7 +439,7 @@ struct AllChat : View {
                                 //                                }
                                 
                                 HStack(spacing: 10){
-                                    Text("\(vm.chatUser?.email.replacingOccurrences(of: "@gmail.com", with: "")  ?? "")")
+                                    Text("\(vm.chatUser?.gmail!.replacingOccurrences(of: "@gmail.com", with: "")  ?? "")")
                                         .font(.title3)
                                         .fontWeight(.semibold)
                                         .onTapGesture {
@@ -471,7 +477,7 @@ struct AllChat : View {
         }
         .fullScreenCover(isPresented: $showNewMessageScreen){
             CreateNewMessageView(didSelectChatUser: { user in
-                print(user.email)
+                print(user.gmail!)
                 self.showChatLogVIew = true
                 self.chatUser = user
                 self.chatLogViewModal.chatUser = user
@@ -480,7 +486,7 @@ struct AllChat : View {
         }
     }
     
-    @State var chatUser: ChatUser?
+    
     
 }
 

@@ -12,7 +12,7 @@ struct CreateNewMessageView: View {
     
     @State var searchTerm : String = ""
     @State var searchState : Bool = true
-    let didSelectChatUser : (ChatUser) ->  ()
+    let didSelectChatUser : (User) ->  ()
     @Environment(\.presentationMode) var presentationMode
     
     @StateObject var vm = CreateNewMessageViewModel()
@@ -123,7 +123,7 @@ struct CreateNewMessageView: View {
 struct CreateNewMessage_Previews: PreviewProvider {
     static var previews: some View {
         CreateNewMessageView(didSelectChatUser: { user in
-            print(user.email)
+            print(user.gmail)
         })
     }
 }
