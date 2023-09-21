@@ -21,14 +21,18 @@ struct FollowingList: View {
     
     var body: some View {
         ScrollView{
-            TextField("", text: $fvm.searchText, prompt: Text("Search").font(.system(size: CGFloat(fvm.searchTextFontSize))).foregroundColor(fvm.isDarkMode ? .white : .black)).opacity(0.3)
-                .frame(height: UIScreen.main.bounds.height/25)
-                .background{
-                    fvm.isDarkMode ? Color.white.opacity(0.1) : Color.black.opacity(0.1)
-
-                }
-                .clipShape(RoundedRectangle(cornerRadius:8))
-                .padding(.bottom, 20)
+            TextField("", text: $fvm.searchText, prompt: Text("Search")
+                    .font(.system(size: CGFloat(fvm.searchTextFontSize)))
+                    .foregroundColor(fvm.isDarkMode ? .white : .black)
+                )
+                .opacity(0.3)
+                .padding()
+                .frame(height: UIScreen.main.bounds.height / 23)
+                .background(
+                    RoundedRectangle(cornerRadius: 8)
+                        .fill(!fvm.isDarkMode ? Color.black.opacity(0.1) : Color.white.opacity(0.1))
+                )
+                .padding(.vertical)
                 
             
             ForEach(fvm.followerList.indices, id: \.self) { _ in

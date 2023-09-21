@@ -28,7 +28,7 @@ struct PostView: View {
     @Binding var select: Post
     @State var isLike = false
     @State var currentLike = 0
-    @State var pressCounter = 0
+    @State var isArchive = false
     var body: some View {
         VStack {
             //Post info.
@@ -52,7 +52,11 @@ struct PostView: View {
                     }
                 } else {
                     // Handle the case where the media URL is invalid or empty.
-                    Text("Invalid media URL")
+                    Image(systemName: "person.circle.fill")
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                        .frame(width: 55, height: 55)
+                    
                 }
                 
                 
@@ -178,6 +182,7 @@ struct PostView: View {
                 Spacer()
             }
             .padding(.horizontal)
+            .padding(.top, 8)
             
             HStack(spacing: 5) {
                 ForEach(post.tag, id: \.self) { tag in
@@ -221,9 +226,6 @@ struct PostView: View {
                         // Handle the case where the mimeType is nil
                         Text("Invalid MIME type")
                     }
-                } else {
-                    // Handle the case where the media URL is invalid or empty.
-                    Text("Invalid media URL")
                 }
             }
             
@@ -233,12 +235,12 @@ struct PostView: View {
                 Button(action: {
                     if isLike == false {
                         Task {
-                            try await homeViewModel.likePost(likerID: "ao2PKDpap4Mq7M5cn3Nrc1Mvoa42", postID: post.id)
+                            try await homeViewModel.likePost(likerId: "ao2PKDpap4Mq7M5cn3Nrc1Mvoa42", postId: post.id)
                         }
                         isLike = true
                     } else {
                         Task {
-                            try await homeViewModel.unLikePost(likerID: "ao2PKDpap4Mq7M5cn3Nrc1Mvoa42", postID: post.id)
+                            try await homeViewModel.unLikePost(likerId: "ao2PKDpap4Mq7M5cn3Nrc1Mvoa42", postId: post.id)
                         }
                         isLike = false
                     }
@@ -260,11 +262,12 @@ struct PostView: View {
                         
                         
                     }
-                    .padding(.horizontal)
+                    .padding(.leading)
                 }
                 Text("\(currentLike)")
                     .font(Font.system(size: homeViewModel.postStatsFontSize, weight: .light))
                     .opacity(0.6)
+                    .padding(.trailing)
                
                 
                 Button(action: {
@@ -272,7 +275,6 @@ struct PostView: View {
                         select = post
                         homeViewModel.isOpenCommentViewOnIpad.toggle()
                         homeViewModel.fetchAllComments(forPostID: post.id)
-
                     } else {
                         select = post
                         homeViewModel.isOpenCommentViewOnIphone.toggle()
@@ -291,12 +293,36 @@ struct PostView: View {
                 
                 Spacer()
                 
-                Image(systemName: "archivebox")
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: homeViewModel.postStatsImageSize)
+                Button(action: {
+                    if isArchive {
+                        Task {
+                            try await homeViewModel.unFavorPost(ownerId: "ao2PKDpap4Mq7M5cn3Nrc1Mvoa42" ,postId: post.id)
+                        }
+                        isArchive = false
+                    } else {
+                        Task {
+                            try await homeViewModel.favorPost(ownerId: "ao2PKDpap4Mq7M5cn3Nrc1Mvoa42" ,postId: post.id)
+                        }
+                        isArchive = true
+                    }
+                }) {
+                    HStack {
+                        Image(systemName: "archivebox.fill")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: homeViewModel.postStatsImageSize)
+                            .foregroundColor(isArchive ? .yellow : .clear)
+                        
+                            .overlay (
+                                Image(systemName: "archivebox")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(width: homeViewModel.postStatsImageSize)
+                                    .foregroundColor(isArchive ? .black : .black)
+                            )
+                    }
                     .padding(.trailing)
-                
+                }
             }
             .padding(.vertical)
             
@@ -324,7 +350,10 @@ struct PostView: View {
                     }
                 } else {
                     // Handle the case where the media URL is invalid or empty.
-                    Text("Invalid media URL")
+                    Image(systemName: "person.circle.fill")
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                        .frame(width: 40, height: 40)
                 }
                 
                 
@@ -344,6 +373,8 @@ struct PostView: View {
                 currentLike = totalCount
                 isLike = hasLikerId
             }
+            
+            isArchive = homeViewModel.isUserFavouritePost(withPostId: post.id)
         }
     }
     
