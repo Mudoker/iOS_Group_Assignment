@@ -41,7 +41,7 @@ struct RecentMessage: Codable,Identifiable {
 
 class MainMessagesViewModel :  ObservableObject {
     @Published var errMessage = ""
-    @Published var chatUser : ChatUser?
+    @Published var chatUser : User?
     
     init(){
         fetchCurrentUser()
@@ -151,28 +151,30 @@ class MainMessagesViewModel :  ObservableObject {
     //                //                })
     //            }
     //    }
-    private func fetchCurrentUser(){
-        
-        guard let uid = Auth.auth().currentUser?.uid else{
-            self.errMessage = "Could not find the uid"
-            return
-        }
-        
-        self.errMessage = "\(uid)"
-        
-        Firestore.firestore().collection("users")
-            .document(uid).getDocument{ snapshot, err in
-                if let err = err{
-                    print("Fail to fetch current user", err)
-                    return
-                }
-                
-                guard let data = snapshot?.data() else{
-                    return
-                }
-                print(data)
-                // can refractor
-                self.chatUser = .init(data: data)
-            }
-    }
+    
+    
+//    private func fetchCurrentUser(){
+//
+//        guard let uid = Auth.auth().currentUser?.uid else{
+//            self.errMessage = "Could not find the uid"
+//            return
+//        }
+//
+//        self.errMessage = "\(uid)"
+//
+//        Firestore.firestore().collection("users")
+//            .document(uid).getDocument{ snapshot, err in
+//                if let err = err{
+//                    print("Fail to fetch current user", err)
+//                    return
+//                }
+//
+//                guard let data = snapshot?.data() else{
+//                    return
+//                }
+//                print(data)
+//                // can refractor
+//                self.chatUser = .init(data: data)
+//            }
+//    }
 }

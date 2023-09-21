@@ -48,9 +48,9 @@ class ChatLogViewModel : ObservableObject{
     @Published var errorMessage = ""
     @Published var chatMessages = [ChatMessage]()
     
-    var  chatUser: ChatUser?
+    var  chatUser: User?
     
-    init(chatUser: ChatUser?) {
+    init(chatUser: User?) {
         self.chatUser = chatUser
         fetchMessages()
     }
@@ -59,7 +59,7 @@ class ChatLogViewModel : ObservableObject{
     
     func fetchMessages() {
         guard let fromId = Auth.auth().currentUser?.uid else { return }
-        guard let toId = chatUser?.uid else { return }
+        guard let toId = chatUser?.id else { return }
         
         firestoreListener?.remove()
         chatMessages.removeAll()
@@ -92,7 +92,7 @@ class ChatLogViewModel : ObservableObject{
         print(chatText)
         guard let fromId = Auth.auth().currentUser?.uid else { return }
         
-        guard let toId = chatUser?.uid else { return }
+        guard let toId = chatUser?.id else { return }
         
         
         let document = Firestore.firestore().collection("messages")
@@ -136,7 +136,7 @@ class ChatLogViewModel : ObservableObject{
     func updateIsSeen(forMessageWithID messageID: String){
         guard let fromId = Auth.auth().currentUser?.uid else { return }
         
-        guard let toId = chatUser?.uid else { return }
+        guard let toId = chatUser?.id else { return }
         
         
         let document = Firestore.firestore().collection("messages")
@@ -178,7 +178,7 @@ class ChatLogViewModel : ObservableObject{
         guard let chatUser = chatUser else { return }
         
         guard let uid = Auth.auth().currentUser?.uid else { return }
-        guard let toId = self.chatUser?.uid else { return }
+        guard let toId = self.chatUser?.id else { return }
         
         let document = Firestore.firestore()
             .collection("recent_messages")
@@ -191,7 +191,7 @@ class ChatLogViewModel : ObservableObject{
             FirebaseConstants.text: self.chatText,
             FirebaseConstants.fromId: uid,
             FirebaseConstants.toId: toId,
-            FirebaseConstants.email: chatUser.email,
+            FirebaseConstants.email: chatUser.gmail,
             FirebaseConstants.isSeen : self.isSeen
         ] as [String : Any]
         
