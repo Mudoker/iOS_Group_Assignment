@@ -533,6 +533,7 @@ class HomeViewModel: ObservableObject {
         }
     }
     
+    @MainActor
     func fetchPosts() async throws {
         do {
             let querySnapshot = try await Firestore.firestore().collection("test_posts").getDocuments()

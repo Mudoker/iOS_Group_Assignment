@@ -386,7 +386,6 @@ struct CreatePostView: View {
                                     .resizable()
                                     .aspectRatio(contentMode: .fit)
                                     .frame(width: proxy.size.width/18)
-                                
                             }
                                 .foregroundColor(.white)
                         )
