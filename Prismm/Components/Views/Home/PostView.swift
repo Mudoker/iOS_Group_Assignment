@@ -26,6 +26,9 @@ struct PostView: View {
     @ObservedObject var homeViewModel:HomeViewModel
     @ObservedObject var settingVM:SettingViewModel
     @Binding var select: Post
+    @State var isLike = false
+    @State var currentLike = 0
+    @State var pressCounter = 0
     var body: some View {
         VStack {
             //Post info.
@@ -227,17 +230,42 @@ struct PostView: View {
             
             //Operations menu.
             HStack (spacing: UIScreen.main.bounds.width * 0.02) {
-                HStack {
-                    Image(systemName: "heart")
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: homeViewModel.postStatsImageSize)
+                Button(action: {
+                    if isLike == false {
+                        Task {
+                            try await homeViewModel.likePost(likerID: "ao2PKDpap4Mq7M5cn3Nrc1Mvoa42", postID: post.id)
+                        }
+                        isLike = true
+                    } else {
+                        Task {
+                            try await homeViewModel.unLikePost(likerID: "ao2PKDpap4Mq7M5cn3Nrc1Mvoa42", postID: post.id)
+                        }
+                        isLike = false
+                    }
                     
-                    Text("\(post.likerIDs.count)")
-                        .font(Font.system(size: homeViewModel.postStatsFontSize, weight: .light))
-                        .opacity(0.6)
+                }) {
+                    HStack {
+                        Image(systemName: "heart")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: homeViewModel.postStatsImageSize)
+                            .foregroundColor(isLike ? .pink : .black)
+                            .overlay (
+                                Image(systemName: "heart.fill")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(width: homeViewModel.postStatsImageSize)
+                                    .foregroundColor(isLike ? .pink : .clear)
+                            )
+                        
+                        
+                    }
+                    .padding(.horizontal)
                 }
-                .padding(.horizontal)
+                Text("\(currentLike)")
+                    .font(Font.system(size: homeViewModel.postStatsFontSize, weight: .light))
+                    .opacity(0.6)
+               
                 
                 Button(action: {
                     if UIDevice.current.userInterfaceIdiom == .pad {
@@ -310,6 +338,12 @@ struct PostView: View {
                     )
             }
             .padding(.horizontal)
+        }
+        .onAppear {
+            homeViewModel.getLikeCount(forPostID: post.id) { totalCount, hasLikerId in
+                currentLike = totalCount
+                isLike = hasLikerId
+            }
         }
     }
     

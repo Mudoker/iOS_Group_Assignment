@@ -20,20 +20,19 @@ struct PrismmApp: App {
     
     var body: some Scene {
         WindowGroup {
-            //HomeView()
             if Auth.auth().currentUser == nil{
                 Login(authVM: authVM, homeVM: homeVM, profileVM: profileVM)
                     .environmentObject(dataControllerVM)
-            }else{
+            } else {
                 TabBar(authVM: authVM, homeVM: homeVM, profileVM: profileVM)
                     .environmentObject(dataControllerVM)
                     .onAppear{
                         Task{
                             await dataControllerVM.setCurrentData()
                         }
-                        
+
                     }
-                    
+
             }
                 
         }

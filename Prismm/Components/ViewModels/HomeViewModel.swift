@@ -46,6 +46,7 @@ class HomeViewModel: ObservableObject {
     @Published var fetchedAllPosts = [Post]()
     private var postsListenerRegistration: ListenerRegistration?
     private var commentListenerRegistration: ListenerRegistration?
+    private var likePostListenerRegistration: ListenerRegistration?
     
     @Published var fetchedCommentsByPostId = [String: Set<Comment>]()
     
@@ -206,6 +207,49 @@ class HomeViewModel: ObservableObject {
         return newComment
     }
     
+    func likePost(likerID: String, postID: String) async throws {
+        do {
+            let likedPostsCollection = Firestore.firestore().collection("test_likes")
+            
+            // Use a Firestore query to check if the user has already liked the post
+            let query = likedPostsCollection.whereField("postId", isEqualTo: postID).whereField("likerId", isEqualTo: likerID)
+            
+            let querySnapshot = try await query.getDocuments()
+            
+            // If there are no matching documents, it means the user hasn't liked the post yet, so we can proceed to like it
+            if querySnapshot.isEmpty {
+                // Perform the like operation here
+                let likedPostRef = Firestore.firestore().collection("test_likes").document()
+                let likedPost = LikedPost(id: likedPostRef.documentID, likerId: likerID, postId: postID)
+                
+                guard let encodedLikedPost = try? Firestore.Encoder().encode(likedPost) else { return }
+                try await likedPostRef.setData(encodedLikedPost)
+            }
+        } catch {
+            throw error
+        }
+    }
+    
+    func unLikePost(likerID: String, postID: String) async throws {
+        do {
+            let likedPostsCollection = Firestore.firestore().collection("test_likes")
+            
+            // Use a Firestore query to fetch LikedPost documents with matching postId and likerId
+            let query = likedPostsCollection.whereField("postId", isEqualTo: postID).whereField("likerId", isEqualTo: likerID)
+            
+            let querySnapshot = try await query.getDocuments()
+            
+            for document in querySnapshot.documents {
+                // Delete the LikedPost document
+                let documentRef = Firestore.firestore().collection("test_likes").document(document.documentID)
+                try await documentRef.delete()
+            }
+            print("unlike")
+        } catch {
+            print("Error unliking post: \(error)")
+            throw error
+        }
+    }
     //create post and upload to firebase collection
     func createPost() async throws {
         let ownerID = Auth.auth().currentUser?.uid ?? "fail"
@@ -434,64 +478,6 @@ class HomeViewModel: ObservableObject {
         return (filteredPosts, filteredComments)
     }
     
-    // Like post
-    func likePost(likerID: String, postID: String) async throws {
-        do {
-            // Fetch the post document
-            let postRef = Firestore.firestore().collection("test_posts").document(postID)
-            var post = try await postRef.getDocument().data(as: Post.self)
-            
-            // Ensure you have successfully fetched the post data
-            //var updatedPost = post
-            
-            // Update the post's comment array
-            if (!post.likerIDs.contains(likerID)) {
-                post.likerIDs.append(likerID)
-            } else {
-                print("Already like")
-            }
-            
-            // Update the Firestore document with the updated data
-            try postRef.setData(from: post) { error in
-                if let error = error {
-                    print("Error updating document: \(error)")
-                } else {
-                    print("Document successfully updated.")
-                }
-            }
-        } catch {
-            throw error
-        }
-    }
-    
-    // Unlike post
-    func unLikePost(likerID: String, postID: String) async throws {
-        do {
-            let postRef = Firestore.firestore().collection("test_posts").document(postID)
-            var post = try await postRef.getDocument().data(as: Post.self)
-            //var updatedPost = post
-            
-            // Remove the comment with the specified commentID
-            if (post.likerIDs.contains(likerID)) {
-                post.likerIDs.removeAll { $0 == likerID }
-            } else {
-                print("Already unlike")
-            }
-            
-            
-            try postRef.setData(from: post) { error in
-                if let error = error {
-                    print("Error unlike post: \(error)")
-                } else {
-                    print("Post unlike successfully.")
-                }
-            }
-        } catch {
-            print("Error deleting comment: \(error)")
-            throw error // Rethrow the error for the caller to handle
-        }
-    }
-    
     // Block (not receiving notification + post/story + message + other cannot see your post)
     func blockOtherUser(userID: String) async throws {
         let currentUserRef = Firestore.firestore().collection("users").document(Constants.currentUserID)
@@ -682,6 +668,33 @@ class HomeViewModel: ObservableObject {
         }
     }
     
+    // Get like count for current post
+    @MainActor
+    func getLikeCount(forPostID postID: String, completion: @escaping (Int, Bool)  -> Void) {
+        
+        likePostListenerRegistration = Firestore.firestore().collection("test_likes").whereField("postId", isEqualTo: postID).addSnapshotListener { [weak self] querySnapshot, error in
+            guard self != nil else { return }
+            
+            if let error = error {
+                print("Error fetching likes: \(error)")
+                completion(0, false) // Return 0 when there's an error, and false for the boolean
+                return
+            }
+            
+            guard let documents = querySnapshot?.documents else {
+                print("No documents")
+                completion(0, false) // Return 0 when there's an error, and false for the boolean
+                return
+            }
+            let hasLikerId = documents.contains { document in
+                let data = document.data()
+                return data["likerId"] as? String == "ao2PKDpap4Mq7M5cn3Nrc1Mvoa42"
+            }
+            completion(documents.count, hasLikerId)
+        }
+    }
+    
+    // Get mime type for images/video
     func mimeType(for data: Data) -> String {
         var b: UInt8 = 0
         data.copyBytes(to: &b, count: 1)
