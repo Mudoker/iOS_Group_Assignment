@@ -110,11 +110,14 @@ struct SettingView : View {
                                         Text("Vietnamese").tag("vi")
                                     }
                                     .pickerStyle(MenuPickerStyle())
-                                    .onChange(of: settingVM.selectedLanguage) { _ in
+                                    .onChange(of: settingVM.selectedLanguage) { newValue in
+                                        dataControllerVM.userSettings?.language = newValue
+                                        
                                         Task{
                                             await
                                             settingVM.updateSettings(userSetting: dataControllerVM.userSettings!)
                                         }
+                                        
                                     }
                                     
                                 }
@@ -175,7 +178,9 @@ struct SettingView : View {
                                     Spacer()
                                     
                                     Toggle("", isOn: $settingVM.isPushNotificationEnabled)
-                                        .onChange(of: settingVM.isPushNotificationEnabled) { _ in
+                                        .onChange(of: settingVM.isPushNotificationEnabled) { newValue in
+                                            dataControllerVM.userSettings?.pushNotificationsEnabled = newValue
+                                            
                                             Task{
                                                 await
                                                 settingVM.updateSettings(userSetting: dataControllerVM.userSettings!)
@@ -202,7 +207,9 @@ struct SettingView : View {
                                     
                                     Toggle("", isOn: $settingVM.isMessageNotificationEnabled)
                                         .padding(.vertical)
-                                        .onChange(of: settingVM.isMessageNotificationEnabled) { _ in
+                                        .onChange(of: settingVM.isMessageNotificationEnabled) { newValue in
+                                            dataControllerVM.userSettings?.messageNotificationsEnabled = newValue
+                                            
                                             Task{
                                                 await
                                                 settingVM.updateSettings(userSetting: dataControllerVM.userSettings!)
@@ -329,6 +336,7 @@ struct SettingView : View {
                                     Button("Sign Out", role: .destructive) {
                                         Task{
                                             try Auth.auth().signOut()
+                                            isSetting = false
                                         }
                                         
                                     }

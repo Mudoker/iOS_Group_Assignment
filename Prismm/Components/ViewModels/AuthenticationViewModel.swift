@@ -131,12 +131,12 @@ class AuthenticationViewModel: ObservableObject {
             let encodedUser = try Firestore.Encoder().encode(newUser)
             
             // Create initial user settings data
-            let userSettings = UserSetting(id: authSnapshot.user.uid, darkModeEnabled: false, englishLanguageEnabled: true, faceIdEnabled: false, pushNotificationsEnabled: false, messageNotificationsEnabled: false)
+            let userSettings = UserSetting(id: authSnapshot.user.uid, darkModeEnabled: false, language: "en", faceIdEnabled: false, pushNotificationsEnabled: false, messageNotificationsEnabled: false)
             let encodedSettings = try Firestore.Encoder().encode(userSettings)
             
             // Save user and settings data to Firestore
             try await Firestore.firestore().collection("users").document(newUser.id).setData(encodedUser)
-            try await Firestore.firestore().collection("settings").document(newUser.id).setData(encodedSettings)
+            try await Firestore.firestore().collection("test_settings").document(newUser.id).setData(encodedSettings)
         } catch {
             hasSignUpError = true
             print("Error during sign-up: \(error.localizedDescription)")

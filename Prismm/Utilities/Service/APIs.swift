@@ -70,16 +70,16 @@ struct APIService {
     static func fetchCurrentSettingData() async throws -> UserSetting? {
         guard let currentUserId = Auth.auth().currentUser?.uid else { return nil }
         //new: fetch setting data
-        guard let userSettingsSnapshot = try? await Firestore.firestore().collection("settings").document(currentUserId).getDocument() else { return nil }
+        guard let userSettingsSnapshot = try? await Firestore.firestore().collection("test_settings").document(currentUserId).getDocument() else { return nil }
         
         print("got snapshot")
         if !userSettingsSnapshot.exists {
             do {
-                let newSetting = UserSetting(id: currentUserId, darkModeEnabled: false, englishLanguageEnabled: true, faceIdEnabled: false, pushNotificationsEnabled: false, messageNotificationsEnabled: false) //new: create new setting data
+                let newSetting = UserSetting(id: currentUserId, darkModeEnabled: false, language: "en", faceIdEnabled: false, pushNotificationsEnabled: false, messageNotificationsEnabled: false) //new: create new setting data
                 
                 let encodedSetting = try Firestore.Encoder().encode(newSetting)
                 
-                try await Firestore.firestore().collection("settings").document(currentUserId).setData(encodedSetting)
+                try await Firestore.firestore().collection("test_settings").document(currentUserId).setData(encodedSetting)
                 print("got new setting")
                 return newSetting
             } catch {

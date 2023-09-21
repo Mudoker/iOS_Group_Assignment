@@ -19,7 +19,7 @@ import Foundation
 struct UserSetting: Codable {
     let id: String
     var darkModeEnabled: Bool
-    var englishLanguageEnabled: Bool
+    var language: String
     var faceIdEnabled: Bool
     var pushNotificationsEnabled: Bool
     var messageNotificationsEnabled: Bool

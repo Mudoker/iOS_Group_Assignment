@@ -26,11 +26,6 @@ struct ProfileView: View {
     @ObservedObject var settingVM : SettingViewModel
     @ObservedObject var profileVM : ProfileViewModel
     
-    
-    
-    
-    
-    
     var body: some View {
         GeometryReader { proxy in
             
@@ -58,7 +53,7 @@ struct ProfileView: View {
                         }
                         Spacer()
                         
-                        VStack{
+                        VStack(alignment: .leading){
                             HStack(spacing: profileVM.infoBlockSpacing){
                                 VStack{
                                     Text("\(dataControllerVM.currentUser?.posts.count ?? 111)")
@@ -104,11 +99,7 @@ struct ProfileView: View {
                                     Image("facebookIcon")
                                         .resizable()
                                         .scaledToFit()
-                                        .frame(width: profileVM.editButtonWidth,height: profileVM.editButtonHeight)
-                                        .background{
-                                            Color.gray
-                                                .opacity(0.3)
-                                        }
+                                        .frame(width: profileVM.editButtonHeight,height: profileVM.editButtonHeight)
                                         .clipShape(RoundedRectangle(cornerRadius: profileVM.buttonRadiusSize))
                                 }
                                 
@@ -126,7 +117,7 @@ struct ProfileView: View {
                     }
                 }
                 
-                //Highlight stories
+                //MARK: Highlight stories
                 if profileVM.hasStoryHightlight {
 
                 } else {
@@ -182,7 +173,7 @@ struct ProfileView: View {
 
                 }
                 
-                //tab changing
+                //MARK: tab changing
                 HStack{
                     
                     Button {
@@ -257,6 +248,8 @@ struct ProfileView: View {
             .fullScreenCover(isPresented: $profileVM.isSetting) {
                 SettingView(settingVM: settingVM, isSetting: $profileVM.isSetting)
             }
+            .foregroundColor(dataControllerVM.userSettings!.darkModeEnabled ? .white : .black)
+            .background(!dataControllerVM.userSettings!.darkModeEnabled ? .white : .black)
         }
     }
 }

@@ -49,7 +49,7 @@ class SettingViewModel: ObservableObject {
         self.isFaceIdEnabled = setting.faceIdEnabled
         self.isPushNotificationEnabled = setting.pushNotificationsEnabled
         self.isMessageNotificationEnabled = setting.messageNotificationsEnabled
-        self.selectedLanguage = setting.englishLanguageEnabled ? "en" : "vi"
+        self.selectedLanguage = setting.language
         self.isAccountSettingSheetPresentedOniPhone = false
         self.isAccountSettingSheetPresentedOniPad = false
         self.isSignOutAlertPresented = false
@@ -140,26 +140,18 @@ class SettingViewModel: ObservableObject {
     
     func updateSettings(userSetting: UserSetting) async {
         let userID = Auth.auth().currentUser?.uid ?? ""
-        guard let settingsSnapshot = try? await Firestore.firestore().collection("settings").document(userID).getDocument() else {
+        guard let settingsSnapshot = try? await Firestore.firestore().collection("test_settings").document(userID).getDocument() else {
             return
         }
-        
-//        let userSettings = UserSetting(
-//            id: userID,
-//            darkModeEnabled: self.isDarkModeEnabled,
-//            englishLanguageEnabled: self.selectedLanguage == "en",
-//            faceIdEnabled: self.isFaceIdEnabled,
-//            pushNotificationsEnabled: self.isPushNotificationEnabled,
-//            messageNotificationsEnabled: self.isMessageNotificationEnabled
-//        )
+    
         
         do {
             let encodedSettings = try Firestore.Encoder().encode(userSetting)
             
             if !settingsSnapshot.exists {
-                try await Firestore.firestore().collection("settings").document(userID).setData(encodedSettings)
+                try await Firestore.firestore().collection("test_settings").document(userID).setData(encodedSettings)
             } else {
-                try await Firestore.firestore().collection("settings").document(userID).updateData(encodedSettings)
+                try await Firestore.firestore().collection("test_settings").document(userID).updateData(encodedSettings)
                 print("Settings updated successfully to \(userID)")
             }
         } catch {
