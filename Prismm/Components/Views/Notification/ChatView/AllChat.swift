@@ -75,9 +75,9 @@ struct AllChat : View {
                                         VStack(alignment: .leading) {
                                             Button {
                                                 Task{
-//                                                    let uid = Auth.auth().currentUser?.uid == recentMessage.fromId ? recentMessage.toId : recentMessage.fromId
+                                                    let uid = Auth.auth().currentUser?.uid == recentMessage.fromId ? recentMessage.toId : recentMessage.fromId
                                                     
-                                                    self.chatUser = try await APIService.fetchCurrentUserData()
+                                                    self.chatUser = try await APIService.fetchUser(withUserID: uid)
                                                     
                                                     self.chatLogViewModal.chatUser = self.chatUser
                                                     self.chatLogViewModal.fetchMessages()
@@ -144,7 +144,9 @@ struct AllChat : View {
                                             Button {
 //                                                let uid = Auth.auth().currentUser?.uid == recentMessage.fromId ? recentMessage.toId : recentMessage.fromId
                                                 Task{
-                                                    self.chatUser = try await APIService.fetchCurrentUserData()
+                                                    let uid = Auth.auth().currentUser?.uid == recentMessage.fromId ? recentMessage.toId : recentMessage.fromId
+                                                    
+                                                    self.chatUser = try await APIService.fetchUser(withUserID: uid)
                                                     
                                                     self.chatLogViewModal.chatUser = self.chatUser
                                                     self.chatLogViewModal.fetchMessages()
@@ -232,6 +234,7 @@ struct AllChat : View {
                     }
                     .frame(maxWidth: .infinity)
 //                    .padding(.horizontal,190)
+                    
                     .toolbar{
                         ToolbarItem(placement: .navigationBarLeading) {
                             HStack(spacing: 25){
@@ -267,6 +270,12 @@ struct AllChat : View {
                 }
                 .padding(.horizontal,10)
             }
+        }
+        .onAppear{
+            Task{
+                await vm.setMessageData()
+            }
+            
         }
     }
     
@@ -477,7 +486,7 @@ struct AllChat : View {
         }
         .fullScreenCover(isPresented: $showNewMessageScreen){
             CreateNewMessageView(didSelectChatUser: { user in
-                print(user.gmail!)
+                print(user.id)
                 self.showChatLogVIew = true
                 self.chatUser = user
                 self.chatLogViewModal.chatUser = user

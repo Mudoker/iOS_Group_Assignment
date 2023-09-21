@@ -363,6 +363,7 @@ struct ChatLogView: View {
     }
 }
 
+
 private struct DescriptionPlaceholder: View {
     var body: some View {
         HStack {

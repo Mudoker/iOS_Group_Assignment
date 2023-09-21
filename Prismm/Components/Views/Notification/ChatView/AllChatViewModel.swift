@@ -49,10 +49,11 @@ class MainMessagesViewModel :  ObservableObject {
 //        fetchRecentMessages()
 //    }
     
-    func setData() async {
+    func setMessageData() async {
         do{
             chatUser = try await APIService.fetchCurrentUserData()
             fetchRecentMessages()
+            print(recentMessages)
         }catch{
             print("failed")
         }
