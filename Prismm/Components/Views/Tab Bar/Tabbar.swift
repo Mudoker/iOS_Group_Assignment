@@ -93,7 +93,7 @@ struct TabBar: View {
                     NavigationView {
 
                         ProfileView( authVM: authVM ,settingVM: settingVM, profileVM: profileVM)
-
+                            
                     }
                     .tag(4)
                     
