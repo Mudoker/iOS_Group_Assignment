@@ -20,7 +20,8 @@ struct SignUp: View {
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
     // View Model
     @ObservedObject var authVM:AuthenticationViewModel
-    @ObservedObject var settingVM:SettingViewModel
+    
+    @EnvironmentObject var dataControllerVM: DataControllerViewModel
     
     var body: some View {
         GeometryReader { proxy in
@@ -30,7 +31,7 @@ struct SignUp: View {
                     Spacer()
                     
                     // Logo
-                    Image(settingVM.isDarkModeEnabled ? Constants.darkThemeAppLogo : Constants.lightThemeAppLogo)
+                    Image(dataControllerVM.userSettings!.darkModeEnabled ? Constants.darkThemeAppLogo : Constants.lightThemeAppLogo)
                         .resizable()
                         .aspectRatio(contentMode: .fill)
                         .frame(width: authVM.logoImageSize, height: 0)
@@ -58,7 +59,7 @@ struct SignUp: View {
                             textFieldBorderWidth: authVM.textFieldBorderWidth,
                             isPassword: false,
                             textFieldPlaceHolderFont: authVM.textFieldPlaceHolderFont,
-                            isDarkModeEnabled: settingVM.isDarkModeEnabled
+                            isDarkModeEnabled: dataControllerVM.userSettings!.darkModeEnabled
                         )
                         .padding(.bottom)
                         
@@ -73,7 +74,7 @@ struct SignUp: View {
                             textFieldBorderWidth: authVM.textFieldBorderWidth,
                             isPassword: true,
                             textFieldPlaceHolderFont: authVM.textFieldPlaceHolderFont,
-                            isDarkModeEnabled: settingVM.isDarkModeEnabled
+                            isDarkModeEnabled: dataControllerVM.userSettings!.darkModeEnabled
                         )
                         
                         HStack {
@@ -112,7 +113,7 @@ struct SignUp: View {
                             textFieldBorderWidth: authVM.textFieldBorderWidth,
                             isPassword: true,
                             textFieldPlaceHolderFont: authVM.textFieldPlaceHolderFont,
-                            isDarkModeEnabled: settingVM.isDarkModeEnabled
+                            isDarkModeEnabled: dataControllerVM.userSettings!.darkModeEnabled
                         )
                         
                         HStack {
@@ -165,7 +166,7 @@ struct SignUp: View {
                                 .frame(height: authVM.loginButtonHeight)
                                 .background(
                                     RoundedRectangle(cornerRadius: 10)
-                                        .fill(settingVM.isDarkModeEnabled ? Constants.darkThemeColor : Constants.lightThemeColor)
+                                        .fill(dataControllerVM.userSettings!.darkModeEnabled ? Constants.darkThemeColor : Constants.lightThemeColor)
                                 )
                                 .padding(.horizontal)
                             
@@ -191,7 +192,7 @@ struct SignUp: View {
                     // Push view
                     Spacer()
                 }
-                .foregroundColor(settingVM.isDarkModeEnabled ? .white : .black)
+                .foregroundColor(dataControllerVM.userSettings!.darkModeEnabled ? .white : .black)
                 .padding(.horizontal)
                 
                 .onChange(of: authVM.signUpPasswordText) {newValue in
@@ -209,7 +210,7 @@ struct SignUp: View {
             }
         }
         .ignoresSafeArea(.keyboard)
-        .background(settingVM.isDarkModeEnabled ? .black : .white)
+        .background(dataControllerVM.userSettings!.darkModeEnabled ? .black : .white)
     }
 }
 

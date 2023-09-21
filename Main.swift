@@ -13,28 +13,31 @@ import UserNotifications
 @main
 struct PrismmApp: App {
     @StateObject var authVM = AuthenticationViewModel()
-    @StateObject var settingVM = SettingViewModel()
+    ///@StateObject var settingVM = SettingViewModel()
     @StateObject var homeVM = HomeViewModel()
     @StateObject var profileVM = ProfileViewModel()
+    @StateObject var dataControllerVM = DataControllerViewModel()
     
     var body: some Scene {
         WindowGroup {
             //HomeView()
             if Auth.auth().currentUser == nil{
-                Login(authVM: authVM, settingVM: settingVM, homeVM: homeVM, profileVM: profileVM)
+                Login(authVM: authVM, homeVM: homeVM, profileVM: profileVM)
+                    .environmentObject(dataControllerVM)
             }else{
-                TabBar(authVM: authVM, settingVM: settingVM, homeVM: homeVM, profileVM: profileVM)
+                TabBar(authVM: authVM, homeVM: homeVM, profileVM: profileVM)
+                    .environmentObject(dataControllerVM)
                     .onAppear{
                         Task{
-                            authVM.currentUser = try? await APIService.fetchCurrentUserData()
-                            authVM.userSettings = try? await APIService.fetchCurrentSettingData()
-                            print(authVM.userSettings?.darkModeEnabled)
+                            await dataControllerVM.setCurrentData()
                         }
                         
                     }
+                    
             }
                 
         }
+        
         
     }
     

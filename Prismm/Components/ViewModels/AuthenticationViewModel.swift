@@ -52,8 +52,7 @@ class AuthenticationViewModel: ObservableObject {
     @Published var isShowSignUpReEnterPassword = ""
     
     @Published var userSession: FirebaseAuth.User?
-    @Published var currentUser: User?
-    @Published var userSettings: UserSetting?
+
     @Published var userToken: String {
         didSet {
             UserDefaults.standard.set(userToken, forKey: "userToken")
@@ -175,8 +174,7 @@ class AuthenticationViewModel: ObservableObject {
                 if isVerified {
                     print("verified")
                     
-                    currentUser = try? await APIService.fetchCurrentUserData()
-                    userSettings = try? await APIService.fetchCurrentSettingData()
+
                     
                     isFetchingData = false
                     
@@ -269,11 +267,9 @@ class AuthenticationViewModel: ObservableObject {
             let googleSignInResult = try await Auth.auth().signIn(with: googleCredential)
             
             let firebaseUser = googleSignInResult.user
-            let userEmail = firebaseUser.email ?? ""
+            _ = firebaseUser.email ?? ""
             print("User \(firebaseUser.uid) signed in with \(firebaseUser.email ?? "unknown" )")
             
-            currentUser = try? await APIService.fetchCurrentUserData()
-            userSettings = try? await APIService.fetchCurrentSettingData()
             isGoogleUnlocked = true
         }
         catch{

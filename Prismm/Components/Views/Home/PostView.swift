@@ -23,8 +23,8 @@ import Firebase
 struct PostView: View {
     var post: Post
     // View model
-    @ObservedObject var homeViewModel = HomeViewModel()
-    @ObservedObject var settingVM = SettingViewModel()
+    @ObservedObject var homeViewModel:HomeViewModel
+    @ObservedObject var settingVM:SettingViewModel
     @Binding var select: Post
     var body: some View {
         VStack {

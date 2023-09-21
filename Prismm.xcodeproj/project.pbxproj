@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		2F19D05A2AB84B3E0090EF14 /* ImagePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F19D0592AB84B3E0090EF14 /* ImagePickerView.swift */; };
+		2F5C47932ABB6AA300D5C5F7 /* DataControllerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F5C47922ABB6AA300D5C5F7 /* DataControllerViewModel.swift */; };
 		2F68AD7F2AAF753E0059E1AF /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = 2F68AD7E2AAF753E0059E1AF /* GoogleSignIn */; };
 		2F68AD812AAF753E0059E1AF /* GoogleSignInSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 2F68AD802AAF753E0059E1AF /* GoogleSignInSwift */; };
 		2FF0ACC42AAAFA3C0033AEEB /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FF0ACC32AAAFA3C0033AEEB /* ProfileView.swift */; };
@@ -87,6 +88,7 @@
 
 /* Begin PBXFileReference section */
 		2F19D0592AB84B3E0090EF14 /* ImagePickerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImagePickerView.swift; sourceTree = "<group>"; };
+		2F5C47922ABB6AA300D5C5F7 /* DataControllerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataControllerViewModel.swift; sourceTree = "<group>"; };
 		2FF0ACC32AAAFA3C0033AEEB /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		2FF0ACC52AAB05120033AEEB /* ProfileToolBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileToolBar.swift; sourceTree = "<group>"; };
 		990334F92AB2375300159F22 /* Test+Follow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Test+Follow.swift"; sourceTree = "<group>"; };
@@ -323,6 +325,7 @@
 			children = (
 				E1C6652B2AB170F40095B388 /* SettingViewModel.swift */,
 				E12FA02F2AAC29A0007890A3 /* AuthenticationViewModel.swift */,
+				2F5C47922ABB6AA300D5C5F7 /* DataControllerViewModel.swift */,
 				E1BB6F242AAEC12F00051687 /* HomeViewModel.swift */,
 				E1BB6F312AAEC1DF00051687 /* FollowViewModel.swift */,
 				990334FD2AB2C55B00159F22 /* ProfileViewModel.swift */,
@@ -606,6 +609,7 @@
 				E1BB6F252AAEC12F00051687 /* HomeViewModel.swift in Sources */,
 				E17E8CF92AAC85E500EF5EFB /* PostGridView.swift in Sources */,
 				E12FA03A2AAC2EFB007890A3 /* StoryView.swift in Sources */,
+				2F5C47932ABB6AA300D5C5F7 /* DataControllerViewModel.swift in Sources */,
 				E1BB6F222AAEC01D00051687 /* UserActiveChat.swift in Sources */,
 				E1CED5132AAB42BB00F7F94E /* Constants.swift in Sources */,
 				E1BB6F2D2AAEC1C700051687 /* FollowerList.swift in Sources */,

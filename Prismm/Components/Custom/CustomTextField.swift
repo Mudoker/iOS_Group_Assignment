@@ -36,8 +36,6 @@ struct CustomTextField: View {
     var horizontalPaddingSize: CGFloat = 16
     
     // ViewModel
-    @ObservedObject var authenticationViewModel = AuthenticationViewModel()
-    @ObservedObject var settingVM = SettingViewModel()
     
     var body: some View {
             VStack (alignment: .leading) {

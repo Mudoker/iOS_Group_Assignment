@@ -26,29 +26,30 @@ import FirebaseFirestoreSwift
 class ProfileViewModel: ObservableObject {
     @Published var posts = [Post]()
     @Published var hasStoryHightlight = false
+    @Published var isSetting = false
     @Published var isShowAllUserPost = 1
     {
         didSet{
             switch isShowAllUserPost{
             case 1:
                 withAnimation {
-                    indicatorOffset = -(UIScreen.main.bounds.width/2)
+                    indicatorOffset = -(UIScreen.main.bounds.width/5)
                 }
                 
             case 0:
                 withAnimation {
-                    indicatorOffset = (UIScreen.main.bounds.width/2)
+                    indicatorOffset = (UIScreen.main.bounds.width/5)
                 }
             default:
                 withAnimation {
-                    indicatorOffset = -(UIScreen.main.bounds.width/2)
+                    indicatorOffset = -(UIScreen.main.bounds.width/5)
                 }
             }
         }
     }
  
     
-    @Published var indicatorOffset = -(UIScreen.main.bounds.width/2)
+    @Published var indicatorOffset = -(UIScreen.main.bounds.width/5)
     
     @Published var proxySize: CGSize = CGSize(width: 0, height: 0)
     

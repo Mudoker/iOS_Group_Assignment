@@ -19,10 +19,10 @@ import SwiftUI
 struct TabBar: View {
     // Control state
     @State private var tabSelection = 0
-    
+    @EnvironmentObject var dataControllerVM: DataControllerViewModel
     
     @ObservedObject var authVM :AuthenticationViewModel
-    @ObservedObject var settingVM:SettingViewModel
+    @StateObject var settingVM = SettingViewModel()
     @ObservedObject var homeVM: HomeViewModel
     @ObservedObject var profileVM: ProfileViewModel
 

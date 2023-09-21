@@ -17,8 +17,10 @@
 import SwiftUI
 
 struct EditSecurityField: View {
-    @ObservedObject var settingVM = SettingViewModel()
-    @ObservedObject var authVM = AuthenticationViewModel()
+    @EnvironmentObject var dataControllerVM : DataControllerViewModel
+    
+    @ObservedObject var settingVM:SettingViewModel
+
     
     var body: some View {
         GeometryReader { proxy in
@@ -49,7 +51,7 @@ struct EditSecurityField: View {
                     textFieldBorderWidth: 1,
                     isPassword: true,
                     textFieldPlaceHolderFont: .body,
-                    isDarkModeEnabled: settingVM.isDarkModeEnabled
+                    isDarkModeEnabled: dataControllerVM.userSettings!.darkModeEnabled
                 )
                 .padding(.bottom)
                 .onChange(of: settingVM.changePasswordNewPassword) { _ in
@@ -71,7 +73,7 @@ struct EditSecurityField: View {
                     textFieldBorderWidth: 1,
                     isPassword: true,
                     textFieldPlaceHolderFont: .body,
-                    isDarkModeEnabled: settingVM.isDarkModeEnabled
+                    isDarkModeEnabled: dataControllerVM.userSettings!.darkModeEnabled
                 )
                 .padding(.bottom)
                 .onChange(of: settingVM.changePasswordNewPassword) { _ in
@@ -110,7 +112,7 @@ struct EditSecurityField: View {
                                 settingVM.hasSecuritySettingChanged = false
                             }
                             Task{
-                                await settingVM.updateSettings()
+                                await settingVM.updateSettings(userSetting: dataControllerVM.userSettings!)
                             }
                         }
                 }
@@ -154,14 +156,14 @@ struct EditSecurityField: View {
                 
                 Spacer()
             }
-            .foregroundColor(settingVM.isDarkModeEnabled ? .white : .black)
-            .background(!settingVM.isDarkModeEnabled ? .white : .black)
+            .foregroundColor(dataControllerVM.userSettings!.darkModeEnabled ? .white : .black)
+            .background(!dataControllerVM.userSettings!.darkModeEnabled ? .white : .black)
         }
     }
 }
 
-struct EditSecurityField_Previews: PreviewProvider {
-    static var previews: some View {
-        EditSecurityField()
-    }
-}
+//struct EditSecurityField_Previews: PreviewProvider {
+//    static var previews: some View {
+//        EditSecurityField()
+//    }
+//}

@@ -17,7 +17,10 @@
 import SwiftUI
 
 struct EditProfileView: View {
-    @ObservedObject var settingVM = SettingViewModel()
+    
+    @EnvironmentObject var dataControllerVM : DataControllerViewModel
+    
+    @ObservedObject var settingVM:SettingViewModel
     @State var accountText: String = ""
     
     
@@ -71,7 +74,7 @@ struct EditProfileView: View {
                                 Spacer()
                                 
                                 Text(verbatim: "huuquoc7603@gmail.com")
-                                    .foregroundColor(settingVM.isDarkModeEnabled ? .white.opacity(0.5) : .black.opacity(0.3))
+                                    .foregroundColor(dataControllerVM.userSettings!.darkModeEnabled ? .white.opacity(0.5) : .black.opacity(0.3))
                             }
                             .padding(.vertical)
                             
@@ -80,7 +83,7 @@ struct EditProfileView: View {
                                 
                                 Spacer()
                                 
-                                TextField("", text: $settingVM.newProfileUsername, prompt: Text(verbatim: "qdoan7603").foregroundColor(settingVM.isDarkModeEnabled ? .white.opacity(0.5) : .black.opacity(0.3)))
+                                TextField("", text: $settingVM.newProfileUsername, prompt: Text(verbatim: "qdoan7603").foregroundColor(dataControllerVM.userSettings!.darkModeEnabled ? .white.opacity(0.5) : .black.opacity(0.3)))
                                     .multilineTextAlignment(.trailing)
                                     .onChange(of: settingVM.newProfileUsername) { _ in
                                         if settingVM.isProfileSettingChange() {
@@ -98,7 +101,7 @@ struct EditProfileView: View {
                                 
                                 Spacer()
                                 
-                                TextField("", text: $settingVM.newProfilePhoneNumber, prompt: Text(verbatim: "qdoan7603").foregroundColor(settingVM.isDarkModeEnabled ? .white.opacity(0.5) : .black.opacity(0.3)))
+                                TextField("", text: $settingVM.newProfilePhoneNumber, prompt: Text(verbatim: "qdoan7603").foregroundColor(dataControllerVM.userSettings!.darkModeEnabled ? .white.opacity(0.5) : .black.opacity(0.3)))
                                     .multilineTextAlignment(.trailing)
                                     .onChange(of: settingVM.newProfilePhoneNumber) { _ in
                                         if settingVM.isProfileSettingChange() {
@@ -129,7 +132,7 @@ struct EditProfileView: View {
                                 
                                 Spacer()
                                 
-                                TextField("", text: $settingVM.newProfileFacebook, prompt: Text(verbatim: "example.com").foregroundColor(settingVM.isDarkModeEnabled ? .white.opacity(0.5) : .black.opacity(0.3)))
+                                TextField("", text: $settingVM.newProfileFacebook, prompt: Text(verbatim: "example.com").foregroundColor(dataControllerVM.userSettings!.darkModeEnabled ? .white.opacity(0.5) : .black.opacity(0.3)))
                                     .multilineTextAlignment(.trailing)
                                     .onChange(of: settingVM.newProfileFacebook) { _ in
                                         if settingVM.isProfileSettingChange() {
@@ -152,7 +155,7 @@ struct EditProfileView: View {
                                 
                                 Spacer()
                                 
-                                TextField("", text: $settingVM.newProfileGmail, prompt: Text(verbatim: "example.com").foregroundColor(settingVM.isDarkModeEnabled ? .white.opacity(0.5) : .black.opacity(0.3)))
+                                TextField("", text: $settingVM.newProfileGmail, prompt: Text(verbatim: "example.com").foregroundColor(dataControllerVM.userSettings!.darkModeEnabled ? .white.opacity(0.5) : .black.opacity(0.3)))
                                     .multilineTextAlignment(.trailing)
                                     .onChange(of: settingVM.newProfileGmail) { _ in
                                         if settingVM.isProfileSettingChange() {
@@ -175,7 +178,7 @@ struct EditProfileView: View {
                                 
                                 Spacer()
                                 
-                                TextField("", text: $settingVM.newProfileLinkedIn, prompt: Text(verbatim: "example.com").foregroundColor(settingVM.isDarkModeEnabled ? .white.opacity(0.5) : .black.opacity(0.3)))
+                                TextField("", text: $settingVM.newProfileLinkedIn, prompt: Text(verbatim: "example.com").foregroundColor(dataControllerVM.userSettings!.darkModeEnabled ? .white.opacity(0.5) : .black.opacity(0.3)))
                                     .multilineTextAlignment(.trailing)
                                     .onChange(of: settingVM.newProfileLinkedIn) { _ in
                                         if settingVM.isProfileSettingChange() {
@@ -213,13 +216,13 @@ struct EditProfileView: View {
             }
             .padding(.top, 0.1)
         }
-        .foregroundColor(settingVM.isDarkModeEnabled ? .white : .black)
-        .background(!settingVM.isDarkModeEnabled ? .white : .black)
+        .foregroundColor(dataControllerVM.userSettings!.darkModeEnabled ? .white : .black)
+        .background(!dataControllerVM.userSettings!.darkModeEnabled ? .white : .black)
     }
 }
 
-struct EditProfileView_Previews: PreviewProvider {
-    static var previews: some View {
-        EditProfileView()
-    }
-}
+//struct EditProfileView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        EditProfileView(, settingVM: <#SettingViewModel#>)
+//    }
+//}
