@@ -96,7 +96,10 @@ struct PostView: View {
                         Text("\nThis will permanently delete this post")
                     }
                     
-                    Button(action: {homeViewModel.isBlockUserAlert = true}) {
+                    Button(action: {
+                        homeViewModel.isBlockUserAlert = true
+                        print("alerted")
+                    }) {
                         HStack {
                             Image(systemName: "person.crop.circle.badge.xmark")
                                 .resizable()
@@ -110,6 +113,7 @@ struct PostView: View {
                         Button("Cancel", role: .cancel) {
                         }
                         Button("Block", role: .destructive) {
+                            print("blocked")
                         }
                     } message: {
                         Text("\nYou will not see this user again")

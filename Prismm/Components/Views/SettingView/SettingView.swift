@@ -26,6 +26,8 @@ struct SettingView : View {
     @Binding var userSetting:UserSetting
     
     @StateObject var settingVM = SettingViewModel()
+    @ObservedObject var profileVM:ProfileViewModel
+    
     @Binding var isSetting: Bool
     
     var body: some View {
@@ -237,7 +239,9 @@ struct SettingView : View {
                                     .font(settingVM.contentFont)
                                 
                                 HStack {
-                                    Button(action: {}) {
+                                    Button(action: {
+                                        settingVM.isBlockListSheetPresentedOniPhone.toggle()
+                                    }) {
                                         Image(systemName: "person.crop.circle.badge.xmark")
                                             .resizable()
                                             .aspectRatio(contentMode: .fill)
@@ -366,6 +370,14 @@ struct SettingView : View {
                                 SettingSheet(isSheetPresented: $settingVM.isAccountSettingSheetPresentedOniPhone, currentUser: $currentUser, userSetting: $userSetting, settingVM: settingVM)
                             }
                         }
+                        .fullScreenCover(isPresented: $settingVM.isBlockListSheetPresentedOniPhone) {
+                            NavigationView {
+                                BlockView(profileVM: profileVM,settingVM: settingVM)
+                            }
+                        }
+                    
+                    
+                    
                         .onAppear {
                             settingVM.proxySize = proxy.size
                             settingVM.setValue(setting: userSetting)

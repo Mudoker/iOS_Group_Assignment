@@ -14,7 +14,7 @@ struct Test_BlockUser: View {
         VStack {
             Button(action: {
                 Task {
-                    try await homeVM.blockOtherUser(forUserID: "abc")
+                    try await homeVM.blockOtherUser(forUserID: "OXvEytbtEYOZTTbksTJcp4US0C02")
                 }
             }) {
                 Text("Block user")
@@ -23,7 +23,7 @@ struct Test_BlockUser: View {
             
             Button(action: {
                 Task {
-                    try await homeVM.unblockOtherUser(forUserID: "abc")
+                    try await homeVM.unblockOtherUser(forUserID: "OXvEytbtEYOZTTbksTJcp4US0C02")
                 }
             }) {
                 Text("Unblock user")

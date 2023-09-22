@@ -24,6 +24,10 @@ import FirebaseFirestoreSwift
 
 struct APIService {
     
+    static private var currentUserBlockListListenerRegistration: ListenerRegistration?
+    static private var currentUserRestrictListListenerRegistration: ListenerRegistration?
+    static private var currentUserFollowListListenerRegistration: ListenerRegistration?
+    
     static func fetchUser(withUserID userID: String) async throws -> User {
         let snapshot = try await Firestore.firestore().collection("users").document(userID).getDocument()
         return try snapshot.data(as: User.self)
@@ -192,4 +196,78 @@ struct APIService {
         
         return "application/octet-stream"
     }
+    
+    // fetch user block list
+    @MainActor
+    static func fetchCurrentUserBlockList() -> [UserBlockList] {
+        var currentUserBlockList = [UserBlockList]()
+        let uid = Auth.auth().currentUser?.uid
+        print("Getting block list of \(uid)")
+        APIService.currentUserBlockListListenerRegistration = Firestore.firestore().collection("test_block").whereField("ownerId", isEqualTo: uid ).addSnapshotListener { querySnapshot, error in
+        
+
+            if let error = error {
+                print("Error fetching block list: \(error)")
+                return
+            }
+
+            guard let documents = querySnapshot?.documents else {
+                print("No documents")
+                return
+            }
+            
+            currentUserBlockList = documents.compactMap { queryDocumentSnapshot in
+                try? queryDocumentSnapshot.data(as: UserBlockList.self)
+            }
+            print("trong \(currentUserBlockList.count)")
+            
+            
+        }
+        
+        print("success get block list")
+        return currentUserBlockList
+    }
+    
+//    @MainActor
+//    static func fetchCurrentUserRestrictList() {
+//        APIService.currentUserRestrictListListenerRegistration = Firestore.firestore().collection("test_restrict").whereField("ownerId", isEqualTo: "ao2PKDpap4Mq7M5cn3Nrc1Mvoa42").addSnapshotListener { [weak self] querySnapshot, error in
+//            guard let self = self else { return }
+//
+//            if let error = error {
+//                print("Error fetching restrict list: \(error)")
+//                return
+//            }
+//
+//            guard let documents = querySnapshot?.documents else {
+//                print("No documents")
+//                return
+//            }
+//
+//            self.currentUserRestrictList = documents.compactMap { queryDocumentSnapshot in
+//                try? queryDocumentSnapshot.data(as: UserRestrictList.self)
+//            }
+//        }
+//    }
+    
+    // fetch user block list
+//    @MainActor
+//    static func fetchCurrentUserFollowList() {
+//        APIService.currentUserFollowListListenerRegistration = Firestore.firestore().collection("test_follow").whereField("ownerId", isEqualTo: "ao2PKDpap4Mq7M5cn3Nrc1Mvoa42").addSnapshotListener { [weak self] querySnapshot, error in
+//            guard let self = self else { return }
+//
+//            if let error = error {
+//                print("Error fetching follow list: \(error)")
+//                return
+//            }
+//
+//            guard let documents = querySnapshot?.documents else {
+//                print("No documents")
+//                return
+//            }
+//
+//            self.currentUserFollowList = documents.compactMap { queryDocumentSnapshot in
+//                try? queryDocumentSnapshot.data(as: UserFollowList.self)
+//            }
+//        }
+//    }
 }

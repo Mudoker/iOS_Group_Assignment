@@ -208,26 +208,26 @@ class HomeViewModel: ObservableObject {
     }
     
     // fetch user block list
-    @MainActor
-    func fetchCurrentUserBlockList() {
-        currentUserBlockListListenerRegistration = Firestore.firestore().collection("test_block").whereField("ownerId", isEqualTo: "ao2PKDpap4Mq7M5cn3Nrc1Mvoa42").addSnapshotListener { [weak self] querySnapshot, error in
-            guard let self = self else { return }
-
-            if let error = error {
-                print("Error fetching block list: \(error)")
-                return
-            }
-
-            guard let documents = querySnapshot?.documents else {
-                print("No documents")
-                return
-            }
-            
-            self.currentUserBlockList = documents.compactMap { queryDocumentSnapshot in
-                try? queryDocumentSnapshot.data(as: UserBlockList.self)
-            }
-        }
-    }
+//    @MainActor
+//    func fetchCurrentUserBlockList() {
+//        currentUserBlockListListenerRegistration = Firestore.firestore().collection("test_block").whereField("ownerId", isEqualTo: "ao2PKDpap4Mq7M5cn3Nrc1Mvoa42").addSnapshotListener { [weak self] querySnapshot, error in
+//            guard let self = self else { return }
+//
+//            if let error = error {
+//                print("Error fetching block list: \(error)")
+//                return
+//            }
+//
+//            guard let documents = querySnapshot?.documents else {
+//                print("No documents")
+//                return
+//            }
+//            
+//            self.currentUserBlockList = documents.compactMap { queryDocumentSnapshot in
+//                try? queryDocumentSnapshot.data(as: UserBlockList.self)
+//            }
+//        }
+//    }
     
     @MainActor
     func fetchCurrentUserRestrictList() {
@@ -665,7 +665,7 @@ class HomeViewModel: ObservableObject {
     func blockOtherUser(forUserID userIDToBlock: String) async throws {
         do {
             let userBlockListCollection = Firestore.firestore().collection("test_block")
-            let currentUserID = "ao2PKDpap4Mq7M5cn3Nrc1Mvoa42" //MARK: Replace with the actual current user's ID
+            let currentUserID = "ZMSfvuGAW9OOSfM4mLVG10kAJJk2"//Auth.auth().currentUser!.uid //MARK: Replace with the actual current user's ID
             
             // Use a Firestore query to check if the user has already blocked another user
             let queryCurrentUserBlockList = userBlockListCollection.whereField("ownerId", isEqualTo: currentUserID)
@@ -736,7 +736,7 @@ class HomeViewModel: ObservableObject {
         // Unblock (start receiving notifications + access to post/story + send messages + others can see your post)
             do {
                 let userBlockListCollection = Firestore.firestore().collection("test_block")
-                let currentUserID = "ao2PKDpap4Mq7M5cn3Nrc1Mvoa42" // Replace with the actual current user's ID
+                let currentUserID = "ZMSfvuGAW9OOSfM4mLVG10kAJJk2" // Replace with the actual current user's ID
                 
                 // Use a Firestore query to check if the user has a block list
                 let queryCurrentUserBlockList = userBlockListCollection.whereField("ownerId", isEqualTo: currentUserID)
