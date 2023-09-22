@@ -16,10 +16,16 @@ import AVFoundation
 import FirebaseFirestoreSwift
 
 class NotificationViewModel: ObservableObject {
+    // Users notifications
     @Published var fetchedAllNotifications = [AppNotification]()
+    
+    // Push notification
     var pushNotification = NotificationManager()
+    
+    // Fetch notification in real time
     private var notiListenerRegistration: ListenerRegistration?
 
+    // create notification
     func createInAppNotification(senderName: String, receiverId: String, message: String, postLink: String, category: NotificationCategory, restrictedByList: [String], blockedByList: [String], blockedList: [String]) async throws -> AppNotification? {
         
         // Check if the current user is in the restricted, blocked, or block list of the receiver
@@ -32,6 +38,7 @@ class NotificationViewModel: ObservableObject {
         let notiRef = Firestore.firestore().collection("test_noti")
         
         // Query to check for existing notifications with the same senderName, messageContent, and postLink
+        // Avoid user like a post -> unlike -> re-like a post (only create 1 noti)
         let duplicateQuery = notiRef
             .whereField("senderName", isEqualTo: senderName)
             .whereField("messageContent", isEqualTo: message)
@@ -44,9 +51,13 @@ class NotificationViewModel: ObservableObject {
             let notificationRef = notiRef.document()
             let newNotification = AppNotification(id: notificationRef.documentID, senderName: senderName, receiverId: receiverId, messageContent: message, postLink: postLink, creationDate: Timestamp(), category: category, isNotified: false)
             
+            // Save on firebase
             guard let encodedNotification = try? Firestore.Encoder().encode(newNotification) else { return nil }
             
             try await notificationRef.setData(encodedNotification)
+            
+            // After create on firebase, create a local push notification
+            createPushNotification()
             return newNotification
         } else {
             // Duplicates found, do not create a new notification
@@ -55,11 +66,12 @@ class NotificationViewModel: ObservableObject {
         }
     }
 
-
+    // Fetch users noti in realtime
     func fetchNotifcationRealTime(userId: String) {
-        notiListenerRegistration = Firestore.firestore().collection("test_noti").whereField("receiver", isEqualTo: userId).addSnapshotListener { [weak self] querySnapshot, error in
+        notiListenerRegistration = Firestore.firestore().collection("test_noti").whereField("receiverId", isEqualTo: userId).addSnapshotListener { [weak self] querySnapshot, error in
             guard let self = self else { return }
             
+            // Error handling
             if let error = error {
                 print("Error fetching notifications: \(error)")
                 return
@@ -70,32 +82,41 @@ class NotificationViewModel: ObservableObject {
                 return
             }
 
+            // Returned notifications
             self.fetchedAllNotifications = documents.compactMap { queryDocumentSnapshot in
                 try? queryDocumentSnapshot.data(as: AppNotification.self)
             }
         }
     }
     
+    // Create local push notification
     func createPushNotification() {
         let notiRef = Firestore.firestore().collection("test_noti")
 
-        // Create a query to order by 'creationDate' in descending order and limit to one document
+        // Create a query to order by 'creationDate' in descending order (newest to oldest)
         let query = notiRef
-            .whereField("isNotified", isEqualTo: false)
             .order(by: "creationDate", descending: true)
-            .limit(to: 1)
 
         query.getDocuments { (querySnapshot, error) in
             if let error = error {
                 print("Error getting documents: \(error)")
-            } else {
-                if let documents = querySnapshot?.documents, !documents.isEmpty {
-                    for (index, document) in documents.enumerated() {
-                        let timeInterval = TimeInterval(index) * 0.2
-                        let data = document.data()
-                        
-                        // Schedule the notification with an increased time interval
-                        self.pushNotification.scheduleNotification(at: Date(), ofType: .time, withTimeInterval: timeInterval,titled: "Prismm", andBody: String("\(data["senderName"]) \(data["messageContent"])"))
+                return // Exit early on error
+            }
+            
+            guard let documents = querySnapshot?.documents, !documents.isEmpty else {
+                print("No documents found")
+                return // Exit if there are no documents
+            }
+
+            for (index, document) in documents.enumerated() {
+                let data = document.data()
+                
+                // unwrap senderName and messageContent
+                if let senderName = data["senderName"] as? String, let messageContent = data["messageContent"] as? String {
+                    // Check if 'isNotified' is false
+                    if let isNotified = data["isNotified"] as? Bool, !isNotified {
+                        // Schedule the notification with an increased time interval (avoid notification conflict)
+                        self.pushNotification.scheduleNotification(at: Date(), withTimeInterval: (Double(index) + 0.1), titled: "Prismm", andBody: "\(senderName) \(messageContent)")
                         
                         // Update the 'isNotified' field to true in Firestore
                         let documentRef = notiRef.document(document.documentID)
@@ -108,7 +129,7 @@ class NotificationViewModel: ObservableObject {
                         }
                     }
                 } else {
-                    print("No documents found")
+                    print("Invalid data in document \(document.documentID)")
                 }
             }
         }

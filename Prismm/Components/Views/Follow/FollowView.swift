@@ -17,12 +17,15 @@
 import SwiftUI
 
 struct FollowView: View {
+    //Control state
     @StateObject var fvm = FollowViewModel()
     
     var body: some View {
         ZStack {
+            // Theme
             Color(fvm.isDarkMode ? .black : .white)
                 .ignoresSafeArea()
+            
             VStack(alignment: .center) {
                 //Navigation and Username
                 HStack{
@@ -30,16 +33,17 @@ struct FollowView: View {
                         .font(.system(size: CGFloat(fvm.userNameFontSize)))
                         .fontWeight(.bold)
                     
+                    // Push view
                     Spacer()
                 }
                 .foregroundColor(fvm.isDarkMode ? .white : .black)
                 .padding(.bottom,10)
                 .padding(.leading, 20 )
                 
+                // User stats
                 HStack{
                     Button {
                         fvm.trueIsShowing()
-                        
                     } label: {
                         Text(LocalizedStringKey("0 Followers"))
                             .font(.system(size: CGFloat(fvm.tabNameFontSize)))
@@ -62,6 +66,7 @@ struct FollowView: View {
                 }
                 .foregroundColor(fvm.isDarkMode ? .white : .black)
                 
+                // Separators
                 ZStack{
                     Divider()
                         .overlay {
@@ -76,7 +81,7 @@ struct FollowView: View {
                         .offset(x: fvm.indicatorOffset)
                 }
                 
-                
+                // Following/Follower
                 TabView(selection: $fvm.tabSelection) {
                     FollowerList(fvm: fvm)
                         .tag(1)
@@ -86,7 +91,8 @@ struct FollowView: View {
                 }
                 .animation(.easeInOut, value: fvm.tabSelection)
                 .tabViewStyle(PageTabViewStyle())
-                                
+                
+                // Push view
                 Spacer()
             }
             .background{

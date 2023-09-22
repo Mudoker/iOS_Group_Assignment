@@ -1,33 +1,34 @@
 /*
-  RMIT University Vietnam
-  Course: COSC2659 iOS Development
-  Semester: 2023B
-  Assessment: Assignment 3
-  Author: Apple Men
-  Doan Huu Quoc (s3927776)
-  Tran Vu Quang Anh (s3916566)
-  Nguyen Dinh Viet (s3927291)
-  Nguyen The Bao Ngoc (s3924436)
-
-  Created  date: 08/09/2023
-  Last modified: 13/09/2023
-  Acknowledgement: None
-*/
+ RMIT University Vietnam
+ Course: COSC2659 iOS Development
+ Semester: 2023B
+ Assessment: Assignment 3
+ Author: Apple Men
+ Doan Huu Quoc (s3927776)
+ Tran Vu Quang Anh (s3916566)
+ Nguyen Dinh Viet (s3927291)
+ Nguyen The Bao Ngoc (s3924436)
+ 
+ Created  date: 08/09/2023
+ Last modified: 13/09/2023
+ Acknowledgement: None
+ */
 import SwiftUI
 import Firebase
 struct HomeView: View {
+    // control state
     @State var currentUser = User(id: "default", account: "default@gmail.com")
     @State var userSetting = UserSetting(id: "default", darkModeEnabled: false, language: "en", faceIdEnabled: true, pushNotificationsEnabled: true, messageNotificationsEnabled: false)
-   
     @StateObject var homeViewModel = HomeViewModel()
-    
     @State var selectedPost = Post(id: "", ownerID: "", creationDate: Timestamp(), isAllowComment: true)
-        @State var isLoadingPost = false
+    @State var isLoadingPost = false
+    
     var body: some View {
         GeometryReader { proxy in
             ZStack {
                 VStack {
                     ZStack(alignment: .top) {
+                        // App logo
                         HStack {
                             Image("logolight.text")
                                 .resizable()
@@ -38,6 +39,7 @@ struct HomeView: View {
                         }
                         .frame(height: homeViewModel.appLogoSize / 4)
                         
+                        // Create new post
                         HStack {
                             Spacer()
                             
@@ -70,7 +72,8 @@ struct HomeView: View {
                     }
                     ScrollView(.vertical, showsIndicators: false) {
                         Divider()
-                                    
+                        
+                        // Story view
                         ScrollView(.horizontal, showsIndicators: false) {
                             HStack(spacing: 40) {
                                 ForEach(0..<5, id: \.self) { _ in
@@ -81,59 +84,56 @@ struct HomeView: View {
                             .padding()
                         }
                         
-                        
+                        // Post view
                         if !isLoadingPost {
                             VStack {
-                                    ForEach(homeViewModel.fetchedAllPosts) { post in
-                                        PostView(post: post,currentUser: $currentUser, userSetting: $userSetting ,homeViewModel: homeViewModel, select: $selectedPost)
-                                            .padding(.bottom, 50)
-                                    }
-                                    
-                                    Image(systemName: "checkmark.circle")
-                                        .resizable()
-                                        .frame(width: 40, height: 40) // Adjust the size as needed
-                                        .overlay(
-                                            LinearGradient(
-                                                gradient: Gradient(
-                                                    colors: userSetting.darkModeEnabled ? Constants.buttonGradientColorDark : Constants.buttonGradientColorLight
-                                                ),
-                                                startPoint: .topLeading,
-                                                endPoint: .bottomTrailing
-                                            )
-                                            .mask(Image(systemName: "checkmark.circle")
-                                                .resizable()
-                                                .frame(width: 40, height: 40)
-                                            )
+                                ForEach(homeViewModel.fetchedAllPosts) { post in
+                                    PostView(post: post,currentUser: $currentUser, userSetting: $userSetting ,homeViewModel: homeViewModel, select: $selectedPost)
+                                        .padding(.bottom, 50)
+                                }
+                                
+                                // End of view
+                                Image(systemName: "checkmark.circle")
+                                    .resizable()
+                                    .frame(width: 40, height: 40) // Adjust the size as needed
+                                    .overlay(
+                                        LinearGradient(
+                                            gradient: Gradient(
+                                                colors: userSetting.darkModeEnabled ? Constants.buttonGradientColorDark : Constants.buttonGradientColorLight
+                                            ),
+                                            startPoint: .topLeading,
+                                            endPoint: .bottomTrailing
                                         )
-                                        .padding(.top)
-                                    Text("You have caught up !")
-                                        .font(.title)
-                                        .foregroundColor(.pink)
-                                    
-                                    Text("You've seen all new posts from creators you follow")
-                                        .opacity(0.5)
-                                        .padding(.bottom)
+                                        .mask(Image(systemName: "checkmark.circle")
+                                            .resizable()
+                                            .frame(width: 40, height: 40)
+                                        )
+                                    )
+                                    .padding(.top)
+                                
+                                Text("You have caught up !")
+                                    .font(.title)
+                                    .foregroundColor(.pink)
+                                
+                                Text("You've seen all new posts from creators you follow")
+                                    .opacity(0.5)
+                                    .padding(.bottom)
                             }
                         }
                         
                     }
-                    
                     .sheet(isPresented: $homeViewModel.isCreateNewPostOnIpad) {
-
                         CreatePostView(currentUser: $currentUser, userSetting: $userSetting ,homeVM: homeViewModel, isNewPost: $homeViewModel.isCreateNewPostOnIpad, isDarkModeEnabled: userSetting.darkModeEnabled )
-
                     }
                     .fullScreenCover(isPresented: $homeViewModel.isCreateNewPostOnIphone) {
                         CreatePostView(currentUser: $currentUser, userSetting: $userSetting ,homeVM: homeViewModel, isNewPost: $homeViewModel.isCreateNewPostOnIphone, isDarkModeEnabled: userSetting.darkModeEnabled )
                     }
-                    
                     .sheet(isPresented: $homeViewModel.isOpenCommentViewOnIpad) {
                         CommentView(isDarkModeEnabled: userSetting.darkModeEnabled, isShowComment: $homeViewModel.isOpenCommentViewOnIpad, currentUser: $currentUser, userSetting: $userSetting, homeVM: homeViewModel, post: selectedPost)
                     }
                     .fullScreenCover(isPresented: $homeViewModel.isOpenCommentViewOnIphone) {
                         CommentView(isDarkModeEnabled: userSetting.darkModeEnabled, isShowComment: $homeViewModel.isOpenCommentViewOnIphone, currentUser: $currentUser, userSetting: $userSetting, homeVM: homeViewModel, post: selectedPost)
                     }
-
                     .onAppear {
                         homeViewModel.proxySize = proxy.size
                         isLoadingPost = true
@@ -152,6 +152,7 @@ struct HomeView: View {
                     }
                 }
                 
+                // Loading indicator
                 if isLoadingPost {
                     Color.gray.opacity(0.3).edgesIgnoringSafeArea(.all)
                     ProgressView("Fetching posts...")

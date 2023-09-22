@@ -18,28 +18,23 @@
 import SwiftUI
 
 struct CreatePostView: View {
+    // Control state
     @State private var users = ["mudoker7603", "user123", "sampleUser", "testUser", "john_doe", "jane_doe", "user007", "newUser", "oldUser", "demoUser"]
-    
     @Binding var currentUser:User
     @Binding var userSetting:UserSetting
     @ObservedObject var homeVM: HomeViewModel
-    
     @State private var selectedTags: Set<String> = []
-    
     @State var shouldPresentPickerSheet = false
     @State var shouldPresentCamera = false
     @State var selected = false
-    
-    
     @Binding var isNewPost: Bool
     var isDarkModeEnabled: Bool
-    
     @State var isOpenUserListViewOnIphone = false
     @State var isOpenUserListViewOnIpad = false
     @State var isOpenPostTagListViewOnIphone = false
     @State var isOpenPostTagListViewOnIpad = false
-    
     @State var proxySize = CGSize()
+    
     var filteredUsers: [String] {
         if homeVM.userTagListSearchText.isEmpty {
             return users
@@ -60,12 +55,14 @@ struct CreatePostView: View {
         GeometryReader { proxy in
             VStack {
                 ZStack {
+                    // Title
                     Text("Create new post")
                         .bold()
                         .font(.title)
                         .padding(.vertical)
                     
                     HStack {
+                        // push view
                         Spacer()
                         
                         Button(action: {
@@ -80,6 +77,7 @@ struct CreatePostView: View {
                 Divider()
                     .overlay(isDarkModeEnabled ? .white : .gray)
                 
+                // USer infor
                 HStack (alignment: .top) {
                     Image("testAvt")
                         .resizable()
@@ -88,18 +86,18 @@ struct CreatePostView: View {
                         .clipShape(Circle())
                     
                     VStack(alignment: .leading, spacing: 0) {
-                        Text(currentUser.username ?? "Failed to get data")
+                        Text(currentUser.username.extractNameFromEmail() ?? currentUser.username)
                             .bold()
                             .font(.title3)
                             .padding(.bottom, 8)
                         
+                        // Tag other users
                         Button(action: {
                             if UIDevice.current.userInterfaceIdiom == .pad {
                                 isOpenUserListViewOnIpad = true
                             } else {
                                 isOpenUserListViewOnIphone = true
                             }
-                            print("ok")
                         }) {
                             HStack {
                                 Image(systemName: "plus.app")
@@ -157,11 +155,14 @@ struct CreatePostView: View {
                         }
                     }
                     
+                    // Push view
                     Spacer()
                 }
                 .padding(.top)
                 
+                // Caption
                 ZStack (alignment: .topLeading) {
+                    // Background
                     RoundedRectangle(cornerRadius: proxy.size.width/40)
                         .stroke(LinearGradient(
                             gradient: Gradient(colors: isDarkModeEnabled ? Constants.buttonGradientColorDark : Constants.buttonGradientColorLight),
@@ -179,12 +180,16 @@ struct CreatePostView: View {
                 }
                 .padding(.vertical)
                 
+                // Post tags
                 HStack {
                     Text("Tags")
                         .bold()
                         .font(.title3)
+                    
+                    // Push view
                     Spacer()
                     
+                    // Choose a tag
                     Button(action: {
                         if UIDevice.current.userInterfaceIdiom == .pad {
                             isOpenPostTagListViewOnIpad = true
@@ -193,6 +198,7 @@ struct CreatePostView: View {
                         }
                     }) {
                         HStack {
+                            // Show tag
                             if homeVM.selectedPostTag.isEmpty {
                                 Image(systemName: "tag")
                                     .resizable()
@@ -268,19 +274,22 @@ struct CreatePostView: View {
                         .ignoresSafeArea()
                 }
                 
-                
+                // Post media
                 HStack {
                     Text("Post Media")
                         .bold()
                         .font(.title3)
+                    
+                    // push view
                     Spacer()
                     
+                    // Media choosing
                     if homeVM.newPostSelectedMedia != nil {
                         AsyncImage(url: homeVM.newPostSelectedMedia as? URL) { media in
                             media
                                 .resizable()
                                 .scaledToFit()
-                                .frame(height: proxy.size.height/20 ) // Set the desired width and height for your circular image
+                                .frame(height: proxy.size.height/20 )
                             
                         } placeholder: {
                             ProgressView()
@@ -292,7 +301,7 @@ struct CreatePostView: View {
                         Button {
                             homeVM.newPostSelectedMedia = nil
                         } label: {
-                            Image(systemName: "xmark.circle.fill") // You can use any close button icon
+                            Image(systemName: "xmark.circle.fill")
                             
                         }
                         .foregroundColor(.gray)
@@ -323,7 +332,6 @@ struct CreatePostView: View {
                         }
                     }
                 }
-                
                 .padding()
                 .background(
                     RoundedRectangle(cornerRadius: proxy.size.width/40)
@@ -344,6 +352,7 @@ struct CreatePostView: View {
                         .ignoresSafeArea()
                 }
                 
+                // Reminder
                 VStack(alignment: .leading) {
                     Text ("No Sensitive, Explicit, or Harmful Content")
                         .bold()
@@ -362,15 +371,13 @@ struct CreatePostView: View {
                         ), lineWidth: 1.5)
                 )
                 
+                // Button to create post
                 Button(action: {
                     Task {
                         let _ = try await homeVM.createPost()
                         try await homeVM.fetchPosts()
                         isNewPost = false
                     }
-                    
-                    //MARK: xiu hoi
-                    homeVM.isPostOnScreen.toggle()
                 }) {
                     RoundedRectangle(cornerRadius: proxy.size.width/40)
                         .frame(height: proxy.size.width/7)
@@ -393,16 +400,15 @@ struct CreatePostView: View {
                 
                 Spacer()
             }
+            .padding(.horizontal)
             .onAppear {
-                proxySize = proxy.size
-                
                 //reset selected field when create new post
+                proxySize = proxy.size
                 homeVM.newPostSelectedMedia = nil
                 homeVM.createNewPostCaption = ""
                 homeVM.selectedPostTag.removeAll()
                 homeVM.selectedUserTag.removeAll()
             }
-            .padding(.horizontal)
             .fullScreenCover(isPresented: $isOpenUserListViewOnIphone) {
                 UserListView(proxy: $proxySize, isDarkModeEnabled: isDarkModeEnabled, searchProfileText: $homeVM.userTagListSearchText, selectedUsers: $homeVM.selectedUserTag, isShowUserTagList: $isOpenUserListViewOnIphone, filteredUsers: filteredUsers)
             }
@@ -421,15 +427,17 @@ struct CreatePostView: View {
 }
 
 struct PostTagListView: View {
+    // Control state
     @Binding var proxy: CGSize
-    var isDarkModeEnabled: Bool
     @Binding var searchTagText: String
     @Binding var selectedTags: [String]
     @Binding var isShowPostTagList: Bool
     var filteredTags: [String]
+    var isDarkModeEnabled: Bool
     
     var body: some View {
         VStack {
+            // Title
             HStack(alignment: .firstTextBaseline) {
                 VStack(alignment: .leading) {
                     Text("Select a tag")
@@ -454,21 +462,24 @@ struct PostTagListView: View {
             }
             .padding(.horizontal)
             
+            // Search a tag
             TextField("Search Tags", text: $searchTagText)
                 .textFieldStyle(RoundedBorderTextFieldStyle())
                 .padding([.horizontal, .bottom])
             
+            // All tags
             ScrollView(showsIndicators: false) {
                 FlowLayout {
                     ForEach(filteredTags, id: \.self) { tag in
                         HStack {
                             Button(action: {
                                 if !selectedTags.contains(tag){
+                                    // Allow at most 3 tags
                                     if selectedTags.count < 3 {
                                         selectedTags.append(tag)
                                     }
                                 } else {
-                                    // Remove the user from the tagList
+                                    // Remove the tag from the tagList
                                     if let index = selectedTags.firstIndex(of: tag) {
                                         selectedTags.remove(at: index)
                                     }
@@ -505,6 +516,7 @@ struct PostTagListView: View {
                 }
             }
             
+            // Push view
             Spacer()
         }
         .foregroundColor(isDarkModeEnabled ? .white : .black)
@@ -513,15 +525,17 @@ struct PostTagListView: View {
 }
 
 struct UserListView: View {
+    // control state
     @Binding var proxy: CGSize
-    var isDarkModeEnabled: Bool
     @Binding var searchProfileText: String
     @Binding var selectedUsers: [String]
     @Binding var isShowUserTagList: Bool
     var filteredUsers: [String]
+    var isDarkModeEnabled: Bool
     
     var body: some View {
         VStack {
+            // Title
             HStack(alignment: .firstTextBaseline) {
                 Text("Tag a friend")
                     .bold()
@@ -529,6 +543,7 @@ struct UserListView: View {
                     .padding(.top)
                     .padding(.horizontal)
                 
+                // Push view
                 Spacer()
                 
                 Button(action: {
@@ -540,6 +555,7 @@ struct UserListView: View {
                 }
             }
             
+            // Content
             VStack {
                 ZStack(alignment: .topLeading) {
                     RoundedRectangle(cornerRadius: proxy.width / 40)
@@ -553,6 +569,7 @@ struct UserListView: View {
                         )
                         .frame(height: proxy.height / 15)
                     
+                    // Search a firend
                     TextField("", text: $searchProfileText, prompt: Text("Search a friend...").foregroundColor(isDarkModeEnabled ? .white.opacity(0.5) : .black.opacity(0.5))
                         .font(.title3)
                     )
@@ -562,6 +579,7 @@ struct UserListView: View {
                 }
                 .padding([.horizontal, .bottom])
                 
+                // All users
                 ScrollView {
                     LazyVStack(spacing: 8) {
                         ForEach(filteredUsers, id: \.self) { user in
@@ -602,6 +620,7 @@ struct UserListView: View {
     }
 }
 
+// Screen-width HStack
 struct FlowLayout: Layout {
     func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
         let sizes = subviews.map { $0.sizeThatFits(.unspecified) }

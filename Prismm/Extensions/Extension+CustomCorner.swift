@@ -16,6 +16,7 @@
 import Foundation
 import SwiftUI
 
+// Custom border corner
 struct CustomCorners : Shape{
     var corners : UIRectCorner
     var radius : CGFloat

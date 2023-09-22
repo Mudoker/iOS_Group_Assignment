@@ -1,18 +1,18 @@
 /*
-  RMIT University Vietnam
-  Course: COSC2659 iOS Development
-  Semester: 2023B
-  Assessment: Assignment 3
-  Author: Apple Men
-  Doan Huu Quoc (s3927776)
-  Tran Vu Quang Anh (s3916566)
-  Nguyen Dinh Viet (s3927291)
-  Nguyen The Bao Ngoc (s3924436)
-
-  Created  date: 08/09/2023
-  Last modified: 13/09/2023
-  Acknowledgement: None
-*/
+ RMIT University Vietnam
+ Course: COSC2659 iOS Development
+ Semester: 2023B
+ Assessment: Assignment 3
+ Author: Apple Men
+ Doan Huu Quoc (s3927776)
+ Tran Vu Quang Anh (s3916566)
+ Nguyen Dinh Viet (s3927291)
+ Nguyen The Bao Ngoc (s3924436)
+ 
+ Created  date: 08/09/2023
+ Last modified: 13/09/2023
+ Acknowledgement: None
+ */
 
 import Foundation
 import SwiftUI
@@ -21,21 +21,21 @@ import Kingfisher
 import Firebase
 
 struct PostView: View {
+    // Control state
     var post: Post
-    // View model
     @Binding var currentUser:User
     @Binding var userSetting:UserSetting
-    
     @ObservedObject var homeViewModel:HomeViewModel
-
     @Binding var select: Post
     @State var isLike = false
     @State var currentLike = 0
     @State var isArchive = false
+    
     var body: some View {
         VStack {
             //Post info.
             HStack {
+                // User profile image
                 if let mediaURL = URL(string: post.mediaURL ?? "") {
                     if let mimeType = post.mediaMimeType {
                         if mimeType.hasPrefix("image") {
@@ -62,21 +62,24 @@ struct PostView: View {
                     
                 }
                 
-                
+                // Username
                 VStack (alignment: .leading, spacing: UIScreen.main.bounds.height * 0.01) {
                     if let user = post.unwrappedOwner {
-                        Text(user.username)
+                        Text(user.username.extractNameFromEmail() ?? user.username)
                             .font(Font.system(size: homeViewModel.usernameFont, weight: .semibold))
                     }
                     
-                   Text(formatTimeDifference(from: post.creationDate))
+                    Text(formatTimeDifference(from: post.creationDate))
                         .font(Font.system(size: homeViewModel.timeFont, weight: .medium))
                         .opacity(0.3)
                 }
                 
-                // In building
+                // Push view
                 Spacer()
+                
+                // Menu
                 Menu {
+                    // Delete post
                     Button(action: {homeViewModel.isDeletePostAlert = true}) {
                         HStack {
                             Image(systemName: "delete.left")
@@ -84,18 +87,18 @@ struct PostView: View {
                                 .scaledToFit()
                                 .frame(width: homeViewModel.seeMoreButtonSize)
                                 .padding(.trailing)
+                            
                             Text("Delete Post")
                         }
                     }
                     .alert("Delete this post?", isPresented: $homeViewModel.isDeletePostAlert) {
-                        Button("Cancel", role: .cancel) {
-                        }
-                        Button("Delete", role: .destructive) {
-                        }
+                        Button("Cancel", role: .cancel) {}
+                        Button("Delete", role: .destructive) {}
                     } message: {
                         Text("\nThis will permanently delete this post")
                     }
                     
+                    // Block user
                     Button(action: {homeViewModel.isBlockUserAlert = true}) {
                         HStack {
                             Image(systemName: "person.crop.circle.badge.xmark")
@@ -103,18 +106,18 @@ struct PostView: View {
                                 .scaledToFit()
                                 .frame(width: homeViewModel.seeMoreButtonSize)
                                 .padding(.trailing)
+                            
                             Text("Block this user")
                         }
                     }
                     .alert("Block this user?", isPresented: $homeViewModel.isBlockUserAlert) {
-                        Button("Cancel", role: .cancel) {
-                        }
-                        Button("Block", role: .destructive) {
-                        }
+                        Button("Cancel", role: .cancel) {}
+                        Button("Block", role: .destructive) {}
                     } message: {
                         Text("\nYou will not see this user again")
                     }
                     
+                    // Restrict user
                     Button(action: {homeViewModel.isRestrictUserAlert = true}) {
                         HStack {
                             Image(systemName: "rectangle.portrait.slash")
@@ -126,14 +129,13 @@ struct PostView: View {
                         }
                     }
                     .alert("Restrict this user?", isPresented: $homeViewModel.isSignOutAlertPresented) {
-                        Button("Cancel", role: .cancel) {
-                        }
-                        Button("Restrict", role: .destructive) {
-                        }
+                        Button("Cancel", role: .cancel) {}
+                        Button("Restrict", role: .destructive) {}
                     } message: {
                         Text("\nStop receiving notification from this user")
                     }
                     
+                    // Turn off comment
                     Button(action: {homeViewModel.isTurnOffCommentAlert = true}) {
                         HStack {
                             Image(systemName: "text.badge.xmark")
@@ -145,14 +147,13 @@ struct PostView: View {
                         }
                     }
                     .alert("Turn off comment?", isPresented: $homeViewModel.isSignOutAlertPresented) {
-                        Button("Cancel", role: .cancel) {
-                        }
-                        Button("Turn off", role: .destructive) {
-                        }
+                        Button("Cancel", role: .cancel) {}
+                        Button("Turn off", role: .destructive) {}
                     } message: {
                         Text("\nDisable comment for this post")
                     }
                     
+                    // Edit post
                     Button(action: {}) {
                         HStack {
                             Image(systemName: "square.and.pencil")
@@ -160,11 +161,10 @@ struct PostView: View {
                                 .scaledToFit()
                                 .frame(width: homeViewModel.seeMoreButtonSize)
                                 .padding(.trailing)
+                            
                             Text("Edit post")
                         }
                     }
-                    
-                    
                 } label: {
                     Image(systemName: "ellipsis.circle")
                         .resizable()
@@ -172,7 +172,6 @@ struct PostView: View {
                         .frame(width: homeViewModel.seeMoreButtonSize)
                         .foregroundColor(.black)
                 }
-                
             }
             .padding(.horizontal)
             
@@ -187,6 +186,7 @@ struct PostView: View {
             .padding(.horizontal)
             .padding(.top, 8)
             
+            // Post tag
             HStack(spacing: 5) {
                 ForEach(post.tag, id: \.self) { tag in
                     HStack {
@@ -200,7 +200,7 @@ struct PostView: View {
             }.padding(.horizontal)
             
             VStack {
-                //Image.
+                // Media.
                 if let mediaURL = URL(string: post.mediaURL ?? "") {
                     if let mimeType = post.mediaMimeType {
                         if !mimeType.hasPrefix("image") {
@@ -213,7 +213,6 @@ struct PostView: View {
                                 .frame(minHeight: UIScreen.main.bounds.height * 0.4)
                                 .frame(maxHeight: UIScreen.main.bounds.height * 0.5)
                                 .onAppear {
-                                    // Optionally, you can play the video when it appears on the screen.
                                     player.play()
                                 }
                         } else {
@@ -223,9 +222,6 @@ struct PostView: View {
                                 .frame(width: UIScreen.main.bounds.width)
                                 .background(Color.gray)
                                 .clipShape(Rectangle())
-//                                .frame(minHeight: UIScreen.main.bounds.height * 0.4)
-//                                .frame(maxHeight: UIScreen.main.bounds.height * 0.5)
-                                
                         }
                     } else {
                         // Handle the case where the mimeType is nil
@@ -234,9 +230,9 @@ struct PostView: View {
                 }
             }
             
-            
-            //Operations menu.
+            //Like/comment/archive.
             HStack (spacing: UIScreen.main.bounds.width * 0.01) {
+                // Like post
                 Button(action: {
                     if isLike == false {
                         Task {
@@ -249,7 +245,6 @@ struct PostView: View {
                         }
                         isLike = false
                     }
-                    
                 }) {
                     HStack {
                         Image(systemName: "heart")
@@ -274,6 +269,7 @@ struct PostView: View {
                     .frame(width: homeViewModel.postStatsFontSize)
                     .padding(.trailing)
                 
+                // Comment
                 Button(action: {
                     if UIDevice.current.userInterfaceIdiom == .pad {
                         select = post
@@ -291,12 +287,13 @@ struct PostView: View {
                             .aspectRatio(contentMode: .fit)
                             .frame(width: homeViewModel.postStatsImageSize)
                             .foregroundColor(.black)
-                        
                     }
                 }
                 
+                // Push view
                 Spacer()
                 
+                // Save post
                 Button(action: {
                     if isArchive {
                         Task {
@@ -330,6 +327,7 @@ struct PostView: View {
             }
             .padding(.vertical)
             
+            // Comment bar
             HStack{
                 if let mediaURL = URL(string: post.mediaURL ?? "") {
                     if let mimeType = post.mediaMimeType {
@@ -355,7 +353,6 @@ struct PostView: View {
                         .aspectRatio(contentMode: .fill)
                         .frame(width: 40, height: 40)
                 }
-                
                 
                 TextField("Comment..", text: $homeViewModel.commentContent)
                     .font(homeViewModel.commentTextFiledFont)
