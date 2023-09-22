@@ -323,7 +323,7 @@ struct ChatLogView: View {
                         .shadow(radius: 5)
                     
                     VStack(alignment:.leading,spacing: 0){
-                        Text("\(vm.chatUser?.gmail!.replacingOccurrences(of: "@gmail.com", with: "")  ?? "")")
+                        Text("\(vm.chatUser?.account!.replacingOccurrences(of: "@gmail.com", with: "")  ?? "")")
                             .foregroundColor(.black)
                             .fontWeight(.bold)
                         VStack{

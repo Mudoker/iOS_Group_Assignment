@@ -42,12 +42,16 @@ class AuthenticationViewModel: ObservableObject {
     @Published var isReenteredPasswordValid = false
     @Published var isUserNameValid = false
     @Published var isFetchingData = false
-    @Published var loginAccountText = ""
-    @Published var loginPasswordText = ""
+    
+    
     @Published var isShowloginPassword = ""
+    
+    @Published var loginPasswordText = ""
+    @Published var loginAccountText = ""
     @Published var signUpAccountText = ""
     @Published var signUpPasswordText = ""
     @Published var signUpReEnterPasswordText = ""
+    
     @Published var isShowSignUpPassword = ""
     @Published var isShowSignUpReEnterPassword = ""
     
@@ -127,20 +131,28 @@ class AuthenticationViewModel: ObservableObject {
             self.userSession = authSnapshot.user
             
             // Create user data
-            let newUser = User(id: authSnapshot.user.uid, password: password, username: email)
+            let newUser = User(id: authSnapshot.user.uid ,account: email)
             let encodedUser = try Firestore.Encoder().encode(newUser)
             
             // Create initial user settings data
-            let userSettings = UserSetting(id: authSnapshot.user.uid, darkModeEnabled: false, englishLanguageEnabled: true, faceIdEnabled: false, pushNotificationsEnabled: false, messageNotificationsEnabled: false)
+            let userSettings = UserSetting(id: authSnapshot.user.uid, darkModeEnabled: false, language: "en", faceIdEnabled: false, pushNotificationsEnabled: false, messageNotificationsEnabled: false)
             let encodedSettings = try Firestore.Encoder().encode(userSettings)
             
             // Save user and settings data to Firestore
             try await Firestore.firestore().collection("users").document(newUser.id).setData(encodedUser)
-            try await Firestore.firestore().collection("settings").document(newUser.id).setData(encodedSettings)
+            try await Firestore.firestore().collection("test_settings").document(newUser.id).setData(encodedSettings)
         } catch {
             hasSignUpError = true
             print("Error during sign-up: \(error.localizedDescription)")
         }
+    }
+    
+    func resetView(){
+        loginPasswordText = ""
+        loginAccountText = ""
+        signUpAccountText = ""
+        signUpPasswordText = ""
+        signUpReEnterPasswordText = ""
     }
     
     func resetUserPassword(withEmail email: String) async throws {
@@ -164,7 +176,7 @@ class AuthenticationViewModel: ObservableObject {
         try await self.userSession?.sendEmailVerification()
     }
     
-    func signIn(withEmail email: String, password: String) async throws {
+    func signIn(withEmail email: String, password: String) async throws -> Bool{
         do {
             let authSnapshot = try await Auth.auth().signIn(withEmail: email, password: password)
             self.userSession = authSnapshot.user
@@ -180,6 +192,7 @@ class AuthenticationViewModel: ObservableObject {
                     
                     Constants.currentUserID = userSession?.uid ?? "undefined"
                     isDeviceUnlocked = true
+                    return true
                 } else {
                     // Send a verification email
                     print("not verified")
@@ -187,13 +200,17 @@ class AuthenticationViewModel: ObservableObject {
                     try await sendVerificationEmail()
                     
                     isFetchingData = false
+                    return false
                 }
             }
         } catch {
             hasLoginError = true
             isFetchingData = false
             print("\(error.localizedDescription)")
+            return false
         }
+        return false
+        
     }
     
     func isPasswordValidForSignUp(_ password: String) -> Bool {
@@ -239,7 +256,7 @@ class AuthenticationViewModel: ObservableObject {
         }
     }
     
-    func signInWithGoogle() async {
+    func signInWithGoogle() async -> Bool{
         guard let googleClientID = FirebaseApp.app()?.options.clientID else {
             fatalError("No client ID found ")
         }
@@ -252,13 +269,13 @@ class AuthenticationViewModel: ObservableObject {
               let rootViewController = window.rootViewController
         else {
             print("No active root view controller found.")
-            return
+            return false
         }
         
         do {
             let googleUserAuth = try await GIDSignIn.sharedInstance.signIn(withPresenting: rootViewController)
             let googleUser = googleUserAuth.user
-            guard let googleIDToken = googleUser.idToken else { return }
+            guard let googleIDToken = googleUser.idToken else { return false}
 
             let googleAccessToken = googleUser.accessToken
             let googleCredential = GoogleAuthProvider.credential(withIDToken: googleIDToken.tokenString, accessToken: googleAccessToken.tokenString)
@@ -271,9 +288,11 @@ class AuthenticationViewModel: ObservableObject {
             print("User \(firebaseUser.uid) signed in with \(firebaseUser.email ?? "unknown" )")
             
             isGoogleUnlocked = true
+            return true
         }
         catch{
             print("Google Sign-In error: \(error.localizedDescription)")
+            return false
         }
     }
 }

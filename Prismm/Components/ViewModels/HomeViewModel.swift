@@ -21,6 +21,7 @@ import FirebaseStorage
 import MobileCoreServices
 import AVFoundation
 import FirebaseFirestoreSwift
+import FirebaseFirestore
 
 class HomeViewModel: ObservableObject {
     @Published var isCreateNewPostOnIpad = false
@@ -42,6 +43,7 @@ class HomeViewModel: ObservableObject {
     @Published var isBlockUserAlert = false
     @Published var isDeletePostAlert = false
     @Published var isTurnOffCommentAlert = false
+    @Published var isSignOutAlertPresented = false
     @Published var selectedCommentFilter = "Newest"
     @Published var fetchedAllPosts = [Post]()
     @Published var currentUserFavouritePost = [FavouritePost]()
@@ -59,6 +61,7 @@ class HomeViewModel: ObservableObject {
     @Published var currentUserRestrictList = [UserRestrictList]()
 
     @Published var newPostSelectedMedia: NSURL? = nil
+    
     @Published var currentCommentor: User?
     
     // Responsive
@@ -294,22 +297,7 @@ class HomeViewModel: ObservableObject {
         }
     }
     
-    //upload the media data to database storage
-    func uploadMediaToFireBase(withMedia data: Data) async throws -> String? {
-        let fileName = UUID().uuidString
-        let mediaRef = Storage.storage().reference().child("/media/\(fileName)")
-        let metaData  = StorageMetadata()
-        metaData.contentType = mimeType(for: data)
-        
-        do {
-            let _ = try await mediaRef.putDataAsync(data, metadata: metaData)
-            let downloadURL = try await mediaRef.downloadURL()
-            return downloadURL.absoluteString
-        } catch {
-            print("Media upload failed: \(error.localizedDescription)")
-            return nil
-        }
-    }
+
     
     func createComment(content: String, commentor: String, postId: String) async throws -> Comment?{
         let commentRef = Firestore.firestore().collection("test_comments").document()
@@ -416,7 +404,7 @@ class HomeViewModel: ObservableObject {
         var mediaMimeType = ""
         
         if newPostSelectedMedia != nil{
-            mediaURL = try await createMediaToFirebase()
+            mediaURL = try await APIService.createMediaToFirebase(newPostSelectedMedia: newPostSelectedMedia!)
             mediaMimeType = mimeType(for: try Data(contentsOf: newPostSelectedMedia as? URL ?? URL(fileURLWithPath: "")))
         }
         
@@ -425,15 +413,12 @@ class HomeViewModel: ObservableObject {
             id: postRef.documentID,
             ownerID: ownerID,
             caption: createNewPostCaption,
-            likerIDs: [],
+
             mediaURL: mediaURL,
             mediaMimeType: mediaMimeType,
             tag: selectedPostTag,
             creationDate: Timestamp(),
-            isAllowComment: true,
-            author: nil,
-            user: nil,
-            unwrappedLikers: []
+            isAllowComment: true
         )
         print("create Post")
         guard let encodedPost = try? Firestore.Encoder().encode(newPost) else {
@@ -484,54 +469,54 @@ class HomeViewModel: ObservableObject {
         }
     }
     
-    @MainActor
-    func fetchPostsRealTime() {
-        if postsListenerRegistration == nil {
-            postsListenerRegistration = Firestore.firestore().collection("test_posts").addSnapshotListener { [weak self] querySnapshot, error in
-                guard let self = self else { return }
-                
-                if let error = error {
-                    print("Error fetching posts: \(error)")
-                    return
-                }
-                
-                guard let documents = querySnapshot?.documents else {
-                    print("No documents")
-                    return
-                }
-                
-                self.fetchedAllPosts = documents.compactMap { queryDocumentSnapshot in
-                    try? queryDocumentSnapshot.data(as: Post.self)
-                }
-                
-                self.fetchedAllPosts = sortPostByTime(order: "desc", posts: self.fetchedAllPosts)
-                
-                for i in 0..<self.fetchedAllPosts.count {
-                    for likerID in self.fetchedAllPosts[i].likerIDs {
-                        Task {
-                            do {
-                                let liker = try await APIService.fetchUser(withUserID: likerID ?? "")
-                                self.fetchedAllPosts[i].unwrappedLikers.append(liker)
-                            } catch {
-                                print("Error fetching liker: \(error)")
-                            }
-                        }
-                    }
-                    
-                    let post = self.fetchedAllPosts[i]
-                    let ownerID = post.ownerID
-                    Task {
-                        do {
-                            let postUser = try await APIService.fetchUser(withUserID: ownerID)
-                            self.fetchedAllPosts[i].user = postUser
-                        } catch {
-                            print("Error fetching post user: \(error)")
-                        }
-                    }
-                }
-            }
-        }
-    }
+//    @MainActor
+//    func fetchPostsRealTime() {
+//        if postsListenerRegistration == nil {
+//            postsListenerRegistration = Firestore.firestore().collection("test_posts").addSnapshotListener { [weak self] querySnapshot, error in
+//                guard let self = self else { return }
+//
+//                if let error = error {
+//                    print("Error fetching posts: \(error)")
+//                    return
+//                }
+//
+//                guard let documents = querySnapshot?.documents else {
+//                    print("No documents")
+//                    return
+//                }
+//
+//                self.fetchedAllPosts = documents.compactMap { queryDocumentSnapshot in
+//                    try? queryDocumentSnapshot.data(as: Post.self)
+//                }
+//
+//                self.fetchedAllPosts = sortPostByTime(order: "desc", posts: self.fetchedAllPosts)
+//
+//                for i in 0..<self.fetchedAllPosts.count {
+//                    for likerID in self.fetchedAllPosts[i].likerIDs {
+//                        Task {
+//                            do {
+//                                let liker = try await APIService.fetchUser(withUserID: likerID ?? "")
+//                                self.fetchedAllPosts[i].unwrappedLikers.append(liker)
+//                            } catch {
+//                                print("Error fetching liker: \(error)")
+//                            }
+//                        }
+//                    }
+//
+//                    let post = self.fetchedAllPosts[i]
+//                    let ownerID = post.ownerID
+//                    Task {
+//                        do {
+//                            let postUser = try await APIService.fetchUser(withUserID: ownerID)
+//                            self.fetchedAllPosts[i].user = postUser
+//                        } catch {
+//                            print("Error fetching post user: \(error)")
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//    }
     
     @MainActor
     func fetchPosts() async throws {
@@ -559,7 +544,7 @@ class HomeViewModel: ObservableObject {
                 
                 do {
                     let user = try await APIService.fetchUser(withUserID: ownerID)
-                    fetchedAllPosts[i].user = user
+                    fetchedAllPosts[i].unwrappedOwner = user
                 } catch {
                     print("Error fetching user: \(error)")
                 }
@@ -680,7 +665,7 @@ class HomeViewModel: ObservableObject {
     func blockOtherUser(forUserID userIDToBlock: String) async throws {
         do {
             let userBlockListCollection = Firestore.firestore().collection("test_block")
-            let currentUserID = "ao2PKDpap4Mq7M5cn3Nrc1Mvoa42" // Replace with the actual current user's ID
+            let currentUserID = "ao2PKDpap4Mq7M5cn3Nrc1Mvoa42" //MARK: Replace with the actual current user's ID
             
             // Use a Firestore query to check if the user has already blocked another user
             let queryCurrentUserBlockList = userBlockListCollection.whereField("ownerId", isEqualTo: currentUserID)
@@ -1016,35 +1001,7 @@ class HomeViewModel: ObservableObject {
 //    }
     
     //convert the media data and upload to firebase and return the url of the media storage
-    func createMediaToFirebase() async throws -> String {
-        print("Uploading media")
-        
-        guard let selectedMedia = newPostSelectedMedia else {
-            print("Failed to get data")
-            return ""
-        }
-        print(selectedMedia)
-        
-        do {
-            let mediaData = try Data(contentsOf: selectedMedia as URL)
-            print("Completed converting data")
-            
-            if mediaData.count > 25_000_000 {
-                print("Selected file too large: \(mediaData)")
-                return ""
-            }
-            
-            guard let mediaUrl = try await uploadMediaToFireBase(withMedia: mediaData) else {
-                return ""
-            }
-            
-            print("Uploaded media data to Firebase")
-            return mediaUrl
-        } catch {
-            print("Failed to upload post: \(error)")
-            return ""
-        }
-    }
+
     
     // Get like count for current post
     @MainActor

@@ -31,6 +31,7 @@ class MainMessagesViewModel :  ObservableObject {
     @Published var errMessage = ""
     @Published var chatUser : User?
     
+    @MainActor
     func setMessageData() async {
         do{
             chatUser = try await APIService.fetchCurrentUserData()

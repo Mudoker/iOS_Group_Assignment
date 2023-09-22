@@ -17,7 +17,8 @@
 import SwiftUI
 
 struct EditSecurityField: View {
-    @EnvironmentObject var dataControllerVM : DataControllerViewModel
+    @Binding var currentUser:User
+    @Binding var userSetting:UserSetting
     
     @ObservedObject var settingVM:SettingViewModel
 
@@ -51,7 +52,7 @@ struct EditSecurityField: View {
                     textFieldBorderWidth: 1,
                     isPassword: true,
                     textFieldPlaceHolderFont: .body,
-                    isDarkModeEnabled: dataControllerVM.userSettings!.darkModeEnabled
+                    isDarkModeEnabled: userSetting.darkModeEnabled
                 )
                 .padding(.bottom)
                 .onChange(of: settingVM.changePasswordNewPassword) { _ in
@@ -73,7 +74,7 @@ struct EditSecurityField: View {
                     textFieldBorderWidth: 1,
                     isPassword: true,
                     textFieldPlaceHolderFont: .body,
-                    isDarkModeEnabled: dataControllerVM.userSettings!.darkModeEnabled
+                    isDarkModeEnabled: userSetting.darkModeEnabled
                 )
                 .padding(.bottom)
                 .onChange(of: settingVM.changePasswordNewPassword) { _ in
@@ -112,7 +113,7 @@ struct EditSecurityField: View {
                                 settingVM.hasSecuritySettingChanged = false
                             }
                             Task{
-                                await settingVM.updateSettings(userSetting: dataControllerVM.userSettings!)
+                                await settingVM.updateSettings(userSetting: userSetting)
                             }
                         }
                 }
@@ -156,8 +157,8 @@ struct EditSecurityField: View {
                 
                 Spacer()
             }
-            .foregroundColor(dataControllerVM.userSettings!.darkModeEnabled ? .white : .black)
-            .background(!dataControllerVM.userSettings!.darkModeEnabled ? .white : .black)
+            .foregroundColor(userSetting.darkModeEnabled ? .white : .black)
+            .background(!userSetting.darkModeEnabled ? .white : .black)
         }
     }
 }

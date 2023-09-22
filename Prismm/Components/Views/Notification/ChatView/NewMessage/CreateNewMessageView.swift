@@ -72,7 +72,7 @@ struct CreateNewMessageView: View {
                     .padding(.vertical,20)
                     
                     ForEach(vm.users.filter { user in
-                        searchTerm.isEmpty || user.gmail!.localizedCaseInsensitiveContains(searchTerm)
+                        searchTerm.isEmpty || user.account!.localizedCaseInsensitiveContains(searchTerm)
                     },id: \.id) { user in
                         Button {
                             presentationMode.wrappedValue.dismiss()
@@ -88,7 +88,7 @@ struct CreateNewMessageView: View {
                                     .overlay(RoundedRectangle(cornerRadius: 50)
                                         .stroke(Color(.label), lineWidth: 2)
                                     )
-                                Text(user.gmail!)
+                                Text(user.account!)
                                     .foregroundColor(Color(.label))
                                 Spacer()
                             }.padding(.horizontal)
@@ -123,7 +123,7 @@ struct CreateNewMessageView: View {
 struct CreateNewMessage_Previews: PreviewProvider {
     static var previews: some View {
         CreateNewMessageView(didSelectChatUser: { user in
-            print(user.gmail as Any)
+            print(user.account)
         })
     }
 }

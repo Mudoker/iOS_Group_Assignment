@@ -7,6 +7,7 @@
 
 import Foundation
 import Firebase
+import FirebaseFirestore
 
 class ChatLogViewModel : ObservableObject{
     
@@ -158,7 +159,7 @@ class ChatLogViewModel : ObservableObject{
             FirebaseConstants.text: self.chatText,
             FirebaseConstants.fromId: uid,
             FirebaseConstants.toId: toId,
-            FirebaseConstants.email: chatUser.gmail ?? "huuquoc7603@gmail.com",
+            FirebaseConstants.email: chatUser.account,
             FirebaseConstants.isSeen : self.isSeen
         ] as [String : Any]
         

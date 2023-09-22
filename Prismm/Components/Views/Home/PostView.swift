@@ -23,8 +23,11 @@ import Firebase
 struct PostView: View {
     var post: Post
     // View model
+    @Binding var currentUser:User
+    @Binding var userSetting:UserSetting
+    
     @ObservedObject var homeViewModel:HomeViewModel
-    @ObservedObject var settingVM:SettingViewModel
+
     @Binding var select: Post
     @State var isLike = false
     @State var currentLike = 0
@@ -61,7 +64,7 @@ struct PostView: View {
                 
                 
                 VStack (alignment: .leading, spacing: UIScreen.main.bounds.height * 0.01) {
-                    if let user = post.user {
+                    if let user = post.unwrappedOwner {
                         Text(user.username)
                             .font(Font.system(size: homeViewModel.usernameFont, weight: .semibold))
                     }
@@ -122,7 +125,7 @@ struct PostView: View {
                             Text("Restrict this user")
                         }
                     }
-                    .alert("Restrict this user?", isPresented: $settingVM.isSignOutAlertPresented) {
+                    .alert("Restrict this user?", isPresented: $homeViewModel.isSignOutAlertPresented) {
                         Button("Cancel", role: .cancel) {
                         }
                         Button("Restrict", role: .destructive) {
@@ -141,7 +144,7 @@ struct PostView: View {
                             Text("Turn off comment")
                         }
                     }
-                    .alert("Turn off comment?", isPresented: $settingVM.isSignOutAlertPresented) {
+                    .alert("Turn off comment?", isPresented: $homeViewModel.isSignOutAlertPresented) {
                         Button("Cancel", role: .cancel) {
                         }
                         Button("Turn off", role: .destructive) {
@@ -216,11 +219,13 @@ struct PostView: View {
                         } else {
                             KFImage(mediaURL)
                                 .resizable()
+                                .scaledToFill()
                                 .frame(width: UIScreen.main.bounds.width)
-                                .frame(minHeight: UIScreen.main.bounds.height * 0.4)
-                                .frame(maxHeight: UIScreen.main.bounds.height * 0.5)
                                 .background(Color.gray)
                                 .clipShape(Rectangle())
+//                                .frame(minHeight: UIScreen.main.bounds.height * 0.4)
+//                                .frame(maxHeight: UIScreen.main.bounds.height * 0.5)
+                                
                         }
                     } else {
                         // Handle the case where the mimeType is nil
@@ -329,16 +334,12 @@ struct PostView: View {
                 if let mediaURL = URL(string: post.mediaURL ?? "") {
                     if let mimeType = post.mediaMimeType {
                         if mimeType.hasPrefix("image") {
-                            AsyncImage(url: mediaURL) { media in
-                                media
-                                    .resizable()
-                                    .scaledToFill()
-                            } placeholder: {
-                                ProgressView()
-                            }
-                            .frame(width: homeViewModel.commentProfileImageSize, height: homeViewModel.commentProfileImageSize ) // Set the desired width and height for your circular image
-                            .background(Color.gray)
-                            .clipShape(Circle())
+                            KFImage(mediaURL)
+                                .resizable()
+                                .scaledToFill()
+                                .frame(width: homeViewModel.commentProfileImageSize, height: homeViewModel.commentProfileImageSize ) // Set the desired width and height for your circular image
+                                .background(Color.gray)
+                                .clipShape(Circle())
                         } else {
                             // Handle image
                             Text("Video detected!")

@@ -14,10 +14,58 @@
             filePath = "Prismm/Components/Views/Tab Bar/Tabbar.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "103"
-            endingLineNumber = "103"
+            startingLineNumber = "104"
+            endingLineNumber = "104"
             landmarkName = "body"
             landmarkType = "24">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "A3D431E1-27FC-4F38-B4DA-90A9C84D0E56"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Prismm/Components/ViewModels/SettingViewModel.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "182"
+            endingLineNumber = "182"
+            landmarkName = "updateProfile()"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "A3D431E1-27FC-4F38-B4DA-90A9C84D0E56 - 2271e9f77c65b051"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(3) suspend resume partial function for Prismm.SettingViewModel.updateProfile() async -&gt; ()"
+                  moduleName = "Prismm"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/baongocne/Documents/iOS_Group_Assignment/Prismm/Components/ViewModels/SettingViewModel.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "178"
+                  endingLineNumber = "178"
+                  offsetFromSymbolStart = "1256">
+               </Location>
+               <Location
+                  uuid = "A3D431E1-27FC-4F38-B4DA-90A9C84D0E56 - 84bc54a0fce7f756"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(8) suspend resume partial function for Prismm.SettingViewModel.updateProfile() async -&gt; ()"
+                  moduleName = "Prismm"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/baongocne/Documents/iOS_Group_Assignment/Prismm/Components/ViewModels/SettingViewModel.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "178"
+                  endingLineNumber = "178"
+                  offsetFromSymbolStart = "1260">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

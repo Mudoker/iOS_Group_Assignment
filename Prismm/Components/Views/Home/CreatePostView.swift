@@ -19,10 +19,9 @@ import SwiftUI
 
 struct CreatePostView: View {
     @State private var users = ["mudoker7603", "user123", "sampleUser", "testUser", "john_doe", "jane_doe", "user007", "newUser", "oldUser", "demoUser"]
-    @EnvironmentObject var dataControllerVM: DataControllerViewModel
     
-    @ObservedObject var authVM :AuthenticationViewModel
-    @ObservedObject var settingVM:SettingViewModel
+    @Binding var currentUser:User
+    @Binding var userSetting:UserSetting
     @ObservedObject var homeVM: HomeViewModel
     
     @State private var selectedTags: Set<String> = []
@@ -89,7 +88,7 @@ struct CreatePostView: View {
                         .clipShape(Circle())
                     
                     VStack(alignment: .leading, spacing: 0) {
-                        Text(dataControllerVM.currentUser?.username ?? "Failed to get data")
+                        Text(currentUser.username ?? "Failed to get data")
                             .bold()
                             .font(.title3)
                             .padding(.bottom, 8)

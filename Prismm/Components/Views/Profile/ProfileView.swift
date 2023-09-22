@@ -15,233 +15,248 @@
 */
 
 import SwiftUI
+import Kingfisher
 
 struct ProfileView: View {
+    @State var currentUser = User(id: "default", account: "default@gmail.com")
+    @State var userSetting = UserSetting(id: "default", darkModeEnabled: false, language: "en", faceIdEnabled: true, pushNotificationsEnabled: true, messageNotificationsEnabled: false)
+    
     @State var isSample = true
     
-    @EnvironmentObject var dataControllerVM : DataControllerViewModel
-    
-    @ObservedObject var authVM : AuthenticationViewModel
-    @ObservedObject var settingVM : SettingViewModel
-    @ObservedObject var profileVM : ProfileViewModel
+    @StateObject var profileVM = ProfileViewModel()
     
     var body: some View {
-        GeometryReader { proxy in
+        
             
+        VStack(alignment: .leading){
+            
+            ProfileToolBar(currentUser: $currentUser, userSetting: $userSetting, profileVM: profileVM)
+            
+            //MARK: PROFILE INFO BLOCK
             VStack(alignment: .leading){
-                ProfileToolBar(authVM: authVM, settingVM: settingVM, isSetting: $profileVM.isSetting)
-                
-                //Profile info block
-                VStack(alignment: .leading){
-                    HStack(alignment: .center){
-                        Image("testAvt")
+                HStack(alignment: .center){
+                    if let mediaURL = URL(string: currentUser.profileImageURL ?? "") {
+                        
+                        KFImage(mediaURL)
+                            .resizable()
+                            .frame(width: profileVM.avatarSize, height: profileVM.avatarSize)
+                            .clipShape(Circle())
+                            .background(Circle().foregroundColor(Color.gray))
+
+                    } else {
+                        // Handle the case where the media URL is invalid or empty.
+                        Image(systemName: "person.circle.fill")
                             .resizable()
                             .scaledToFit()
                             .frame(width: profileVM.avatarSize, height: profileVM.avatarSize)
-                            .clipShape(Circle())
-                        Spacer()
-                        
-                        VStack{
-                            HStack(spacing: 15){ //should be responsive
-                                VStack{
-                                    Text("\(dataControllerVM.currentUser?.posts.count ?? 111)")
-                                        .fontWeight(.bold)
-                                    Text(LocalizedStringKey("Posts"))
-                                    
-                                }
+                    }
+                    Spacer()
+                    
+                    VStack(alignment: .leading){
+                        HStack(spacing: profileVM.infoBlockSpacing){
+                            VStack{
+                                Text("0")
+                                    .fontWeight(.bold)
+                                Text(LocalizedStringKey("Posts"))
                                 
-                                VStack{
-                                    Text("\(dataControllerVM.currentUser?.posts.count ?? 111)")
-                                        .fontWeight(.bold)
-                                    Text(LocalizedStringKey("Followers"))
-                                    
-                                }
-                                
-                                VStack{
-                                    Text("\(dataControllerVM.currentUser?.posts.count ?? 111)")
-                                        .fontWeight(.bold)
-                                    Text(LocalizedStringKey("Following"))
-                                    
-                                }
                             }
-                            //edit button and share button
-                            HStack{
-                                Button {
-                                    
-                                } label: {
-
-                                    Text(LocalizedStringKey("Edit Profile"))
-                                        .fontWeight(.bold)
-                                        .foregroundColor(.black)
-                                        .frame(width: proxy.size.width / 3.5,height: proxy.size.height/20)
-                                        .background{
-                                            Color.gray
-                                                .opacity(0.3)
-                                        }
-                                        .clipShape(RoundedRectangle(cornerRadius: 30))
-                                }
-
-                                Button {
-                                    
-                                } label: {
-                                    Text(LocalizedStringKey("Facebook Link"))
-                                        .fontWeight(.bold)
-                                        .foregroundColor(.black)
-                                        .frame(width: proxy.size.width / 3.5,height: proxy.size.height/20)
-                                        .background{
-                                            Color.gray
-                                                .opacity(0.3)
-                                        }
-                                        .clipShape(RoundedRectangle(cornerRadius: 30))
-                                }
+                            
+                            VStack{
+                                Text("0")
+                                    .fontWeight(.bold)
+                                Text(LocalizedStringKey("Followers"))
                                 
-
+                            }
+                            
+                            VStack{
+                                Text("0")
+                                    .fontWeight(.bold)
+                                Text(LocalizedStringKey("Following"))
+                                
                             }
                         }
-                    }
-                    
-                    HStack{
-                        Text(dataControllerVM.currentUser?.username ?? "Failed to get data")
-                            .fontWeight(.bold)
-                    }
-                    HStack{
-                        Text(dataControllerVM.currentUser?.username ?? "Failed to get data")
-                    }
-                }
-                
-                //Highlight stories
-                if profileVM.hasStoryHightlight {
-
-                } else {
-                    VStack(alignment: .leading){
+                        //edit button and share button
                         HStack{
+                            Button {
+                                
+                            } label: {
 
-                            Text(LocalizedStringKey("Story highlights"))
-                                .fontWeight(.bold)
-
-                            Spacer()
+                                Text(LocalizedStringKey("Edit Profile"))
+                                    .fontWeight(.bold)
+                                    .foregroundColor(.black)
+                                    .frame(width: profileVM.editButtonWidth, height: profileVM.editButtonHeight)
+                                    .background{
+                                        Color.gray
+                                            .opacity(0.3)
+                                    }
+                                    .clipShape(RoundedRectangle(cornerRadius: profileVM.buttonRadiusSize))
+                            }
 
                             Button {
-
-                                isSample.toggle()
-
-
+                                
                             } label: {
-                                Image(systemName: isSample ? "chevron.up" : "chevron.down")
-                                    .foregroundColor(.black)
+                                Image("facebookIcon")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: profileVM.editButtonHeight,height: profileVM.editButtonHeight)
+                                    .clipShape(RoundedRectangle(cornerRadius: profileVM.buttonRadiusSize))
                             }
+                            
 
                         }
+                    }
+                }
+                
+                HStack{
+                    Text(currentUser.username)
+                        .fontWeight(.bold)
+                }
+                HStack{
+                    Text(currentUser.username)
+                }
+            }
+            
+            //MARK: Highlight stories
+            if profileVM.hasStoryHightlight {
 
-                        //Stories sample
-                        if isSample {
+            } else {
+                VStack(alignment: .leading){
+                    HStack{
 
-                            Text(LocalizedStringKey("Keep your favourite stories on your profile"))
+                        Text(LocalizedStringKey("Story highlights"))
+                            .fontWeight(.bold)
 
-                            VStack{
+                        Spacer()
 
-                                ZStack{
-                                    Image(systemName: "plus")
-                                        .resizable()
-                                        .scaledToFit()
-                                        .frame(width: UIDevice.current.userInterfaceIdiom == .phone ? 20 : 30)
-                                }
-                                .frame(width: proxy.size.width/6,height: proxy.size.width/6)
-                                .clipShape(Circle())
-                                .overlay(Circle().stroke(Color.black).shadow(radius: 5))
+                        Button {
 
-                                Text(LocalizedStringKey("New"))
-                            }
+                            isSample.toggle()
 
-                        } else {
-                            Divider()
-                                .frame(height: 2)
+
+                        } label: {
+                            Image(systemName: isSample ? "chevron.up" : "chevron.down")
+                                .foregroundColor(userSetting.darkModeEnabled ? .white : .black)
                         }
-
 
                     }
-                    .padding(.top,20)
+
+                    //Stories sample
+                    if isSample {
+
+                        Text(LocalizedStringKey("Keep your favourite stories on your profile"))
+
+                        VStack{
+
+                            ZStack{
+                                Image(systemName: "plus")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: UIDevice.current.userInterfaceIdiom == .phone ? 20 : 30)
+                            }
+                            .frame(width: profileVM.plusButtonSize,height: profileVM.plusButtonSize)
+                            .clipShape(Circle())
+                            .overlay(Circle().stroke(userSetting.darkModeEnabled ? Color.white : Color.black).shadow(radius: 5))
+
+                            Text(LocalizedStringKey("New"))
+                        }
+
+                    } else {
+                        Divider()
+                            .frame(height: 1)
+                            .overlay(userSetting.darkModeEnabled ? .white : .gray)
+                    }
 
 
                 }
+                .padding(.top,20)
+
+
+            }
+            
+            //MARK: tab changing
+            HStack{
                 
-                //tab changing
-                HStack{
-                    
-                    Button {
-                        withAnimation {
-                            profileVM.isShowAllUserPost = 1
-                        }
-                    } label: {
-                        VStack{
-                            Image(systemName: "squareshape.split.3x3")
-                                .resizable()
-                                .scaledToFit()
-                                .frame(height: 30) //not responsive
-                                .foregroundColor(profileVM.isShowAllUserPost == 1 ? .black : .gray)
-                            
-                        }
-                        .frame(width: (proxy.size.width-40)/2)
+                Button {
+                    withAnimation {
+                        profileVM.isShowAllUserPost = 1
+                    }
+                } label: {
+                    VStack{
+                        Image(systemName: "squareshape.split.3x3")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(height: profileVM.tabIconHeight) //not responsive
+                            .foregroundColor(profileVM.isShowAllUserPost == 1 ? (userSetting.darkModeEnabled ? .white : .black) : .gray)
                         
                     }
+                    .frame(width: profileVM.tabButtonSize)
                     
-                    Button {
-                        withAnimation {
-                            profileVM.isShowAllUserPost = 0
-                        }
-                    } label: {
-                        VStack{
-                            Image(systemName: "bookmark")
-                                .resizable()
-                                .frame(width: 25,height: 30)    //not responsive
-                                .foregroundColor(!(profileVM.isShowAllUserPost == 1) ? .black : .gray)
-                        }
-                    }.frame(width: (proxy.size.width-40)/2)
+                }
+                
+                Button {
+                    withAnimation {
+                        profileVM.isShowAllUserPost = 0
+                    }
+                } label: {
+                    VStack{
+                        Image(systemName: "archivebox")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(height: profileVM.tabIconHeight)    //not responsive
+                            .foregroundColor(!(profileVM.isShowAllUserPost == 1) ? (userSetting.darkModeEnabled ? .white : .black) : .gray)
+                    }
+                }.frame(width: profileVM.tabButtonSize)
 
-                }
-                .padding(.top)
+            }
+            .padding(.top)
+            
+            ZStack{
+                Divider()
+                    .overlay {
+                        userSetting.darkModeEnabled ? Color.white : Color.black
+                    }
                 
-                ZStack{
-                    Divider()
-                        .overlay {
-                            dataControllerVM.userSettings!.darkModeEnabled ? Color.white : Color.black
-                        }
-                    
-                    Divider()
-                        .frame(width: UIScreen.main.bounds.width/2,height: 1)
-                        .overlay {
-                            dataControllerVM.userSettings!.darkModeEnabled ? Color.white : Color.black
-                        }
-                        .offset(x: profileVM.indicatorOffset)
-                } //divider
-                
-                TabView(selection: $profileVM.isShowAllUserPost) {
-                    PostGridView(profileVM: profileVM)
-                        .tag(1)
-                    
-                    
-                    
-                }
-                .animation(.easeInOut, value: profileVM.isShowAllUserPost)
-                .tabViewStyle(PageTabViewStyle())
+                Divider()
+                    .frame(width: profileVM.tabIndicatorWidth ,height: 1)
+                    .overlay {
+                        userSetting.darkModeEnabled ? Color.white : Color.black
+                    }
+                    .offset(x: profileVM.indicatorOffset)
+            } //divider
+            
+            TabView(selection: $profileVM.isShowAllUserPost) {
+                PostGridView(currentUser: $currentUser, userSetting: $userSetting, profileVM: profileVM)
+                    .tag(1)
                 
                 
                 
             }
-            .padding(.horizontal,20)
-            .frame(minWidth: 0,maxWidth: .infinity)
-            .onAppear {
-                profileVM.proxySize = proxy.size
-                Task{
-                    try await profileVM.fetchUserPosts(UserID: dataControllerVM.currentUser?.id ?? "")
-                }
-                
-            }
-            .fullScreenCover(isPresented: $profileVM.isSetting) {
-                SettingView(settingVM: settingVM, isSetting: $profileVM.isSetting)
-            }
+            .frame(minWidth: 0, maxWidth: .infinity)
+            .animation(.easeInOut, value: profileVM.isShowAllUserPost)
+            .tabViewStyle(PageTabViewStyle())
+            
+            
+            
         }
+        .padding(.horizontal,10)
+        .frame(minWidth: 0,maxWidth: .infinity)
+        .onAppear {
+            profileVM.proxySize = UIScreen.main.bounds.size
+            
+            Task{
+                currentUser = try await APIService.fetchCurrentUserData()!
+                userSetting = try await APIService.fetchCurrentSettingData()!
+                try await profileVM.fetchUserPosts(UserID: currentUser.id )
+            }
+            
+        }
+        .fullScreenCover(isPresented: $profileVM.isSetting) {
+            SettingView(currentUser: $currentUser, userSetting: $userSetting, isSetting: $profileVM.isSetting)
+        }
+        .foregroundColor(userSetting.darkModeEnabled ? .white : .black)
+        .background(!userSetting.darkModeEnabled ? .white : .black)
     }
+
 }
 
 //struct ProfileView_Previews: PreviewProvider {
