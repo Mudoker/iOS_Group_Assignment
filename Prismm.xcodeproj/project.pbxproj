@@ -44,7 +44,7 @@
 		AB72B97A2AB019C900DA73F5 /* Extension+CustomCorner.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB72B9792AB019C900DA73F5 /* Extension+CustomCorner.swift */; };
 		AB72B9822AB022E800DA73F5 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = AB72B9812AB022E800DA73F5 /* GoogleService-Info.plist */; };
 		E1003B6C2ABAF1040049D04A /* NotificationHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1003B6B2ABAF1040049D04A /* NotificationHandler.swift */; };
-		E1003B6E2ABAFC5B0049D04A /* LocalPushNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1003B6D2ABAFC5B0049D04A /* LocalPushNotification.swift */; };
+		E1003B6E2ABAFC5B0049D04A /* Test+LocalPushNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1003B6D2ABAFC5B0049D04A /* Test+LocalPushNotification.swift */; };
 		E10C0E292AAAEDBD00AEB220 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E10C0E282AAAEDBD00AEB220 /* Assets.xcassets */; };
 		E10C0E2C2AAAEDBD00AEB220 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E10C0E2B2AAAEDBD00AEB220 /* Preview Assets.xcassets */; };
 		E10C0E412AAAF53E00AEB220 /* CustomTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10C0E402AAAF53E00AEB220 /* CustomTextField.swift */; };
@@ -126,7 +126,7 @@
 		AB72B9792AB019C900DA73F5 /* Extension+CustomCorner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extension+CustomCorner.swift"; sourceTree = "<group>"; };
 		AB72B9812AB022E800DA73F5 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		E1003B6B2ABAF1040049D04A /* NotificationHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationHandler.swift; sourceTree = "<group>"; };
-		E1003B6D2ABAFC5B0049D04A /* LocalPushNotification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalPushNotification.swift; sourceTree = "<group>"; };
+		E1003B6D2ABAFC5B0049D04A /* Test+LocalPushNotification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Test+LocalPushNotification.swift"; sourceTree = "<group>"; };
 		E10C0E212AAAEDBC00AEB220 /* Prismm.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Prismm.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E10C0E282AAAEDBD00AEB220 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E10C0E2B2AAAEDBD00AEB220 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
@@ -345,7 +345,6 @@
 			isa = PBXGroup;
 			children = (
 				E11F6E972AB32F6200989514 /* NotificationView.swift */,
-				E1003B6D2ABAFC5B0049D04A /* LocalPushNotification.swift */,
 			);
 			path = Notification;
 			sourceTree = "<group>";
@@ -512,6 +511,7 @@
 				E1FBA9102AB83BF6007B6B15 /* Test+Notification.swift */,
 				99A0F4212ABC356B00D6CA8D /* Test+BlockUser.swift */,
 				99A0F4232ABC48AF00D6CA8D /* Test+Restrict.swift */,
+				E1003B6D2ABAFC5B0049D04A /* Test+LocalPushNotification.swift */,
 			);
 			path = Test;
 			sourceTree = "<group>";
@@ -653,7 +653,7 @@
 				85E235D52ABBFD2500224E56 /* ChatLogModel.swift in Sources */,
 				E1BB6F152AAEBE0500051687 /* PersonalAboutUs.swift in Sources */,
 				E1C665362AB1714C0095B388 /* SettingView.swift in Sources */,
-				E1003B6E2ABAFC5B0049D04A /* LocalPushNotification.swift in Sources */,
+				E1003B6E2ABAFC5B0049D04A /* Test+LocalPushNotification.swift in Sources */,
 				E1D2444D2ABBFF5600A0A57D /* LikedPostModel.swift in Sources */,
 				E1FBA90F2AB83914007B6B15 /* NotificationViewModels.swift in Sources */,
 				99A0F4202ABC324700D6CA8D /* UserBlockList.swift in Sources */,

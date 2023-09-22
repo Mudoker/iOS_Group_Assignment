@@ -24,6 +24,7 @@ import AVFoundation
 import FirebaseFirestoreSwift
 
 class ProfileViewModel: ObservableObject {
+    // Cntrol State
     @Published var posts = [Post]()
     @Published var hasStoryHightlight = false
     @Published var isSetting = false

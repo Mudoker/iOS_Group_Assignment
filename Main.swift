@@ -17,16 +17,20 @@ struct PrismmApp: App {
     
     var body: some Scene {
         WindowGroup {
-            if !manager.isSignIn {
-                Login()
-                    .environmentObject(manager)
-            } else {
-                TabBar()
-                    .environmentObject(manager)
-            }
+            Test_Notification()
+//            if !manager.isSignIn {
+//                Login()
+//                    .environmentObject(manager)
+//            } else {
+//                TabBar()
+//                    .environmentObject(manager)
+//            }
         }
+        
+        
     }
     
+    // Configure firebase
     init(){
         FirebaseApp.configure()
     }

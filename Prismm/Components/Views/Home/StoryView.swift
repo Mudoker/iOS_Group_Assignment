@@ -18,6 +18,7 @@ import Foundation
 import SwiftUI
 
 struct StoryView: View {
+    // control state
     //let story: Story
     @Binding var currentUser:User
     @Binding var userSetting:UserSetting
@@ -37,7 +38,6 @@ struct StoryView: View {
                     .truncationMode(.tail)
                     .font(.caption2)
                     .lineLimit(1)
-                    //.frame(width: reader.size.width, height: reader.size.height)
             }
         }
     }

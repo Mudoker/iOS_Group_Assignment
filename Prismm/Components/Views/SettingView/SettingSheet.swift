@@ -1,113 +1,89 @@
 /*
-  RMIT University Vietnam
-  Course: COSC2659 iOS Development
-  Semester: 2023B
-  Assessment: Assignment 3
-  Author: Apple Men
-  Doan Huu Quoc (s3927776)
-  Tran Vu Quang Anh (s3916566)
-  Nguyen Dinh Viet (s3927291)
-  Nguyen The Bao Ngoc (s3924436)
-
-  Created  date: 11/09/2023
-  Last modified: 15/09/2023
-  Acknowledgement: None
-*/
+ RMIT University Vietnam
+ Course: COSC2659 iOS Development
+ Semester: 2023B
+ Assessment: Assignment 3
+ Author: Apple Men
+ Doan Huu Quoc (s3927776)
+ Tran Vu Quang Anh (s3916566)
+ Nguyen Dinh Viet (s3927291)
+ Nguyen The Bao Ngoc (s3924436)
+ 
+ Created  date: 11/09/2023
+ Last modified: 15/09/2023
+ Acknowledgement: None
+ */
 
 import SwiftUI
 
 struct SettingSheet: View {
+    //Control state
     @Binding var isSheetPresented: Bool
-    
     @Binding var currentUser:User
     @Binding var userSetting:UserSetting
     @ObservedObject var settingVM:SettingViewModel
     var body: some View {
-//        NavigationView {
         VStack (alignment: .center) {
-                Text("Accont Manager")
+            // Title
+            Text("Accont Manager")
                 .bold()
                 .padding(.horizontal)
                 .font(.title)
             
-                VStack {
-                    NavigationLink(destination: EditProfileView(currentUser: $currentUser, userSetting: $userSetting, settingVM: settingVM)) {
-                        HStack {
-                            Image(systemName: "person.badge.plus")
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                                .frame(width: 40)
-                            
-                            Text("Personal Information")
-                                .padding(.leading)
-                            
-                            Spacer()
-                        }
-                        .padding()
-                        .background(RoundedRectangle(cornerRadius: 10)
-                            .fill(!userSetting.darkModeEnabled ? .gray.opacity(0.1) : .gray.opacity(0.4))
-                        )
-                    }
-                    .padding(.top)
-                    .padding(.horizontal)
-                    
-                    NavigationLink(destination: EditSecurityField(currentUser: $currentUser, userSetting: $userSetting, settingVM: settingVM)) {
-                        HStack {
-                            Image(systemName: "lock.circle")
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                                .frame(width: 40)
-                            
-                            Text("Password & Security")
-                                .padding(.leading)
-                            
-                            Spacer()
-                        }
-                        .padding()
-                        .background(RoundedRectangle(cornerRadius: 10)
-                            .fill(!userSetting.darkModeEnabled ? .gray.opacity(0.1) : .gray.opacity(0.4))
-                        )
+            // Content
+            VStack {
+                // Profile setting
+                NavigationLink(destination: EditProfileView(currentUser: $currentUser, userSetting: $userSetting, settingVM: settingVM)) {
+                    HStack {
+                        Image(systemName: "person.badge.plus")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 40)
+                        
+                        Text("Personal Information")
+                            .padding(.leading)
+                        
+                        // Push view
+                        Spacer()
                     }
                     .padding()
+                    .background(RoundedRectangle(cornerRadius: 10)
+                        .fill(!userSetting.darkModeEnabled ? .gray.opacity(0.1) : .gray.opacity(0.4))
+                    )
                 }
+                .padding(.top)
+                .padding(.horizontal)
                 
-                Spacer()
+                // Security setting
+                NavigationLink(destination: EditSecurityField(currentUser: $currentUser, userSetting: $userSetting, settingVM: settingVM)) {
+                    HStack {
+                        Image(systemName: "lock.circle")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 40)
+                        
+                        Text("Password & Security")
+                            .padding(.leading)
+                        
+                        // Push view
+                        Spacer()
+                    }
+                    .padding()
+                    .background(RoundedRectangle(cornerRadius: 10)
+                        .fill(!userSetting.darkModeEnabled ? .gray.opacity(0.1) : .gray.opacity(0.4))
+                    )
+                }
+                .padding()
             }
-            .frame(maxWidth: .infinity)
-            .foregroundColor(userSetting.darkModeEnabled ? .white : .black)
-            .background(userSetting.darkModeEnabled ? .black : .white)
-            .navigationBarItems(trailing: Button("Close") {
-                isSheetPresented.toggle()
-            })
-//        }
-        
-    }
-}
-struct PersonalInformationView: View {
-    var body: some View {
-        // Content for Personal Information View
-        Text("Personal Information View")
-    }
-}
-
-struct PasswordSecurityView: View {
-    var body: some View {
-        // Content for Password & Security View
-        Text("Password & Security View")
-    }
-}
-
-struct EmailView: View {
-    var body: some View {
-        // Content for Email View
-        Text("Email View")
-    }
-}
-
-struct ConnectionsView: View {
-    var body: some View {
-        // Content for Connections View
-        Text("Connections View")
+            
+            Spacer()
+        }
+        .frame(maxWidth: .infinity)
+        .foregroundColor(userSetting.darkModeEnabled ? .white : .black)
+        .background(userSetting.darkModeEnabled ? .black : .white)
+        .navigationBarItems(trailing: Button("Close") {
+            isSheetPresented.toggle()
+        })
     }
 }
 

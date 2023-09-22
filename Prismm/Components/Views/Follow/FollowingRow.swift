@@ -1,26 +1,28 @@
 /*
-  RMIT University Vietnam
-  Course: COSC2659 iOS Development
-  Semester: 2023B
-  Assessment: Assignment 3
-  Author: Apple Men
-  Doan Huu Quoc (s3927776)
-  Tran Vu Quang Anh (s3916566)
-  Nguyen Dinh Viet (s3927291)
-  Nguyen The Bao Ngoc (s3924436)
-
-  Created  date: 09/09/2023
-  Last modified: 09/09/2023
-  Acknowledgement: None
-*/
+ RMIT University Vietnam
+ Course: COSC2659 iOS Development
+ Semester: 2023B
+ Assessment: Assignment 3
+ Author: Apple Men
+ Doan Huu Quoc (s3927776)
+ Tran Vu Quang Anh (s3916566)
+ Nguyen Dinh Viet (s3927291)
+ Nguyen The Bao Ngoc (s3924436)
+ 
+ Created  date: 09/09/2023
+ Last modified: 09/09/2023
+ Acknowledgement: None
+ */
 
 import SwiftUI
 
 struct FollowingRow: View {
+    //Control state
     @ObservedObject var fvm: FollowViewModel
     
     var body: some View {
         HStack{
+            //  User information
             Image("testAvt")
                 .resizable()
                 .scaledToFit()
@@ -30,6 +32,7 @@ struct FollowingRow: View {
             VStack(alignment: .leading){
                 Text("UserName")
                     .font(.system(size: CGFloat(fvm.rowUserNameFontSize)))
+                
                 Text("bio")
                     .font(.system(size: CGFloat(fvm.rowBioFontSize)))
                     .opacity(0.4)
@@ -54,7 +57,6 @@ struct FollowingRow: View {
                         .clipShape(RoundedRectangle(cornerRadius: 5))
                 }
                 
-                
                 Button {
                     
                 } label: {
@@ -65,9 +67,6 @@ struct FollowingRow: View {
                 }
             }
             .foregroundColor(fvm.isDarkMode ? .white : .black)
-            
-
-
         }
         .frame(minWidth: 0,maxWidth: .infinity)
     }

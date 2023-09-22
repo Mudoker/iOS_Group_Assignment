@@ -17,11 +17,13 @@
 import Foundation
 
 extension String {
+    // check for sepecial characters
     func containsSpecialSymbols() -> Bool {
         let specialSymbols = CharacterSet(charactersIn: "!@#$%^&*()-_=+[]{}|;:'\",.<>?/`~")
         return self.rangeOfCharacter(from: specialSymbols) != nil
     }
     
+    // validate url
     func isValidURL(forPlatform platform: String) -> Bool {
         // Return false for empty profile URLs
         guard !self.isEmpty else {
@@ -39,6 +41,18 @@ extension String {
             return gmailRegex.firstMatch(in: self, options: [], range: range) != nil
         default:
             return false // Not supported platform
+        }
+    }
+    
+    // Extract the name from an email address
+    func extractNameFromEmail() -> String? {
+        // Split the email at the "@" symbol
+        let components = self.components(separatedBy: "@")
+        // Check if there are at least two components (name and domain)
+        if components.count >= 2 {
+            return components[0] // The name is the first component
+        } else {
+            return nil // Invalid email format
         }
     }
 }

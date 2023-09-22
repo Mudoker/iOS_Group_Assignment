@@ -12,7 +12,7 @@ struct LocalPushNotification: View {
     var body: some View {
         VStack {
             Button(action: {
-                pushNotification.scheduleNotification(at: Date(), ofType: .time, withTimeInterval: 1,titled: "Prismm", andBody: "Swift dep chai")
+                pushNotification.scheduleNotification(at: Date(), withTimeInterval: 1,titled: "Prismm", andBody: "Swift dep chai")
             }) {
                 Text("Send Notification")
             }

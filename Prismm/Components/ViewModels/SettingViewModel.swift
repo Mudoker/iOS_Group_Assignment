@@ -22,13 +22,12 @@ import FirebaseFirestore
 import FirebaseFirestoreSwift
 
 class SettingViewModel: ObservableObject {
-    
+    // State control
     @Published var isDarkModeEnabled = false
     @Published var isFaceIdEnabled = false
     @Published var isPushNotificationEnabled = false
     @Published var isMessageNotificationEnabled = false
     @Published var selectedLanguage = "en"
-    
     @Published var isAccountSettingSheetPresentedOniPhone = false
     @Published var isAccountSettingSheetPresentedOniPad = false
     @Published var isSignOutAlertPresented = false
@@ -68,6 +67,7 @@ class SettingViewModel: ObservableObject {
     
     // Responsive
     @Published var proxySize: CGSize = CGSize(width: 0, height: 0)
+    
     var cornerRadius: CGFloat {
         UIDevice.current.userInterfaceIdiom == .phone ? proxySize.width / 40 : proxySize.width / 50
     }
@@ -100,59 +100,37 @@ class SettingViewModel: ObservableObject {
         UIDevice.current.userInterfaceIdiom == .phone ? .title3 : .title
     }
     
+    // Check for security setting chang
     func checkSecuritySettingChange() -> Bool {
-        if changePasswordCurrentPassword != "" || changePasswordNewPassword != ""{
-            return true
-        }
-        return false
+        return !changePasswordCurrentPassword.isEmpty || !changePasswordNewPassword.isEmpty
     }
     
+    // Check for profile setting change
     func isProfileSettingChange() -> Bool {
-        if !newProfileUsername.isEmpty ||
-            !newProfilePhoneNumber.isEmpty ||
-            !newProfileFacebook.isEmpty ||
-            !newProfileGmail.isEmpty ||
-            !newProfileLinkedIn.isEmpty {
-            return true // At least one setting has changed
-        }
-        return false // No settings have changed
+        return !newProfileUsername.isEmpty || !newProfilePhoneNumber.isEmpty ||
+        !newProfileFacebook.isEmpty || !newProfileGmail.isEmpty || !newProfileLinkedIn.isEmpty
     }
     
-    func isValidURL(_ profileURL: String, forPlatform platform: String) -> Bool {
-        // Return false for empty profile URLs
-        guard !profileURL.isEmpty else {
-            return false
-        }
-        
-        switch platform {
-        case "fb":
-            return profileURL.hasPrefix("https://www.facebook.com/")
-        case "ld":
-            return profileURL.hasPrefix("https://www.linkedin.com/")
-        case "gm":
-            let gmailRegex = try! NSRegularExpression(pattern: "^[a-zA-Z0-9._%+-]+@gmail\\.com")
-            let range = NSRange(location: 0, length: profileURL.utf16.count)
-            return gmailRegex.firstMatch(in: profileURL, options: [], range: range) != nil
-        default:
-            return false // Invalid platform
-        }
-    }
-    
+    // Update user settings
     func updateSettings(userSetting: UserSetting) async {
+        // get current user id
         let userID = Auth.auth().currentUser?.uid ?? ""
         
+        // Check if id is empty
         if userID == ""{
             return
         }
         
+        // Get settings document from Firestore
         guard let settingsSnapshot = try? await Firestore.firestore().collection("test_settings").document(userID).getDocument() else {
             return
         }
-    
         
+        // Update settings
         do {
             let encodedSettings = try Firestore.Encoder().encode(userSetting)
             
+            // Create or update settings data in Firestore
             if !settingsSnapshot.exists {
                 try await Firestore.firestore().collection("test_settings").document(userID).setData(encodedSettings)
             } else {
@@ -160,16 +138,20 @@ class SettingViewModel: ObservableObject {
                 print("Settings updated successfully to \(userID)")
             }
         } catch {
-            print("ERROR: Failed to update user settings")
+            print("ERROR: Failed to update user settings") // cannot find
         }
     }
     
-    
+    // update user information
     func updateProfile() async {
+        // get current user id
         let userID = Auth.auth().currentUser?.uid ?? ""
+        
+        // Get the user document from Firestore
         guard let userSnapshot = try? await Firestore.firestore().collection("users").document(userID).getDocument() else { return }
         
         do {
+            // Decode user data
             var updatedUser = try userSnapshot.data(as: User.self)
             
             if updatedUser.username != newProfileUsername {
@@ -183,13 +165,14 @@ class SettingViewModel: ObservableObject {
             if updatedUser.facebook != newProfileFacebook {
                 updatedUser.facebook = newProfileFacebook
             }
-
+            
             if updatedUser.linkedIn != newProfileLinkedIn {
                 updatedUser.linkedIn = newProfileLinkedIn
             }
             
             let encodedUser = try Firestore.Encoder().encode(updatedUser)
             
+            // Create or update user data in Firestore
             if !userSnapshot.exists {
                 try await Firestore.firestore().collection("users").document(userID).setData(encodedUser)
             } else {
@@ -201,4 +184,3 @@ class SettingViewModel: ObservableObject {
         }
     }
 }
-

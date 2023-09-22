@@ -1,18 +1,18 @@
 /*
-  RMIT University Vietnam
-  Course: COSC2659 iOS Development
-  Semester: 2023B
-  Assessment: Assignment 3
-  Author: Apple Men
-  Doan Huu Quoc (s3927776)
-  Tran Vu Quang Anh (s3916566)
-  Nguyen Dinh Viet (s3927291)
-  Nguyen The Bao Ngoc (s3924436)
-
-  Created  date: 14/09/2023
-  Last modified: 16/09/2023
-  Acknowledgement: None
-*/
+ RMIT University Vietnam
+ Course: COSC2659 iOS Development
+ Semester: 2023B
+ Assessment: Assignment 3
+ Author: Apple Men
+ Doan Huu Quoc (s3927776)
+ Tran Vu Quang Anh (s3916566)
+ Nguyen Dinh Viet (s3927291)
+ Nguyen The Bao Ngoc (s3924436)
+ 
+ Created  date: 14/09/2023
+ Last modified: 16/09/2023
+ Acknowledgement: None
+ */
 
 import SwiftUI
 import Kingfisher
@@ -20,27 +20,26 @@ import Firebase
 import FirebaseAuth
 
 struct CommentView: View {
-    var isDarkModeEnabled: Bool
+    // control state
     @Binding var isShowComment: Bool
-    
     @Binding var currentUser:User
     @Binding var userSetting:UserSetting
     @ObservedObject var homeVM: HomeViewModel
-    
+    var isDarkModeEnabled: Bool
     var post: Post
-    
     let emojis = ["👍", "❤️", "😍", "🤣", "😯", "😭", "😡", "👽", "💩", "💀"]
     
     var body: some View {
         GeometryReader { proxy in
-            
             VStack (spacing: 0) {
                 ZStack(alignment: .centerFirstTextBaseline) {
+                    // Title
                     Text("Comment")
                         .font(.title2)
                         .padding(.bottom)
                         .bold()
                     
+                    // Filter
                     HStack {
                         Menu {
                             Picker(selection: $homeVM.selectedCommentFilter, label: Text("Please choose a sorting option")) {
@@ -63,27 +62,29 @@ struct CommentView: View {
                     .padding(.horizontal)
                 }
                 
+                // Show all comment
                 VStack {
                     if let commentsForPost = homeVM.fetchedCommentsByPostId[post.id], !commentsForPost.isEmpty {
                         ScrollView(showsIndicators: false) {
                             ForEach(commentsForPost.sorted{$0.id < $1.id}) { comment in
+                                // Comment content
                                 HStack {
                                     if let profileURLString = homeVM.currentCommentor?.profileImageURL,
-                                           let mediaURL = URL(string: profileURLString) {
-                                            
-                                            KFImage(mediaURL)
-                                                .resizable()
-                                                .frame(width: proxy.size.width/8, height: proxy.size.width/8)
-                                                .clipShape(Circle())
-                                                .background(Circle().foregroundColor(Color.gray))
+                                       let mediaURL = URL(string: profileURLString) {
+                                        
+                                        KFImage(mediaURL)
+                                            .resizable()
+                                            .frame(width: proxy.size.width/8, height: proxy.size.width/8)
+                                            .clipShape(Circle())
+                                            .background(Circle().foregroundColor(Color.gray))
                                     } else {
-                                            Image(systemName: "person.fill")
-                                                .resizable()
-                                                .frame(width: proxy.size.width/12, height: proxy.size.width/12)
-                                                .padding()
-                                                .foregroundColor(.gray)
-                                                .background(Circle().foregroundColor(Color.gray.opacity(0.1))
-                                                    .frame(width: proxy.size.width/7, height: proxy.size.width/7))
+                                        Image(systemName: "person.fill")
+                                            .resizable()
+                                            .frame(width: proxy.size.width/12, height: proxy.size.width/12)
+                                            .padding()
+                                            .foregroundColor(.gray)
+                                            .background(Circle().foregroundColor(Color.gray.opacity(0.1))
+                                                .frame(width: proxy.size.width/7, height: proxy.size.width/7))
                                     }
                                     VStack(alignment: .leading) {
                                         HStack (alignment: .firstTextBaseline) {
@@ -97,6 +98,8 @@ struct CommentView: View {
                                         }
                                         Text(comment.content) // Message
                                     }
+                                    
+                                    // Push view
                                     Spacer()
                                 }
                                 .padding(.horizontal, 5)
@@ -105,11 +108,7 @@ struct CommentView: View {
                                     // Start the asynchronous task when the view appears
                                     Task {
                                         do {
-                                            print(comment.commenterId)
                                             homeVM.currentCommentor = try await APIService.fetchUser(withUserID: comment.commenterId)
-
-        //                                    post = try await UserService.fetchAPost(withUid: post.id)
-
                                         } catch {
                                             print("Error fetching profile image URL: \(error)")
                                         }
@@ -118,25 +117,31 @@ struct CommentView: View {
                             }
                         }
                     } else {
+                        // Push view
                         Spacer()
+                        
+                        // If no comment
                         Image(systemName: "quote.bubble")
                             .resizable()
                             .frame(width: proxy.size.width/5, height: proxy.size.width/5)
                             .opacity(0.4)
-
+                        
                         Text("Be the first one to comment")
                             .font(.title)
                             .opacity(0.4)
+                        
+                        // Push view
                         Spacer()
-
                     }
                 }
-
                 
+                // Comment field
                 VStack {
+                    // check if post allow comment
                     if (post.isAllowComment) {
                         ScrollView(.horizontal, showsIndicators: false) {
                             HStack(spacing: 0) {
+                                // Convenient bar
                                 ForEach(emojis, id: \.self) { emoji in
                                     Button(action: {
                                         homeVM.commentContent += emoji
@@ -157,33 +162,33 @@ struct CommentView: View {
                             .opacity(0.6)
                             .padding(8)
                             .padding(.top, 8)
-
                     }
                     
-                    
+                    // Comment bar
                     HStack {
                         Image("testAvt")
                             .resizable()
                             .frame(width: proxy.size.width/8, height: proxy.size.width/8)
                             .clipShape(Circle())
-
-                            TextField("", text: $homeVM.commentContent, prompt:  Text("Leave a comment...").foregroundColor(isDarkModeEnabled ? .white.opacity(0.5) : .black.opacity(0.5))
-                                .font(.title3)
-                            )
-                            .autocorrectionDisabled(true)
-                            .textInputAutocapitalization(.never)
-                            .padding()
-                            .disabled(post.isAllowComment ? false : true)
-                            .background(
-                                Capsule()
-                                    .fill(isDarkModeEnabled ? Color.gray.opacity(0.3) : Color.white)
-                            )
                         
+                        TextField("", text: $homeVM.commentContent, prompt:  Text("Leave a comment...").foregroundColor(isDarkModeEnabled ? .white.opacity(0.5) : .black.opacity(0.5))
+                            .font(.title3)
+                        )
+                        .autocorrectionDisabled(true)
+                        .textInputAutocapitalization(.never)
+                        .padding()
+                        .disabled(post.isAllowComment ? false : true)
+                        .background(
+                            Capsule()
+                                .fill(isDarkModeEnabled ? Color.gray.opacity(0.3) : Color.white)
+                        )
+                        
+                        // Create comment
                         Button(action: {
                             Task {
                                 _ = try await homeVM.createComment(content: homeVM.commentContent, commentor: (Auth.auth().currentUser?.uid)! , postId: post.id)
                                 homeVM.commentContent = ""
-                        }
+                            }
                         }) {
                             Circle()
                                 .fill(isDarkModeEnabled ? .gray.opacity(0.3) : .white)
