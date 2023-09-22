@@ -96,8 +96,6 @@ class MainMessagesViewModel :  ObservableObject {
                             self.recentMessages.insert(rm, at: 0)
                             print(self.recentMessages[0].isSeen)
                         }
-                    } catch{
-                        print(error)
                     }
                 })
             }

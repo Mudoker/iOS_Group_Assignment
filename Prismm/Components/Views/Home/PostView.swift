@@ -231,7 +231,7 @@ struct PostView: View {
             
             
             //Operations menu.
-            HStack (spacing: UIScreen.main.bounds.width * 0.02) {
+            HStack (spacing: UIScreen.main.bounds.width * 0.01) {
                 Button(action: {
                     if isLike == false {
                         Task {
@@ -259,16 +259,15 @@ struct PostView: View {
                                     .frame(width: homeViewModel.postStatsImageSize)
                                     .foregroundColor(isLike ? .pink : .clear)
                             )
-                        
-                        
                     }
                     .padding(.leading)
                 }
+                
                 Text("\(currentLike)")
                     .font(Font.system(size: homeViewModel.postStatsFontSize, weight: .light))
                     .opacity(0.6)
+                    .frame(width: homeViewModel.postStatsFontSize)
                     .padding(.trailing)
-               
                 
                 Button(action: {
                     if UIDevice.current.userInterfaceIdiom == .pad {
@@ -369,11 +368,12 @@ struct PostView: View {
             .padding(.horizontal)
         }
         .onAppear {
-            homeViewModel.getLikeCount(forPostID: post.id) { totalCount, hasLikerId in
+            homeViewModel.getLikeCount(forPostID: post.id) { totalCount in
                 currentLike = totalCount
-                isLike = hasLikerId
             }
-            
+            homeViewModel.isCurrentUserLikePost(forPostID: post.id) {isLikePost in
+                isLike = isLikePost
+            }
             isArchive = homeViewModel.isUserFavouritePost(withPostId: post.id)
         }
     }

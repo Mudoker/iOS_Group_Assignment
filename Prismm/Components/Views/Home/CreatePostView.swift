@@ -366,7 +366,7 @@ struct CreatePostView: View {
                 Button(action: {
                     Task {
                         let _ = try await homeVM.createPost()
-                        
+                        try await homeVM.fetchPosts()
                         isNewPost = false
                     }
                     
@@ -378,7 +378,6 @@ struct CreatePostView: View {
                         .foregroundColor(!isDarkModeEnabled ? Constants.lightThemeColor : Constants.darkThemeColor)
                         .overlay(
                             HStack {
-                                
                                 Text("Post")
                                     .font(.title3)
                                     .bold()
@@ -387,7 +386,6 @@ struct CreatePostView: View {
                                     .resizable()
                                     .aspectRatio(contentMode: .fit)
                                     .frame(width: proxy.size.width/18)
-                                
                             }
                                 .foregroundColor(.white)
                         )
