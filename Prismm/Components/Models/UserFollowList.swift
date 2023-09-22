@@ -12,4 +12,5 @@ struct UserFollowList: Identifiable, Codable {
     let id: String
     let ownerId: String
     let followIds: [String]
+    let beFollowedBy: [String]
 }

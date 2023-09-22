@@ -179,7 +179,7 @@ class ChatLogViewModel : ObservableObject{
             FirebaseConstants.text: self.chatText,
             FirebaseConstants.fromId: uid,
             FirebaseConstants.toId: toId,
-            FirebaseConstants.email: currentUser.email,
+            FirebaseConstants.email: currentUser.email ?? "huuquoc7603@gmail.com",
             FirebaseConstants.isSeen : self.isSeen
         ] as [String : Any]
         

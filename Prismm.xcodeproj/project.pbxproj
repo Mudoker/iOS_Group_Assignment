@@ -40,6 +40,7 @@
 		99A0F41E2ABC323300D6CA8D /* UserRestrictList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99A0F41D2ABC323300D6CA8D /* UserRestrictList.swift */; };
 		99A0F4202ABC324700D6CA8D /* UserBlockList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99A0F41F2ABC324700D6CA8D /* UserBlockList.swift */; };
 		99A0F4222ABC356B00D6CA8D /* Test+BlockUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99A0F4212ABC356B00D6CA8D /* Test+BlockUser.swift */; };
+		99A0F4242ABC48AF00D6CA8D /* Test+Restrict.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99A0F4232ABC48AF00D6CA8D /* Test+Restrict.swift */; };
 		AB72B97A2AB019C900DA73F5 /* Extension+CustomCorner.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB72B9792AB019C900DA73F5 /* Extension+CustomCorner.swift */; };
 		AB72B9822AB022E800DA73F5 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = AB72B9812AB022E800DA73F5 /* GoogleService-Info.plist */; };
 		E1003B6C2ABAF1040049D04A /* NotificationHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1003B6B2ABAF1040049D04A /* NotificationHandler.swift */; };
@@ -121,6 +122,7 @@
 		99A0F41D2ABC323300D6CA8D /* UserRestrictList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserRestrictList.swift; sourceTree = "<group>"; };
 		99A0F41F2ABC324700D6CA8D /* UserBlockList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserBlockList.swift; sourceTree = "<group>"; };
 		99A0F4212ABC356B00D6CA8D /* Test+BlockUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Test+BlockUser.swift"; sourceTree = "<group>"; };
+		99A0F4232ABC48AF00D6CA8D /* Test+Restrict.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Test+Restrict.swift"; sourceTree = "<group>"; };
 		AB72B9792AB019C900DA73F5 /* Extension+CustomCorner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extension+CustomCorner.swift"; sourceTree = "<group>"; };
 		AB72B9812AB022E800DA73F5 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		E1003B6B2ABAF1040049D04A /* NotificationHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationHandler.swift; sourceTree = "<group>"; };
@@ -509,6 +511,7 @@
 				E16BBB932AB5D3B6006884BE /* Test+Dropdownmenu.swift */,
 				E1FBA9102AB83BF6007B6B15 /* Test+Notification.swift */,
 				99A0F4212ABC356B00D6CA8D /* Test+BlockUser.swift */,
+				99A0F4232ABC48AF00D6CA8D /* Test+Restrict.swift */,
 			);
 			path = Test;
 			sourceTree = "<group>";
@@ -683,6 +686,7 @@
 				E11F6E942AB32D2900989514 /* Tabbar.swift in Sources */,
 				E16BBB942AB5D3B6006884BE /* Test+Dropdownmenu.swift in Sources */,
 				E1BB6F2E2AAEC1C700051687 /* FollowingList.swift in Sources */,
+				99A0F4242ABC48AF00D6CA8D /* Test+Restrict.swift in Sources */,
 				85E235DC2ABBFD2500224E56 /* CreateNewMessageView.swift in Sources */,
 				990334FA2AB2375300159F22 /* Test+Follow.swift in Sources */,
 				E12FA0292AAC2963007890A3 /* UserModel.swift in Sources */,

@@ -14,10 +14,7 @@ struct Test_Profile: View {
             Task {
                 do {
                     //try await profileVM.fetchUserPosts()
-                } catch {
-                    print("Error following user: \(error)")
-                    // Handle the error as needed (e.g., display an error message to the user)
-                }
+                } 
             }
         }) {
             Text("Reload your post")

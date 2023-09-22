@@ -52,9 +52,14 @@ class HomeViewModel: ObservableObject {
     private var likePostListenerRegistration: ListenerRegistration?
     private var favouritePostListenerRegistration: ListenerRegistration?
     private var currentUserBlockListListenerRegistration: ListenerRegistration?
+    private var currentUserRestrictListListenerRegistration: ListenerRegistration?
+    private var currentUserFollowListListenerRegistration: ListenerRegistration?
 
     @Published var fetchedCommentsByPostId = [String: Set<Comment>]()
-    
+    @Published var currentUserBlockList = [UserBlockList]()
+    @Published var currentUserFollowList = [UserFollowList]()
+    @Published var currentUserRestrictList = [UserRestrictList]()
+
     @Published var newPostSelectedMedia: NSURL? = nil
     
     @Published var currentCommentor: User?
@@ -202,37 +207,70 @@ class HomeViewModel: ObservableObject {
         return false
     }
     
-    // fetch all comments for a post
-//    @MainActor
-//    func fetchAllComments(forPostID postID: String) {
-//        commentListenerRegistration = Firestore.firestore().collection("test_comments").whereField("postId", isEqualTo: postID).addSnapshotListener { [weak self] querySnapshot, error in
-//            guard let self = self else { return }
-//            
-//            if let error = error {
-//                print("Error fetching posts: \(error)")
-//                return
-//            }
-//            
-//            guard let documents = querySnapshot?.documents else {
-//                print("No documents")
-//                return
-//            }
-//            
-//            let commentsToAdd = documents.compactMap { queryDocumentSnapshot in
-//                try? queryDocumentSnapshot.data(as: Comment.self)
-//            }
-//            
-//            // Check if "postID" exists in fetched_comments, and if not, create an empty set
-//            var existingComments = fetchedCommentsByPostId[postID, default: Set<Comment>()]
-//            
-//            // Add the comments to the existing set
-//            existingComments.formUnion(commentsToAdd)
-//            
-//            // Update the fetched_comments dictionary with the merged set of comments
-//            fetchedCommentsByPostId[postID] = existingComments
-//            print(existingComments)
-//        }
-//    }
+    // fetch user block list
+    @MainActor
+    func fetchCurrentUserBlockList() {
+        currentUserBlockListListenerRegistration = Firestore.firestore().collection("test_block").whereField("ownerId", isEqualTo: "ao2PKDpap4Mq7M5cn3Nrc1Mvoa42").addSnapshotListener { [weak self] querySnapshot, error in
+            guard let self = self else { return }
+
+            if let error = error {
+                print("Error fetching block list: \(error)")
+                return
+            }
+
+            guard let documents = querySnapshot?.documents else {
+                print("No documents")
+                return
+            }
+            
+            self.currentUserBlockList = documents.compactMap { queryDocumentSnapshot in
+                try? queryDocumentSnapshot.data(as: UserBlockList.self)
+            }
+        }
+    }
+    
+    @MainActor
+    func fetchCurrentUserRestrictList() {
+        currentUserBlockListListenerRegistration = Firestore.firestore().collection("test_restrict").whereField("ownerId", isEqualTo: "ao2PKDpap4Mq7M5cn3Nrc1Mvoa42").addSnapshotListener { [weak self] querySnapshot, error in
+            guard let self = self else { return }
+
+            if let error = error {
+                print("Error fetching restrict list: \(error)")
+                return
+            }
+
+            guard let documents = querySnapshot?.documents else {
+                print("No documents")
+                return
+            }
+            
+            self.currentUserRestrictList = documents.compactMap { queryDocumentSnapshot in
+                try? queryDocumentSnapshot.data(as: UserRestrictList.self)
+            }
+        }
+    }
+    
+    // fetch user block list
+    @MainActor
+    func fetchCurrentUserFollowList() {
+        currentUserFollowListListenerRegistration = Firestore.firestore().collection("test_follow").whereField("ownerId", isEqualTo: "ao2PKDpap4Mq7M5cn3Nrc1Mvoa42").addSnapshotListener { [weak self] querySnapshot, error in
+            guard let self = self else { return }
+
+            if let error = error {
+                print("Error fetching follow list: \(error)")
+                return
+            }
+
+            guard let documents = querySnapshot?.documents else {
+                print("No documents")
+                return
+            }
+            
+            self.currentUserFollowList = documents.compactMap { queryDocumentSnapshot in
+                try? queryDocumentSnapshot.data(as: UserFollowList.self)
+            }
+        }
+    }
     
     // fetch all user favourite posts
     @MainActor
@@ -454,7 +492,7 @@ class HomeViewModel: ObservableObject {
                     try? queryDocumentSnapshot.data(as: Post.self)
                 }
                 
-                self.fetchedAllPosts = sortPostByTime(order: "asc", posts: self.fetchedAllPosts)
+                self.fetchedAllPosts = sortPostByTime(order: "desc", posts: self.fetchedAllPosts)
                 
                 for i in 0..<self.fetchedAllPosts.count {
                     for likerID in self.fetchedAllPosts[i].likerIDs {
@@ -483,6 +521,47 @@ class HomeViewModel: ObservableObject {
         }
     }
     
+    @MainActor
+    func fetchPosts() async throws {
+        do {
+            let querySnapshot = try await Firestore.firestore().collection("test_posts").getDocuments()
+            
+            if querySnapshot.isEmpty {
+                print("No documents")
+                return
+            }
+            
+            var fetchedAllPosts = [Post]()
+            
+            for queryDocumentSnapshot in querySnapshot.documents {
+                if let post = try? queryDocumentSnapshot.data(as: Post.self) {
+                    fetchedAllPosts.append(post)
+                }
+            }
+            
+            fetchedAllPosts = sortPostByTime(order: "desc", posts: fetchedAllPosts)
+            
+            for i in 0..<fetchedAllPosts.count {
+                let post = fetchedAllPosts[i]
+                let ownerID = post.ownerID
+                
+                do {
+                    let user = try await APIService.fetchUser(withUserID: ownerID)
+                    fetchedAllPosts[i].user = user
+                } catch {
+                    print("Error fetching user: \(error)")
+                }
+            }
+            
+            self.fetchedAllPosts = fetchedAllPosts
+        } catch {
+            print("Error fetching posts: \(error)")
+            throw error
+        }
+    }
+
+
+
     //sort post
     func sortPostByTime(order: String, posts: [Post]) -> [Post] {
         var sortedPosts = posts
@@ -694,140 +773,283 @@ class HomeViewModel: ObservableObject {
         }
     }
     
+    // Follow users
+    func followOtherUser(forUserID userIDToFollow: String) async throws {
+        do {
+            let userFollowListCollection = Firestore.firestore().collection("test_follow")
+            let currentUserID = "ao2PKDpap4Mq7M5cn3Nrc1Mvoa42" // Replace with the actual current user's ID
+            
+            // Use a Firestore query to check if the user has already blocked another user
+            let queryCurrentUserFollowList = userFollowListCollection.whereField("ownerId", isEqualTo: currentUserID)
+            let queryFollowedUserFollowList = userFollowListCollection.whereField("ownerId", isEqualTo: userIDToFollow)
+            
+            // Get block list of both users
+            let querySnapshotCurrentUserFollowList = try await queryCurrentUserFollowList.getDocuments()
+            let querySnapshotFollowedUserFollowList = try await queryFollowedUserFollowList.getDocuments()
+            
+            // If there are no matching documents, it means the user hasn't blocked anyone, so create a new block list
+            if querySnapshotCurrentUserFollowList.isEmpty {
+                // Create a new block list
+                let followListRef = userFollowListCollection.document()
+                let followList = UserFollowList(id: followListRef.documentID, ownerId: currentUserID, followIds: [userIDToFollow], beFollowedBy: [])
+                guard let encodedFollowList = try? Firestore.Encoder().encode(followList) else {
+                    return
+                }
+                
+                try await followListRef.setData(encodedFollowList)
+            } else {
+                // If the block list exists, add the user ID to the blockedIds array
+                guard let followListDocument = querySnapshotCurrentUserFollowList.documents.first else {
+                    return
+                }
+                
+                let existingFollowedIds = followListDocument["followIds"] as? [String] ?? []
+                if !existingFollowedIds.contains(userIDToFollow) {
+                    var updatedFollowIds = existingFollowedIds
+                    updatedFollowIds.append(userIDToFollow)
+                    
+                    try await userFollowListCollection.document(followListDocument.documentID).updateData(["followIds": updatedFollowIds])
+                }
+            }
+            
+            // If there are no matching documents, it means the user hasn't blocked anyone, so create a new block list
+            if querySnapshotFollowedUserFollowList.isEmpty {
+                // Create a new block list
+                let followListRef = userFollowListCollection.document()
+                let followList = UserFollowList(id: followListRef.documentID, ownerId: userIDToFollow, followIds: [], beFollowedBy: [currentUserID])
+
+                guard let encodedFollowList = try? Firestore.Encoder().encode(followList) else {
+                    return
+                }
+                
+                try await followListRef.setData(encodedFollowList)
+            } else {
+                // If the block list exists, add the user ID to the blockedIds array
+                guard let followListDocument = querySnapshotFollowedUserFollowList.documents.first else {
+                    return
+                }
+                
+                let existingBeFollowedIds = followListDocument["beFollowedBy"] as? [String] ?? []
+                if !existingBeFollowedIds.contains(currentUserID) {
+                    var updatedBeFollowedIds = existingBeFollowedIds
+                    updatedBeFollowedIds.append(currentUserID)
+                    
+                    try await userFollowListCollection.document(followListDocument.documentID).updateData(["beFollowedBy": updatedBeFollowedIds])
+                }
+            }
+        } catch {
+            throw error
+        }
+    }
+
+   // Unblock
+    func unFollowOtherUser(forUserID userIDToUnFollow: String) async throws {
+        // Unblock (start receiving notifications + access to post/story + send messages + others can see your post)
+            do {
+                let userFollowListCollection = Firestore.firestore().collection("test_follow")
+                let currentUserID = "ao2PKDpap4Mq7M5cn3Nrc1Mvoa42" // Replace with the actual current user's ID
+                
+                // Use a Firestore query to check if the user has a block list
+                let queryCurrentUserFollowList = userFollowListCollection.whereField("ownerId", isEqualTo: currentUserID)
+                let queryFollowedUserFollowList = userFollowListCollection.whereField("ownerId", isEqualTo: userIDToUnFollow)
+
+                // Get the block list of the current user
+                let querySnapshotCurrentUserFollowList = try await queryCurrentUserFollowList.getDocuments()
+                let querySnapshotFollowedUserFollowList = try await queryFollowedUserFollowList.getDocuments()
+                
+                // If the block list exists, remove the user ID from the blockedIds array
+                if let followListDocument = querySnapshotCurrentUserFollowList.documents.first {
+                    var existingBlockedIds = followListDocument["followIds"] as? [String] ?? []
+                    
+                    if let indexToRemove = existingBlockedIds.firstIndex(of: userIDToUnFollow) {
+                        existingBlockedIds.remove(at: indexToRemove)
+                        try await userFollowListCollection.document(followListDocument.documentID).updateData(["followIds": existingBlockedIds])
+                    }
+                }
+                
+                // If the followed list exists, remove the user ID from the follow array
+                if let beFollowedListDocument = querySnapshotFollowedUserFollowList.documents.first {
+                    var existingBeFollowedIds = beFollowedListDocument["beFollowedBy"] as? [String] ?? []
+                    
+                    if let indexToRemove = existingBeFollowedIds.firstIndex(of: currentUserID) {
+                        existingBeFollowedIds.remove(at: indexToRemove)
+                        try await userFollowListCollection.document(beFollowedListDocument.documentID).updateData(["beFollowedBy": existingBeFollowedIds])
+                    }
+                }
+            } catch {
+                throw error
+        }
+    }
+    
     // restrict (not receiving notification + post/story + other can still see your posts)
-    func restrictOtherUser(userID: String) async throws {
-        let currentUserRef = Firestore.firestore().collection("users").document(Constants.currentUserID)
-        var currentUser = try await currentUserRef.getDocument().data(as: User.self)
-        let otherUserRef = Firestore.firestore().collection("users").document("3WBgDcMgEQfodIbaXWTBHvtjYCl2")
-        var otherUser = try await currentUserRef.getDocument().data(as: User.self)
-        currentUser.restrictedByList.append(userID)
-        otherUser.restrictedByList.append(Constants.currentUserID)
-        
-        try currentUserRef.setData(from: currentUser) { error in
-            if let error = error {
-                print("Error updating document: \(error)")
+    func restrictOtherUser(forUserID userIDToRestrict: String) async throws {
+        do {
+            let userRestrictListCollection = Firestore.firestore().collection("test_restrict")
+            let currentUserID = "ao2PKDpap4Mq7M5cn3Nrc1Mvoa42" // Replace with the actual current user's ID
+            
+            // Use a Firestore query to check if the user has already blocked another user
+            let queryCurrentUserRestrictList = userRestrictListCollection.whereField("ownerId", isEqualTo: currentUserID)
+            
+            // Get block list of both users
+            let querySnapshotCurrentUserRestrictList = try await queryCurrentUserRestrictList.getDocuments()
+            
+            // If there are no matching documents, it means the user hasn't blocked anyone, so create a new block list
+            if querySnapshotCurrentUserRestrictList.isEmpty {
+                // Create a new block list
+                let restrictListRef = userRestrictListCollection.document()
+                let restrictList = UserRestrictList(id: restrictListRef.documentID, ownerId: currentUserID, restrictIds: [userIDToRestrict])
+                
+                guard let encodedRestrictList = try? Firestore.Encoder().encode(restrictList) else {
+                    return
+                }
+                
+                try await restrictListRef.setData(encodedRestrictList)
             } else {
-                print("Document successfully updated.")
+                // If the block list exists, add the user ID to the blockedIds array
+                guard let restrictListDocument = querySnapshotCurrentUserRestrictList.documents.first else {
+                    return
+                }
+                
+                let existingRestrictIds = restrictListDocument["restrictIds"] as? [String] ?? []
+                if !existingRestrictIds.contains(userIDToRestrict) {
+                    var updatedRestrictedIds = existingRestrictIds
+                    updatedRestrictedIds.append(userIDToRestrict)
+                    
+                    try await userRestrictListCollection.document(restrictListDocument.documentID).updateData(["restrictIds": updatedRestrictedIds])
+                }
             }
+        } catch {
+            throw error
         }
-        
-        try otherUserRef.setData(from: otherUser) { error in
-            if let error = error {
-                print("Error updating document: \(error)")
-            } else {
-                print("Document successfully updated.")
-            }
+    }
+
+   // Unblock
+    func unRestrictOtherUser(forUserID userIDToUnRestrict: String) async throws {
+        // Unblock (start receiving notifications + access to post/story + send messages + others can see your post)
+            do {
+                let userRestrictListCollection = Firestore.firestore().collection("test_restrict")
+                let currentUserID = "ao2PKDpap4Mq7M5cn3Nrc1Mvoa42" // Replace with the actual current user's ID
+                
+                // Use a Firestore query to check if the user has a block list
+                let queryCurrentUserRestrictList = userRestrictListCollection.whereField("ownerId", isEqualTo: currentUserID)
+
+                // Get the block list of the current user
+                let querySnapshotCurrentUserRestrictList = try await queryCurrentUserRestrictList.getDocuments()
+                // If the block list exists, remove the user ID from the blockedIds array
+                if let restrictListDocument = querySnapshotCurrentUserRestrictList.documents.first {
+                    var existingRestrictedIds = restrictListDocument["restrictIds"] as? [String] ?? []
+                    
+                    if let indexToRemove = existingRestrictedIds.firstIndex(of: userIDToUnRestrict) {
+                        existingRestrictedIds.remove(at: indexToRemove)
+                        try await userRestrictListCollection.document(restrictListDocument.documentID).updateData(["restrictIds": existingRestrictedIds])
+                    }
+                }
+            } catch {
+                throw error
         }
     }
     
-    // Un-restrict
-    func unRestrictOtherUserBlockOtherUser(userID: String) async throws {
-        let currentUserRef = Firestore.firestore().collection("users").document(Constants.currentUserID)
-        var currentUser = try await currentUserRef.getDocument().data(as: User.self)
-        let otherUserRef = Firestore.firestore().collection("users").document("3WBgDcMgEQfodIbaXWTBHvtjYCl2")
-        var otherUser = try await currentUserRef.getDocument().data(as: User.self)
-        currentUser.restrictedList.removeAll { $0 == userID }
-        otherUser.restrictedByList.removeAll { $0 == Constants.currentUserID }
-        
-        try currentUserRef.setData(from: currentUser) { error in
-            if let error = error {
-                print("Error updating document: \(error)")
-            } else {
-                print("Document successfully updated.")
-            }
-        }
-        
-        try otherUserRef.setData(from: otherUser) { error in
-            if let error = error {
-                print("Error updating document: \(error)")
-            } else {
-                print("Document successfully updated.")
-            }
-        }
-    }
-    
-    // Follow
-    func followOtherUser(userID: String) async throws {
-        let currentUserRef = Firestore.firestore().collection("users").document("3WBgDcMgEQfodIbaXWTBHvtjYCl2")
-        var currentUser = try await currentUserRef.getDocument().data(as: User.self)
-        currentUser.following.append(userID)
-        
-        let otherUserRef = Firestore.firestore().collection("users").document(userID)
-        var otherUser = try await otherUserRef.getDocument().data(as: User.self)
-        otherUser.followers.append(currentUser.id)
-        
-        try currentUserRef.setData(from: currentUser) { error in
-            if let error = error {
-                print("Error updating document: \(error)")
-            } else {
-                print("Document successfully updated.")
-            }
-        }
-        
-        try otherUserRef.setData(from: otherUser) { error in
-            if let error = error {
-                print("Error updating document: \(error)")
-            } else {
-                print("Document successfully updated.")
-            }
-        }
-    }
-    
-    // Unfollow
-    func unFollowOtherUser(userID: String) async throws {
-        let currentUserRef = Firestore.firestore().collection("users").document("3WBgDcMgEQfodIbaXWTBHvtjYCl2")
-        var currentUser = try await currentUserRef.getDocument().data(as: User.self)
-        currentUser.following.removeAll { $0 == userID }
-        
-        let otherUserRef = Firestore.firestore().collection("users").document(userID)
-        var otherUser = try await otherUserRef.getDocument().data(as: User.self)
-        otherUser.followers.removeAll { $0 == currentUser.id }
-        
-        try currentUserRef.setData(from: currentUser) { error in
-            if let error = error {
-                print("Error updating document: \(error)")
-            } else {
-                print("Document successfully updated.")
-            }
-        }
-        
-        try otherUserRef.setData(from: otherUser) { error in
-            if let error = error {
-                print("Error updating document: \(error)")
-            } else {
-                print("Document successfully updated.")
-            }
-        }
-    }
+//    // Follow
+//    func followOtherUser(userID: String) async throws {
+//        let currentUserRef = Firestore.firestore().collection("users").document("3WBgDcMgEQfodIbaXWTBHvtjYCl2")
+//        var currentUser = try await currentUserRef.getDocument().data(as: User.self)
+//        currentUser.following.append(userID)
+//
+//        let otherUserRef = Firestore.firestore().collection("users").document(userID)
+//        var otherUser = try await otherUserRef.getDocument().data(as: User.self)
+//        otherUser.followers.append(currentUser.id)
+//
+//        try currentUserRef.setData(from: currentUser) { error in
+//            if let error = error {
+//                print("Error updating document: \(error)")
+//            } else {
+//                print("Document successfully updated.")
+//            }
+//        }
+//
+//        try otherUserRef.setData(from: otherUser) { error in
+//            if let error = error {
+//                print("Error updating document: \(error)")
+//            } else {
+//                print("Document successfully updated.")
+//            }
+//        }
+//    }
+//
+//    // Unfollow
+//    func unFollowOtherUser(userID: String) async throws {
+//        let currentUserRef = Firestore.firestore().collection("users").document("3WBgDcMgEQfodIbaXWTBHvtjYCl2")
+//        var currentUser = try await currentUserRef.getDocument().data(as: User.self)
+//        currentUser.following.removeAll { $0 == userID }
+//
+//        let otherUserRef = Firestore.firestore().collection("users").document(userID)
+//        var otherUser = try await otherUserRef.getDocument().data(as: User.self)
+//        otherUser.followers.removeAll { $0 == currentUser.id }
+//
+//        try currentUserRef.setData(from: currentUser) { error in
+//            if let error = error {
+//                print("Error updating document: \(error)")
+//            } else {
+//                print("Document successfully updated.")
+//            }
+//        }
+//
+//        try otherUserRef.setData(from: otherUser) { error in
+//            if let error = error {
+//                print("Error updating document: \(error)")
+//            } else {
+//                print("Document successfully updated.")
+//            }
+//        }
+//    }
     
     //convert the media data and upload to firebase and return the url of the media storage
 
     
     // Get like count for current post
     @MainActor
-    func getLikeCount(forPostID postID: String, completion: @escaping (Int, Bool)  -> Void) {
+    func getLikeCount(forPostID postID: String, completion: @escaping (Int)  -> Void) {
         likePostListenerRegistration = Firestore.firestore().collection("test_likes").whereField("postId", isEqualTo: postID).addSnapshotListener { [weak self] querySnapshot, error in
             guard self != nil else { return }
             
             if let error = error {
                 print("Error fetching likes: \(error)")
-                completion(0, false) // Return 0 when there's an error, and false for the boolean
+                completion(0) // Return 0 when there's an error, and false for the boolean
                 return
             }
             
             guard let documents = querySnapshot?.documents else {
                 print("No documents")
-                completion(0, false) // Return 0 when there's an error, and false for the boolean
+                completion(0) // Return 0 when there's an error, and false for the boolean
+                return
+            }
+
+            completion(documents.count)
+        }
+    }
+    
+    func isCurrentUserLikePost (forPostID postID: String, completion: @escaping (Bool)  -> Void) {
+        Firestore.firestore().collection("test_likes").whereField("postId", isEqualTo: postID).addSnapshotListener { [weak self] querySnapshot, error in
+            guard self != nil else { return }
+            
+            if let error = error {
+                print("Error fetching likes: \(error)")
+                completion(false) // Return 0 when there's an error, and false for the boolean
+                return
+            }
+            
+            guard let documents = querySnapshot?.documents else {
+                print("No documents")
+                completion(false) // Return 0 when there's an error, and false for the boolean
                 return
             }
             let hasLikerId = documents.contains { document in
                 let data = document.data()
                 return data["likerId"] as? String == "ao2PKDpap4Mq7M5cn3Nrc1Mvoa42"
             }
-            completion(documents.count, hasLikerId)
+            completion(hasLikerId)
         }
     }
-    
     // Get mime type for images/video
     func mimeType(for data: Data) -> String {
         var b: UInt8 = 0

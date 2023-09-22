@@ -35,11 +35,15 @@ struct AllChat : View {
     
     var body: some View {
         NavigationStack{
-            mainMessageScreen
-            NavigationLink("",isActive: $showChatLogVIew){
-                //                ChatLogView(chatUser: self.chatUser)
-                ChatLogView(vm: chatLogViewModal)
+            NavigationLink(destination: ChatLogView(vm: chatLogViewModal)) {
+                mainMessageScreen
             }
+//            mainMessageScreen
+
+//            NavigationLink("",isActive: $showChatLogVIew){
+//                //                ChatLogView(chatUser: self.chatUser)
+//                ChatLogView(vm: chatLogViewModal)
+//            }
         }
         .onAppear{
             Task{

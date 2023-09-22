@@ -7,34 +7,34 @@
 
 import SwiftUI
 
-struct Test_FollowUser: View {
+struct Test_RestrictUser: View {
     @ObservedObject var homeVM = HomeViewModel()
     var body: some View {
         
         VStack {
             Button(action: {
                 Task {
-                    try await homeVM.followOtherUser(forUserID: "abc")
+                    try await homeVM.restrictOtherUser(forUserID: "kkk")
                 }
             }) {
-                Text("Follow user")
+                Text("Restrict user")
             }
             .padding(.vertical)
             
             Button(action: {
                 Task {
-                    try await homeVM.unFollowOtherUser(forUserID: "abc")
+                    try await homeVM.unRestrictOtherUser(forUserID: "abc")
                 }
             }) {
-                Text("Unfollow user")
+                Text("Unrestrict user")
             }
         }
         
     }
 }
 
-struct Test_FollowUser_Previews: PreviewProvider {
+struct Test_RestrictUser_Previews: PreviewProvider {
     static var previews: some View {
-        Test_FollowUser()
+        Test_RestrictUser()
     }
 }
