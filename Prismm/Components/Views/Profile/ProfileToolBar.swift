@@ -17,15 +17,15 @@
 import SwiftUI
 
 struct ProfileToolBar: View {
-    @EnvironmentObject var dataControllerVM: DataControllerViewModel
+    @Binding var currentUser:User
+    @Binding var userSetting:UserSetting
     
-    @ObservedObject var authVM :AuthenticationViewModel
     @ObservedObject var profileVM: ProfileViewModel
 
     var body: some View {
 
         HStack{
-            Text(dataControllerVM.currentUser?.username ?? "Failed to get data")
+            Text(currentUser.username)
                 .fontWeight(.bold)
                 .font(.system(size: profileVM.toolBarUserNameSize)) 
             Spacer()
@@ -38,7 +38,7 @@ struct ProfileToolBar: View {
                     .font(.system(size: profileVM.toolBarSettingButtonSize))
             }
         }
-        .foregroundColor(dataControllerVM.userSettings!.darkModeEnabled ? .white : .black)
+        .foregroundColor(userSetting.darkModeEnabled ? .white : .black)
 
     }
 }
@@ -47,6 +47,6 @@ struct ProfileToolBar: View {
 
 //struct ProfileToolBar_Previews: PreviewProvider {
 //    static var previews: some View {
-//        ProfileToolBar(authVM: AuthenticationViewModel(), profileVM: ProfileViewModel())
+//        ProfileToolBar(profileVM: ProfileViewModel())
 //    }
 //}

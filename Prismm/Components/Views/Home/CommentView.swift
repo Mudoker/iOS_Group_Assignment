@@ -22,7 +22,10 @@ import FirebaseAuth
 struct CommentView: View {
     var isDarkModeEnabled: Bool
     @Binding var isShowComment: Bool
-    @ObservedObject var homeViewModel = HomeViewModel()
+    
+    @Binding var currentUser:User
+    @Binding var userSetting:UserSetting
+    @ObservedObject var homeVM: HomeViewModel
     
     var post: Post
     
@@ -40,7 +43,7 @@ struct CommentView: View {
                     
                     HStack {
                         Menu {
-                            Picker(selection: $homeViewModel.selectedCommentFilter, label: Text("Please choose a sorting option")) {
+                            Picker(selection: $homeVM.selectedCommentFilter, label: Text("Please choose a sorting option")) {
                                 Text("Newest").tag("Newest")
                                 Text("Oldest").tag("Oldest")
                             }
@@ -61,11 +64,11 @@ struct CommentView: View {
                 }
                 
                 VStack {
-                    if let commentsForPost = homeViewModel.fetchedCommentsByPostId[post.id], !commentsForPost.isEmpty {
+                    if let commentsForPost = homeVM.fetchedCommentsByPostId[post.id], !commentsForPost.isEmpty {
                         ScrollView(showsIndicators: false) {
                             ForEach(commentsForPost.sorted{$0.id < $1.id}) { comment in
                                 HStack {
-                                    if let profileURLString = homeViewModel.currentCommentor?.profileImageURL,
+                                    if let profileURLString = homeVM.currentCommentor?.profileImageURL,
                                            let mediaURL = URL(string: profileURLString) {
                                             
                                             KFImage(mediaURL)
@@ -84,12 +87,12 @@ struct CommentView: View {
                                     }
                                     VStack(alignment: .leading) {
                                         HStack (alignment: .firstTextBaseline) {
-                                            Text(homeViewModel.currentCommentor?.username ?? "Blank") // User Name
-                                                .font(Font.system(size: homeViewModel.usernameFont, weight: .medium))
+                                            Text(homeVM.currentCommentor?.username ?? "Blank") // User Name
+                                                .font(Font.system(size: homeVM.usernameFont, weight: .medium))
                                                 .bold()
                                             
                                             Text(formatTimeDifference(from: comment.creationDate))
-                                                .font(Font.system(size: homeViewModel.timeFont, weight: .medium))
+                                                .font(Font.system(size:homeVM.timeFont, weight: .medium))
                                                 .opacity(0.3)
                                         }
                                         Text(comment.content) // Message
@@ -103,7 +106,7 @@ struct CommentView: View {
                                     Task {
                                         do {
                                             print(comment.commenterId)
-                                            homeViewModel.currentCommentor = try await APIService.fetchUser(withUserID: comment.commenterId)
+                                            homeVM.currentCommentor = try await APIService.fetchUser(withUserID: comment.commenterId)
 
         //                                    post = try await UserService.fetchAPost(withUid: post.id)
 
@@ -136,7 +139,7 @@ struct CommentView: View {
                             HStack(spacing: 0) {
                                 ForEach(emojis, id: \.self) { emoji in
                                     Button(action: {
-                                        homeViewModel.commentContent += emoji
+                                        homeVM.commentContent += emoji
                                     }) {
                                         Text(emoji)
                                             .font(.largeTitle)
@@ -164,7 +167,7 @@ struct CommentView: View {
                             .frame(width: proxy.size.width/8, height: proxy.size.width/8)
                             .clipShape(Circle())
 
-                            TextField("", text: $homeViewModel.commentContent, prompt:  Text("Leave a comment...").foregroundColor(isDarkModeEnabled ? .white.opacity(0.5) : .black.opacity(0.5))
+                            TextField("", text: $homeVM.commentContent, prompt:  Text("Leave a comment...").foregroundColor(isDarkModeEnabled ? .white.opacity(0.5) : .black.opacity(0.5))
                                 .font(.title3)
                             )
                             .autocorrectionDisabled(true)
@@ -178,8 +181,8 @@ struct CommentView: View {
                         
                         Button(action: {
                             Task {
-                                _ = try await homeViewModel.createComment(content: homeViewModel.commentContent, commentor: (Auth.auth().currentUser?.uid)! , postId: post.id)
-                                homeViewModel.commentContent = ""
+                                _ = try await homeVM.createComment(content: homeVM.commentContent, commentor: (Auth.auth().currentUser?.uid)! , postId: post.id)
+                                homeVM.commentContent = ""
                         }
                         }) {
                             Circle()

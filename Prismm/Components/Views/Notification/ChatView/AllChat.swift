@@ -18,6 +18,10 @@ import SwiftUI
 import Firebase
 
 struct AllChat : View {
+    @State var currentUser:User?
+    @State var currentSetting:UserSetting?
+    
+    
     @State var searchTerm : String = ""
     @State var searchState : Bool = true
     @State var selected : Int = 0
@@ -25,8 +29,10 @@ struct AllChat : View {
     @State var isUserActive : Bool = true
     @ObservedObject var vm =  MainMessagesViewModel()
     private var chatLogViewModal = ChatLogViewModel(chatUser: nil)
+    @State var chatUser: User?
+    @State var showNewMessageScreen = false
     
-    @EnvironmentObject var dataControllerVM : DataControllerViewModel
+    
     var body: some View {
         NavigationStack{
             mainMessageScreen
@@ -35,9 +41,15 @@ struct AllChat : View {
                 ChatLogView(vm: chatLogViewModal)
             }
         }
+        .onAppear{
+            Task{
+                currentUser = try await APIService.fetchCurrentUserData()
+                currentSetting = try await APIService.fetchCurrentSettingData()
+            }
+        }
     }
     
-    @State var chatUser: User?
+    
     
     var mainMessageScreen : some View{
         NavigationStack{
@@ -241,7 +253,7 @@ struct AllChat : View {
                                 //                                }
                                 
                                 HStack(spacing: 10){
-                                    Text(dataControllerVM.currentUser!.username)
+                                    Text(currentUser!.username)
                                         .font(.title3)
                                         .fontWeight(.semibold)
                                         .onTapGesture {
@@ -275,7 +287,7 @@ struct AllChat : View {
         }
     }
     
-    @State var showNewMessageScreen = false
+    
     var newMessageButton : some View{
         Button{
             showNewMessageScreen.toggle()

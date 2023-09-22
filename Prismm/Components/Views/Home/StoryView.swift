@@ -19,8 +19,9 @@ import SwiftUI
 
 struct StoryView: View {
     //let story: Story
-    
-    @ObservedObject var homeViewModel = HomeViewModel()
+    @Binding var currentUser:User
+    @Binding var userSetting:UserSetting
+    @ObservedObject var homeVM: HomeViewModel
     
     var body: some View {
         GeometryReader {reader in
@@ -42,8 +43,8 @@ struct StoryView: View {
     }
 }
 
-struct StoryView_Previews: PreviewProvider {
-    static var previews: some View {
-        StoryView()
-    }
-}
+//struct StoryView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        StoryView()
+//    }
+//}

@@ -9,40 +9,26 @@ import SwiftUI
 import Firebase
 import FirebaseFirestoreSwift
 import UserNotifications
+import FirebaseAuth
 
 @main
 struct PrismmApp: App {
-    @StateObject var authVM = AuthenticationViewModel()
-    //@StateObject var settingVM = SettingViewModel()
-    @StateObject var homeVM = HomeViewModel()
-    @StateObject var profileVM = ProfileViewModel()
-    @StateObject var dataControllerVM = DataControllerViewModel()
+    @StateObject var manager = AppManager(isSignIn: Auth.auth().currentUser != nil ? true : false )
     
     var body: some Scene {
         WindowGroup {
-            if Auth.auth().currentUser == nil{
-                Login(authVM: authVM, homeVM: homeVM, profileVM: profileVM)
-                    .environmentObject(dataControllerVM)
+            if !manager.isSignIn {
+                Login()
+                    .environmentObject(manager)
             } else {
-                TabBar(authVM: authVM, homeVM: homeVM, profileVM: profileVM)
-                    .environmentObject(dataControllerVM)
-
+                TabBar()
+                    .environmentObject(manager)
             }
-                
         }
-        .onChange(of:  Auth.auth().currentUser) { newValue in
-            if newValue != nil {
-                Task{
-                    await dataControllerVM.setCurrentData()
-                }
-            }
-
-        }
-        
-        
     }
     
     init(){
         FirebaseApp.configure()
     }
 }
+

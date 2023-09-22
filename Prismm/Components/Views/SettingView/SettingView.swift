@@ -20,9 +20,12 @@ import Firebase
 import FirebaseFirestoreSwift
 
 struct SettingView : View {
-    @EnvironmentObject var dataControllerVM : DataControllerViewModel
+    @EnvironmentObject var manager: AppManager
     
-    @ObservedObject var settingVM:SettingViewModel
+    @Binding var currentUser:User
+    @Binding var userSetting:UserSetting
+    
+    @StateObject var settingVM = SettingViewModel()
     @Binding var isSetting: Bool
     
     var body: some View {
@@ -60,7 +63,7 @@ struct SettingView : View {
                             }) {
                                 ZStack {
                                     RoundedRectangle(cornerRadius: settingVM.cornerRadius)
-                                        .fill(!dataControllerVM.userSettings!.darkModeEnabled ? .gray.opacity(0.1) : .gray.opacity(0.4))
+                                        .fill(!userSetting.darkModeEnabled ? .gray.opacity(0.1) : .gray.opacity(0.4))
                                         .frame(height: settingVM.accountSettingHeight)
                                     HStack {
                                         
@@ -70,11 +73,11 @@ struct SettingView : View {
                                             .frame(width: settingVM.accountSettingImageWidth)
                                         
                                         VStack(alignment: .leading) {
-                                            Text(dataControllerVM.currentUser?.username ?? "")
+                                            Text(currentUser.username )
                                                 .font(settingVM.accountSettingUsernameFont)
                                                 .bold()
                                             
-                                            Text(dataControllerVM.currentUser?.account ?? "")
+                                            Text(currentUser.account! )
                                                 .opacity(0.8)
                                                 .accentColor(.white)
                                                 .font(settingVM.accountSettingEmailFont)
@@ -111,11 +114,11 @@ struct SettingView : View {
                                     }
                                     .pickerStyle(MenuPickerStyle())
                                     .onChange(of: settingVM.selectedLanguage) { newValue in
-                                        dataControllerVM.userSettings?.language = newValue
+                                        userSetting.language = newValue
                                         
                                         Task{
                                             await
-                                            settingVM.updateSettings(userSetting: dataControllerVM.userSettings!)
+                                            settingVM.updateSettings(userSetting: userSetting)
                                         }
                                         
                                     }
@@ -124,7 +127,7 @@ struct SettingView : View {
                                 .padding(.bottom)
                                 
                                 Divider()
-                                    .overlay(dataControllerVM.userSettings!.darkModeEnabled ? .gray : .gray)
+                                    .overlay(userSetting.darkModeEnabled ? .gray : .gray)
 
                                 HStack {
                                     Image(systemName: "moon")
@@ -141,11 +144,11 @@ struct SettingView : View {
                                     
                                     //setting
                                         .onChange(of: settingVM.isDarkModeEnabled) { newValue in
-                                            dataControllerVM.userSettings?.darkModeEnabled = newValue
+                                            userSetting.darkModeEnabled = newValue
 
                                             Task{
                                                 await
-                                                settingVM.updateSettings(userSetting: dataControllerVM.userSettings!)
+                                                settingVM.updateSettings(userSetting: userSetting)
                                             }
                                             
                                         }
@@ -156,7 +159,7 @@ struct SettingView : View {
                             .padding(.horizontal)
                             .padding(.top)
                             .background(RoundedRectangle(cornerRadius: proxy.size.width/40)
-                                .fill(!dataControllerVM.userSettings!.darkModeEnabled ? .gray.opacity(0.1) : .gray.opacity(0.4))
+                                .fill(!userSetting.darkModeEnabled ? .gray.opacity(0.1) : .gray.opacity(0.4))
                             )
                             .padding(.bottom)
                             
@@ -179,11 +182,11 @@ struct SettingView : View {
                                     
                                     Toggle("", isOn: $settingVM.isPushNotificationEnabled)
                                         .onChange(of: settingVM.isPushNotificationEnabled) { newValue in
-                                            dataControllerVM.userSettings?.pushNotificationsEnabled = newValue
+                                            userSetting.pushNotificationsEnabled = newValue
                                             
                                             Task{
                                                 await
-                                                settingVM.updateSettings(userSetting: dataControllerVM.userSettings!)
+                                                settingVM.updateSettings(userSetting: userSetting)
                                             }
                                             
                                         }
@@ -192,7 +195,7 @@ struct SettingView : View {
                                 
                                 
                                 Divider()
-                                    .overlay(dataControllerVM.userSettings!.darkModeEnabled ? .gray : .gray)
+                                    .overlay(userSetting.darkModeEnabled ? .gray : .gray)
 
                                 HStack {
                                     Image(systemName: "message")
@@ -208,11 +211,11 @@ struct SettingView : View {
                                     Toggle("", isOn: $settingVM.isMessageNotificationEnabled)
                                         .padding(.vertical)
                                         .onChange(of: settingVM.isMessageNotificationEnabled) { newValue in
-                                            dataControllerVM.userSettings?.messageNotificationsEnabled = newValue
+                                            userSetting.messageNotificationsEnabled = newValue
                                             
                                             Task{
                                                 await
-                                                settingVM.updateSettings(userSetting: dataControllerVM.userSettings!)
+                                                settingVM.updateSettings(userSetting: userSetting)
                                             }
                                             
                                         }
@@ -223,7 +226,7 @@ struct SettingView : View {
                             .padding(.horizontal)
                             .padding(.top)
                             .background(RoundedRectangle(cornerRadius: proxy.size.width/40)
-                                .fill(!dataControllerVM.userSettings!.darkModeEnabled ? .gray.opacity(0.1) : .gray.opacity(0.4))
+                                .fill(!userSetting.darkModeEnabled ? .gray.opacity(0.1) : .gray.opacity(0.4))
                             )
                             .padding(.bottom)
                             
@@ -254,7 +257,7 @@ struct SettingView : View {
                                 }
                                 
                                 Divider()
-                                    .overlay(dataControllerVM.userSettings!.darkModeEnabled ? .gray : .gray)
+                                    .overlay(userSetting.darkModeEnabled ? .gray : .gray)
 
                                 HStack {
                                     Button(action: {}) {
@@ -281,7 +284,7 @@ struct SettingView : View {
                             .padding(.horizontal)
                             .padding(.top)
                             .background(RoundedRectangle(cornerRadius: proxy.size.width/40)
-                                .fill(!dataControllerVM.userSettings!.darkModeEnabled ? .gray.opacity(0.1) : .gray.opacity(0.4))
+                                .fill(!userSetting.darkModeEnabled ? .gray.opacity(0.1) : .gray.opacity(0.4))
                             )
                             .padding(.bottom)
                             
@@ -315,7 +318,7 @@ struct SettingView : View {
                             .padding(.horizontal)
                             .padding(.top)
                             .background(RoundedRectangle(cornerRadius: proxy.size.width/40)
-                                .fill(!dataControllerVM.userSettings!.darkModeEnabled ? .gray.opacity(0.1) : .gray.opacity(0.4))
+                                .fill(!userSetting.darkModeEnabled ? .gray.opacity(0.1) : .gray.opacity(0.4))
                             )
                             .padding(.bottom)
                             
@@ -336,7 +339,10 @@ struct SettingView : View {
                                     Button("Sign Out", role: .destructive) {
                                         Task{
                                             try Auth.auth().signOut()
+                                            manager.isSignIn = false
+                                            
                                             isSetting = false
+                                            
                                         }
                                         
                                     }
@@ -352,23 +358,23 @@ struct SettingView : View {
                         .padding(.horizontal)
                         .sheet(isPresented: $settingVM.isAccountSettingSheetPresentedOniPad) {
                             NavigationView {
-                                SettingSheet(isSheetPresented: $settingVM.isAccountSettingSheetPresentedOniPad, settingVM: settingVM)
+                                SettingSheet(isSheetPresented: $settingVM.isAccountSettingSheetPresentedOniPad, currentUser: $currentUser, userSetting: $userSetting, settingVM: settingVM)
                             }
                         }
                         .fullScreenCover(isPresented: $settingVM.isAccountSettingSheetPresentedOniPhone) {
                             NavigationView {
-                                SettingSheet(isSheetPresented: $settingVM.isAccountSettingSheetPresentedOniPhone, settingVM: settingVM)
+                                SettingSheet(isSheetPresented: $settingVM.isAccountSettingSheetPresentedOniPhone, currentUser: $currentUser, userSetting: $userSetting, settingVM: settingVM)
                             }
                         }
                         .onAppear {
                             settingVM.proxySize = proxy.size
-                            settingVM.setValue(setting: dataControllerVM.userSettings!)
+                            settingVM.setValue(setting: userSetting)
                             
                         }
                 }
             }
-            .foregroundColor(dataControllerVM.userSettings!.darkModeEnabled ? .white : .black)
-            .background(!dataControllerVM.userSettings!.darkModeEnabled ? .white : .black)
+            .foregroundColor(userSetting.darkModeEnabled ? .white : .black)
+            .background(!userSetting.darkModeEnabled ? .white : .black)
         }
     }
 }

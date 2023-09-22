@@ -19,13 +19,8 @@ import SwiftUI
 struct TabBar: View {
     // Control state
     @State private var tabSelection = 0
-    @EnvironmentObject var dataControllerVM: DataControllerViewModel
+   
     
-    @ObservedObject var authVM :AuthenticationViewModel
-    @StateObject var settingVM = SettingViewModel()
-    @ObservedObject var homeVM: HomeViewModel
-    @ObservedObject var profileVM: ProfileViewModel
-
     // Localization
     @AppStorage("selectedLanguage") var selectedLanguage = "en"
 
@@ -33,7 +28,7 @@ struct TabBar: View {
         if UIDevice.current.userInterfaceIdiom == .phone{
             TabView(selection: $tabSelection) {
                 NavigationView {
-                    HomeView(authVM: authVM, settingVM: settingVM, homeViewModel: homeVM)
+                    HomeView()
                 }
                 .tag(0)
                 
@@ -54,7 +49,7 @@ struct TabBar: View {
                 
                 NavigationView {
 
-                    ProfileView( authVM: authVM ,settingVM: settingVM, profileVM: profileVM)
+                    ProfileView()
                 }
                 .tag(4)
             }
@@ -71,7 +66,7 @@ struct TabBar: View {
             NavigationStack {
                 TabView(selection: $tabSelection) {
                     NavigationView {
-                        HomeView(authVM: authVM, settingVM: settingVM, homeViewModel: homeVM)
+                        HomeView()
                     }
                     .tag(0)
                     
@@ -92,7 +87,7 @@ struct TabBar: View {
                     
                     NavigationView {
 
-                        ProfileView( authVM: authVM ,settingVM: settingVM, profileVM: profileVM)
+                        ProfileView()
                             
                     }
                     .tag(4)

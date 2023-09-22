@@ -21,9 +21,11 @@ struct Story {
     let id: String
     let creationDate: Timestamp
     var isActive: Bool
-    var contentSource: String
-    let author: String
-    var likers: [String?]
-    var unwrappedAuthor: User?
-    var unwrappedLikers: [User?]
+    
+    var mediaURL: String?
+    var mediaMimeType: String?
+    
+    let ownerId: String
+    var unwrappedOwner: User?
+
 }

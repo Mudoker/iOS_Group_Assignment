@@ -19,10 +19,13 @@ import Kingfisher
 import AVKit
 
 struct PostGridView: View {
-    @EnvironmentObject var dataControllerVM:DataControllerViewModel
+    
+    @Binding var currentUser:User
+    @Binding var userSetting:UserSetting
+    
     @ObservedObject var profileVM: ProfileViewModel
     
-    var columnsGrid: [GridItem] = [GridItem(.fixed((UIScreen.main.bounds.width/3) - 2), spacing: 1), GridItem(.fixed((UIScreen.main.bounds.width/3) - 3), spacing: 2), GridItem(.fixed((UIScreen.main.bounds.width/3) - 2), spacing: 1)]
+    var columnsGrid: [GridItem] = [GridItem(.fixed((UIScreen.main.bounds.width/3) - 2), spacing: 2), GridItem(.fixed((UIScreen.main.bounds.width/3) - 3), spacing: 2), GridItem(.fixed((UIScreen.main.bounds.width/3) - 2), spacing: 2)]
     
     var body: some View {
         ScrollView{
@@ -38,10 +41,7 @@ struct PostGridView: View {
                                 VideoPlayer(player: player)
                                     .scaledToFill()
                                     .frame(width: (UIScreen.main.bounds.width/3) - 2 , height: (UIScreen.main.bounds.width/3) - 2)
-                                    .onAppear {
-                                        // Optionally, you can play the video when it appears on the screen.
-                                        player.play()
-                                    }
+
                             } else {
                                 // Handle images using Kingfisher
                                 KFImage(mediaURL)
@@ -57,7 +57,7 @@ struct PostGridView: View {
                         }
                     } else {
                         // Handle the case where the media URL is invalid or empty.
-                        Image(dataControllerVM.userSettings!.darkModeEnabled ? "logodark" : "logolight")
+                        Image(userSetting.darkModeEnabled ? "logodark" : "logolight")
                     }
                 }
             }

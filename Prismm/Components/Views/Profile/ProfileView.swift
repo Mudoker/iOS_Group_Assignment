@@ -18,25 +18,24 @@ import SwiftUI
 import Kingfisher
 
 struct ProfileView: View {
+    @State var currentUser = User(id: "default", account: "default@gmail.com")
+    @State var userSetting = UserSetting(id: "default", darkModeEnabled: false, language: "en", faceIdEnabled: true, pushNotificationsEnabled: true, messageNotificationsEnabled: false)
+    
     @State var isSample = true
     
-    @EnvironmentObject var dataControllerVM : DataControllerViewModel
-    
-    @ObservedObject var authVM : AuthenticationViewModel
-    @ObservedObject var settingVM : SettingViewModel
-    @ObservedObject var profileVM : ProfileViewModel
+    @StateObject var profileVM = ProfileViewModel()
     
     var body: some View {
         
             
         VStack(alignment: .leading){
             
-            ProfileToolBar(authVM: authVM, profileVM: profileVM)
+            ProfileToolBar(currentUser: $currentUser, userSetting: $userSetting, profileVM: profileVM)
             
             //MARK: PROFILE INFO BLOCK
             VStack(alignment: .leading){
                 HStack(alignment: .center){
-                    if let mediaURL = URL(string: dataControllerVM.currentUser?.profileImageURL ?? "") {
+                    if let mediaURL = URL(string: currentUser.profileImageURL ?? "") {
                         
                         KFImage(mediaURL)
                             .resizable()
@@ -56,21 +55,21 @@ struct ProfileView: View {
                     VStack(alignment: .leading){
                         HStack(spacing: profileVM.infoBlockSpacing){
                             VStack{
-                                Text("\(dataControllerVM.currentUser?.posts.count ?? 111)")
+                                Text("\(currentUser.posts.count )")
                                     .fontWeight(.bold)
                                 Text(LocalizedStringKey("Posts"))
                                 
                             }
                             
                             VStack{
-                                Text("\(dataControllerVM.currentUser?.posts.count ?? 111)")
+                                Text("\(currentUser.posts.count )")
                                     .fontWeight(.bold)
                                 Text(LocalizedStringKey("Followers"))
                                 
                             }
                             
                             VStack{
-                                Text("\(dataControllerVM.currentUser?.posts.count ?? 111)")
+                                Text("\(currentUser.posts.count )")
                                     .fontWeight(.bold)
                                 Text(LocalizedStringKey("Following"))
                                 
@@ -109,11 +108,11 @@ struct ProfileView: View {
                 }
                 
                 HStack{
-                    Text(dataControllerVM.currentUser?.username ?? "Failed to get data")
+                    Text(currentUser.username)
                         .fontWeight(.bold)
                 }
                 HStack{
-                    Text(dataControllerVM.currentUser?.username ?? "Failed to get data")
+                    Text(currentUser.username)
                 }
             }
             
@@ -136,7 +135,7 @@ struct ProfileView: View {
 
                         } label: {
                             Image(systemName: isSample ? "chevron.up" : "chevron.down")
-                                .foregroundColor(dataControllerVM.userSettings!.darkModeEnabled ? .white : .black)
+                                .foregroundColor(userSetting.darkModeEnabled ? .white : .black)
                         }
 
                     }
@@ -156,7 +155,7 @@ struct ProfileView: View {
                             }
                             .frame(width: profileVM.plusButtonSize,height: profileVM.plusButtonSize)
                             .clipShape(Circle())
-                            .overlay(Circle().stroke(dataControllerVM.userSettings!.darkModeEnabled ? Color.white : Color.black).shadow(radius: 5))
+                            .overlay(Circle().stroke(userSetting.darkModeEnabled ? Color.white : Color.black).shadow(radius: 5))
 
                             Text(LocalizedStringKey("New"))
                         }
@@ -164,7 +163,7 @@ struct ProfileView: View {
                     } else {
                         Divider()
                             .frame(height: 1)
-                            .overlay(dataControllerVM.userSettings!.darkModeEnabled ? .white : .gray)
+                            .overlay(userSetting.darkModeEnabled ? .white : .gray)
                     }
 
 
@@ -187,7 +186,7 @@ struct ProfileView: View {
                             .resizable()
                             .scaledToFit()
                             .frame(height: profileVM.tabIconHeight) //not responsive
-                            .foregroundColor(profileVM.isShowAllUserPost == 1 ? (dataControllerVM.userSettings!.darkModeEnabled ? .white : .black) : .gray)
+                            .foregroundColor(profileVM.isShowAllUserPost == 1 ? (userSetting.darkModeEnabled ? .white : .black) : .gray)
                         
                     }
                     .frame(width: profileVM.tabButtonSize)
@@ -204,7 +203,7 @@ struct ProfileView: View {
                             .resizable()
                             .scaledToFit()
                             .frame(height: profileVM.tabIconHeight)    //not responsive
-                            .foregroundColor(!(profileVM.isShowAllUserPost == 1) ? (dataControllerVM.userSettings!.darkModeEnabled ? .white : .black) : .gray)
+                            .foregroundColor(!(profileVM.isShowAllUserPost == 1) ? (userSetting.darkModeEnabled ? .white : .black) : .gray)
                     }
                 }.frame(width: profileVM.tabButtonSize)
 
@@ -214,19 +213,19 @@ struct ProfileView: View {
             ZStack{
                 Divider()
                     .overlay {
-                        dataControllerVM.userSettings!.darkModeEnabled ? Color.white : Color.black
+                        userSetting.darkModeEnabled ? Color.white : Color.black
                     }
                 
                 Divider()
                     .frame(width: profileVM.tabIndicatorWidth ,height: 1)
                     .overlay {
-                        dataControllerVM.userSettings!.darkModeEnabled ? Color.white : Color.black
+                        userSetting.darkModeEnabled ? Color.white : Color.black
                     }
                     .offset(x: profileVM.indicatorOffset)
             } //divider
             
             TabView(selection: $profileVM.isShowAllUserPost) {
-                PostGridView(profileVM: profileVM)
+                PostGridView(currentUser: $currentUser, userSetting: $userSetting, profileVM: profileVM)
                     .tag(1)
                 
                 
@@ -243,16 +242,19 @@ struct ProfileView: View {
         .frame(minWidth: 0,maxWidth: .infinity)
         .onAppear {
             profileVM.proxySize = UIScreen.main.bounds.size
+            
             Task{
-                try await profileVM.fetchUserPosts(UserID: dataControllerVM.currentUser?.id ?? "")
+                currentUser = try await APIService.fetchCurrentUserData()!
+                userSetting = try await APIService.fetchCurrentSettingData()!
+                try await profileVM.fetchUserPosts(UserID: currentUser.id )
             }
             
         }
         .fullScreenCover(isPresented: $profileVM.isSetting) {
-            SettingView(settingVM: settingVM, isSetting: $profileVM.isSetting)
+            SettingView(currentUser: $currentUser, userSetting: $userSetting, isSetting: $profileVM.isSetting)
         }
-        .foregroundColor(dataControllerVM.userSettings!.darkModeEnabled ? .white : .black)
-        .background(!dataControllerVM.userSettings!.darkModeEnabled ? .white : .black)
+        .foregroundColor(userSetting.darkModeEnabled ? .white : .black)
+        .background(!userSetting.darkModeEnabled ? .white : .black)
     }
 
 }

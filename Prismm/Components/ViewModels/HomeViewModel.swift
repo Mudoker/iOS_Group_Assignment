@@ -21,6 +21,7 @@ import FirebaseStorage
 import MobileCoreServices
 import AVFoundation
 import FirebaseFirestoreSwift
+import FirebaseFirestore
 
 class HomeViewModel: ObservableObject {
     @Published var isCreateNewPostOnIpad = false
@@ -42,6 +43,7 @@ class HomeViewModel: ObservableObject {
     @Published var isBlockUserAlert = false
     @Published var isDeletePostAlert = false
     @Published var isTurnOffCommentAlert = false
+    @Published var isSignOutAlertPresented = false
     @Published var selectedCommentFilter = "Newest"
     @Published var fetchedAllPosts = [Post]()
     @Published var currentUserFavouritePost = [FavouritePost]()
@@ -257,22 +259,7 @@ class HomeViewModel: ObservableObject {
         }
     }
     
-    //upload the media data to database storage
-    func uploadMediaToFireBase(withMedia data: Data) async throws -> String? {
-        let fileName = UUID().uuidString
-        let mediaRef = Storage.storage().reference().child("/media/\(fileName)")
-        let metaData  = StorageMetadata()
-        metaData.contentType = mimeType(for: data)
-        
-        do {
-            let _ = try await mediaRef.putDataAsync(data, metadata: metaData)
-            let downloadURL = try await mediaRef.downloadURL()
-            return downloadURL.absoluteString
-        } catch {
-            print("Media upload failed: \(error.localizedDescription)")
-            return nil
-        }
-    }
+
     
     func createComment(content: String, commentor: String, postId: String) async throws -> Comment?{
         let commentRef = Firestore.firestore().collection("test_comments").document()
@@ -379,7 +366,7 @@ class HomeViewModel: ObservableObject {
         var mediaMimeType = ""
         
         if newPostSelectedMedia != nil{
-            mediaURL = try await createMediaToFirebase()
+            mediaURL = try await APIService.createMediaToFirebase(newPostSelectedMedia: newPostSelectedMedia!)
             mediaMimeType = mimeType(for: try Data(contentsOf: newPostSelectedMedia as? URL ?? URL(fileURLWithPath: "")))
         }
         
@@ -602,7 +589,7 @@ class HomeViewModel: ObservableObject {
     func blockOtherUser(forUserID userIDToBlock: String) async throws {
         do {
             let userBlockListCollection = Firestore.firestore().collection("test_block")
-            let currentUserID = "ao2PKDpap4Mq7M5cn3Nrc1Mvoa42" // Replace with the actual current user's ID
+            let currentUserID = "ao2PKDpap4Mq7M5cn3Nrc1Mvoa42" //MARK: Replace with the actual current user's ID
             
             // Use a Firestore query to check if the user has already blocked another user
             let queryCurrentUserBlockList = userBlockListCollection.whereField("ownerId", isEqualTo: currentUserID)
@@ -814,35 +801,7 @@ class HomeViewModel: ObservableObject {
     }
     
     //convert the media data and upload to firebase and return the url of the media storage
-    func createMediaToFirebase() async throws -> String {
-        print("Uploading media")
-        
-        guard let selectedMedia = newPostSelectedMedia else {
-            print("Failed to get data")
-            return ""
-        }
-        print(selectedMedia)
-        
-        do {
-            let mediaData = try Data(contentsOf: selectedMedia as URL)
-            print("Completed converting data")
-            
-            if mediaData.count > 25_000_000 {
-                print("Selected file too large: \(mediaData)")
-                return ""
-            }
-            
-            guard let mediaUrl = try await uploadMediaToFireBase(withMedia: mediaData) else {
-                return ""
-            }
-            
-            print("Uploaded media data to Firebase")
-            return mediaUrl
-        } catch {
-            print("Failed to upload post: \(error)")
-            return ""
-        }
-    }
+
     
     // Get like count for current post
     @MainActor
