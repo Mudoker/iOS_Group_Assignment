@@ -55,21 +55,21 @@ struct ProfileView: View {
                     VStack(alignment: .leading){
                         HStack(spacing: profileVM.infoBlockSpacing){
                             VStack{
-                                Text("\(currentUser.posts.count )")
+                                Text("0")
                                     .fontWeight(.bold)
                                 Text(LocalizedStringKey("Posts"))
                                 
                             }
                             
                             VStack{
-                                Text("\(currentUser.posts.count )")
+                                Text("0")
                                     .fontWeight(.bold)
                                 Text(LocalizedStringKey("Followers"))
                                 
                             }
                             
                             VStack{
-                                Text("\(currentUser.posts.count )")
+                                Text("0")
                                     .fontWeight(.bold)
                                 Text(LocalizedStringKey("Following"))
                                 

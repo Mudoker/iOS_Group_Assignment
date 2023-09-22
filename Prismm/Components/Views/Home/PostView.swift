@@ -64,7 +64,7 @@ struct PostView: View {
                 
                 
                 VStack (alignment: .leading, spacing: UIScreen.main.bounds.height * 0.01) {
-                    if let user = post.user {
+                    if let user = post.unwrappedOwner {
                         Text(user.username)
                             .font(Font.system(size: homeViewModel.usernameFont, weight: .semibold))
                     }

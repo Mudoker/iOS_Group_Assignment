@@ -217,6 +217,10 @@ struct Login: View {
                     .padding(.horizontal)
                     .onAppear {
                         authVM.proxySize = proxy.size
+                        
+                    }
+                    .onChange(of: manager.isSignIn) { newValue in
+                        authVM.resetView()
                     }
                     
                     if authVM.isFetchingData {
@@ -224,6 +228,7 @@ struct Login: View {
                         ProgressView("Loading...")
                     }
                 }
+               
                 .background((colorScheme == .dark) ? .black : .white)
             }
             .ignoresSafeArea(.keyboard)

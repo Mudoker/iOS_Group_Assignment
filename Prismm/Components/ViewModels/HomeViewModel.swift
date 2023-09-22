@@ -413,15 +413,12 @@ class HomeViewModel: ObservableObject {
             id: postRef.documentID,
             ownerID: ownerID,
             caption: createNewPostCaption,
-            likerIDs: [],
+
             mediaURL: mediaURL,
             mediaMimeType: mediaMimeType,
             tag: selectedPostTag,
             creationDate: Timestamp(),
-            isAllowComment: true,
-            author: nil,
-            user: nil,
-            unwrappedLikers: []
+            isAllowComment: true
         )
         print("create Post")
         guard let encodedPost = try? Firestore.Encoder().encode(newPost) else {
@@ -472,54 +469,54 @@ class HomeViewModel: ObservableObject {
         }
     }
     
-    @MainActor
-    func fetchPostsRealTime() {
-        if postsListenerRegistration == nil {
-            postsListenerRegistration = Firestore.firestore().collection("test_posts").addSnapshotListener { [weak self] querySnapshot, error in
-                guard let self = self else { return }
-                
-                if let error = error {
-                    print("Error fetching posts: \(error)")
-                    return
-                }
-                
-                guard let documents = querySnapshot?.documents else {
-                    print("No documents")
-                    return
-                }
-                
-                self.fetchedAllPosts = documents.compactMap { queryDocumentSnapshot in
-                    try? queryDocumentSnapshot.data(as: Post.self)
-                }
-                
-                self.fetchedAllPosts = sortPostByTime(order: "desc", posts: self.fetchedAllPosts)
-                
-                for i in 0..<self.fetchedAllPosts.count {
-                    for likerID in self.fetchedAllPosts[i].likerIDs {
-                        Task {
-                            do {
-                                let liker = try await APIService.fetchUser(withUserID: likerID ?? "")
-                                self.fetchedAllPosts[i].unwrappedLikers.append(liker)
-                            } catch {
-                                print("Error fetching liker: \(error)")
-                            }
-                        }
-                    }
-                    
-                    let post = self.fetchedAllPosts[i]
-                    let ownerID = post.ownerID
-                    Task {
-                        do {
-                            let postUser = try await APIService.fetchUser(withUserID: ownerID)
-                            self.fetchedAllPosts[i].user = postUser
-                        } catch {
-                            print("Error fetching post user: \(error)")
-                        }
-                    }
-                }
-            }
-        }
-    }
+//    @MainActor
+//    func fetchPostsRealTime() {
+//        if postsListenerRegistration == nil {
+//            postsListenerRegistration = Firestore.firestore().collection("test_posts").addSnapshotListener { [weak self] querySnapshot, error in
+//                guard let self = self else { return }
+//
+//                if let error = error {
+//                    print("Error fetching posts: \(error)")
+//                    return
+//                }
+//
+//                guard let documents = querySnapshot?.documents else {
+//                    print("No documents")
+//                    return
+//                }
+//
+//                self.fetchedAllPosts = documents.compactMap { queryDocumentSnapshot in
+//                    try? queryDocumentSnapshot.data(as: Post.self)
+//                }
+//
+//                self.fetchedAllPosts = sortPostByTime(order: "desc", posts: self.fetchedAllPosts)
+//
+//                for i in 0..<self.fetchedAllPosts.count {
+//                    for likerID in self.fetchedAllPosts[i].likerIDs {
+//                        Task {
+//                            do {
+//                                let liker = try await APIService.fetchUser(withUserID: likerID ?? "")
+//                                self.fetchedAllPosts[i].unwrappedLikers.append(liker)
+//                            } catch {
+//                                print("Error fetching liker: \(error)")
+//                            }
+//                        }
+//                    }
+//
+//                    let post = self.fetchedAllPosts[i]
+//                    let ownerID = post.ownerID
+//                    Task {
+//                        do {
+//                            let postUser = try await APIService.fetchUser(withUserID: ownerID)
+//                            self.fetchedAllPosts[i].user = postUser
+//                        } catch {
+//                            print("Error fetching post user: \(error)")
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//    }
     
     @MainActor
     func fetchPosts() async throws {
@@ -547,7 +544,7 @@ class HomeViewModel: ObservableObject {
                 
                 do {
                     let user = try await APIService.fetchUser(withUserID: ownerID)
-                    fetchedAllPosts[i].user = user
+                    fetchedAllPosts[i].unwrappedOwner = user
                 } catch {
                     print("Error fetching user: \(error)")
                 }

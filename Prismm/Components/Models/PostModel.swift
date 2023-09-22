@@ -19,7 +19,7 @@ import Firebase
 
 struct Post: Identifiable, Codable {
     let id: String
-    let ownerID: String
+    var ownerID: String
     var caption: String?
 
     var mediaURL: String?

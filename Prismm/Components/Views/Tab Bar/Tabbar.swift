@@ -20,6 +20,7 @@ struct TabBar: View {
     // Control state
     @State private var tabSelection = 0
    
+    @EnvironmentObject var manager: AppManager
     
     // Localization
     @AppStorage("selectedLanguage") var selectedLanguage = "en"
@@ -62,6 +63,11 @@ struct TabBar: View {
             .overlay(alignment: .bottom) {
                 CustomTabbar(tabSelection: $tabSelection)
             }
+            .onChange(of: manager.isSignIn, perform: { newValue in
+                print("reload")
+                tabSelection = 0
+            })
+
         } else {
             NavigationStack {
                 TabView(selection: $tabSelection) {
@@ -104,6 +110,11 @@ struct TabBar: View {
                 }
             }
             .navigationViewStyle(StackNavigationViewStyle())
+            .onChange(of: manager.isSignIn, perform: { newValue in
+                print("reload")
+                tabSelection = 0
+            })
+
         }
     }
 }

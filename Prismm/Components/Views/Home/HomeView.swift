@@ -21,9 +21,6 @@ struct HomeView: View {
    
     @StateObject var homeViewModel = HomeViewModel()
     
-    @ObservedObject var authVM :AuthenticationViewModel
-    @ObservedObject var settingVM:SettingViewModel
-    @ObservedObject var homeViewModel: HomeViewModel
     @State var selectedPost = Post(id: "", ownerID: "", creationDate: Timestamp(), isAllowComment: true)
         @State var isLoadingPost = false
     var body: some View {
@@ -77,7 +74,7 @@ struct HomeView: View {
                         ScrollView(.horizontal, showsIndicators: false) {
                             HStack(spacing: 40) {
                                 ForEach(0..<5, id: \.self) { _ in
-                                    StoryView()
+                                    StoryView(currentUser: $currentUser, userSetting: $userSetting, homeVM: homeViewModel)
                                         .frame(width: homeViewModel.storyViewWidth, height: homeViewModel.storyViewHeight)
                                 }
                             }
@@ -88,7 +85,7 @@ struct HomeView: View {
                         if !isLoadingPost {
                             VStack {
                                     ForEach(homeViewModel.fetchedAllPosts) { post in
-                                        PostView(post: post, homeViewModel: homeViewModel, settingVM: settingVM, select: $selectedPost)
+                                        PostView(post: post,currentUser: $currentUser, userSetting: $userSetting ,homeViewModel: homeViewModel, select: $selectedPost)
                                             .padding(.bottom, 50)
                                     }
                                     
@@ -98,7 +95,7 @@ struct HomeView: View {
                                         .overlay(
                                             LinearGradient(
                                                 gradient: Gradient(
-                                                    colors: settingVM.isDarkModeEnabled ? Constants.buttonGradientColorDark : Constants.buttonGradientColorLight
+                                                    colors: userSetting.darkModeEnabled ? Constants.buttonGradientColorDark : Constants.buttonGradientColorLight
                                                 ),
                                                 startPoint: .topLeading,
                                                 endPoint: .bottomTrailing
@@ -123,18 +120,18 @@ struct HomeView: View {
                     
                     .sheet(isPresented: $homeViewModel.isCreateNewPostOnIpad) {
 
-                        CreatePostView(authVM: authVM, settingVM: settingVM, homeVM: homeViewModel, isNewPost: $homeViewModel.isCreateNewPostOnIpad, isDarkModeEnabled: dataControllerVM.userSettings?.darkModeEnabled ?? false)
+                        CreatePostView(currentUser: $currentUser, userSetting: $userSetting ,homeVM: homeViewModel, isNewPost: $homeViewModel.isCreateNewPostOnIpad, isDarkModeEnabled: userSetting.darkModeEnabled )
 
                     }
                     .fullScreenCover(isPresented: $homeViewModel.isCreateNewPostOnIphone) {
-                        CreatePostView(authVM: authVM, settingVM: settingVM, homeVM: homeViewModel, isNewPost: $homeViewModel.isCreateNewPostOnIphone, isDarkModeEnabled: dataControllerVM.userSettings?.darkModeEnabled ?? false)
+                        CreatePostView(currentUser: $currentUser, userSetting: $userSetting ,homeVM: homeViewModel, isNewPost: $homeViewModel.isCreateNewPostOnIphone, isDarkModeEnabled: userSetting.darkModeEnabled )
                     }
                     
                     .sheet(isPresented: $homeViewModel.isOpenCommentViewOnIpad) {
-                        CommentView(isDarkModeEnabled: dataControllerVM.userSettings!.darkModeEnabled, isShowComment: $homeViewModel.isOpenCommentViewOnIpad, homeViewModel: homeViewModel, post: selectedPost)
+                        CommentView(isDarkModeEnabled: userSetting.darkModeEnabled, isShowComment: $homeViewModel.isOpenCommentViewOnIpad, currentUser: $currentUser, userSetting: $userSetting, homeVM: homeViewModel, post: selectedPost)
                     }
                     .fullScreenCover(isPresented: $homeViewModel.isOpenCommentViewOnIphone) {
-                        CommentView(isDarkModeEnabled: dataControllerVM.userSettings!.darkModeEnabled, isShowComment: $homeViewModel.isOpenCommentViewOnIphone, homeViewModel: homeViewModel, post: selectedPost)
+                        CommentView(isDarkModeEnabled: userSetting.darkModeEnabled, isShowComment: $homeViewModel.isOpenCommentViewOnIphone, currentUser: $currentUser, userSetting: $userSetting, homeVM: homeViewModel, post: selectedPost)
                     }
 
                     .onAppear {
@@ -163,8 +160,8 @@ struct HomeView: View {
         }
         .onAppear{
             Task{
-                currentUser = try await APIService.fetchCurrentUserData()!
-                userSetting = try await APIService.fetchCurrentSettingData()!
+                currentUser = try await APIService.fetchCurrentUserData() ?? User(id: "default", account: "default@gmail.com")
+                userSetting = try await APIService.fetchCurrentSettingData() ?? UserSetting(id: "default", darkModeEnabled: false, language: "en", faceIdEnabled: false, pushNotificationsEnabled: false, messageNotificationsEnabled: false)
             }
         }
     }

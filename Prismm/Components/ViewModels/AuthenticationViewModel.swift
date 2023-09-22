@@ -42,12 +42,16 @@ class AuthenticationViewModel: ObservableObject {
     @Published var isReenteredPasswordValid = false
     @Published var isUserNameValid = false
     @Published var isFetchingData = false
-    @Published var loginAccountText = ""
-    @Published var loginPasswordText = ""
+    
+    
     @Published var isShowloginPassword = ""
+    
+    @Published var loginPasswordText = ""
+    @Published var loginAccountText = ""
     @Published var signUpAccountText = ""
     @Published var signUpPasswordText = ""
     @Published var signUpReEnterPasswordText = ""
+    
     @Published var isShowSignUpPassword = ""
     @Published var isShowSignUpReEnterPassword = ""
     
@@ -141,6 +145,14 @@ class AuthenticationViewModel: ObservableObject {
             hasSignUpError = true
             print("Error during sign-up: \(error.localizedDescription)")
         }
+    }
+    
+    func resetView(){
+        loginPasswordText = ""
+        loginAccountText = ""
+        signUpAccountText = ""
+        signUpPasswordText = ""
+        signUpReEnterPasswordText = ""
     }
     
     func resetUserPassword(withEmail email: String) async throws {

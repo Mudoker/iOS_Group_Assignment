@@ -140,6 +140,11 @@ class SettingViewModel: ObservableObject {
     
     func updateSettings(userSetting: UserSetting) async {
         let userID = Auth.auth().currentUser?.uid ?? ""
+        
+        if userID == ""{
+            return
+        }
+        
         guard let settingsSnapshot = try? await Firestore.firestore().collection("test_settings").document(userID).getDocument() else {
             return
         }
