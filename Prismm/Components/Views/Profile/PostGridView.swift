@@ -19,13 +19,14 @@ import Kingfisher
 import AVKit
 
 struct PostGridView: View {
+    @EnvironmentObject var dataControllerVM:DataControllerViewModel
     @ObservedObject var profileVM: ProfileViewModel
     
-    var columnsGrid: [GridItem] = [GridItem(.fixed((UIScreen.main.bounds.width/3) - 2), spacing: 2), GridItem(.fixed((UIScreen.main.bounds.width/3) - 2), spacing: 2), GridItem(.fixed((UIScreen.main.bounds.width/3) - 2), spacing: 2)]
+    var columnsGrid: [GridItem] = [GridItem(.fixed((UIScreen.main.bounds.width/3) - 2), spacing: 1), GridItem(.fixed((UIScreen.main.bounds.width/3) - 3), spacing: 2), GridItem(.fixed((UIScreen.main.bounds.width/3) - 2), spacing: 1)]
     
     var body: some View {
         ScrollView{
-            LazyVGrid(columns: columnsGrid, spacing: 2) {
+            LazyVGrid(columns: columnsGrid, spacing: 2 ) {
                 ForEach(profileVM.posts) { post in
                     if let mediaURL = URL(string: post.mediaURL ?? "") {
                         if let mimeType = post.mediaMimeType {
@@ -35,7 +36,7 @@ struct PostGridView: View {
                                 let player = AVPlayer(playerItem: playerItem)
                                 
                                 VideoPlayer(player: player)
-                                    .scaledToFit()
+                                    .scaledToFill()
                                     .frame(width: (UIScreen.main.bounds.width/3) - 2 , height: (UIScreen.main.bounds.width/3) - 2)
                                     .onAppear {
                                         // Optionally, you can play the video when it appears on the screen.
@@ -45,7 +46,7 @@ struct PostGridView: View {
                                 // Handle images using Kingfisher
                                 KFImage(mediaURL)
                                     .resizable()
-                                    .scaledToFit()
+                                    .scaledToFill()
                                     .frame(width: (UIScreen.main.bounds.width/3) - 2 , height: (UIScreen.main.bounds.width/3) - 2)
                                     .background(Color.gray)
                                     .clipShape(Rectangle())
@@ -56,7 +57,7 @@ struct PostGridView: View {
                         }
                     } else {
                         // Handle the case where the media URL is invalid or empty.
-                        Text("Invalid media URL")
+                        Image(dataControllerVM.userSettings!.darkModeEnabled ? "logodark" : "logolight")
                     }
                 }
             }

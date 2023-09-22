@@ -8,7 +8,7 @@
 import Foundation
 
 class DataControllerViewModel: ObservableObject{
-    @Published var currentUser: User? = User(id: "test", password: "testpassword", username: "testUsername")
+    @Published var currentUser: User? = User(id: "defaultID", account: "defaultEmail@gmail.com")
     @Published var userSettings:UserSetting? = UserSetting(id: "test", darkModeEnabled: false, language: "en", faceIdEnabled: true, pushNotificationsEnabled: false, messageNotificationsEnabled: false)
     
     

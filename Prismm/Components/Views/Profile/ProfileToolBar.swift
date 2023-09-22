@@ -35,10 +35,10 @@ struct ProfileToolBar: View {
                 profileVM.isSetting = true
             } label: {
                 Image(systemName: "gear")
-                    .foregroundColor(.black)
                     .font(.system(size: profileVM.toolBarSettingButtonSize))
             }
         }
+        .foregroundColor(dataControllerVM.userSettings!.darkModeEnabled ? .white : .black)
 
     }
 }

@@ -178,11 +178,7 @@ class SettingViewModel: ObservableObject {
             if updatedUser.facebook != newProfileFacebook {
                 updatedUser.facebook = newProfileFacebook
             }
-            
-            if updatedUser.gmail != newProfileGmail {
-                updatedUser.gmail = newProfileGmail
-            }
-            
+
             if updatedUser.linkedIn != newProfileLinkedIn {
                 updatedUser.linkedIn = newProfileLinkedIn
             }

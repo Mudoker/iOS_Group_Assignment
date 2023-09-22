@@ -19,13 +19,12 @@ import Foundation
 struct User: Identifiable, Codable {
     let id: String
     var username: String
-    var fullName: String?
-    var password: String
+    var account: String?
+
     var phoneNumber: String?
     var bio: String?
     var profileImageURL: String?
     var facebook: String?
-    var gmail: String?
     var linkedIn: String?
     
     var followers: [String?] // User IDs of followers
@@ -40,17 +39,17 @@ struct User: Identifiable, Codable {
     var restrictedByList: [String?] // User IDs in restricted list
     var blockByList: [String?] // User IDs in block list
     
-    init(id: String, password: String, username: String) {
+    init(id: String, account: String) {
         self.id = id
-        self.username = username
-        self.fullName = ""
-        self.password = password
+        self.username = account.replacingOccurrences(of: "@gmail.com", with: "")
+        self.account = account
+
         self.phoneNumber = ""
         self.bio = ""
         self.profileImageURL = ""
         self.facebook = ""
-        self.gmail = ""
         self.linkedIn = ""
+        
         self.followers = []
         self.following = []
         self.posts = []

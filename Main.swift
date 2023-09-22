@@ -26,15 +26,17 @@ struct PrismmApp: App {
             } else {
                 TabBar(authVM: authVM, homeVM: homeVM, profileVM: profileVM)
                     .environmentObject(dataControllerVM)
-                    .onAppear{
-                        Task{
-                            await dataControllerVM.setCurrentData()
-                        }
-
-                    }
 
             }
                 
+        }
+        .onChange(of:  Auth.auth().currentUser) { newValue in
+            if newValue != nil {
+                Task{
+                    await dataControllerVM.setCurrentData()
+                }
+            }
+
         }
         
         

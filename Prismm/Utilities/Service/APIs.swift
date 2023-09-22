@@ -46,14 +46,15 @@ struct APIService {
     // Fetch userdata from Firebase
     static func fetchCurrentUserData() async throws -> User? {
         // Simulate fetching data with a delay
-        guard let currentUserId = Auth.auth().currentUser?.uid else { return nil }
-        guard let userSnapshot = try? await Firestore.firestore().collection("users").document(currentUserId).getDocument() else { return nil }
+        guard let currentUser = Auth.auth().currentUser else { return nil }
+        guard let userSnapshot = try? await Firestore.firestore().collection("users").document(currentUser.uid).getDocument() else { return nil }
         
         if !userSnapshot.exists {
             do {
-                let newUser = User(id: currentUserId, password: "password", username: currentUserId)
+                let newUser = User(id: currentUser.uid, account: currentUser.email!)
+                
                 let encodedUser = try Firestore.Encoder().encode(newUser)
-                try await Firestore.firestore().collection("users").document(currentUserId).setData(encodedUser)
+                try await Firestore.firestore().collection("users").document(currentUser.uid).setData(encodedUser)
                 
                 return newUser
             } catch {

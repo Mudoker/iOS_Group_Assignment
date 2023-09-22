@@ -127,7 +127,7 @@ class AuthenticationViewModel: ObservableObject {
             self.userSession = authSnapshot.user
             
             // Create user data
-            let newUser = User(id: authSnapshot.user.uid, password: password, username: email)
+            let newUser = User(id: authSnapshot.user.uid ,account: email)
             let encodedUser = try Firestore.Encoder().encode(newUser)
             
             // Create initial user settings data

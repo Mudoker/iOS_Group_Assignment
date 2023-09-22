@@ -70,11 +70,11 @@ struct SettingView : View {
                                             .frame(width: settingVM.accountSettingImageWidth)
                                         
                                         VStack(alignment: .leading) {
-                                            Text(dataControllerVM.currentUser?.fullName ?? "")
+                                            Text(dataControllerVM.currentUser?.username ?? "")
                                                 .font(settingVM.accountSettingUsernameFont)
                                                 .bold()
                                             
-                                            Text(dataControllerVM.currentUser?.username ?? "")
+                                            Text(dataControllerVM.currentUser?.account ?? "")
                                                 .opacity(0.8)
                                                 .accentColor(.white)
                                                 .font(settingVM.accountSettingEmailFont)
@@ -142,7 +142,7 @@ struct SettingView : View {
                                     //setting
                                         .onChange(of: settingVM.isDarkModeEnabled) { newValue in
                                             dataControllerVM.userSettings?.darkModeEnabled = newValue
-                                            
+
                                             Task{
                                                 await
                                                 settingVM.updateSettings(userSetting: dataControllerVM.userSettings!)
