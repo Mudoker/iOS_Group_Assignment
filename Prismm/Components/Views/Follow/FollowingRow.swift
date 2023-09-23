@@ -20,6 +20,8 @@ struct FollowingRow: View {
     //Control state
     @ObservedObject var fvm: FollowViewModel
     
+    var user:User
+    
     var body: some View {
         HStack{
             //  User information
@@ -30,10 +32,10 @@ struct FollowingRow: View {
                 .clipShape(Circle())
             
             VStack(alignment: .leading){
-                Text("UserName")
+                Text(user.username)
                     .font(.system(size: CGFloat(fvm.rowUserNameFontSize)))
                 
-                Text("bio")
+                Text(user.bio ?? "")
                     .font(.system(size: CGFloat(fvm.rowBioFontSize)))
                     .opacity(0.4)
             }
@@ -45,8 +47,12 @@ struct FollowingRow: View {
             HStack(spacing: UIDevice().userInterfaceIdiom == .phone ? 10 : 15){
                 Button {
                     //Unfollow
+                
+                    Task {
+                         try await APIService.unfollowOtherUser(forUserID: user.id)
+                    }
                 } label: {
-                    Text("Following")
+                    Text(  "Following" )//: "Follow")
                         .font(.system(size: CGFloat(fvm.rowButtonFontSize)))
                         .fontWeight(.bold)
                         .foregroundColor(fvm.colorTheme)
@@ -72,8 +78,8 @@ struct FollowingRow: View {
     }
 }
 
-struct FollowingRow_Previews: PreviewProvider {
-    static var previews: some View {
-        FollowingRow(fvm: FollowViewModel())
-    }
-}
+//struct FollowingRow_Previews: PreviewProvider {
+//    static var previews: some View {
+//        FollowingRow(fvm: FollowViewModel())
+//    }
+//}

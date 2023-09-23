@@ -19,7 +19,10 @@ import SwiftUI
 
 class FollowViewModel: ObservableObject{
     // Control State
-    @Published var followerList = ["testAvt","testAvt","testAvt","testAvt","testAvt"]
+    @Published var followerList : [User] = []
+    @Published var followingList : [User] = []
+    
+    
     @Published var searchText = ""
     @Published var tabSelection = 1{
         didSet{
@@ -80,4 +83,31 @@ class FollowViewModel: ObservableObject{
     func changeTheme(isDarkMode: Bool) {
         self.isDarkMode = isDarkMode
     }
+    
+    @MainActor
+    func fetchFollowData() async {
+
+            do{
+                
+                followingList.removeAll()
+                followerList.removeAll()
+                let userFollowListObj = try await APIService.fetchCurrentUserFollowList()
+                for userID in userFollowListObj!.followIds{
+                    let user = try await APIService.fetchUser(withUserID: userID)
+                    
+                    self.followingList.append(user)
+                }
+                
+                for userID in userFollowListObj!.beFollowedBy{
+                    let user = try await APIService.fetchUser(withUserID: userID)
+                    
+                    self.followerList.append(user)
+                }
+                
+            }catch{
+                return
+            }
+        }
+
+    
 }

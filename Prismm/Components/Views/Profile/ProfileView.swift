@@ -23,6 +23,7 @@ struct ProfileView: View {
     @State var userSetting = UserSetting(id: "default", darkModeEnabled: false, language: "en", faceIdEnabled: true, pushNotificationsEnabled: true, messageNotificationsEnabled: false)
     @State var isSample = true
     @StateObject var profileVM = ProfileViewModel()
+    @StateObject var fvm = FollowViewModel()
     
     var body: some View {
         VStack(alignment: .leading){
@@ -60,7 +61,7 @@ struct ProfileView: View {
                             
                             
                             NavigationLink {
-                                FollowView()
+                                FollowView(fvm: fvm, currentUser: $currentUser, userSetting: $userSetting)
                             } label: {
                                 VStack{
                                     Text("0")
@@ -70,13 +71,8 @@ struct ProfileView: View {
                             }
                             
                             
-                            
-                            
-                            
-                            
-                            
                             NavigationLink {
-                                FollowView()
+                                FollowView(fvm: fvm,currentUser: $currentUser, userSetting: $userSetting)
                             } label: {
                                 VStack{
                                     Text("0")
@@ -84,8 +80,6 @@ struct ProfileView: View {
                                     Text(LocalizedStringKey("Following"))
                                 }
                             }
-                            
-                            
                             
                             
                         }

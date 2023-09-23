@@ -30,7 +30,7 @@ struct User: Identifiable, Codable {
     
     init(id: String, account: String) {
         self.id = id
-        self.username = account.replacingOccurrences(of: "@gmail.com", with: "")
+        self.username = account.extractNameFromEmail()!
         self.account = account
 
         self.phoneNumber = ""
