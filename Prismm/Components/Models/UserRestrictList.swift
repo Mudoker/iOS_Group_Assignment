@@ -8,8 +8,6 @@
 import Foundation
 import Firebase
 
-struct UserRestrictList: Identifiable, Codable {
-    let id: String
-    let ownerId: String
+struct UserRestrictList: Codable {
     let restrictIds: [String]
 }

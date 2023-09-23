@@ -9,6 +9,19 @@
 //
 //struct Test_Notification: View {
 //    @ObservedObject var notiVM = NotificationViewModel()
+//    var body: some View {
+//        VStack {
+//            Button(action: {
+//                Task {
+////                    _ = try await notiVM.createNotification(senderName: "Quoc" ,receiverId: "3WBgDcMgEQfodIbaXWTBHvtjYCl2", message: "liked your post", postLink: "",category: .react)
+//                }
+//            }) {
+//                Text("Create Notification")
+//            }
+//        }
+//    }
+//}
+//
 //    var pushNotification = NotificationManager()
 //
 //    var body: some View {

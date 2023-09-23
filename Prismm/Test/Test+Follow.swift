@@ -1,40 +1,40 @@
+////
+////  Test+BlockUser.swift
+////  Prismm
+////
+////  Created by Nguyen Dinh Viet on 21/09/2023.
+////
 //
-//  Test+BlockUser.swift
-//  Prismm
+//import SwiftUI
 //
-//  Created by Nguyen Dinh Viet on 21/09/2023.
+//struct Test_FollowUser: View {
+//    @ObservedObject var homeVM = HomeViewModel()
+//    var body: some View {
+//        
+//        VStack {
+//            Button(action: {
+//                Task {
+//                    try await APIService.followOtherUser(forUserID: "abc")
+//                }
+//            }) {
+//                Text("Follow user")
+//            }
+//            .padding(.vertical)
+//            
+//            Button(action: {
+//                Task {
+//                    try await homeVM.unFollowOtherUser(forUserID: "abc")
+//                }
+//            }) {
+//                Text("Unfollow user")
+//            }
+//        }
+//        
+//    }
+//}
 //
-
-import SwiftUI
-
-struct Test_FollowUser: View {
-    @ObservedObject var homeVM = HomeViewModel()
-    var body: some View {
-        
-        VStack {
-            Button(action: {
-                Task {
-                    try await homeVM.followOtherUser(forUserID: "abc")
-                }
-            }) {
-                Text("Follow user")
-            }
-            .padding(.vertical)
-            
-            Button(action: {
-                Task {
-                    try await homeVM.unFollowOtherUser(forUserID: "abc")
-                }
-            }) {
-                Text("Unfollow user")
-            }
-        }
-        
-    }
-}
-
-struct Test_FollowUser_Previews: PreviewProvider {
-    static var previews: some View {
-        Test_FollowUser()
-    }
-}
+//struct Test_FollowUser_Previews: PreviewProvider {
+//    static var previews: some View {
+//        Test_FollowUser()
+//    }
+//}

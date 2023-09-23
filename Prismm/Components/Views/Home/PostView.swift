@@ -100,8 +100,11 @@ struct PostView: View {
                         Text("\nThis will permanently delete this post")
                     }
                     
-                    // Block user
-                    Button(action: {homeViewModel.isBlockUserAlert = true}) {
+                    Button(action: {
+                        homeViewModel.currentPost = post
+                        homeViewModel.isBlockUserAlert = true
+                        print("alerted")
+                    }) {
                         HStack {
                             Image(systemName: "person.crop.circle.badge.xmark")
                                 .resizable()
@@ -118,9 +121,13 @@ struct PostView: View {
                     } message: {
                         Text("\nYou will not see this user again")
                     }
+
                     
-                    // Restrict user
-                    Button(action: {homeViewModel.isRestrictUserAlert = true}) {
+                    Button(action: {
+                        homeViewModel.currentPost = post
+                        homeViewModel.isRestrictUserAlert = true
+                        print("alerted")}
+                        ) {
                         HStack {
                             Image(systemName: "rectangle.portrait.slash")
                                 .resizable()
@@ -136,6 +143,7 @@ struct PostView: View {
                     } message: {
                         Text("\nStop receiving notification from this user")
                     }
+
                     
                     // Turn off comment
                     Button(action: {homeViewModel.isTurnOffCommentAlert = true}) {

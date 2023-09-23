@@ -129,12 +129,12 @@ struct HomeView: View {
                     .fullScreenCover(isPresented: $homeViewModel.isCreateNewPostOnIphone) {
                         CreatePostView(currentUser: $currentUser, userSetting: $userSetting ,homeVM: homeViewModel, isNewPost: $homeViewModel.isCreateNewPostOnIphone, isDarkModeEnabled: userSetting.darkModeEnabled )
                     }
-//                    .sheet(isPresented: $homeViewModel.isOpenCommentViewOnIpad) {
-//                        CommentView(isShowComment: userSetting.darkModeEnabled, currentUser: $homeViewModel.isOpenCommentViewOnIpad, userSetting: $currentUser, homeVM: $userSetting, isDarkModeEnabled: homeViewModel, post: selectedPost)
-//                    }
-//                    .fullScreenCover(isPresented: $homeViewModel.isOpenCommentViewOnIphone) {
-//                        CommentView(isShowComment: userSetting.darkModeEnabled, currentUser: $homeViewModel.isOpenCommentViewOnIphone, userSetting: $currentUser, homeVM: $userSetting, isDarkModeEnabled: homeViewModel, post: selectedPost)
-//                    }
+                    .sheet(isPresented: $homeViewModel.isOpenCommentViewOnIpad) {
+                        CommentView(isShowComment: $homeViewModel.isOpenCommentViewOnIpad, currentUser: $currentUser, userSetting: $userSetting, homeVM: homeViewModel, isDarkModeEnabled: userSetting.darkModeEnabled, post: selectedPost)
+                    }
+                    .fullScreenCover(isPresented: $homeViewModel.isOpenCommentViewOnIphone) {
+                        CommentView(isShowComment: $homeViewModel.isOpenCommentViewOnIphone, currentUser: $currentUser, userSetting: $userSetting, homeVM: homeViewModel, isDarkModeEnabled: userSetting.darkModeEnabled, post: selectedPost)
+                    }
                     .onAppear {
                         homeViewModel.proxySize = proxy.size
                         isLoadingPost = true
@@ -160,6 +160,31 @@ struct HomeView: View {
                 }
             }
         }
+        .alert("Block this user?", isPresented: $homeViewModel.isBlockUserAlert) {
+            Button("Cancel", role: .cancel) {
+            }
+            Button("Block", role: .destructive) {
+                Task{
+                    try await APIService.blockOtherUser(forUserID: homeViewModel.currentPost!.ownerID)
+                }
+                print("blocked")
+            }
+        } message: {
+            Text("\nYou will not see this user again")
+        }
+        .alert("Restrict this user?", isPresented: $homeViewModel.isRestrictUserAlert) {
+            Button("Cancel", role: .cancel) {
+            }
+            Button("Restrict", role: .destructive) {
+                Task{
+                    try await APIService.restrictOtherUser(forUserID: homeViewModel.currentPost!.ownerID)
+                }
+                print("restricted")
+            }
+        } message: {
+            Text("\nStop receiving notification from this user")
+        }
+        
         .onAppear{
             Task{
                 currentUser = try await APIService.fetchCurrentUserData() ?? User(id: "default", account: "default@gmail.com")

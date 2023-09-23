@@ -24,7 +24,8 @@ import FirebaseFirestoreSwift
 
 // Communicating with firebase
 struct APIService {
-    // Fetch user with id
+    
+    
     static func fetchUser(withUserID userID: String) async throws -> User {
         let snapshot = try await Firestore.firestore().collection("users").document(userID).getDocument()
         return try snapshot.data(as: User.self)
@@ -103,6 +104,185 @@ struct APIService {
             return try? userSettingsSnapshot.data(as: UserSetting.self)
         }
         return nil
+    }
+    
+    // Block (not receiving notification + post/story + message + other cannot see your post)
+    static func blockOtherUser(forUserID userIDToBlock: String) async throws {
+        do {
+            let userBlockListCollection = Firestore.firestore().collection("test_block")
+            let currentUserID =  Auth.auth().currentUser?.uid ?? "ZMSfvuGAW9OOSfM4mLVG10kAJJk2"
+            
+            // Use a Firestore query to check if the user has already blocked another user
+            let snapshotCurrentUserBlockList = try await userBlockListCollection.document(currentUserID).getDocument()
+            let snapshotBlockedUserBlockList = try await userBlockListCollection.document(userIDToBlock).getDocument()
+            
+
+            // If there are no matching documents, it means the user hasn't blocked anyone, so create a new block list
+            if !snapshotCurrentUserBlockList.exists {
+                // Create a new block list
+                let blockListRef = userBlockListCollection.document(currentUserID)
+                let blockList = UserBlockList(blockedIds: [userIDToBlock], beBlockedBy: [])
+                
+                guard let encodedBlockList = try? Firestore.Encoder().encode(blockList) else {
+                    return
+                }
+                
+                try await blockListRef.setData(encodedBlockList)
+            } else {
+                // If the block list exists, add the user ID to the blockedIds array
+                
+                let existingBlockedIds = snapshotCurrentUserBlockList["blockedIds"] as? [String] ?? []
+                if !existingBlockedIds.contains(userIDToBlock) {
+                    var updatedBlockedIds = existingBlockedIds
+                    updatedBlockedIds.append(userIDToBlock)
+                    
+                    try await userBlockListCollection.document(currentUserID).updateData(["blockedIds": updatedBlockedIds])
+                }
+            }
+            
+            // If there are no matching documents, it means the user hasn't blocked anyone, so create a new block list
+            if !snapshotBlockedUserBlockList.exists {
+                // Create a new block list
+                let blockListRef = userBlockListCollection.document(userIDToBlock)
+                let blockList = UserBlockList(blockedIds: [], beBlockedBy: [currentUserID])
+                
+                guard let encodedBlockList = try? Firestore.Encoder().encode(blockList) else {
+                    return
+                }
+                
+                try await blockListRef.setData(encodedBlockList)
+            } else {
+                // If the block list exists, add the user ID to the blockedIds array
+
+                
+                let existingBeBlockedIds = snapshotBlockedUserBlockList["beBlockedBy"] as? [String] ?? []
+                if !existingBeBlockedIds.contains(currentUserID) {
+                    var updatedBeBlockedIds = existingBeBlockedIds
+                    updatedBeBlockedIds.append(userIDToBlock)
+                    
+                    try await userBlockListCollection.document(userIDToBlock).updateData(["beBlockedBy": updatedBeBlockedIds])
+                }
+            }
+        } catch {
+            throw error
+        }
+    }
+
+   // Unblock
+    static func unblockOtherUser(forUserID userIDToUnblock: String) async throws {
+        // Unblock (start receiving notifications + access to post/story + send messages + others can see your post)
+            do {
+                let userBlockListCollection = Firestore.firestore().collection("test_block")
+                let currentUserID =  Auth.auth().currentUser?.uid ?? "ZMSfvuGAW9OOSfM4mLVG10kAJJk2"
+                
+
+                // Get the block list of the current user
+                let snapshotCurrentUserBlockList = try await userBlockListCollection.document(currentUserID).getDocument()
+                let snapshotBlockedUserBlockList = try await userBlockListCollection.document(userIDToUnblock).getDocument()
+                
+
+                // If the block list exists, remove the user ID from the blockedIds array
+                if snapshotCurrentUserBlockList.exists {
+
+                    var existingBlockedIds = snapshotCurrentUserBlockList["blockedIds"] as? [String] ?? []
+                    
+                    if let indexToRemove = existingBlockedIds.firstIndex(of: userIDToUnblock) {
+                        existingBlockedIds.remove(at: indexToRemove)
+                        try await userBlockListCollection.document(currentUserID).updateData(["blockedIds": existingBlockedIds])
+                    }
+                    
+                }
+                
+                
+                // If the block list exists, remove the user ID from the blockedIds array
+                
+                if snapshotBlockedUserBlockList.exists {
+                    var existingBeBlockedIds = snapshotBlockedUserBlockList["beBlockedBy"] as? [String] ?? []
+                    if let indexToRemove = existingBeBlockedIds.firstIndex(of: currentUserID) {
+                        existingBeBlockedIds.remove(at: indexToRemove)
+                        try await userBlockListCollection.document(currentUserID).updateData(["beBlockedBy": existingBeBlockedIds])
+                    }
+                    
+                }
+            } catch {
+                throw error
+        }
+    }
+    
+    // Follow users
+    static func followOtherUser(forUserID userIDToFollow: String) async throws {
+     
+    }
+
+   // Unblock
+    static func unFollowOtherUser(forUserID userIDToUnFollow: String) async throws {
+    
+    }
+    
+    // restrict (not receiving notification + post/story + other can still see your posts)
+    static func restrictOtherUser(forUserID userIDToRestrict: String) async throws {
+        do {
+            let userRestrictListCollection = Firestore.firestore().collection("test_restrict")
+            let currentUserID =  Auth.auth().currentUser?.uid ?? "ZMSfvuGAW9OOSfM4mLVG10kAJJk2"
+            
+            // Use a Firestore query to check if the user has already blocked another user
+            let snapshotCurrentUserRestrictList = try await userRestrictListCollection.document(currentUserID).getDocument()
+
+            // If there are no matching documents, it means the user hasn't blocked anyone, so create a new block list
+            if !snapshotCurrentUserRestrictList.exists {
+                // Create a new block list
+                let restrictistRef = userRestrictListCollection.document(currentUserID)
+                let restictList = UserRestrictList(restrictIds: [userIDToRestrict])
+                
+                guard let encodedBlockList = try? Firestore.Encoder().encode(restictList) else {
+                    return
+                }
+                
+                try await restrictistRef.setData(encodedBlockList)
+            } else {
+                // If the block list exists, add the user ID to the blockedIds array
+                
+                let existingRestrictedIds = snapshotCurrentUserRestrictList["restrictIDs"] as? [String] ?? []
+                if !existingRestrictedIds.contains(userIDToRestrict) {
+                    var updatedRestrictedIds = existingRestrictedIds
+                    updatedRestrictedIds.append(userIDToRestrict)
+                    
+                    try await userRestrictListCollection.document(currentUserID).updateData(["restrictIDs": updatedRestrictedIds])
+                }
+            }
+            
+            
+        } catch {
+            throw error
+        }
+    }
+
+   // Unblock
+    static func unRestrictOtherUser(forUserID userIDToUnRestrict: String) async throws {
+        do {
+            let userRestrictListCollection = Firestore.firestore().collection("test_restrict")
+            let currentUserID =  Auth.auth().currentUser?.uid ?? "ZMSfvuGAW9OOSfM4mLVG10kAJJk2"
+            
+            // Use a Firestore query to check if the user has already blocked another user
+            let snapshotCurrentUserRestrictList = try await userRestrictListCollection.document(currentUserID).getDocument()
+
+            // If there are no matching documents, it means the user hasn't blocked anyone, so create a new block list
+            if !snapshotCurrentUserRestrictList.exists {
+
+                var existingRestrictIds = snapshotCurrentUserRestrictList["restrictIDs"] as? [String] ?? []
+                
+                if let indexToRemove = existingRestrictIds.firstIndex(of: userIDToUnRestrict) {
+                    existingRestrictIds.remove(at: indexToRemove)
+                    try await userRestrictListCollection.document(currentUserID).updateData(["restrictIDs": existingRestrictIds])
+                }
+                
+            }
+            
+        
+        } catch {
+            throw error
+    }
+   
     }
     
     //upload the media data to database storage
@@ -194,5 +374,58 @@ struct APIService {
             return "application/octet-stream"
         }
         return "application/octet-stream"
+    }
+    
+    @MainActor
+    static func fetchCurrentUserBlockList() async throws-> UserBlockList? {
+        guard let currentUser = Auth.auth().currentUser else { return nil }
+        let snapshot = try await Firestore.firestore().collection("test_block").document(currentUser.uid).getDocument()
+
+
+        print("got snapshot")
+        if !snapshot.exists{
+            do {
+                let newUserBlockList = UserBlockList(blockedIds: [], beBlockedBy: [])
+                
+                let encodedList = try Firestore.Encoder().encode(newUserBlockList)
+                
+                try await Firestore.firestore().collection("test_block").document(currentUser.uid).setData(encodedList)
+                print("got new user block list")
+                return newUserBlockList
+            } catch {
+                print("ERROR: Fail to add block list data")
+            }
+        } else {
+            print("got database setting")
+            return try? snapshot.data(as: UserBlockList.self)
+        }
+        return nil
+        
+    }
+    
+    
+    @MainActor
+    static func fetchCurrentUserRestrictedList() async throws -> UserRestrictList? {
+        guard let currentUser = Auth.auth().currentUser else { return nil }
+        let snapshot = try await Firestore.firestore().collection("test_restrict").document(currentUser.uid).getDocument()
+
+
+        print("got snapshot")
+        if !snapshot.exists{
+            do {
+                let newUserRestrictList = UserRestrictList(restrictIds: [])
+                let encodedList = try Firestore.Encoder().encode(newUserRestrictList)
+                
+                try await Firestore.firestore().collection("test_block").document(currentUser.uid).setData(encodedList)
+                print("got new user block list")
+                return newUserRestrictList
+            } catch {
+                print("ERROR: Fail to add block list data")
+            }
+        } else {
+            print("got database setting")
+            return try? snapshot.data(as: UserRestrictList.self)
+        }
+        return nil
     }
 }

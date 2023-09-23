@@ -232,7 +232,7 @@ struct ProfileView: View {
             
         }
         .fullScreenCover(isPresented: $profileVM.isSetting) {
-            SettingView(currentUser: $currentUser, userSetting: $userSetting, isSetting: $profileVM.isSetting)
+            SettingView(currentUser: $currentUser, userSetting: $userSetting, profileVM: profileVM, isSetting: $profileVM.isSetting)
         }
         .foregroundColor(userSetting.darkModeEnabled ? .white : .black)
         .background(!userSetting.darkModeEnabled ? .white : .black)

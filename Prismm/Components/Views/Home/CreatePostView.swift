@@ -264,15 +264,15 @@ struct CreatePostView: View {
                         ), lineWidth: 1.5)
                 )
                 .padding(.bottom)
-//                .sheet(isPresented: $shouldPresentPickerSheet) {
-//                    UIImagePickerView(sourceType: .photoLibrary , isPresented: $shouldPresentPickerSheet, selectedMedia: $homeVM.newPostSelectedMedia)
-//                        .presentationDetents(shouldPresentCamera ? [.large] : [.medium])
-//
-//                }
-//                .fullScreenCover(isPresented: $shouldPresentCamera) {
-//                    UIImagePickerView(sourceType: .camera , isPresented: $shouldPresentCamera, selectedMedia: $homeVM.newPostSelectedMedia)
-//                        .ignoresSafeArea()
-//                }
+                .sheet(isPresented: $shouldPresentPickerSheet) {
+                    UIImagePickerView(isPresented: $shouldPresentPickerSheet , selectedMedia: $homeVM.newPostSelectedMedia, sourceType: .photoLibrary)
+                        .presentationDetents(shouldPresentCamera ? [.large] : [.medium])
+                    
+                }
+                .fullScreenCover(isPresented: $shouldPresentCamera) {
+                    UIImagePickerView(isPresented: $shouldPresentCamera , selectedMedia: $homeVM.newPostSelectedMedia, sourceType: .camera)
+                        .ignoresSafeArea()
+                }
                 
                 // Post media
                 HStack {
@@ -342,15 +342,15 @@ struct CreatePostView: View {
                         ), lineWidth: 1.5)
                 )
                 .padding(.bottom)
-//                .sheet(isPresented: $shouldPresentPickerSheet) {
-//                    UIImagePickerView(sourceType: .photoLibrary , isPresented: $shouldPresentPickerSheet, selectedMedia: $homeVM.newPostSelectedMedia)
-//                        .presentationDetents(shouldPresentCamera ? [.large] : [.medium])
-//
-//                }
-//                .fullScreenCover(isPresented: $shouldPresentCamera) {
-//                    UIImagePickerView(sourceType: .camera , isPresented: $shouldPresentCamera, selectedMedia: $homeVM.newPostSelectedMedia)
-//                        .ignoresSafeArea()
-//                }
+                .sheet(isPresented: $shouldPresentPickerSheet) {
+                    UIImagePickerView(isPresented: $shouldPresentPickerSheet , selectedMedia: $homeVM.newPostSelectedMedia, sourceType: .photoLibrary)
+                        .presentationDetents(shouldPresentCamera ? [.large] : [.medium])
+                    
+                }
+                .fullScreenCover(isPresented: $shouldPresentCamera) {
+                    UIImagePickerView(isPresented: $shouldPresentCamera , selectedMedia: $homeVM.newPostSelectedMedia, sourceType: .camera)
+                        .ignoresSafeArea()
+                }
                 
                 // Reminder
                 VStack(alignment: .leading) {
@@ -410,17 +410,17 @@ struct CreatePostView: View {
                 homeVM.selectedPostTag.removeAll()
                 homeVM.selectedUserTag.removeAll()
             }
-//            .fullScreenCover(isPresented: $isOpenUserListViewOnIphone) {
-//                UserListView(proxy: $proxySize, isDarkModeEnabled: isDarkModeEnabled, searchProfileText: $homeVM.userTagListSearchText, selectedUsers: $homeVM.selectedUserTag, isShowUserTagList: $isOpenUserListViewOnIphone, filteredUsers: filteredUsers)
-//            }
-//            .sheet(isPresented: $isOpenUserListViewOnIpad) {
-//                UserListView(proxy: $proxySize, isDarkModeEnabled: isDarkModeEnabled, searchProfileText: $homeVM.userTagListSearchText, selectedUsers: $homeVM.selectedUserTag, isShowUserTagList: $isOpenUserListViewOnIpad, filteredUsers: filteredUsers)
-//            }.fullScreenCover(isPresented: $isOpenPostTagListViewOnIphone) {
-//                PostTagListView(proxy: $proxySize, isDarkModeEnabled: isDarkModeEnabled, searchTagText: $homeVM.postTagListSearchText, selectedTags: $homeVM.selectedPostTag, isShowPostTagList: $isOpenPostTagListViewOnIphone, filteredTags: filteredTags)
-//            }
-//            .sheet(isPresented: $isOpenPostTagListViewOnIpad) {
-//                PostTagListView(proxy: $proxySize, isDarkModeEnabled: isDarkModeEnabled, searchTagText: $homeVM.userTagListSearchText, selectedTags: $homeVM.selectedPostTag, isShowPostTagList: $isOpenPostTagListViewOnIpad, filteredTags: filteredTags)
-//            }
+            .fullScreenCover(isPresented: $isOpenUserListViewOnIphone) {
+                UserListView(proxy: $proxySize, searchProfileText: $homeVM.userTagListSearchText, selectedUsers: $homeVM.selectedUserTag, isShowUserTagList: $isOpenUserListViewOnIphone, filteredUsers: filteredUsers, isDarkModeEnabled: isDarkModeEnabled)
+            }
+            .sheet(isPresented: $isOpenUserListViewOnIpad) {
+                UserListView(proxy: $proxySize, searchProfileText: $homeVM.userTagListSearchText, selectedUsers: $homeVM.selectedUserTag, isShowUserTagList: $isOpenUserListViewOnIpad, filteredUsers: filteredUsers, isDarkModeEnabled: isDarkModeEnabled)
+            }.fullScreenCover(isPresented: $isOpenPostTagListViewOnIphone) {
+                PostTagListView(proxy: $proxySize, searchTagText: $homeVM.userTagListSearchText, selectedTags: $homeVM.selectedPostTag, isShowPostTagList:$isOpenPostTagListViewOnIphone, filteredTags:  filteredTags, isDarkModeEnabled: isDarkModeEnabled)
+            }
+            .sheet(isPresented: $isOpenPostTagListViewOnIpad) {
+                PostTagListView(proxy: $proxySize, searchTagText: $homeVM.userTagListSearchText, selectedTags: $homeVM.selectedPostTag, isShowPostTagList:$isOpenPostTagListViewOnIpad, filteredTags:  filteredTags, isDarkModeEnabled: isDarkModeEnabled)
+            }
         }
         .foregroundColor(isDarkModeEnabled ? .white : .black)
         .background(!isDarkModeEnabled ? .white : .black)

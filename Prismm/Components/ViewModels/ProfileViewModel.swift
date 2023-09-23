@@ -26,6 +26,10 @@ import FirebaseFirestoreSwift
 class ProfileViewModel: ObservableObject {
     // Cntrol State
     @Published var posts = [Post]()
+    //@Published var blockList = [UserBlockList]()
+    
+    
+    
     @Published var hasStoryHightlight = false
     @Published var isSetting = false
     @Published var isShowAllUserPost = 1
@@ -103,4 +107,9 @@ class ProfileViewModel: ObservableObject {
     func fetchUserPosts(UserID: String) async throws {
         self.posts = try await APIService.fetchPostsOwned(byUserID: UserID)
     }
+    
+//    @MainActor
+//    func fetchUserBlockList() async throws{
+//        self.blockList = await APIService.fetchCurrentUserBlockList()
+//    }
 }

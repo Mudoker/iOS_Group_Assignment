@@ -8,9 +8,7 @@
 import Foundation
 import Firebase
 
-struct UserBlockList: Identifiable, Codable {
-    let id: String
-    let ownerId: String
+struct UserBlockList: Codable {
     let blockedIds: [String]
     let beBlockedBy: [String]
 }
