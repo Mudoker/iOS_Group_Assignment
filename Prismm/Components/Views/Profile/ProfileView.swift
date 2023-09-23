@@ -58,19 +58,36 @@ struct ProfileView: View {
                                 
                             }
                             
-                            VStack{
-                                Text("0")
-                                    .fontWeight(.bold)
-                                Text(LocalizedStringKey("Followers"))
-                                
+                            
+                            NavigationLink {
+                                FollowView()
+                            } label: {
+                                VStack{
+                                    Text("0")
+                                        .fontWeight(.bold)
+                                    Text(LocalizedStringKey("Followers"))
+                                }
                             }
                             
-                            VStack{
-                                Text("0")
-                                    .fontWeight(.bold)
-                                Text(LocalizedStringKey("Following"))
-                                
+                            
+                            
+                            
+                            
+                            
+                            
+                            NavigationLink {
+                                FollowView()
+                            } label: {
+                                VStack{
+                                    Text("0")
+                                        .fontWeight(.bold)
+                                    Text(LocalizedStringKey("Following"))
+                                }
                             }
+                            
+                            
+                            
+                            
                         }
                         
                         //edit button and share button
