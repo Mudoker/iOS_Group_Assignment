@@ -18,16 +18,15 @@ import SwiftUI
 import Firebase
 
 struct AllChat : View {
-    @State var currentUser:User?
-    @State var currentSetting:UserSetting?
-    
+    @State var currentUser = User(id: "default", account: "default@gmail.com")
+    @State var currentSetting = UserSetting(id: "default", darkModeEnabled: false, language: "en", faceIdEnabled: true, pushNotificationsEnabled: true, messageNotificationsEnabled: false)
     
     @State var searchTerm : String = ""
     @State var searchState : Bool = true
     @State var selected : Int = 0
     @State var showChatLogVIew : Bool = false
     @State var isUserActive : Bool = true
-    @ObservedObject var vm =  MainMessagesViewModel()
+    @StateObject var vm =  MainMessagesViewModel()
     private var chatLogViewModal = ChatLogViewModel(chatUser: nil)
     @State var chatUser: User?
     @State var showNewMessageScreen = false
@@ -35,20 +34,18 @@ struct AllChat : View {
     
     var body: some View {
         NavigationStack{
-            NavigationLink(destination: ChatLogView(vm: chatLogViewModal)) {
-                mainMessageScreen
+            
+            mainMessageScreen
+            NavigationLink("", isActive: $showChatLogVIew){
+                ChatLogView(vm: chatLogViewModal)
             }
-//            mainMessageScreen
 
-//            NavigationLink("",isActive: $showChatLogVIew){
-//                //                ChatLogView(chatUser: self.chatUser)
-//                ChatLogView(vm: chatLogViewModal)
-//            }
+            
         }
         .onAppear{
             Task{
-                currentUser = try await APIService.fetchCurrentUserData()
-                currentSetting = try await APIService.fetchCurrentSettingData()
+                currentUser = try await APIService.fetchCurrentUserData()!
+                currentSetting = try await APIService.fetchCurrentSettingData()!
             }
         }
     }
@@ -257,7 +254,7 @@ struct AllChat : View {
                                 //                                }
                                 
                                 HStack(spacing: 10){
-                                    Text(currentUser!.username)
+                                    Text(currentUser.username)
                                         .font(.title3)
                                         .fontWeight(.semibold)
                                         .onTapGesture {

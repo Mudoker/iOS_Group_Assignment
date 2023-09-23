@@ -88,7 +88,7 @@ struct CreateNewMessageView: View {
                                     .overlay(RoundedRectangle(cornerRadius: 50)
                                         .stroke(Color(.label), lineWidth: 2)
                                     )
-                                Text(user.account!)
+                                Text(user.username)
                                     .foregroundColor(Color(.label))
                                 Spacer()
                             }.padding(.horizontal)
@@ -115,6 +115,12 @@ struct CreateNewMessageView: View {
                             .fontWeight(.bold)
                     }
                 }
+            }
+        }
+        .onAppear{
+            Task{
+                await vm.fetchUsers()
+                print(vm.users)
             }
         }
     }

@@ -332,6 +332,38 @@ struct APIService {
         }
     }
     
+    
+    @MainActor
+    static func fetchAllUsers() async throws -> [User]{
+        
+        do {
+            let querySnapshot = try await Firestore.firestore().collection("users").getDocuments()
+            
+            if querySnapshot.isEmpty {
+                print("No documents")
+                return []
+            }
+            
+            
+            var users: [User] = []
+            
+            // Iterate and convert to User objects
+            for queryDocumentSnapshot in querySnapshot.documents {
+                if let post = try? queryDocumentSnapshot.data(as: User.self) {
+                    users.append(post)
+                }
+            }
+            
+            return users
+            
+            
+        }catch{
+            print("Error fetching posts: \(error)")
+            throw error
+        }
+    }
+
+    
     // Get MIME type of media data
     static func mimeType(for data: Data) -> String {
         var b: UInt8 = 0
