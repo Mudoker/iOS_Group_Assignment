@@ -44,6 +44,7 @@ class NotificationViewModel: ObservableObject {
             .whereField("senderId", isEqualTo: senderId)
             .whereField("messageContent", isEqualTo: message)
             .whereField("postLink", isEqualTo: postLink)
+            .whereField("receiverId", isEqualTo: receiverId)
         
         let duplicateSnapshot = try await duplicateQuery.getDocuments()
         

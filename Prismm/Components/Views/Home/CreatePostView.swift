@@ -19,7 +19,7 @@ import SwiftUI
 
 struct CreatePostView: View {
     // Control state
-    @State private var users = ["mudoker7603", "user123", "sampleUser", "testUser", "john_doe", "jane_doe", "user007", "newUser", "oldUser", "demoUser"]
+    @State private var users : [User] = []
     @Binding var currentUser:User
     @Binding var userSetting:UserSetting
     @ObservedObject var homeVM: HomeViewModel
@@ -35,19 +35,25 @@ struct CreatePostView: View {
     @State var proxySize = CGSize()
     @State var isCreatingPost = false
     
-    var filteredUsers: [String] {
-        if homeVM.userTagListSearchText.isEmpty {
-            return users
-        } else {
-            return users.filter { $0.localizedCaseInsensitiveContains(homeVM.userTagListSearchText) }
-        }
-    }
+    @State var filteredUsers: [User] = []
+    @ObservedObject var notiVM: NotificationViewModel
     
     var filteredTags: [String] {
         if homeVM.postTagListSearchText.isEmpty {
             return Constants.availableTags
         } else {
             return Constants.availableTags.filter { $0.localizedCaseInsensitiveContains(homeVM.postTagListSearchText) }
+        }
+    }
+    
+    // Fiter user by text field
+    private func filterUsers() {
+        if !homeVM.userTagListSearchText.isEmpty {
+            filteredUsers = users.filter { user in
+                user.username.localizedCaseInsensitiveContains(homeVM.userTagListSearchText)
+            }
+        } else {
+            filteredUsers = users
         }
     }
     
@@ -116,9 +122,9 @@ struct CreatePostView: View {
                                     ScrollView(.horizontal, showsIndicators: false) {
                                         ScrollViewReader { scrollProxy in
                                             HStack(spacing: proxy.size.width/30) {
-                                                ForEach(homeVM.selectedUserTag, id: \.self) { user in
+                                                ForEach(homeVM.selectedUserTag) { user in
                                                     HStack {
-                                                        Text(user)
+                                                        Text(user.username)
                                                             .foregroundColor(.white)
                                                             .font(.callout)
                                                         
@@ -371,11 +377,26 @@ struct CreatePostView: View {
                         ), lineWidth: 1.5)
                 )
                 
-                // Button to create post
+                // Button to create post @@@@@@
                 Button(action: {
                     Task {
                         isCreatingPost = true
                         let _ = try await homeVM.createPost()
+                        // Create mentioned notification @@@@
+                        for user in homeVM.selectedUserTag {
+                            let _ = try await notiVM.createInAppNotification(
+                                senderId: currentUser.id,
+                                receiverId: user.id,
+                                senderName: currentUser.username,
+                                message: Constants.notiMention,
+                                postLink: homeVM.newPostId,
+                                category: .mention,
+                                restrictedByList: [],
+                                blockedByList: [],
+                                blockedList: []
+                            )
+                        }
+
                         try await homeVM.fetchPosts()
                         isNewPost = false
 //                        homeVM.selectedUserTag
@@ -404,7 +425,13 @@ struct CreatePostView: View {
                 Spacer()
             }
             .padding(.horizontal)
+            .onChange(of: homeVM.userTagListSearchText) { _ in
+                filterUsers()
+            }
             .onAppear {
+                Task {
+                    users = try await APIService.fetchAllUsers()
+                }
                 //reset selected field when create new post
                 proxySize = proxy.size
                 homeVM.newPostSelectedMedia = nil
@@ -413,10 +440,10 @@ struct CreatePostView: View {
                 homeVM.selectedUserTag.removeAll()
             }
             .fullScreenCover(isPresented: $isOpenUserListViewOnIphone) {
-                UserListView(proxy: $proxySize, searchProfileText: $homeVM.userTagListSearchText, selectedUsers: $homeVM.selectedUserTag, isShowUserTagList: $isOpenUserListViewOnIphone, filteredUsers: filteredUsers, isDarkModeEnabled: isDarkModeEnabled)
+                UserListView(proxy: $proxySize, searchProfileText: $homeVM.userTagListSearchText, selectedUsers: $homeVM.selectedUserTag, isShowUserTagList: $isOpenUserListViewOnIphone, filteredUsers: $filteredUsers, isDarkModeEnabled: isDarkModeEnabled)
             }
             .sheet(isPresented: $isOpenUserListViewOnIpad) {
-                UserListView(proxy: $proxySize, searchProfileText: $homeVM.userTagListSearchText, selectedUsers: $homeVM.selectedUserTag, isShowUserTagList: $isOpenUserListViewOnIpad, filteredUsers: filteredUsers, isDarkModeEnabled: isDarkModeEnabled)
+                UserListView(proxy: $proxySize, searchProfileText: $homeVM.userTagListSearchText, selectedUsers: $homeVM.selectedUserTag, isShowUserTagList: $isOpenUserListViewOnIpad, filteredUsers: $filteredUsers, isDarkModeEnabled: isDarkModeEnabled)
             }.fullScreenCover(isPresented: $isOpenPostTagListViewOnIphone) {
                 PostTagListView(proxy: $proxySize, searchTagText: $homeVM.userTagListSearchText, selectedTags: $homeVM.selectedPostTag, isShowPostTagList:$isOpenPostTagListViewOnIphone, filteredTags:  filteredTags, isDarkModeEnabled: isDarkModeEnabled)
             }
@@ -531,9 +558,9 @@ struct UserListView: View {
     // control state
     @Binding var proxy: CGSize
     @Binding var searchProfileText: String
-    @Binding var selectedUsers: [String]
+    @Binding var selectedUsers: [User]
     @Binding var isShowUserTagList: Bool
-    var filteredUsers: [String]
+    @Binding var filteredUsers: [User]
     var isDarkModeEnabled: Bool
     
     var body: some View {
@@ -575,6 +602,7 @@ struct UserListView: View {
                     // Search a firend
                     TextField("", text: $searchProfileText, prompt: Text("Search a friend...").foregroundColor(isDarkModeEnabled ? .white.opacity(0.5) : .black.opacity(0.5))
                         .font(.title3)
+                        
                     )
                     .disableAutocorrection(true)
                     .autocapitalization(.none)
@@ -585,11 +613,12 @@ struct UserListView: View {
                 // All users
                 ScrollView {
                     LazyVStack(spacing: 8) {
-                        ForEach(filteredUsers, id: \.self) { user in
+                        ForEach(filteredUsers) { user in
                             Button(action: {
-                                if !selectedUsers.contains(user) {
+                                if !selectedUsers.contains(where: { $0 == user }) {
                                     selectedUsers.append(user)
                                 }
+
                                 isShowUserTagList.toggle()
                             }) {
                                 HStack {
@@ -599,7 +628,7 @@ struct UserListView: View {
                                         .frame(width: proxy.width / 7, height: proxy.width / 7)
                                         .clipShape(Circle())
                                     
-                                    Text(user)
+                                    Text(user.username)
                                     Spacer()
                                 }
                                 .padding(8)
@@ -616,11 +645,18 @@ struct UserListView: View {
                 }
             }
         }
+        .onAppear {
+            Task {
+                filteredUsers = try await APIService.fetchAllUsers()
+            }
+        }
         .foregroundColor(isDarkModeEnabled ? .white : .black)
         .background(isDarkModeEnabled ? Color.black : Color.white)
         .presentationDetents([.medium, .large])
         .presentationBackgroundInteraction(.enabled)
     }
+    
+    
 }
 
 // Screen-width HStack
