@@ -33,6 +33,9 @@ struct Constants {
         "Society", "Sports", "Technology", "Travel", "Trivial", "Wonders"
     ]
     
+    static let availableFiler = [
+        "For you", "Posts", "People"
+    ]
     static let notiReact = "liked your post"
     static let notiComment = "commented on your post"
     static let notiFollow = "start to follow you"

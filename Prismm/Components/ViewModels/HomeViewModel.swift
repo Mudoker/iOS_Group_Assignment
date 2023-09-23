@@ -29,6 +29,7 @@ class HomeViewModel: ObservableObject {
     @Published var isCreateNewPostOnIphone = false
     @Published var isOpenCommentViewOnIphone = false
     @Published var isOpenCommentViewOnIpad = false
+    @Published var isOpenFilterOnIphone = false
     @Published var commentContent = ""
     @Published var selectedPostTag: [String] = []
     @Published var editSelectedPostTag: [String] = []
