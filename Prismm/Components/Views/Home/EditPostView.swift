@@ -310,10 +310,10 @@ struct EditPostView: View {
                             Image(systemName: "photo")
                                 .resizable()
                                 .aspectRatio(contentMode: .fill)
-                                .frame(width: proxy.size.width/12)
+                                .frame(width: homeVM.iconCreatePostViewWidth, height: homeVM.iconCreatePostViewWidth)
                                 .foregroundColor(.green)
                         }
-                        .padding(.trailing, 8)
+                        .padding(.trailing, 13)
                         
                         
                         Button(action: {
@@ -323,7 +323,7 @@ struct EditPostView: View {
                             Image(systemName: "camera.fill")
                                 .resizable()
                                 .aspectRatio(contentMode: .fill)
-                                .frame(width: proxy.size.width/12)
+                                .frame(width: homeVM.iconCreatePostViewWidth, height: homeVM.iconCreatePostViewWidth)
                                 .foregroundColor(!isDarkModeEnabled ? Constants.lightThemeColor : Constants.darkThemeColor)
                         }
                     }
@@ -350,8 +350,16 @@ struct EditPostView: View {
                 }
                 
                 VStack(alignment: .leading) {
-                    Text ("No Sensitive, Explicit, or Harmful Content")
-                        .bold()
+                    HStack{
+                        Text ("No Sensitive, Explicit, or Harmful Content")
+                            .bold()
+                        Spacer()
+                        Image(systemName: "exclamationmark.triangle")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: homeVM.iconCreatePostViewWidth1, height: homeVM.iconCreatePostViewWidth1)
+                            .foregroundColor(!isDarkModeEnabled ? Constants.lightThemeColor : Constants.darkThemeColor)
+                    }
                     
                     Text ("Please refrain from these contents, as well as hate speech or harassment for a safer community.")
                         .opacity(0.8)

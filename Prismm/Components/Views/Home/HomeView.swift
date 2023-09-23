@@ -117,6 +117,9 @@ struct HomeView: View {
                         }
                         
                     }
+                    .sheet(isPresented: $homeViewModel.isEditNewPostOnIpad){
+                        EditPostView(authVM: authVM, settingVM: settingVM, homeVM: homeViewModel, isEditPost: $homeViewModel.isEditNewPostOnIpad, isDarkModeEnabled: dataControllerVM.userSettings?.darkModeEnabled ?? false, post : selectedPost)
+                    }
                     .fullScreenCover(isPresented: $homeViewModel.isEditNewPostOnIphone){
                         EditPostView(authVM: authVM, settingVM: settingVM, homeVM: homeViewModel, isEditPost: $homeViewModel.isEditNewPostOnIphone, isDarkModeEnabled: dataControllerVM.userSettings?.darkModeEnabled ?? false, post : selectedPost)
                     }
