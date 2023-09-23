@@ -33,7 +33,7 @@ struct ProfileView: View {
                 
                 //Profile info block
                 VStack(alignment: .leading){
-                    HStack(alignment: .center){
+                    HStack(alignment: UIDevice.current.userInterfaceIdiom == .phone ? .center  : .top){
                         Image("testAvt")
                             .resizable()
                             .scaledToFit()
@@ -41,26 +41,33 @@ struct ProfileView: View {
                             .clipShape(Circle())
                         Spacer()
                         
-                        VStack{
+                        VStack(){
                             HStack(spacing: 15){ //should be responsive
                                 VStack{
                                     Text("\(dataControllerVM.currentUser?.posts.count ?? 111)")
                                         .fontWeight(.bold)
+                                        .font(.system(size: UIDevice.current.userInterfaceIdiom == .phone ? 15 : 25))
+                                    
                                     Text(LocalizedStringKey("Posts"))
+                                        .font(.system(size: UIDevice.current.userInterfaceIdiom == .phone ? 18 : 30))
                                     
                                 }
                                 
                                 VStack{
                                     Text("\(dataControllerVM.currentUser?.posts.count ?? 111)")
                                         .fontWeight(.bold)
+                                        .font(.system(size: UIDevice.current.userInterfaceIdiom == .phone ? 15 : 25))
                                     Text(LocalizedStringKey("Followers"))
+                                        .font(.system(size: UIDevice.current.userInterfaceIdiom == .phone ? 18 : 30))
                                     
                                 }
                                 
                                 VStack{
                                     Text("\(dataControllerVM.currentUser?.posts.count ?? 111)")
                                         .fontWeight(.bold)
+                                        .font(.system(size: UIDevice.current.userInterfaceIdiom == .phone ? 15 : 25))
                                     Text(LocalizedStringKey("Following"))
+                                        .font(.system(size: UIDevice.current.userInterfaceIdiom == .phone ? 18 : 30))
                                     
                                 }
                             }
@@ -122,8 +129,9 @@ struct ProfileView: View {
                             Spacer()
 
                             Button {
-
-                                isSample.toggle()
+                                withAnimation(.easeIn(duration: 0.3)){
+                                    isSample.toggle()
+                                }
 
 
                             } label: {

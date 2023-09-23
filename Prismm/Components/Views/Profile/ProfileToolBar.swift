@@ -28,7 +28,7 @@ struct ProfileToolBar: View {
         HStack{
             Text(dataControllerVM.currentUser?.username ?? "Failed to get data")
                 .fontWeight(.bold)
-                .font(.system(size: 20))    //should be responsive
+                .font(.system(size: UIDevice.current.userInterfaceIdiom == .phone ? 20 : 30))    //should be responsive
             Spacer()
             
             
