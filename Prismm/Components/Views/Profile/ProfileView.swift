@@ -23,6 +23,7 @@ struct ProfileView: View {
     @State var userSetting = UserSetting(id: "default", darkModeEnabled: false, language: "en", faceIdEnabled: true, pushNotificationsEnabled: true, messageNotificationsEnabled: false)
     @State var isSample = true
     @StateObject var profileVM = ProfileViewModel()
+    @ObservedObject var homeVM: HomeViewModel
     
     var body: some View {
         VStack(alignment: .leading){
@@ -212,7 +213,7 @@ struct ProfileView: View {
             
             // Show corresponding tab
             TabView(selection: $profileVM.isShowAllUserPost) {
-                PostGridView(currentUser: $currentUser, userSetting: $userSetting, profileVM: profileVM)
+                PostGridView(currentUser: $currentUser, userSetting: $userSetting, profileVM: profileVM, homeVM: homeVM)
                     .tag(1)
             }
             .frame(minWidth: 0, maxWidth: .infinity)
@@ -223,13 +224,12 @@ struct ProfileView: View {
         .frame(minWidth: 0,maxWidth: .infinity)
         .onAppear {
             profileVM.proxySize = UIScreen.main.bounds.size
-            
             Task{
                 currentUser = try await APIService.fetchCurrentUserData()!
                 userSetting = try await APIService.fetchCurrentSettingData()!
                 try await profileVM.fetchUserPosts(UserID: currentUser.id )
+                homeVM.fetchUserFavouritePost(forUserId: currentUser.id)
             }
-            
         }
         .fullScreenCover(isPresented: $profileVM.isSetting) {
             SettingView(currentUser: $currentUser, userSetting: $userSetting, profileVM: profileVM, isSetting: $profileVM.isSetting)

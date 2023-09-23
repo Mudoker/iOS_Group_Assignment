@@ -19,10 +19,10 @@ struct HomeView: View {
     // control state
     @State var currentUser = User(id: "default", account: "default@gmail.com")
     @State var userSetting = UserSetting(id: "default", darkModeEnabled: false, language: "en", faceIdEnabled: true, pushNotificationsEnabled: true, messageNotificationsEnabled: false)
-    @StateObject var homeViewModel = HomeViewModel()
+    @ObservedObject var homeViewModel: HomeViewModel
     @ObservedObject var notiVM: NotificationViewModel
     @State var selectedPost = Post(id: "", ownerID: "", creationDate: Timestamp(), isAllowComment: true)
-    @State var isLoadingPost = false
+    @State var isSelectedPostAllowComment = false
     
     var body: some View {
         GeometryReader { proxy in
@@ -86,10 +86,10 @@ struct HomeView: View {
                         }
                         
                         // Post view
-                        if !isLoadingPost {
+                        if !homeViewModel.isFetchingPost {
                             VStack {
                                 ForEach(homeViewModel.fetchedAllPosts) { post in
-                                    PostView(post: post,currentUser: $currentUser, userSetting: $userSetting ,homeViewModel: homeViewModel, notiVM: notiVM, select: $selectedPost)
+                                    PostView(post: post,currentUser: $currentUser, userSetting: $userSetting ,homeViewModel: homeViewModel, notiVM: notiVM, selectedPost: $selectedPost, isAllowComment: $isSelectedPostAllowComment)
                                         .padding(.bottom, 50)
                                 }
                                 
@@ -130,33 +130,27 @@ struct HomeView: View {
                         CreatePostView(currentUser: $currentUser, userSetting: $userSetting ,homeVM: homeViewModel, isNewPost: $homeViewModel.isCreateNewPostOnIphone, isDarkModeEnabled: userSetting.darkModeEnabled )
                     }
                     .sheet(isPresented: $homeViewModel.isOpenCommentViewOnIpad) {
-                        CommentView(isShowComment: $homeViewModel.isOpenCommentViewOnIpad, currentUser: $currentUser, userSetting: $userSetting, homeVM: homeViewModel, isDarkModeEnabled: userSetting.darkModeEnabled, post: selectedPost)
+                        CommentView(isShowComment: $homeViewModel.isOpenCommentViewOnIpad, currentUser: $currentUser, userSetting: $userSetting, isAllowComment: $isSelectedPostAllowComment, homeVM: homeViewModel, notiVM: notiVM, isDarkModeEnabled: userSetting.darkModeEnabled, post: selectedPost)
                     }
                     .fullScreenCover(isPresented: $homeViewModel.isOpenCommentViewOnIphone) {
-                        CommentView(isShowComment: $homeViewModel.isOpenCommentViewOnIphone, currentUser: $currentUser, userSetting: $userSetting, homeVM: homeViewModel, isDarkModeEnabled: userSetting.darkModeEnabled, post: selectedPost)
+                        CommentView(isShowComment: $homeViewModel.isOpenCommentViewOnIphone, currentUser: $currentUser, userSetting: $userSetting, isAllowComment: $isSelectedPostAllowComment, homeVM: homeViewModel, notiVM: notiVM, isDarkModeEnabled: userSetting.darkModeEnabled, post: selectedPost)
                     }
                     .onAppear {
                         homeViewModel.proxySize = proxy.size
-                        isLoadingPost = true
-                        Task {
-                            homeViewModel.fetchUserFavouritePost(forUserId: "ao2PKDpap4Mq7M5cn3Nrc1Mvoa42")
-                            try await homeViewModel.fetchPosts()
-                            isLoadingPost = false
-                        }
                     }
                     .refreshable {
-                        isLoadingPost = true
+                        homeViewModel.isFetchingPost = true
                         Task {
                             try await homeViewModel.fetchPosts()
-                            isLoadingPost = false
+                            homeViewModel.isFetchingPost = false
                         }
                     }
                 }
                 
                 // Loading indicator
-                if isLoadingPost {
+                if homeViewModel.isFetchingPost {
                     Color.gray.opacity(0.3).edgesIgnoringSafeArea(.all)
-                    ProgressView("Fetching posts...")
+                    ProgressView("Loading ...")
                 }
             }
         }
@@ -184,7 +178,43 @@ struct HomeView: View {
         } message: {
             Text("\nStop receiving notification from this user")
         }
-        
+        .alert(isSelectedPostAllowComment ? "Turn off comment for this post?" : "Turn on comment for this post?", isPresented: $homeViewModel.isTurnOffCommentAlert) {
+            Button("Cancel", role: .cancel) {
+                print(isSelectedPostAllowComment)
+            }
+            Button(isSelectedPostAllowComment ? "Turn off" : "Turn on", role: .destructive) {
+                isSelectedPostAllowComment = !isSelectedPostAllowComment
+                if let index = homeViewModel.fetchedAllPosts.firstIndex(where: { $0 == selectedPost }) {
+                    // Now you have the index of selectedPost in the array
+                    homeViewModel.fetchedAllPosts[index].isAllowComment = isSelectedPostAllowComment
+                    print(homeViewModel.fetchedAllPosts[index].isAllowComment)
+                }
+                
+                Task{
+                    try await homeViewModel.toggleCommentOnPost(postID: selectedPost.id ,isDisable: isSelectedPostAllowComment)
+                }
+            }
+        } message: {
+            Text(isSelectedPostAllowComment ? "\nTurn off comment from this post" : "\nTurn on comment for this post" )
+        }
+        .alert("Delete this post?", isPresented: $homeViewModel.isDeletePostAlert) {
+            Button("Cancel", role: .cancel) {}
+            Button("Delete", role: .destructive) {
+                Task {
+                    print(selectedPost.id)
+                    withAnimation {
+                        if let index = homeViewModel.fetchedAllPosts.firstIndex(where: { $0 == selectedPost }) {
+                            // Now you have the index of selectedPost in the array
+                            homeViewModel.fetchedAllPosts.remove(at: index)
+                        }
+                    }
+                   
+                    try await homeViewModel.deletePost(postID: selectedPost.id)
+                }
+            }
+        } message: {
+            Text("\nThis will permanently delete this post")
+        }
         .onAppear{
             Task{
                 currentUser = try await APIService.fetchCurrentUserData() ?? User(id: "default", account: "default@gmail.com")

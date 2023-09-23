@@ -70,6 +70,7 @@ class NotificationViewModel: ObservableObject {
     // Fetch users noti in realtime
     func fetchNotifcationRealTime(userId: String) {
         notiListenerRegistration = Firestore.firestore().collection("test_noti").whereField("receiverId", isEqualTo: userId).addSnapshotListener { [weak self] querySnapshot, error in
+            print(userId)
             guard let self = self else { return }
             
             // Error handling
@@ -87,8 +88,9 @@ class NotificationViewModel: ObservableObject {
             self.fetchedAllNotifications = documents.compactMap { queryDocumentSnapshot in
                 try? queryDocumentSnapshot.data(as: AppNotification.self)
             }
-            
-            createPushNotification()
+            if (!self.fetchedAllNotifications.isEmpty) {
+                createPushNotification()
+            }
         }
     }
     

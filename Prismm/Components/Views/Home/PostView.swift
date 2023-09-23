@@ -28,7 +28,9 @@ struct PostView: View {
     @Binding var userSetting:UserSetting
     @ObservedObject var homeViewModel: HomeViewModel
     @ObservedObject var notiVM: NotificationViewModel
-    @Binding var select: Post
+    @Binding var selectedPost: Post
+    @Binding var isAllowComment: Bool
+    
     @State var isLike = false
     @State var currentLike = 0
     @State var isArchive = false
@@ -81,98 +83,98 @@ struct PostView: View {
                 
                 // Menu
                 Menu {
-                    // Delete post
-                    Button(action: {homeViewModel.isDeletePostAlert = true}) {
-                        HStack {
-                            Image(systemName: "delete.left")
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: homeViewModel.seeMoreButtonSize)
-                                .padding(.trailing)
-                            
-                            Text("Delete Post")
+                    if (currentUser.id != post.ownerID) {
+                        Button(action: {
+                            selectedPost = post
+                            homeViewModel.isBlockUserAlert = true
+                            print("alerted")
+                        }) {
+                            HStack {
+                                Image(systemName: "person.crop.circle.badge.xmark")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: homeViewModel.seeMoreButtonSize)
+                                    .padding(.trailing)
+                                
+                                Text("Block this user")
+                            }
                         }
-                    }
-                    .alert("Delete this post?", isPresented: $homeViewModel.isDeletePostAlert) {
-                        Button("Cancel", role: .cancel) {}
-                        Button("Delete", role: .destructive) {}
-                    } message: {
-                        Text("\nThis will permanently delete this post")
-                    }
-                    
-                    Button(action: {
-                        homeViewModel.currentPost = post
-                        homeViewModel.isBlockUserAlert = true
-                        print("alerted")
-                    }) {
-                        HStack {
-                            Image(systemName: "person.crop.circle.badge.xmark")
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: homeViewModel.seeMoreButtonSize)
-                                .padding(.trailing)
-                            
-                            Text("Block this user")
+                        .alert("Block this user?", isPresented: $homeViewModel.isBlockUserAlert) {
+                            Button("Cancel", role: .cancel) {}
+                            Button("Block", role: .destructive) {}
+                        } message: {
+                            Text("\nYou will not see this user again")
                         }
-                    }
-                    .alert("Block this user?", isPresented: $homeViewModel.isBlockUserAlert) {
-                        Button("Cancel", role: .cancel) {}
-                        Button("Block", role: .destructive) {}
-                    } message: {
-                        Text("\nYou will not see this user again")
-                    }
 
-                    
-                    Button(action: {
-                        homeViewModel.currentPost = post
-                        homeViewModel.isRestrictUserAlert = true
-                        print("alerted")}
-                        ) {
-                        HStack {
-                            Image(systemName: "rectangle.portrait.slash")
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: homeViewModel.seeMoreButtonSize)
-                                .padding(.trailing)
-                            Text("Restrict this user")
+                        
+                        Button(action: {
+                            selectedPost = post
+                            homeViewModel.isRestrictUserAlert = true
+                            print("alerted")}
+                            ) {
+                            HStack {
+                                Image(systemName: "rectangle.portrait.slash")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: homeViewModel.seeMoreButtonSize)
+                                    .padding(.trailing)
+                                Text("Restrict this user")
+                            }
+                        }
+                        .alert("Restrict this user?", isPresented: $homeViewModel.isSignOutAlertPresented) {
+                            Button("Cancel", role: .cancel) {}
+                            Button("Restrict", role: .destructive) {}
+                        } message: {
+                            Text("\nStop receiving notification from this user")
                         }
                     }
-                    .alert("Restrict this user?", isPresented: $homeViewModel.isSignOutAlertPresented) {
-                        Button("Cancel", role: .cancel) {}
-                        Button("Restrict", role: .destructive) {}
-                    } message: {
-                        Text("\nStop receiving notification from this user")
-                    }
+                    
 
-                    
-                    // Turn off comment
-                    Button(action: {homeViewModel.isTurnOffCommentAlert = true}) {
-                        HStack {
-                            Image(systemName: "text.badge.xmark")
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: homeViewModel.seeMoreButtonSize)
-                                .padding(.trailing)
-                            Text("Turn off comment")
+                    if (currentUser.id == post.ownerID) {
+                        // Delete post
+                        Button(action: {
+                            selectedPost = post
+                            homeViewModel.isDeletePostAlert = true
+                        }) {
+                            HStack {
+                                Image(systemName: "delete.left")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: homeViewModel.seeMoreButtonSize)
+                                    .padding(.trailing)
+                                
+                                Text("Delete Post")
+                            }
                         }
-                    }
-                    .alert("Turn off comment?", isPresented: $homeViewModel.isSignOutAlertPresented) {
-                        Button("Cancel", role: .cancel) {}
-                        Button("Turn off", role: .destructive) {}
-                    } message: {
-                        Text("\nDisable comment for this post")
-                    }
-                    
-                    // Edit post
-                    Button(action: {}) {
-                        HStack {
-                            Image(systemName: "square.and.pencil")
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: homeViewModel.seeMoreButtonSize)
-                                .padding(.trailing)
-                            
-                            Text("Edit post")
+                        
+                        // Turn off comment
+                        Button(action: {
+                            selectedPost = post
+                            homeViewModel.isTurnOffCommentAlert = true
+                        }) {
+                            HStack {
+                                Image(systemName: "text.badge.xmark")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: homeViewModel.seeMoreButtonSize)
+                                    .padding(.trailing)
+                                Text(isAllowComment ? "Turn off comment" : "Turn on comment")
+                            }
+                        }
+
+                        // Edit post
+                        Button(action: {
+                            selectedPost = post
+                        }) {
+                            HStack {
+                                Image(systemName: "square.and.pencil")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: homeViewModel.seeMoreButtonSize)
+                                    .padding(.trailing)
+                                
+                                Text("Edit post")
+                            }
                         }
                     }
                 } label: {
@@ -283,11 +285,11 @@ struct PostView: View {
                 // Comment
                 Button(action: {
                     if UIDevice.current.userInterfaceIdiom == .pad {
-                        select = post
+                        selectedPost = post
                         homeViewModel.isOpenCommentViewOnIpad.toggle()
                         homeViewModel.fetchAllComments(forPostID: post.id)
                     } else {
-                        select = post
+                        selectedPost = post
                         homeViewModel.isOpenCommentViewOnIphone.toggle()
                         homeViewModel.fetchAllComments(forPostID: post.id)
                     }
@@ -308,12 +310,12 @@ struct PostView: View {
                 Button(action: {
                     if isArchive {
                         Task {
-                            try await homeViewModel.unFavorPost(ownerId: "ao2PKDpap4Mq7M5cn3Nrc1Mvoa42" ,postId: post.id)
+                            try await homeViewModel.unFavorPost(ownerId: currentUser.id ,postId: post.id)
                         }
                         isArchive = false
                     } else {
                         Task {
-                            try await homeViewModel.favorPost(ownerId: "ao2PKDpap4Mq7M5cn3Nrc1Mvoa42" ,postId: post.id)
+                            try await homeViewModel.favorPost(ownerId: currentUser.id ,postId: post.id)
                         }
                         isArchive = true
                     }
@@ -382,11 +384,12 @@ struct PostView: View {
             }
             
             homeViewModel.isUserLikePost(forPostID: post.id, withUserId: currentUser.id) {isLikePost in
-                print(isLikePost)
                 isLike = isLikePost
             }
             
             isArchive = homeViewModel.isUserFavouritePost(withPostId: post.id, withUserId: currentUser.id)
+            
+            isAllowComment = post.isAllowComment
         }
     }
     

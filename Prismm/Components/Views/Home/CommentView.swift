@@ -24,6 +24,7 @@ struct CommentView: View {
     @Binding var isShowComment: Bool
     @Binding var currentUser:User
     @Binding var userSetting:UserSetting
+    @Binding var isAllowComment: Bool
     @ObservedObject var homeVM: HomeViewModel
     @ObservedObject var notiVM: NotificationViewModel
     var isDarkModeEnabled: Bool
@@ -89,7 +90,7 @@ struct CommentView: View {
                                     }
                                     VStack(alignment: .leading) {
                                         HStack (alignment: .firstTextBaseline) {
-                                            Text(homeVM.currentCommentor?.username ?? "Blank") // User Name
+                                            Text(currentUser.username) // User Name
                                                 .font(Font.system(size: homeVM.usernameFont, weight: .medium))
                                                 .bold()
                                             
@@ -139,7 +140,7 @@ struct CommentView: View {
                 // Comment field
                 VStack {
                     // check if post allow comment
-                    if (post.isAllowComment) {
+                    if (isAllowComment) {
                         ScrollView(.horizontal, showsIndicators: false) {
                             HStack(spacing: 0) {
                                 // Convenient bar
@@ -178,7 +179,7 @@ struct CommentView: View {
                         .autocorrectionDisabled(true)
                         .textInputAutocapitalization(.never)
                         .padding()
-                        .disabled(post.isAllowComment ? false : true)
+                        .disabled(isAllowComment ? false : true)
                         .background(
                             Capsule()
                                 .fill(isDarkModeEnabled ? Color.gray.opacity(0.3) : Color.white)

@@ -17,7 +17,7 @@
 import Foundation
 import Firebase
 
-struct Post: Identifiable, Codable {
+struct Post: Identifiable, Codable, Equatable {
     let id: String
     var ownerID: String
     var caption: String?
@@ -29,4 +29,10 @@ struct Post: Identifiable, Codable {
     var isAllowComment: Bool
     var unwrappedOwner: User?
 
+    // Implement the == function for Equatable conformance
+    static func ==(lhs: Post, rhs: Post) -> Bool {
+        // Define your equality criteria here
+        // For example, you can compare based on id
+        return lhs.id == rhs.id
+    }
 }

@@ -46,7 +46,8 @@ class HomeViewModel: ObservableObject {
     @Published var isTurnOffCommentAlert = false
     @Published var isSignOutAlertPresented = false
     @Published var selectedCommentFilter = "Newest"
-    
+    @Published var isFetchingPost = false
+
     // Firebase Listener
     private var commentListenerRegistration: ListenerRegistration?
     private var likePostListenerRegistration: ListenerRegistration?
@@ -58,13 +59,13 @@ class HomeViewModel: ObservableObject {
     // Fetched values
     @Published var fetchedCommentsByPostId = [String: Set<Comment>]()
     @Published var currentUserBlockList = UserBlockList(blockedIds: [], beBlockedBy: [])
-    
     @Published var currentUserFollowList = [UserFollowList]()
     @Published var currentUserRestrictList = [UserRestrictList]()
     @Published var fetchedAllPosts = [Post]()
     @Published var fetchedAllStories = [Story]()
     @Published var currentUserFavouritePost = [FavouritePost]()
-    
+    @Published var unwrappedCurrentUserFavouritePost = [Post]()
+
     
     @Published var newPostSelectedMedia: NSURL? = nil
     
@@ -283,7 +284,7 @@ class HomeViewModel: ObservableObject {
         }
     }
     
-    // Fetch all user favorite posts
+    // Get user archived post
     @MainActor
     func fetchUserFavouritePost(forUserId userId: String) {
         favouritePostListenerRegistration = Firestore.firestore().collection("test_favourites").whereField("ownerId", isEqualTo: userId).addSnapshotListener { [weak self] querySnapshot, error in
@@ -298,10 +299,21 @@ class HomeViewModel: ObservableObject {
                 print("No documents")
                 return
             }
-            
-            // Convert query results to FavouritePost objects
-            self.currentUserFavouritePost = documents.compactMap { queryDocumentSnapshot in
-                try? queryDocumentSnapshot.data(as: FavouritePost.self)
+
+            // Create a task group to fetch and append posts concurrently
+            Task {
+                for queryDocumentSnapshot in documents {
+                    do {
+                        if let favouritePost = try? queryDocumentSnapshot.data(as: FavouritePost.self) {
+                            // Append the fetched post to the unwrappedCurrentUserFavouritePost
+                            self.currentUserFavouritePost.append(favouritePost)
+                            self.unwrappedCurrentUserFavouritePost.append( try await APIService.fetchPost(withPostID: favouritePost.postId))
+                        }
+                    } catch {
+                        // Handle any errors in fetching or parsing data
+                        print("Error fetching or parsing data: \(error)")
+                    }
+                }
             }
         }
     }
@@ -494,6 +506,21 @@ class HomeViewModel: ObservableObject {
             throw error
         }
     }
+    
+    // Delele post
+    func deletePost(postID: String) async throws {
+        do {
+            let postRef = Firestore.firestore().collection("test_posts").document(postID)
+            _ = try await postRef.getDocument().data(as: Post.self)
+
+            // Now delete the post itself
+            try await postRef.delete()
+        } catch {
+            print("Error deleting post: \(error)")
+            throw error // Rethrow the error for the caller to handle
+        }
+    }
+
     
     // Edit the current post
     func editCurrentPost(postID: String, newPostCaption: String?, newMediaURL: String?, newMimeType: String?) async throws {
