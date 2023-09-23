@@ -392,8 +392,8 @@ struct CreatePostView: View {
                                 postLink: homeVM.newPostId,
                                 category: .mention,
                                 restrictedByList: [],
-                                blockedByList: [],
-                                blockedList: []
+                                blockedByList: homeVM.currentUserBlockList.beBlockedBy,
+                                blockedList: homeVM.currentUserBlockList.blockedIds
                             )
                         }
 
