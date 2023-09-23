@@ -43,7 +43,7 @@ struct TabBar: View {
                 .tag(1)
                 
                 NavigationView {
-                    AllChat()
+                  DiscoverView(homeVM: homeVM, authVM: authVM, settingVM: settingVM)
                 }
                 .tag(2)
                 
@@ -81,7 +81,7 @@ struct TabBar: View {
                     .tag(1)
                     
                     NavigationView {
-                        AllChat()
+                        DiscoverView(homeVM: homeVM, authVM: authVM, settingVM: settingVM)
                     }
                     .tag(2)
                     

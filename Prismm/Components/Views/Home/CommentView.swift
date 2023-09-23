@@ -33,7 +33,7 @@ struct CommentView: View {
             
             VStack (spacing: 0) {
                 ZStack(alignment: .centerFirstTextBaseline) {
-                    Text("\(post.caption!)")
+                    Text("Comment")
                         .font(.title2)
                         .padding(.bottom)
                         .bold()
