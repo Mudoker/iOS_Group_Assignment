@@ -328,18 +328,15 @@ struct SettingView : View {
                             Spacer()
                             
                             HStack {
-                                Image(systemName: "person.circle")
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fit)
-                                    .frame(width: settingVM.accountSettingImageWidth)
-                                
-                                VStack(alignment: .leading) {
-                                    Text(currentUser.username )
-                                        .font(settingVM.accountSettingUsernameFont)
+                                Spacer()
+                                Button(action: {settingVM.isSignOutAlertPresented.toggle()}) {
+                                    Text("Sign Out")
+                                        .foregroundColor(.red)
                                         .bold()
                                         .font(settingVM.signOutButtonTextFont)
                                         .padding(.vertical)
                                 }
+                                
                                 .alert("Logout", isPresented: $settingVM.isSignOutAlertPresented) {
                                     Button("Cancel", role: .cancel) {
                                     }
@@ -392,10 +389,11 @@ struct SettingView : View {
                             
                         }
                 }
+                .foregroundColor(userSetting.darkModeEnabled ? .white : .black)
+                .background(!userSetting.darkModeEnabled ? .white : .black)
             }
         }
-        .foregroundColor(userSetting.darkModeEnabled ? .white : .black)
-        .background(!userSetting.darkModeEnabled ? .white : .black)
+        
     }
 }
 

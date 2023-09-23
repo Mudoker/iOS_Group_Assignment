@@ -24,6 +24,7 @@ struct ProfileView: View {
     @State var isSample = true
     @StateObject var profileVM = ProfileViewModel()
     @ObservedObject var homeVM: HomeViewModel
+    @StateObject var fvm = FollowViewModel()
     
     var body: some View {
         VStack(alignment: .leading){
@@ -59,19 +60,29 @@ struct ProfileView: View {
                                 
                             }
                             
-                            VStack{
-                                Text("0")
-                                    .fontWeight(.bold)
-                                Text(LocalizedStringKey("Followers"))
-                                
+                            
+                            NavigationLink {
+                                FollowView(fvm: fvm, currentUser: $currentUser, userSetting: $userSetting)
+                            } label: {
+                                VStack{
+                                    Text("0")
+                                        .fontWeight(.bold)
+                                    Text(LocalizedStringKey("Followers"))
+                                }
                             }
                             
-                            VStack{
-                                Text("0")
-                                    .fontWeight(.bold)
-                                Text(LocalizedStringKey("Following"))
-                                
+                            
+                            NavigationLink {
+                                FollowView(fvm: fvm,currentUser: $currentUser, userSetting: $userSetting)
+                            } label: {
+                                VStack{
+                                    Text("0")
+                                        .fontWeight(.bold)
+                                    Text(LocalizedStringKey("Following"))
+                                }
                             }
+                            
+                            
                         }
                         
                         //edit button and share button

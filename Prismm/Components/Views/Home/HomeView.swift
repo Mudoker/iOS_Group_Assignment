@@ -159,7 +159,8 @@ struct HomeView: View {
             }
             Button("Block", role: .destructive) {
                 Task{
-                    try await APIService.blockOtherUser(forUserID: homeViewModel.currentPost!.ownerID)
+//                    try await APIService.blockOtherUser(forUserID: homeViewModel.currentPost!.ownerID)
+                                        try await APIService.unfollowOtherUser(forUserID: homeViewModel.currentPost!.ownerID)
                 }
                 print("blocked")
             }
@@ -171,7 +172,9 @@ struct HomeView: View {
             }
             Button("Restrict", role: .destructive) {
                 Task{
-                    try await APIService.restrictOtherUser(forUserID: homeViewModel.currentPost!.ownerID)
+//                    try await APIService.restrictOtherUser(forUserID: homeViewModel.currentPost!.ownerID)
+                    try await APIService.followOtherUser(forUserID: homeViewModel.currentPost!.ownerID)
+//                    try await APIService.unfollowOtherUser(forUserID: homeViewModel.currentPost!.ownerID)
                 }
                 print("restricted")
             }
