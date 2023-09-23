@@ -26,7 +26,6 @@ struct CreatePostView: View {
     @State private var selectedTags: Set<String> = []
     @State var shouldPresentPickerSheet = false
     @State var shouldPresentCamera = false
-    @State var selected = false
     @Binding var isNewPost: Bool
     var isDarkModeEnabled: Bool
     @State var isOpenUserListViewOnIphone = false
@@ -34,6 +33,7 @@ struct CreatePostView: View {
     @State var isOpenPostTagListViewOnIphone = false
     @State var isOpenPostTagListViewOnIpad = false
     @State var proxySize = CGSize()
+    @State var isCreatingPost = false
     
     var filteredUsers: [String] {
         if homeVM.userTagListSearchText.isEmpty {
@@ -374,10 +374,12 @@ struct CreatePostView: View {
                 // Button to create post
                 Button(action: {
                     Task {
+                        isCreatingPost = true
                         let _ = try await homeVM.createPost()
                         try await homeVM.fetchPosts()
                         isNewPost = false
 //                        homeVM.selectedUserTag
+                        isCreatingPost = false
                     }
                 }) {
                     RoundedRectangle(cornerRadius: proxy.size.width/40)

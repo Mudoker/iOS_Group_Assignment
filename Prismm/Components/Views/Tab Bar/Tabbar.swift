@@ -1,18 +1,18 @@
 /*
-  RMIT University Vietnam
-  Course: COSC2659 iOS Development
-  Semester: 2023B
-  Assessment: Assignment 3
-  Author: Apple Men
-  Doan Huu Quoc (s3927776)
-  Tran Vu Quang Anh (s3916566)
-  Nguyen Dinh Viet (s3927291)
-  Nguyen The Bao Ngoc (s3924436)
-
-  Created  date: 11/09/2023
-  Last modified: 18/09/2023
-  Acknowledgement: None
-*/
+ RMIT University Vietnam
+ Course: COSC2659 iOS Development
+ Semester: 2023B
+ Assessment: Assignment 3
+ Author: Apple Men
+ Doan Huu Quoc (s3927776)
+ Tran Vu Quang Anh (s3916566)
+ Nguyen Dinh Viet (s3927291)
+ Nguyen The Bao Ngoc (s3924436)
+ 
+ Created  date: 11/09/2023
+ Last modified: 18/09/2023
+ Acknowledgement: None
+ */
 
 import SwiftUI
 
@@ -20,17 +20,18 @@ struct TabBar: View {
     // Control state
     @State private var tabSelection = 0
     @StateObject var notiVM = NotificationViewModel()
-
+    @StateObject var homeVM = HomeViewModel()
+    
     @EnvironmentObject var manager: AppManager
     
     // Localization
     @AppStorage("selectedLanguage") var selectedLanguage = "en"
-
+    
     var body: some View {
         if UIDevice.current.userInterfaceIdiom == .phone{
             TabView(selection: $tabSelection) {
                 NavigationView {
-                    HomeView(notiVM: notiVM)
+                    HomeView(homeViewModel: homeVM, notiVM: notiVM)
                 }
                 .tag(0)
                 
@@ -50,8 +51,7 @@ struct TabBar: View {
                 .tag(3)
                 
                 NavigationView {
-
-                    ProfileView()
+                    ProfileView(homeVM: homeVM)
                 }
                 .tag(4)
             }
@@ -59,6 +59,13 @@ struct TabBar: View {
                 let tabBarAppearance = UITabBarAppearance()
                 tabBarAppearance.configureWithDefaultBackground()
                 UITabBar.appearance().scrollEdgeAppearance = tabBarAppearance
+                Task {
+                    print("OK")
+                    homeVM.isFetchingPost = true
+                    homeVM.fetchUserFavouritePost(forUserId: Constants.currentUserID)
+                    try await homeVM.fetchPosts()
+                    homeVM.isFetchingPost = false
+                }
             }
             .environment(\.locale, Locale(identifier: selectedLanguage)) // Localization
             .overlay(alignment: .bottom) {
@@ -68,12 +75,21 @@ struct TabBar: View {
                 print("reload")
                 tabSelection = 0
             })
-
+            
         } else {
             NavigationStack {
                 TabView(selection: $tabSelection) {
                     NavigationView {
-                        HomeView(notiVM: notiVM)
+                        HomeView(homeViewModel: homeVM, notiVM: notiVM)
+                            .onAppear {
+                                Task {
+                                    homeVM.isFetchingPost = true
+                                    homeVM.fetchUserFavouritePost(forUserId: Constants.currentUserID)
+                                    try await homeVM.fetchPosts()
+                                    homeVM.isFetchingPost = false
+                                    
+                                }
+                            }
                     }
                     .tag(0)
                     
@@ -93,17 +109,21 @@ struct TabBar: View {
                     .tag(3)
                     
                     NavigationView {
-
-                        ProfileView()
-                            
+                        ProfileView(homeVM: homeVM)
                     }
                     .tag(4)
-                    
                 }
                 .onAppear {
                     let tabBarAppearance = UITabBarAppearance()
                     tabBarAppearance.configureWithDefaultBackground()
                     UITabBar.appearance().scrollEdgeAppearance = tabBarAppearance
+                    Task {
+                        print("OK")
+                        homeVM.isFetchingPost = true
+                        homeVM.fetchUserFavouritePost(forUserId: Constants.currentUserID)
+                        try await homeVM.fetchPosts()
+                        homeVM.isFetchingPost = false
+                    }
                 }
                 .environment(\.locale, Locale(identifier: selectedLanguage)) // Localization
                 .overlay(alignment: .bottom) {
@@ -115,7 +135,7 @@ struct TabBar: View {
                 print("reload")
                 tabSelection = 0
             })
-
+            
         }
     }
 }

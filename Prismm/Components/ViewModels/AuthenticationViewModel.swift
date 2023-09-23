@@ -50,6 +50,7 @@ class AuthenticationViewModel: ObservableObject {
     @Published var signUpReEnterPasswordText = ""
     @Published var isShowSignUpPassword = ""
     @Published var isShowSignUpReEnterPassword = ""
+    @StateObject var homeVM = HomeViewModel()
     
     // Current user session
     @Published var userSession: FirebaseAuth.User?
@@ -120,7 +121,7 @@ class AuthenticationViewModel: ObservableObject {
     init() {
         self.userToken = UserDefaults.standard.string(forKey: "userToken") ?? ""
         
-        
+
     }
     
     // Create user
@@ -192,8 +193,12 @@ class AuthenticationViewModel: ObservableObject {
             if let isVerified = isEmailVerified {
                 if isVerified {
                     // Fetch user data, store UID, and unlock device
-                    isFetchingData = false
                     Constants.currentUserID = userSession?.uid ?? "undefined"
+                    
+                    try await homeVM.fetchPosts()
+                    homeVM.fetchUserFavouritePost(forUserId: Constants.currentUserID)
+                    
+                    isFetchingData = false
                     isDeviceUnlocked = true
                     return true
                 } else {

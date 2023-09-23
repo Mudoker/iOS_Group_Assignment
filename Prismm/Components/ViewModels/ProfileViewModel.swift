@@ -24,12 +24,9 @@ import AVFoundation
 import FirebaseFirestoreSwift
 
 class ProfileViewModel: ObservableObject {
-    // Cntrol State
-    @Published var posts = [Post]()
+    // Control State
+    @Published var userPosts = [Post]()
     //@Published var blockList = [UserBlockList]()
-    
-    
-    
     @Published var hasStoryHightlight = false
     @Published var isSetting = false
     @Published var isShowAllUserPost = 1
@@ -53,7 +50,8 @@ class ProfileViewModel: ObservableObject {
         }
     }
  
-    
+    private var favouritePostListenerRegistration: ListenerRegistration?
+    @Published var currentUserFavouritePost = [FavouritePost]()
     @Published var indicatorOffset = -(UIScreen.main.bounds.width/4)
     
     //MARK: RESPONSIVE VALUE
@@ -105,8 +103,9 @@ class ProfileViewModel: ObservableObject {
     
     @MainActor
     func fetchUserPosts(UserID: String) async throws {
-        self.posts = try await APIService.fetchPostsOwned(byUserID: UserID)
+        self.userPosts = try await APIService.fetchPostsOwned(byUserID: UserID)
     }
+    
     
 //    @MainActor
 //    func fetchUserBlockList() async throws{
