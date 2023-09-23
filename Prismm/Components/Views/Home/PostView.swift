@@ -19,13 +19,15 @@ import SwiftUI
 import AVKit
 import Kingfisher
 import Firebase
+import FirebaseAuth
 
 struct PostView: View {
     // Control state
     var post: Post
     @Binding var currentUser:User
     @Binding var userSetting:UserSetting
-    @ObservedObject var homeViewModel:HomeViewModel
+    @ObservedObject var homeViewModel: HomeViewModel
+    @ObservedObject var notiVM: NotificationViewModel
     @Binding var select: Post
     @State var isLike = false
     @State var currentLike = 0
@@ -236,12 +238,13 @@ struct PostView: View {
                 Button(action: {
                     if isLike == false {
                         Task {
-                            try await homeViewModel.likePost(likerId: "ao2PKDpap4Mq7M5cn3Nrc1Mvoa42", postId: post.id)
+                            try await homeViewModel.likePost(likerId: currentUser.id, postId: post.id)
+                            _ = try await notiVM.createInAppNotification(senderId: currentUser.id, receiverId: post.ownerID, senderName: currentUser.username, message: Constants.notiReact, postLink: post.id, category: .react, restrictedByList: [], blockedByList: [], blockedList: [])
                         }
                         isLike = true
                     } else {
                         Task {
-                            try await homeViewModel.unLikePost(likerId: "ao2PKDpap4Mq7M5cn3Nrc1Mvoa42", postId: post.id)
+                            try await homeViewModel.unLikePost(likerId: currentUser.id, postId: post.id)
                         }
                         isLike = false
                     }
@@ -369,10 +372,13 @@ struct PostView: View {
             homeViewModel.getLikeCount(forPostID: post.id) { totalCount in
                 currentLike = totalCount
             }
-            homeViewModel.isCurrentUserLikePost(forPostID: post.id) {isLikePost in
+            
+            homeViewModel.isUserLikePost(forPostID: post.id, withUserId: currentUser.id) {isLikePost in
+                print(isLikePost)
                 isLike = isLikePost
             }
-            isArchive = homeViewModel.isUserFavouritePost(withPostId: post.id)
+            
+            isArchive = homeViewModel.isUserFavouritePost(withPostId: post.id, withUserId: currentUser.id)
         }
     }
     

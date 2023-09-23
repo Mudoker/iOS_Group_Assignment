@@ -264,15 +264,15 @@ struct CreatePostView: View {
                         ), lineWidth: 1.5)
                 )
                 .padding(.bottom)
-                .sheet(isPresented: $shouldPresentPickerSheet) {
-                    UIImagePickerView(sourceType: .photoLibrary , isPresented: $shouldPresentPickerSheet, selectedMedia: $homeVM.newPostSelectedMedia)
-                        .presentationDetents(shouldPresentCamera ? [.large] : [.medium])
-                    
-                }
-                .fullScreenCover(isPresented: $shouldPresentCamera) {
-                    UIImagePickerView(sourceType: .camera , isPresented: $shouldPresentCamera, selectedMedia: $homeVM.newPostSelectedMedia)
-                        .ignoresSafeArea()
-                }
+//                .sheet(isPresented: $shouldPresentPickerSheet) {
+//                    UIImagePickerView(sourceType: .photoLibrary , isPresented: $shouldPresentPickerSheet, selectedMedia: $homeVM.newPostSelectedMedia)
+//                        .presentationDetents(shouldPresentCamera ? [.large] : [.medium])
+//
+//                }
+//                .fullScreenCover(isPresented: $shouldPresentCamera) {
+//                    UIImagePickerView(sourceType: .camera , isPresented: $shouldPresentCamera, selectedMedia: $homeVM.newPostSelectedMedia)
+//                        .ignoresSafeArea()
+//                }
                 
                 // Post media
                 HStack {
@@ -342,15 +342,15 @@ struct CreatePostView: View {
                         ), lineWidth: 1.5)
                 )
                 .padding(.bottom)
-                .sheet(isPresented: $shouldPresentPickerSheet) {
-                    UIImagePickerView(sourceType: .photoLibrary , isPresented: $shouldPresentPickerSheet, selectedMedia: $homeVM.newPostSelectedMedia)
-                        .presentationDetents(shouldPresentCamera ? [.large] : [.medium])
-                    
-                }
-                .fullScreenCover(isPresented: $shouldPresentCamera) {
-                    UIImagePickerView(sourceType: .camera , isPresented: $shouldPresentCamera, selectedMedia: $homeVM.newPostSelectedMedia)
-                        .ignoresSafeArea()
-                }
+//                .sheet(isPresented: $shouldPresentPickerSheet) {
+//                    UIImagePickerView(sourceType: .photoLibrary , isPresented: $shouldPresentPickerSheet, selectedMedia: $homeVM.newPostSelectedMedia)
+//                        .presentationDetents(shouldPresentCamera ? [.large] : [.medium])
+//
+//                }
+//                .fullScreenCover(isPresented: $shouldPresentCamera) {
+//                    UIImagePickerView(sourceType: .camera , isPresented: $shouldPresentCamera, selectedMedia: $homeVM.newPostSelectedMedia)
+//                        .ignoresSafeArea()
+//                }
                 
                 // Reminder
                 VStack(alignment: .leading) {
@@ -377,6 +377,7 @@ struct CreatePostView: View {
                         let _ = try await homeVM.createPost()
                         try await homeVM.fetchPosts()
                         isNewPost = false
+//                        homeVM.selectedUserTag
                     }
                 }) {
                     RoundedRectangle(cornerRadius: proxy.size.width/40)
@@ -409,17 +410,17 @@ struct CreatePostView: View {
                 homeVM.selectedPostTag.removeAll()
                 homeVM.selectedUserTag.removeAll()
             }
-            .fullScreenCover(isPresented: $isOpenUserListViewOnIphone) {
-                UserListView(proxy: $proxySize, isDarkModeEnabled: isDarkModeEnabled, searchProfileText: $homeVM.userTagListSearchText, selectedUsers: $homeVM.selectedUserTag, isShowUserTagList: $isOpenUserListViewOnIphone, filteredUsers: filteredUsers)
-            }
-            .sheet(isPresented: $isOpenUserListViewOnIpad) {
-                UserListView(proxy: $proxySize, isDarkModeEnabled: isDarkModeEnabled, searchProfileText: $homeVM.userTagListSearchText, selectedUsers: $homeVM.selectedUserTag, isShowUserTagList: $isOpenUserListViewOnIpad, filteredUsers: filteredUsers)
-            }.fullScreenCover(isPresented: $isOpenPostTagListViewOnIphone) {
-                PostTagListView(proxy: $proxySize, isDarkModeEnabled: isDarkModeEnabled, searchTagText: $homeVM.postTagListSearchText, selectedTags: $homeVM.selectedPostTag, isShowPostTagList: $isOpenPostTagListViewOnIphone, filteredTags: filteredTags)
-            }
-            .sheet(isPresented: $isOpenPostTagListViewOnIpad) {
-                PostTagListView(proxy: $proxySize, isDarkModeEnabled: isDarkModeEnabled, searchTagText: $homeVM.userTagListSearchText, selectedTags: $homeVM.selectedPostTag, isShowPostTagList: $isOpenPostTagListViewOnIpad, filteredTags: filteredTags)
-            }
+//            .fullScreenCover(isPresented: $isOpenUserListViewOnIphone) {
+//                UserListView(proxy: $proxySize, isDarkModeEnabled: isDarkModeEnabled, searchProfileText: $homeVM.userTagListSearchText, selectedUsers: $homeVM.selectedUserTag, isShowUserTagList: $isOpenUserListViewOnIphone, filteredUsers: filteredUsers)
+//            }
+//            .sheet(isPresented: $isOpenUserListViewOnIpad) {
+//                UserListView(proxy: $proxySize, isDarkModeEnabled: isDarkModeEnabled, searchProfileText: $homeVM.userTagListSearchText, selectedUsers: $homeVM.selectedUserTag, isShowUserTagList: $isOpenUserListViewOnIpad, filteredUsers: filteredUsers)
+//            }.fullScreenCover(isPresented: $isOpenPostTagListViewOnIphone) {
+//                PostTagListView(proxy: $proxySize, isDarkModeEnabled: isDarkModeEnabled, searchTagText: $homeVM.postTagListSearchText, selectedTags: $homeVM.selectedPostTag, isShowPostTagList: $isOpenPostTagListViewOnIphone, filteredTags: filteredTags)
+//            }
+//            .sheet(isPresented: $isOpenPostTagListViewOnIpad) {
+//                PostTagListView(proxy: $proxySize, isDarkModeEnabled: isDarkModeEnabled, searchTagText: $homeVM.userTagListSearchText, selectedTags: $homeVM.selectedPostTag, isShowPostTagList: $isOpenPostTagListViewOnIpad, filteredTags: filteredTags)
+//            }
         }
         .foregroundColor(isDarkModeEnabled ? .white : .black)
         .background(!isDarkModeEnabled ? .white : .black)

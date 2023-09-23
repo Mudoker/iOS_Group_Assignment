@@ -20,6 +20,7 @@ struct HomeView: View {
     @State var currentUser = User(id: "default", account: "default@gmail.com")
     @State var userSetting = UserSetting(id: "default", darkModeEnabled: false, language: "en", faceIdEnabled: true, pushNotificationsEnabled: true, messageNotificationsEnabled: false)
     @StateObject var homeViewModel = HomeViewModel()
+    @ObservedObject var notiVM: NotificationViewModel
     @State var selectedPost = Post(id: "", ownerID: "", creationDate: Timestamp(), isAllowComment: true)
     @State var isLoadingPost = false
     
@@ -88,7 +89,7 @@ struct HomeView: View {
                         if !isLoadingPost {
                             VStack {
                                 ForEach(homeViewModel.fetchedAllPosts) { post in
-                                    PostView(post: post,currentUser: $currentUser, userSetting: $userSetting ,homeViewModel: homeViewModel, select: $selectedPost)
+                                    PostView(post: post,currentUser: $currentUser, userSetting: $userSetting ,homeViewModel: homeViewModel, notiVM: notiVM, select: $selectedPost)
                                         .padding(.bottom, 50)
                                 }
                                 
@@ -128,12 +129,12 @@ struct HomeView: View {
                     .fullScreenCover(isPresented: $homeViewModel.isCreateNewPostOnIphone) {
                         CreatePostView(currentUser: $currentUser, userSetting: $userSetting ,homeVM: homeViewModel, isNewPost: $homeViewModel.isCreateNewPostOnIphone, isDarkModeEnabled: userSetting.darkModeEnabled )
                     }
-                    .sheet(isPresented: $homeViewModel.isOpenCommentViewOnIpad) {
-                        CommentView(isDarkModeEnabled: userSetting.darkModeEnabled, isShowComment: $homeViewModel.isOpenCommentViewOnIpad, currentUser: $currentUser, userSetting: $userSetting, homeVM: homeViewModel, post: selectedPost)
-                    }
-                    .fullScreenCover(isPresented: $homeViewModel.isOpenCommentViewOnIphone) {
-                        CommentView(isDarkModeEnabled: userSetting.darkModeEnabled, isShowComment: $homeViewModel.isOpenCommentViewOnIphone, currentUser: $currentUser, userSetting: $userSetting, homeVM: homeViewModel, post: selectedPost)
-                    }
+//                    .sheet(isPresented: $homeViewModel.isOpenCommentViewOnIpad) {
+//                        CommentView(isShowComment: userSetting.darkModeEnabled, currentUser: $homeViewModel.isOpenCommentViewOnIpad, userSetting: $currentUser, homeVM: $userSetting, isDarkModeEnabled: homeViewModel, post: selectedPost)
+//                    }
+//                    .fullScreenCover(isPresented: $homeViewModel.isOpenCommentViewOnIphone) {
+//                        CommentView(isShowComment: userSetting.darkModeEnabled, currentUser: $homeViewModel.isOpenCommentViewOnIphone, userSetting: $currentUser, homeVM: $userSetting, isDarkModeEnabled: homeViewModel, post: selectedPost)
+//                    }
                     .onAppear {
                         homeViewModel.proxySize = proxy.size
                         isLoadingPost = true
@@ -163,6 +164,7 @@ struct HomeView: View {
             Task{
                 currentUser = try await APIService.fetchCurrentUserData() ?? User(id: "default", account: "default@gmail.com")
                 userSetting = try await APIService.fetchCurrentSettingData() ?? UserSetting(id: "default", darkModeEnabled: false, language: "en", faceIdEnabled: false, pushNotificationsEnabled: false, messageNotificationsEnabled: false)
+                notiVM.fetchNotifcationRealTime(userId: currentUser.id)
             }
         }
     }

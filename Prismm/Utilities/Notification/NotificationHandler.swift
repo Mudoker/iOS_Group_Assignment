@@ -10,6 +10,7 @@ import UserNotifications
 
 import Foundation
 import UserNotifications
+import FirebaseAuth
 
 class NotificationManager {
     // allow in-app notification
@@ -28,6 +29,7 @@ class NotificationManager {
     
     // Schedule time for push notification
     func scheduleNotification(at scheduledDate: Date, withTimeInterval timeInterval: Double = 10, titled title: String, andBody body: String) {
+        print("called")
         var notificationTrigger: UNNotificationTrigger?
         
         // Create a trigger with a delay

@@ -19,7 +19,8 @@ import SwiftUI
 struct TabBar: View {
     // Control state
     @State private var tabSelection = 0
-   
+    @StateObject var notiVM = NotificationViewModel()
+
     @EnvironmentObject var manager: AppManager
     
     // Localization
@@ -29,7 +30,7 @@ struct TabBar: View {
         if UIDevice.current.userInterfaceIdiom == .phone{
             TabView(selection: $tabSelection) {
                 NavigationView {
-                    HomeView()
+                    HomeView(notiVM: notiVM)
                 }
                 .tag(0)
                 
@@ -44,7 +45,7 @@ struct TabBar: View {
                 .tag(2)
                 
                 NavigationView {
-                    NotificationView()
+                    NotificationView(notiVM: notiVM)
                 }
                 .tag(3)
                 
@@ -72,7 +73,7 @@ struct TabBar: View {
             NavigationStack {
                 TabView(selection: $tabSelection) {
                     NavigationView {
-                        HomeView()
+                        HomeView(notiVM: notiVM)
                     }
                     .tag(0)
                     
@@ -87,7 +88,7 @@ struct TabBar: View {
                     .tag(2)
                     
                     NavigationView {
-                        NotificationView()
+                        NotificationView(notiVM: notiVM)
                     }
                     .tag(3)
                     

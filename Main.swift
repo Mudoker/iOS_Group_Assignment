@@ -14,17 +14,17 @@ import FirebaseAuth
 @main
 struct PrismmApp: App {
     @StateObject var manager = AppManager(isSignIn: Auth.auth().currentUser != nil ? true : false )
+    @StateObject var notiVM = NotificationViewModel()
     
     var body: some Scene {
         WindowGroup {
-            Test_Notification()
-//            if !manager.isSignIn {
-//                Login()
-//                    .environmentObject(manager)
-//            } else {
-//                TabBar()
-//                    .environmentObject(manager)
-//            }
+            if !manager.isSignIn {
+                Login()
+                    .environmentObject(manager)
+            } else {
+                TabBar()
+                    .environmentObject(manager)
+            }
         }
         
         
@@ -33,6 +33,7 @@ struct PrismmApp: App {
     // Configure firebase
     init(){
         FirebaseApp.configure()
+        
     }
 }
 
