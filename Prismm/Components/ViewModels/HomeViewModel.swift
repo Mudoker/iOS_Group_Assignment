@@ -23,12 +23,15 @@ import AVFoundation
 import FirebaseFirestoreSwift
 
 class HomeViewModel: ObservableObject {
+    @Published var isEditNewPostOnIpad = false
+    @Published var isEditNewPostOnIphone = false
     @Published var isCreateNewPostOnIpad = false
     @Published var isCreateNewPostOnIphone = false
     @Published var isOpenCommentViewOnIphone = false
     @Published var isOpenCommentViewOnIpad = false
     @Published var commentContent = ""
     @Published var selectedPostTag: [String] = []
+    @Published var editSelectedPostTag: [String] = []
     @Published var selectedUserTag: [String] = []
     @Published var isShowUserTagListOnIphone = false
     @Published var isShowUserTagListOnIpad = false
@@ -37,6 +40,7 @@ class HomeViewModel: ObservableObject {
     @Published var isShowPostTagListOnIphone = false
     @Published var isShowPostTagListOnIpad = false
     @Published var createNewPostCaption = ""
+    @Published var editPostCaption = ""
     @Published var isPostOnScreen = false
     @Published var isRestrictUserAlert = false
     @Published var isBlockUserAlert = false
@@ -462,14 +466,45 @@ class HomeViewModel: ObservableObject {
         }
     }
     
-    func editCurrentPost(postID: String, newPostCaption: String?, newMediaURL: String?, newMimeType: String?) async throws {
+//    func editCurrentPost(postID: String, newPostCaption: String?, newMediaURL: String?, newMimeType: String?) async throws {
+//        do {
+//            let postRef = Firestore.firestore().collection("test_posts").document(postID)
+//            var post = try await postRef.getDocument().data(as: Post.self)
+//
+//            post.caption = newPostCaption
+//            post.mediaURL = newMediaURL
+//            post.mediaMimeType = newMimeType
+//            post.creationDate = Timestamp()
+//
+//            try postRef.setData(from: post) { error in
+//                if let error = error {
+//                    print("Error updating document: \(error)")
+//                } else {
+//                    print("Document successfully updated.")
+//                }
+//            }
+//        } catch {
+//            throw error
+//        }
+//    }
+    func editCurrentPost(postID: String, newPostCaption: String?, newMediaURL: NSURL?, editSelectedTag : [String?]) async throws {
         do {
             let postRef = Firestore.firestore().collection("test_posts").document(postID)
             var post = try await postRef.getDocument().data(as: Post.self)
             
             post.caption = newPostCaption
-            post.mediaURL = newMediaURL
-            post.mediaMimeType = newMimeType
+            
+            
+            var mediaURL = ""
+            var mediaMimeType = ""
+            
+            if newMediaURL != nil{
+                mediaURL = try await createMediaToFirebase()
+                mediaMimeType = mimeType(for: try Data(contentsOf: newMediaURL as? URL ?? URL(fileURLWithPath: "")))
+            }
+            post.mediaURL = mediaURL
+            post.mediaMimeType = mediaMimeType
+            post.tag = editSelectedPostTag
             post.creationDate = Timestamp()
             
             try postRef.setData(from: post) { error in

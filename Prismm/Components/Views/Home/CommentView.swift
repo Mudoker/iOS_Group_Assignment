@@ -33,7 +33,7 @@ struct CommentView: View {
             
             VStack (spacing: 0) {
                 ZStack(alignment: .centerFirstTextBaseline) {
-                    Text("Comment")
+                    Text("\(post.caption!)")
                         .font(.title2)
                         .padding(.bottom)
                         .bold()
@@ -200,6 +200,9 @@ struct CommentView: View {
                 .background(.gray.opacity(0.1))
             }
             .padding(.vertical)
+        }
+        .onAppear{
+            print(post)
         }
         .foregroundColor(!isDarkModeEnabled ? .black : .white)
         .background(isDarkModeEnabled ? .black : .white)

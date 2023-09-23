@@ -150,7 +150,13 @@ struct PostView: View {
                         Text("\nDisable comment for this post")
                     }
                     
-                    Button(action: {}) {
+                    Button(action: {if UIDevice.current.userInterfaceIdiom == .pad {
+                        homeViewModel.isEditNewPostOnIpad.toggle()
+                        select = post
+                    } else {
+                        homeViewModel.isEditNewPostOnIphone.toggle()
+                        select = post
+                    }}) {
                         HStack {
                             Image(systemName: "square.and.pencil")
                                 .resizable()
