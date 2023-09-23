@@ -19,13 +19,14 @@ import Firebase
 
 struct AppNotification: Identifiable, Codable {
     let id: String
-    let senderName: String
+    let senderId: String
     let receiverId: String
     let messageContent: String
     let postLink: String
     let creationDate: Timestamp
     let category: NotificationCategory
     var isNotified: Bool
+    var senderName = ""
 }
 
 enum NotificationCategory: String, Codable {

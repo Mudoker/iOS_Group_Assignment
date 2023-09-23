@@ -377,6 +377,7 @@ struct CreatePostView: View {
                         let _ = try await homeVM.createPost()
                         try await homeVM.fetchPosts()
                         isNewPost = false
+//                        homeVM.selectedUserTag
                     }
                 }) {
                     RoundedRectangle(cornerRadius: proxy.size.width/40)

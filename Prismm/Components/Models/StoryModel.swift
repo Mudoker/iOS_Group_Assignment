@@ -17,7 +17,7 @@
 import Foundation
 import Firebase
 
-struct Story {
+struct Story: Identifiable, Codable {
     let id: String
     let creationDate: Timestamp
     var isActive: Bool
@@ -27,5 +27,4 @@ struct Story {
     
     let ownerId: String
     var unwrappedOwner: User?
-
 }

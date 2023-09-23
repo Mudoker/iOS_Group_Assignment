@@ -46,11 +46,8 @@ class HomeViewModel: ObservableObject {
     @Published var isTurnOffCommentAlert = false
     @Published var isSignOutAlertPresented = false
     @Published var selectedCommentFilter = "Newest"
-    @Published var fetchedAllPosts = [Post]()
-    @Published var currentUserFavouritePost = [FavouritePost]()
     
     // Firebase Listener
-    private var postsListenerRegistration: ListenerRegistration?
     private var commentListenerRegistration: ListenerRegistration?
     private var likePostListenerRegistration: ListenerRegistration?
     private var favouritePostListenerRegistration: ListenerRegistration?
@@ -64,7 +61,11 @@ class HomeViewModel: ObservableObject {
     
     @Published var currentUserFollowList = [UserFollowList]()
     @Published var currentUserRestrictList = [UserRestrictList]()
-
+    @Published var fetchedAllPosts = [Post]()
+    @Published var fetchedAllStories = [Story]()
+    @Published var currentUserFavouritePost = [FavouritePost]()
+    
+    
     @Published var newPostSelectedMedia: NSURL? = nil
     
     @Published var currentCommentor: User?
@@ -197,9 +198,9 @@ class HomeViewModel: ObservableObject {
     }
     
     // check if user has archived this post
-    func isUserFavouritePost(withPostId postId: String) -> Bool {
+    func isUserFavouritePost(withPostId postId: String, withUserId userId: String) -> Bool {
         return currentUserFavouritePost.contains { post in
-            post.ownerId == "ao2PKDpap4Mq7M5cn3Nrc1Mvoa42" && post.postId == postId
+            post.ownerId == userId && post.postId == postId
         }
     }
     
@@ -408,6 +409,32 @@ class HomeViewModel: ObservableObject {
     }
     
     // Create new post and upload to Firebase
+    func createStory() async throws {
+        // Get the current user id
+        let ownerID = Auth.auth().currentUser?.uid ?? "fail"
+        
+        // Reference to the story collection
+        let storyRef = Firestore.firestore().collection("test_stories").document()
+        
+        // Initialize variables for media URL and MIME type
+        var mediaURL = ""
+        var mediaMimeType = ""
+        
+        // Check selected media for the story
+        if newPostSelectedMedia != nil{
+            mediaURL = try await APIService.createMediaToFirebase(newPostSelectedMedia: newPostSelectedMedia!)
+            mediaMimeType = mimeType(for: try Data(contentsOf: newPostSelectedMedia as? URL ?? URL(fileURLWithPath: "")))
+        }
+        
+        // Create a new story object with provided data
+        let newStory = Story(id: storyRef.documentID, creationDate: Timestamp(), isActive: true, mediaURL: mediaURL, mediaMimeType: mediaMimeType, ownerId: ownerID)
+        
+        // Encode and store it in Firestore
+        guard let encodedStory = try? Firestore.Encoder().encode(newStory) else { return }
+        try await storyRef.setData(encodedStory)
+    }
+    
+    // Create new post and upload to Firebase
     func createPost() async throws {
         // Get the current user id
         let ownerID = Auth.auth().currentUser?.uid ?? "fail"
@@ -543,7 +570,50 @@ class HomeViewModel: ObservableObject {
         }
     }
 
-
+    // Fetch stories from Firestore
+    @MainActor
+    func fetchStories() async throws {
+        do {
+            // Query Firestore to get all posts
+            let querySnapshot = try await Firestore.firestore().collection("test_stories").getDocuments()
+            
+            if querySnapshot.isEmpty {
+                print("No documents")
+                return
+            }
+            
+            var fetchedAllStory = [Story]()
+            
+            // Iterate and convert to Post objects
+            for queryDocumentSnapshot in querySnapshot.documents {
+                if let story = try? queryDocumentSnapshot.data(as: Story.self) {
+                    fetchedAllStory.append(story)
+                }
+            }
+            
+            // Sort the fetched posts by time in descending order
+            fetchedAllStory = sortStoryByTime(order: "desc", stories: fetchedAllStory)
+            
+            // Fetch user for each post's owner
+            for i in 0..<fetchedAllStory.count {
+                let story = fetchedAllStory[i]
+                let ownerID = story.ownerId
+                
+                do {
+                    let user = try await APIService.fetchUser(withUserID: ownerID)
+                    fetchedAllStory[i].unwrappedOwner = user
+                } catch {
+                    print("Error fetching user: \(error)")
+                }
+            }
+            
+            // Update the fetched posts array
+            self.fetchedAllStories = fetchedAllStory
+        } catch {
+            print("Error fetching stories: \(error)")
+            throw error
+        }
+    }
 
     //Sort post by creation date
     func sortPostByTime(order: String, posts: [Post]) -> [Post] {
@@ -563,6 +633,26 @@ class HomeViewModel: ObservableObject {
         }
         
         return sortedPosts
+    }
+    
+    //Sort story by creation date
+    func sortStoryByTime(order: String, stories: [Story]) -> [Story] {
+        var sortedStories = stories
+        
+        switch order {
+        case "asc":
+            sortedStories.sort { post1, post2 in
+                return post1.creationDate.dateValue().compare(post2.creationDate.dateValue()) == ComparisonResult.orderedAscending
+            }
+        case "desc":
+            sortedStories.sort { post1, post2 in
+                return post1.creationDate.dateValue().compare(post2.creationDate.dateValue()) == ComparisonResult.orderedDescending
+            }
+        default:
+            break
+        }
+        
+        return sortedStories
     }
     
     //sort the comment by created date
@@ -669,8 +759,8 @@ class HomeViewModel: ObservableObject {
     }
     
     // Check if user has like a post
-    func isCurrentUserLikePost (forPostID postID: String, completion: @escaping (Bool)  -> Void) {
-        Firestore.firestore().collection("test_likes").whereField("postId", isEqualTo: postID).addSnapshotListener { [weak self] querySnapshot, error in
+    func isUserLikePost (forPostID postID: String, withUserId userId: String,completion: @escaping (Bool)  -> Void) {
+        Firestore.firestore().collection("test_likes").whereField("postId", isEqualTo: postID).whereField("likerId", isEqualTo: userId).addSnapshotListener { [weak self] querySnapshot, error in
             guard self != nil else { return }
             
             if let error = error {
@@ -684,9 +774,10 @@ class HomeViewModel: ObservableObject {
                 completion(false) // Return 0 when there's an error, and false for the boolean
                 return
             }
+            
             let hasLikerId = documents.contains { document in
                 let data = document.data()
-                return data["likerId"] as? String == "ao2PKDpap4Mq7M5cn3Nrc1Mvoa42"
+                return data["likerId"] as? String == userId
             }
             completion(hasLikerId)
         }
