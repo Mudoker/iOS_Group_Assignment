@@ -264,7 +264,7 @@ struct SettingView : View {
                                     .overlay(userSetting.darkModeEnabled ? .gray : .gray)
 
                                 HStack {
-                                    Button(action: {}) {
+                                    Button(action: {settingVM.isRestrictedListSheetPresentedOniPhone = true}) {
                                         Image(systemName: "rectangle.portrait.slash")
                                             .resizable()
                                             .aspectRatio(contentMode: .fill)
@@ -373,6 +373,11 @@ struct SettingView : View {
                         .fullScreenCover(isPresented: $settingVM.isBlockListSheetPresentedOniPhone) {
                             NavigationView {
                                 BlockView(profileVM: profileVM,settingVM: settingVM)
+                            }
+                        }
+                        .fullScreenCover(isPresented: $settingVM.isRestrictedListSheetPresentedOniPhone) {
+                            NavigationView {
+                                RestrictedView(profileVM: profileVM, settingVM: settingVM)
                             }
                         }
                     

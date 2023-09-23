@@ -32,6 +32,7 @@ class SettingViewModel: ObservableObject {
     @Published var isAccountSettingSheetPresentedOniPhone = false
     @Published var isAccountSettingSheetPresentedOniPad = false
     @Published var isBlockListSheetPresentedOniPhone = false
+    @Published var isRestrictedListSheetPresentedOniPhone = false
     @Published var isSignOutAlertPresented = false
     @Published var isSigningOut = false
     

@@ -7,24 +7,24 @@
 
 import SwiftUI
 
-struct BlockView: View {
+struct RestrictedView: View {
     
     @ObservedObject var profileVM: ProfileViewModel
     @ObservedObject var settingVM: SettingViewModel
     
-    @StateObject var blockVM = BlockViewModel()
+    @StateObject var restrictVM = RestrictViewModel()
     
     var body: some View {
         VStack{
             HStack {
                 Button {
-                    settingVM.isBlockListSheetPresentedOniPhone = false
+                    settingVM.isRestrictedListSheetPresentedOniPhone = false
                 } label: {
                     Text("Back")
                         .foregroundColor(.black)
                 }
                
-                Text("Blocked Accounts")
+                Text("Restricted Account")
                     .bold()
                     .font(.body)
                     .padding(.horizontal)
@@ -36,9 +36,9 @@ struct BlockView: View {
 
             
             ScrollView{
-                ForEach(blockVM.userBlockList) { user in
+                ForEach(restrictVM.userRestricList) { user in
                     VStack{
-                        BlockListRow(user: user, blockVM: blockVM)
+                        RestrictedListRow(user: user, restrictVM: restrictVM)
                     }
                     .padding(.horizontal, 10)
                     .padding(.vertical, 5)
@@ -50,23 +50,23 @@ struct BlockView: View {
         }
         .onAppear{
             Task {
-                await blockVM.fetchCurrentUserBlockList() 
+                await restrictVM.fetchCurrentUserRestrictList()
                 print("View")
-                print(blockVM.userBlockList)
+                print(restrictVM.userRestricList)
             }
         }
         .refreshable {
-            blockVM.userBlockList.removeAll()
-            await blockVM.fetchCurrentUserBlockList()
+            restrictVM.userRestricList.removeAll()
+            await restrictVM.fetchCurrentUserRestrictList()
             print("View")
-            print(blockVM.userBlockList)
+            print(restrictVM.userRestricList)
         
         }
     }
 }
 
-struct BlockView_Previews: PreviewProvider {
+struct RestrictedView_Previews: PreviewProvider {
     static var previews: some View {
-        BlockView(profileVM: ProfileViewModel(), settingVM: SettingViewModel())
+        RestrictedView(profileVM: ProfileViewModel(), settingVM: SettingViewModel())
     }
 }

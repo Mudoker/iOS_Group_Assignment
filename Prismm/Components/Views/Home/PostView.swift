@@ -97,6 +97,7 @@ struct PostView: View {
                     }
                     
                     Button(action: {
+                        homeViewModel.currentPost = post
                         homeViewModel.isBlockUserAlert = true
                         print("alerted")
                     }) {
@@ -109,17 +110,13 @@ struct PostView: View {
                             Text("Block this user")
                         }
                     }
-                    .alert("Block this user?", isPresented: $homeViewModel.isBlockUserAlert) {
-                        Button("Cancel", role: .cancel) {
-                        }
-                        Button("Block", role: .destructive) {
-                            print("blocked")
-                        }
-                    } message: {
-                        Text("\nYou will not see this user again")
-                    }
+
                     
-                    Button(action: {homeViewModel.isRestrictUserAlert = true}) {
+                    Button(action: {
+                        homeViewModel.currentPost = post
+                        homeViewModel.isRestrictUserAlert = true
+                        print("alerted")}
+                        ) {
                         HStack {
                             Image(systemName: "rectangle.portrait.slash")
                                 .resizable()
@@ -129,14 +126,7 @@ struct PostView: View {
                             Text("Restrict this user")
                         }
                     }
-                    .alert("Restrict this user?", isPresented: $homeViewModel.isSignOutAlertPresented) {
-                        Button("Cancel", role: .cancel) {
-                        }
-                        Button("Restrict", role: .destructive) {
-                        }
-                    } message: {
-                        Text("\nStop receiving notification from this user")
-                    }
+
                     
                     Button(action: {homeViewModel.isTurnOffCommentAlert = true}) {
                         HStack {

@@ -25,7 +25,7 @@ import FirebaseFirestoreSwift
 
 class ProfileViewModel: ObservableObject {
     @Published var posts = [Post]()
-    @Published var blockList = [UserBlockList]()
+    //@Published var blockList = [UserBlockList]()
     
     
     
@@ -107,8 +107,8 @@ class ProfileViewModel: ObservableObject {
         self.posts = try await APIService.fetchPostsOwned(byUserID: UserID)
     }
     
-    @MainActor
-    func fetchUserBlockList() async throws{
-        self.blockList = await APIService.fetchCurrentUserBlockList()
-    }
+//    @MainActor
+//    func fetchUserBlockList() async throws{
+//        self.blockList = await APIService.fetchCurrentUserBlockList()
+//    }
 }

@@ -8,9 +8,7 @@
 import Foundation
 import Firebase
 
-struct UserFollowList: Identifiable, Codable {
-    let id: String
-    let ownerId: String
+struct UserFollowList: Codable {
     let followIds: [String]
     let beFollowedBy: [String]
 }

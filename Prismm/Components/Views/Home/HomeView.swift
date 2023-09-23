@@ -158,6 +158,31 @@ struct HomeView: View {
                 }
             }
         }
+        .alert("Block this user?", isPresented: $homeViewModel.isBlockUserAlert) {
+            Button("Cancel", role: .cancel) {
+            }
+            Button("Block", role: .destructive) {
+                Task{
+                    try await APIService.blockOtherUser(forUserID: homeViewModel.currentPost!.ownerID)
+                }
+                print("blocked")
+            }
+        } message: {
+            Text("\nYou will not see this user again")
+        }
+        .alert("Restrict this user?", isPresented: $homeViewModel.isRestrictUserAlert) {
+            Button("Cancel", role: .cancel) {
+            }
+            Button("Restrict", role: .destructive) {
+                Task{
+                    try await APIService.restrictOtherUser(forUserID: homeViewModel.currentPost!.ownerID)
+                }
+                print("restricted")
+            }
+        } message: {
+            Text("\nStop receiving notification from this user")
+        }
+        
         .onAppear{
             Task{
                 currentUser = try await APIService.fetchCurrentUserData() ?? User(id: "default", account: "default@gmail.com")
