@@ -41,7 +41,7 @@ struct TabBar: View {
                 .tag(1)
                 
                 NavigationView {
-                    AllChat()
+                    DiscoverView(notiVM: notiVM, homeVM: homeVM, authVM: AuthenticationViewModel(), settingVM: SettingViewModel())
                 }
                 .tag(2)
                 
@@ -99,7 +99,7 @@ struct TabBar: View {
                     .tag(1)
                     
                     NavigationView {
-                        AllChat()
+                        DiscoverView(notiVM: notiVM,homeVM: homeVM, authVM: AuthenticationViewModel(), settingVM: SettingViewModel())
                     }
                     .tag(2)
                     

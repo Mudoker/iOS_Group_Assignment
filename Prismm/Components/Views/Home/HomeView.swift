@@ -15,6 +15,7 @@
  */
 import SwiftUI
 import Firebase
+
 struct HomeView: View {
     // control state
     @State var currentUser = User(id: "default", account: "default@gmail.com")
