@@ -196,6 +196,14 @@ struct EditProfileView: View {
                                 Spacer()
                                 
                                 Button(action: {
+                                    //MARK: Update Profile
+                                    Task{
+                                        await settingVM.updateProfile()
+                                        settingVM.hasProfileSettingChanged.toggle()
+                                        settingVM.resetField()
+                                    }
+                                    
+                                    
                                 }) {
                                     Text("Confirm")
                                         .foregroundColor(settingVM.isProfileSettingChange() ? .white : .gray)

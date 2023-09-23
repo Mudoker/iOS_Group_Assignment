@@ -187,4 +187,11 @@ class SettingViewModel: ObservableObject {
             print("ERROR: Failed to update user data.")
         }
     }
+    
+    func resetField(){
+        newProfileUsername = ""
+        newProfilePhoneNumber = ""
+        newProfileFacebook = ""
+        newProfileLinkedIn = ""
+    }
 }

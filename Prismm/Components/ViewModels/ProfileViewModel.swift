@@ -29,6 +29,11 @@ class ProfileViewModel: ObservableObject {
     //@Published var blockList = [UserBlockList]()
     @Published var hasStoryHightlight = false
     @Published var isSetting = false
+    
+    
+    @Published var unwrappedCurrentUserFavouritePost = [Post]()
+    private var favouritePostListenerRegistration: ListenerRegistration?
+    
     @Published var isShowAllUserPost = 1
     {
         didSet{
@@ -50,7 +55,7 @@ class ProfileViewModel: ObservableObject {
         }
     }
  
-    private var favouritePostListenerRegistration: ListenerRegistration?
+
     @Published var currentUserFavouritePost = [FavouritePost]()
     @Published var indicatorOffset = -(UIScreen.main.bounds.width/4)
     
@@ -106,7 +111,43 @@ class ProfileViewModel: ObservableObject {
         self.userPosts = try await APIService.fetchPostsOwned(byUserID: UserID)
     }
     
-    
+    // Get user archived post
+    @MainActor
+    func fetchUserFavouritePost(forUserId userId: String) {
+        self.currentUserFavouritePost.removeAll()
+        self.unwrappedCurrentUserFavouritePost.removeAll()
+        
+        
+        favouritePostListenerRegistration = Firestore.firestore().collection("test_favourites").whereField("ownerId", isEqualTo: userId).addSnapshotListener { [weak self] querySnapshot, error in
+            guard let self = self else { return }
+
+            if let error = error {
+                print("Error fetching posts: \(error)")
+                return
+            }
+
+            guard let documents = querySnapshot?.documents else {
+                print("No documents")
+                return
+            }
+
+            // Create a task group to fetch and append posts concurrently
+            Task {
+                for queryDocumentSnapshot in documents {
+                    do {
+                        if let favouritePost = try? queryDocumentSnapshot.data(as: FavouritePost.self) {
+                            // Append the fetched post to the unwrappedCurrentUserFavouritePost
+                            self.currentUserFavouritePost.append(favouritePost)
+                            self.unwrappedCurrentUserFavouritePost.append( try await APIService.fetchPost(withPostID: favouritePost.postId))
+                        }
+                    } catch {
+                        // Handle any errors in fetching or parsing data
+                        print("Error fetching or parsing data: \(error)")
+                    }
+                }
+            }
+        }
+    }
 //    @MainActor
 //    func fetchUserBlockList() async throws{
 //        self.blockList = await APIService.fetchCurrentUserBlockList()
