@@ -25,6 +25,7 @@ struct CommentView: View {
     @Binding var currentUser:User
     @Binding var userSetting:UserSetting
     @ObservedObject var homeVM: HomeViewModel
+    @ObservedObject var notiVM: NotificationViewModel
     var isDarkModeEnabled: Bool
     var post: Post
     let emojis = ["👍", "❤️", "😍", "🤣", "😯", "😭", "😡", "👽", "💩", "💀"]
@@ -187,6 +188,7 @@ struct CommentView: View {
                         Button(action: {
                             Task {
                                 _ = try await homeVM.createComment(content: homeVM.commentContent, commentor: (Auth.auth().currentUser?.uid)! , postId: post.id)
+                                _ = try await notiVM.createInAppNotification(senderId: currentUser.id, receiverId: post.ownerID, senderName: currentUser.username, message: Constants.notiComment, postLink: post.id, category: .comment, restrictedByList: [], blockedByList: [], blockedList: [])
                                 homeVM.commentContent = ""
                             }
                         }) {
