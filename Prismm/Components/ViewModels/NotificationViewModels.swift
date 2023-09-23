@@ -27,7 +27,7 @@ class NotificationViewModel: ObservableObject {
     private var notiListenerRegistration: ListenerRegistration?
     
     // create notification
-    func createInAppNotification(senderId: String, receiverId: String, senderName: String, message: String, postLink: String, category: NotificationCategory, restrictedByList: [String], blockedByList: [String], blockedList: [String]) async throws -> AppNotification? {
+    func createInAppNotification(senderId: String, receiverId: String, senderName: String, message: String, postId: String, category: NotificationCategory, restrictedByList: [String], blockedByList: [String], blockedList: [String]) async throws -> AppNotification? {
         
         // Check if the current user is in the restricted, blocked, or block list of the receiver
         if restrictedByList.contains(receiverId) || blockedByList.contains(receiverId) || blockedList.contains(receiverId) || receiverId == senderId  {
@@ -43,7 +43,7 @@ class NotificationViewModel: ObservableObject {
         let duplicateQuery = notiRef
             .whereField("senderId", isEqualTo: senderId)
             .whereField("messageContent", isEqualTo: message)
-            .whereField("postLink", isEqualTo: postLink)
+            .whereField("postId", isEqualTo: postId)
             .whereField("receiverId", isEqualTo: receiverId)
         
         let duplicateSnapshot = try await duplicateQuery.getDocuments()
@@ -51,7 +51,7 @@ class NotificationViewModel: ObservableObject {
         if duplicateSnapshot.isEmpty {
             // No duplicates found, create a new notification
             let notificationRef = notiRef.document()
-            let newNotification = AppNotification(id: notificationRef.documentID, senderId: senderId, receiverId: receiverId, messageContent: message, postLink: postLink, creationDate: Timestamp(), category: category, isNotified: false, senderName: senderName)
+            let newNotification = AppNotification(id: notificationRef.documentID, senderId: senderId, receiverId: receiverId, messageContent: message, postId: postId, creationDate: Timestamp(), category: category, isNotified: false, senderName: senderName)
             
             // Save on firebase
             guard let encodedNotification = try? Firestore.Encoder().encode(newNotification) else { return nil }

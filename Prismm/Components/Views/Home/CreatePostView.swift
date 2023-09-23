@@ -34,6 +34,7 @@ struct CreatePostView: View {
     @State var isOpenPostTagListViewOnIpad = false
     @State var proxySize = CGSize()
     @State var isCreatingPost = false
+    @State var isEmptyCaptionAlert = false
     
     @State var filteredUsers: [User] = []
     @ObservedObject var notiVM: NotificationViewModel
@@ -379,28 +380,32 @@ struct CreatePostView: View {
                 
                 // Button to create post @@@@@@
                 Button(action: {
-                    Task {
-                        isCreatingPost = true
-                        let _ = try await homeVM.createPost()
-                        // Create mentioned notification @@@@
-                        for user in homeVM.selectedUserTag {
-                            let _ = try await notiVM.createInAppNotification(
-                                senderId: currentUser.id,
-                                receiverId: user.id,
-                                senderName: currentUser.username,
-                                message: Constants.notiMention,
-                                postLink: homeVM.newPostId,
-                                category: .mention,
-                                restrictedByList: [],
-                                blockedByList: homeVM.currentUserBlockList.beBlockedBy,
-                                blockedList: homeVM.currentUserBlockList.blockedIds
-                            )
+                    if (homeVM.createNewPostCaption.isEmpty) {
+                        isEmptyCaptionAlert = true
+                    } else {
+                        Task {
+                            isCreatingPost = true
+                            let _ = try await homeVM.createPost()
+                            // Create mentioned notification @@@@
+                            for user in homeVM.selectedUserTag {
+                                let _ = try await notiVM.createInAppNotification(
+                                    senderId: currentUser.id,
+                                    receiverId: user.id,
+                                    senderName: currentUser.username,
+                                    message: Constants.notiMention,
+                                    postId: homeVM.newPostId,
+                                    category: .mention,
+                                    restrictedByList: [],
+                                    blockedByList: homeVM.currentUserBlockList.beBlockedBy,
+                                    blockedList: homeVM.currentUserBlockList.blockedIds
+                                )
+                            }
+                            
+                            try await homeVM.fetchPosts()
+                            isNewPost = false
+                            //                        homeVM.selectedUserTag
+                            isCreatingPost = false
                         }
-
-                        try await homeVM.fetchPosts()
-                        isNewPost = false
-//                        homeVM.selectedUserTag
-                        isCreatingPost = false
                     }
                 }) {
                     RoundedRectangle(cornerRadius: proxy.size.width/40)
@@ -449,6 +454,11 @@ struct CreatePostView: View {
             }
             .sheet(isPresented: $isOpenPostTagListViewOnIpad) {
                 PostTagListView(proxy: $proxySize, searchTagText: $homeVM.userTagListSearchText, selectedTags: $homeVM.selectedPostTag, isShowPostTagList:$isOpenPostTagListViewOnIpad, filteredTags:  filteredTags, isDarkModeEnabled: isDarkModeEnabled)
+            }
+            .alert("Error", isPresented: $isEmptyCaptionAlert) {
+                Button("Close", role: .cancel) {}
+            } message: {
+                Text("\nCaption cannot be empty!")
             }
         }
         .foregroundColor(isDarkModeEnabled ? .white : .black)
