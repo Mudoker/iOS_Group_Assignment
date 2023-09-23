@@ -18,8 +18,8 @@ import Foundation
 import SwiftUI
 
 class FollowViewModel: ObservableObject{
+    // Control State
     @Published var followerList = ["testAvt","testAvt","testAvt","testAvt","testAvt"]
-    
     @Published var searchText = ""
     @Published var tabSelection = 1{
         didSet{
@@ -54,6 +54,8 @@ class FollowViewModel: ObservableObject{
     
     
     @Published var colorTheme = Constants.darkThemeColor
+    
+    // Responsive
     let userNameFontSize = UIDevice.current.userInterfaceIdiom == .phone ? 20 : 32
     let tabNameFontSize = UIDevice.current.userInterfaceIdiom == .phone ? 18 : 24
     let searchTextFontSize = UIDevice.current.userInterfaceIdiom == .phone ? 20 : 24

@@ -1,24 +1,24 @@
 /*
-  RMIT University Vietnam
-  Course: COSC2659 iOS Development
-  Semester: 2023B
-  Assessment: Assignment 3
-  Author: Apple Men
-  Doan Huu Quoc (s3927776)
-  Tran Vu Quang Anh (s3916566)
-  Nguyen Dinh Viet (s3927291)
-  Nguyen The Bao Ngoc (s3924436)
-
-  Created  date: 09/09/2023
-  Last modified: 11/09/2023
-  Acknowledgement: None
-*/
+ RMIT University Vietnam
+ Course: COSC2659 iOS Development
+ Semester: 2023B
+ Assessment: Assignment 3
+ Author: Apple Men
+ Doan Huu Quoc (s3927776)
+ Tran Vu Quang Anh (s3916566)
+ Nguyen Dinh Viet (s3927291)
+ Nguyen The Bao Ngoc (s3924436)
+ 
+ Created  date: 09/09/2023
+ Last modified: 11/09/2023
+ Acknowledgement: None
+ */
 
 import SwiftUI
 
 struct SignUp: View {
-    @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
     // View Model
+    @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
     @ObservedObject var authVM:AuthenticationViewModel
     @Environment(\.colorScheme) var colorScheme
     
@@ -76,6 +76,7 @@ struct SignUp: View {
                             isDarkModeEnabled: (colorScheme == .dark)
                         )
                         
+                        // Password validator
                         HStack {
                             if authVM.signUpPasswordText.isEmpty {
                                 Text("At least 6 characters and not contain special symbols")
@@ -98,6 +99,7 @@ struct SignUp: View {
                                 }
                             }
                             
+                            // Push View
                             Spacer()
                         }
                         .padding(.horizontal)
@@ -115,6 +117,7 @@ struct SignUp: View {
                             isDarkModeEnabled: (colorScheme == .dark)
                         )
                         
+                        // Reenter password validator
                         HStack {
                             if authVM.signUpReEnterPasswordText.isEmpty {
                                 Text("Re-enter your password")
@@ -137,12 +140,12 @@ struct SignUp: View {
                                 }
                             }
                             
+                            // Push View
                             Spacer()
                         }
                         .padding(.horizontal)
                         .padding(.bottom)
                     }
-                    
                     
                     // Signup button
                     VStack {
@@ -183,17 +186,13 @@ struct SignUp: View {
                                 }
                             )
                         }
-                        
-                        
                     }
-                    
                     
                     // Push view
                     Spacer()
                 }
                 .foregroundColor((colorScheme == .dark) ? .white : .black)
                 .padding(.horizontal)
-                
                 .onChange(of: authVM.signUpPasswordText) {newValue in
                     authVM.isPasswordValid = authVM.isPasswordValidForSignUp(newValue)
                     authVM.isReenteredPasswordValid = authVM.passwordsMatch(currentPassword: newValue, reEnteredPassword: authVM.signUpReEnterPasswordText)
@@ -202,13 +201,13 @@ struct SignUp: View {
                     authVM.isReenteredPasswordValid = authVM.passwordsMatch(currentPassword: authVM.signUpPasswordText, reEnteredPassword: newValue)
                 }
                 
+                // Progress view when fetching user
                 if authVM.isFetchingData {
                     Color.gray.opacity(0.3).ignoresSafeArea()
                     ProgressView("Loading...")
                 }
             }
         }
-        .ignoresSafeArea(.keyboard)
         .background((colorScheme == .dark) ? .black : .white)
     }
 }

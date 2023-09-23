@@ -19,17 +19,16 @@ import Kingfisher
 import AVKit
 
 struct PostGridView: View {
-    
+    // Control state
     @Binding var currentUser:User
     @Binding var userSetting:UserSetting
-    
     @ObservedObject var profileVM: ProfileViewModel
-    
     var columnsGrid: [GridItem] = [GridItem(.fixed((UIScreen.main.bounds.width/3) - 2), spacing: 2), GridItem(.fixed((UIScreen.main.bounds.width/3) - 3), spacing: 2), GridItem(.fixed((UIScreen.main.bounds.width/3) - 2), spacing: 2)]
     
     var body: some View {
         ScrollView{
             LazyVGrid(columns: columnsGrid, spacing: 2 ) {
+                // Show posts of current user
                 ForEach(profileVM.posts) { post in
                     if let mediaURL = URL(string: post.mediaURL ?? "") {
                         if let mimeType = post.mediaMimeType {
@@ -41,7 +40,6 @@ struct PostGridView: View {
                                 VideoPlayer(player: player)
                                     .scaledToFill()
                                     .frame(width: (UIScreen.main.bounds.width/3) - 2 , height: (UIScreen.main.bounds.width/3) - 2)
-
                             } else {
                                 // Handle images using Kingfisher
                                 KFImage(mediaURL)
@@ -62,6 +60,5 @@ struct PostGridView: View {
                 }
             }
         }
-
     }
 }

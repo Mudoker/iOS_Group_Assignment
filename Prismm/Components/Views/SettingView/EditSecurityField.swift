@@ -17,18 +17,18 @@
 import SwiftUI
 
 struct EditSecurityField: View {
+    // Control state
     @Binding var currentUser:User
     @Binding var userSetting:UserSetting
-    
     @ObservedObject var settingVM:SettingViewModel
 
-    
     var body: some View {
         GeometryReader { proxy in
             VStack (alignment: .leading) {
                 HStack {
                     Spacer()
                     
+                    // Title
                     Text("Password & Security")
                         .bold()
                         .font(.title)
@@ -37,6 +37,7 @@ struct EditSecurityField: View {
                     Spacer()
                 }
                 
+                // Change password
                 Text("Change Password")
                     .bold()
                     .font(.title2)
@@ -61,7 +62,6 @@ struct EditSecurityField: View {
                     } else {
                         settingVM.hasSecuritySettingChanged = false
                     }
-                    
                 }
                 
                 CustomTextField(
@@ -85,9 +85,9 @@ struct EditSecurityField: View {
                     }
                     
                 }
-
-                
-                Text("Autofill")
+            
+                // Biometrics
+                Text("Login with FaceId")
                     .bold()
                     .font(.title3)
                     .padding(.horizontal)
@@ -102,6 +102,7 @@ struct EditSecurityField: View {
                     Text("Face ID")
                         .font(.title3)
                     
+                    // Push view
                     Spacer()
                     
                     Toggle("", isOn: $settingVM.isFaceIdEnabled)
@@ -120,15 +121,14 @@ struct EditSecurityField: View {
                 .padding(.horizontal)
                 .padding(.bottom)
                 
+                // Push view
                 Spacer()
                 
                 HStack {
                     Spacer()
                     
                     Button(action: {
-                        
                         settingVM.hasSecuritySettingChanged.toggle()
-
                     }) {
                         Text("Confirm")
                             .foregroundColor(settingVM.hasSecuritySettingChanged ? .white : .gray)
@@ -142,18 +142,6 @@ struct EditSecurityField: View {
                     Spacer()
                 }
                 .padding(.bottom)
-                
-                
-                HStack {
-                    Spacer()
-                    
-                    Button(action: {}) {
-                        Text("Delete Account")
-                            .foregroundColor(.red)
-                    }
-                    
-                    Spacer()
-                }
                 
                 Spacer()
             }

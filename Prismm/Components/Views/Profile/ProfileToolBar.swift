@@ -17,20 +17,21 @@
 import SwiftUI
 
 struct ProfileToolBar: View {
+    // Control state
     @Binding var currentUser:User
     @Binding var userSetting:UserSetting
-    
     @ObservedObject var profileVM: ProfileViewModel
 
     var body: some View {
-
         HStack{
             Text(currentUser.username)
                 .fontWeight(.bold)
-                .font(.system(size: profileVM.toolBarUserNameSize)) 
+                .font(.system(size: profileVM.toolBarUserNameSize))
+            
+            // Push view
             Spacer()
             
-            
+            // Setting
             Button {
                 profileVM.isSetting = true
             } label: {
@@ -39,7 +40,6 @@ struct ProfileToolBar: View {
             }
         }
         .foregroundColor(userSetting.darkModeEnabled ? .white : .black)
-
     }
 }
 

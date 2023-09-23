@@ -29,34 +29,32 @@ protocol SignUpFormProtocol{
 
 @MainActor
 class AuthenticationViewModel: ObservableObject {
+    // Control state
     @Published var hasLoginError = false
     @Published var hasSignUpError = false
     @Published var isAlertPresent = false
     @Published var isDeviceUnlocked = false
     @Published var isGoogleUnlocked = false
     @Published var isBiometricUnlocked = false
-
     @Published var isPasswordResetRequested = false
     @Published var isSignUpMode = false
     @Published var isPasswordValid = false
     @Published var isReenteredPasswordValid = false
     @Published var isUserNameValid = false
     @Published var isFetchingData = false
-    
-    
     @Published var isShowloginPassword = ""
-    
     @Published var loginPasswordText = ""
     @Published var loginAccountText = ""
     @Published var signUpAccountText = ""
     @Published var signUpPasswordText = ""
     @Published var signUpReEnterPasswordText = ""
-    
     @Published var isShowSignUpPassword = ""
     @Published var isShowSignUpReEnterPassword = ""
     
+    // Current user session
     @Published var userSession: FirebaseAuth.User?
-
+    
+    // Biometrics
     @Published var userToken: String {
         didSet {
             UserDefaults.standard.set(userToken, forKey: "userToken")
@@ -125,8 +123,10 @@ class AuthenticationViewModel: ObservableObject {
         
     }
     
+    // Create user
     func createNewUser(withEmail email: String, password: String) async throws {
         do {
+            // create using Firebase built-in
             let authSnapshot = try await Auth.auth().createUser(withEmail: email, password: password)
             self.userSession = authSnapshot.user
             
@@ -155,14 +155,17 @@ class AuthenticationViewModel: ObservableObject {
         signUpReEnterPasswordText = ""
     }
     
+    // Forgot password
     func resetUserPassword(withEmail email: String) async throws {
         try await Auth.auth().sendPasswordReset(withEmail: email)
     }
     
+    // Change password
     func updateUserPassword(to password: String) async throws {
         try await Auth.auth().currentUser?.updatePassword(to: password)
     }
     
+    // Delete user
     func deleteCurrentUser() {
         let user = Auth.auth().currentUser
         user?.delete { error in
@@ -172,98 +175,102 @@ class AuthenticationViewModel: ObservableObject {
         }
     }
     
+    // Verify account
     func sendVerificationEmail() async throws {
         try await self.userSession?.sendEmailVerification()
     }
     
-    func signIn(withEmail email: String, password: String) async throws -> Bool{
+    // User login
+    func signIn(withEmail email: String, password: String) async throws -> Bool {
         do {
+            // Authenticate with email and password
             let authSnapshot = try await Auth.auth().signIn(withEmail: email, password: password)
             self.userSession = authSnapshot.user
             let isEmailVerified = self.userSession?.isEmailVerified
             
+            // Continue if email is verified
             if let isVerified = isEmailVerified {
                 if isVerified {
-                    print("verified")
-                    
-
-                    
+                    // Fetch user data, store UID, and unlock device
                     isFetchingData = false
-                    
                     Constants.currentUserID = userSession?.uid ?? "undefined"
                     isDeviceUnlocked = true
                     return true
                 } else {
-                    // Send a verification email
-                    print("not verified")
-                    
+                    // Send a verification email if not verified
+                    print("Email not verified")
                     try await sendVerificationEmail()
-                    
                     isFetchingData = false
                     return false
                 }
             }
         } catch {
+            // Handle login error
             hasLoginError = true
             isFetchingData = false
             print("\(error.localizedDescription)")
-            return false
         }
         return false
-        
     }
+
     
+    // validate password
     func isPasswordValidForSignUp(_ password: String) -> Bool {
         return password.count >= 6
     }
     
+    // validate re-entered password
     func passwordsMatch(currentPassword: String, reEnteredPassword: String) -> Bool {
         return currentPassword == reEnteredPassword
     }
-        
+    
+    // Biometrics login
     func signInWithBiometrics() {
         let context = LAContext()
         var biometricError: NSError?
         
+        // Check if biometrics is available
         if context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &biometricError) {
-            let localizedReason = "Authenticate using Biometrics"
+            // Authenticate using biometrics
+            let localizedReason = "Authenticate with Biometrics"
+            
             context.evaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, localizedReason: localizedReason) { success, authenticationError in
                 DispatchQueue.main.async {
                     if success {
-                        // Biometric authentication was successful
+                        // Successful biometric authentication
                         self.isBiometricUnlocked = true
                     } else {
-                        // Biometric authentication failed or was canceled
+                        // Handle biometric authentication failure
                         if let error = authenticationError {
-                            // Handle the specific error
-                            print("Biometric authentication failed: \(error.localizedDescription)")
+                            print("Biometric auth failed: \(error.localizedDescription)")
                         } else {
-                            // Handle the case where authentication was canceled or failed without an error
-                            print("Biometric authentication failed.")
+                            print("Biometric auth failed.")
                         }
                     }
                 }
             }
         } else {
-            // Handle the case where biometric authentication is not available or supported
+            // Biometrics not available or supported
             if let error = biometricError {
-                // Handle the error
-                print("Biometric authentication not available: \(error.localizedDescription)")
+                print("Biometrics not available: \(error.localizedDescription)")
             } else {
-                // Handle the case where biometric authentication is not supported
-                print("Biometric authentication not supported on this device.")
+                print("Biometrics not supported on this device.")
             }
         }
     }
     
-    func signInWithGoogle() async -> Bool{
+    // Google sign-in
+    func signInWithGoogle() async -> Bool {
+        // Get Google client ID
         guard let googleClientID = FirebaseApp.app()?.options.clientID else {
             fatalError("No client ID found ")
         }
         
+        // Configure Google sign-in
         let googleSignInConfig = GIDConfiguration(clientID: googleClientID)
         GIDSignIn.sharedInstance.configuration = googleSignInConfig
         
+        // Find the active UIWindow and root view controller
         guard let activeWindow = UIApplication.shared.connectedScenes.first as? UIWindowScene,
               let window = activeWindow.windows.first,
               let rootViewController = window.rootViewController
@@ -273,24 +280,29 @@ class AuthenticationViewModel: ObservableObject {
         }
         
         do {
+            // Perform Google sign-in
             let googleUserAuth = try await GIDSignIn.sharedInstance.signIn(withPresenting: rootViewController)
             let googleUser = googleUserAuth.user
-            guard let googleIDToken = googleUser.idToken else { return false}
-
+            guard let googleIDToken = googleUser.idToken else { return false }
+            
+            // Get Google access token
             let googleAccessToken = googleUser.accessToken
+            
+            // Create GoogleAuthProvider credential
             let googleCredential = GoogleAuthProvider.credential(withIDToken: googleIDToken.tokenString, accessToken: googleAccessToken.tokenString)
             
-            
+            // Sign in to Firebase with the Google credential
             let googleSignInResult = try await Auth.auth().signIn(with: googleCredential)
             
-            let firebaseUser = googleSignInResult.user
-            _ = firebaseUser.email ?? ""
-            print("User \(firebaseUser.uid) signed in with \(firebaseUser.email ?? "unknown" )")
+            // Print user information
+            _ = googleSignInResult.user.email ?? ""
+            print("User \(googleSignInResult.user.uid) signed in with \(googleSignInResult.user.email ?? "unknown" )")
             
+            // Successful sign-in -> Unlock device
             isGoogleUnlocked = true
             return true
-        }
-        catch{
+        } catch {
+            // Handle errors
             print("Google Sign-In error: \(error.localizedDescription)")
             return false
         }

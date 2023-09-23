@@ -1,18 +1,18 @@
 /*
-  RMIT University Vietnam
-  Course: COSC2659 iOS Development
-  Semester: 2023B
-  Assessment: Assignment 3
-  Author: Apple Men
-  Doan Huu Quoc (s3927776)
-  Tran Vu Quang Anh (s3916566)
-  Nguyen Dinh Viet (s3927291)
-  Nguyen The Bao Ngoc (s3924436)
-
-  Created  date: 09/09/2023
-  Last modified: 15/09/2023
-  Acknowledgement: None
-*/
+ RMIT University Vietnam
+ Course: COSC2659 iOS Development
+ Semester: 2023B
+ Assessment: Assignment 3
+ Author: Apple Men
+ Doan Huu Quoc (s3927776)
+ Tran Vu Quang Anh (s3916566)
+ Nguyen Dinh Viet (s3927291)
+ Nguyen The Bao Ngoc (s3924436)
+ 
+ Created  date: 09/09/2023
+ Last modified: 15/09/2023
+ Acknowledgement: None
+ */
 
 import Foundation
 import SwiftUI
@@ -20,11 +20,10 @@ import Firebase
 import FirebaseFirestoreSwift
 
 struct SettingView : View {
+    // Control state
     @EnvironmentObject var manager: AppManager
-    
     @Binding var currentUser:User
     @Binding var userSetting:UserSetting
-    
     @StateObject var settingVM = SettingViewModel()
     @ObservedObject var profileVM:ProfileViewModel
     
@@ -329,10 +328,14 @@ struct SettingView : View {
                             Spacer()
                             
                             HStack {
-                                Spacer()
-                                Button(action: {settingVM.isSignOutAlertPresented.toggle()}) {
-                                    Text("Sign Out")
-                                        .foregroundColor(.red)
+                                Image(systemName: "person.circle")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(width: settingVM.accountSettingImageWidth)
+                                
+                                VStack(alignment: .leading) {
+                                    Text(currentUser.username )
+                                        .font(settingVM.accountSettingUsernameFont)
                                         .bold()
                                         .font(settingVM.signOutButtonTextFont)
                                         .padding(.vertical)
@@ -390,9 +393,9 @@ struct SettingView : View {
                         }
                 }
             }
-            .foregroundColor(userSetting.darkModeEnabled ? .white : .black)
-            .background(!userSetting.darkModeEnabled ? .white : .black)
         }
+        .foregroundColor(userSetting.darkModeEnabled ? .white : .black)
+        .background(!userSetting.darkModeEnabled ? .white : .black)
     }
 }
 

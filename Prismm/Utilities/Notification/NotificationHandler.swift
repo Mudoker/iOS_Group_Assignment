@@ -12,7 +12,10 @@ import Foundation
 import UserNotifications
 
 class NotificationManager {
+    // allow in-app notification
     var notificationDelegate = InAppNotificationDelegate()
+    
+    // Get permission from user
     func requestNotificationPermission() {
         UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { granted, error in
             if granted {
@@ -23,17 +26,12 @@ class NotificationManager {
         }
     }
     
-    func scheduleNotification(at scheduledDate: Date, ofType type: NotificationType, withTimeInterval timeInterval: Double = 10, titled title: String, andBody body: String) {
+    // Schedule time for push notification
+    func scheduleNotification(at scheduledDate: Date, withTimeInterval timeInterval: Double = 10, titled title: String, andBody body: String) {
         var notificationTrigger: UNNotificationTrigger?
         
-        // Create a trigger (either date-based or time-based)
-        switch type {
-        case .date:
-            let dateComponents = Calendar.current.dateComponents([.day, .month, .year, .hour, .minute], from: scheduledDate)
-            notificationTrigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: false)
-        case .time:
-            notificationTrigger = UNTimeIntervalNotificationTrigger(timeInterval: timeInterval, repeats: false)
-        }
+        // Create a trigger with a delay
+        notificationTrigger = UNTimeIntervalNotificationTrigger(timeInterval: timeInterval, repeats: false)
         
         // Customize the notification content
         let notificationContent = UNMutableNotificationContent()
@@ -43,16 +41,14 @@ class NotificationManager {
         
         // Create the notification request
         let notificationRequest = UNNotificationRequest(identifier: UUID().uuidString, content: notificationContent, trigger: notificationTrigger)
+        
+        // Allow in-app notification
         UNUserNotificationCenter.current().add(notificationRequest)
         UNUserNotificationCenter.current().delegate = notificationDelegate
     }
 }
 
-enum NotificationType {
-    case date
-    case time
-}
-
+// Inapp notification
 class InAppNotificationDelegate: NSObject, ObservableObject, UNUserNotificationCenterDelegate {
     // Handle notification presentation when the app is in the foreground
     func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {

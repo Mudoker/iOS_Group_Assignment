@@ -17,22 +17,23 @@
 import SwiftUI
 
 struct EditProfileView: View {
+    // Control state
     @Binding var currentUser:User
     @Binding var userSetting:UserSetting
-   
     @ObservedObject var settingVM:SettingViewModel
     @State var accountText: String = ""
-    
     
     var body: some View {
         GeometryReader { proxy in
             ScrollView(showsIndicators: false) {
                 VStack {
+                    // Title
                     Text("Profile Settings")
                         .bold()
                         .font(.title)
                         .padding(.horizontal)
                     
+                    // Change avatar
                     VStack(alignment: .center) {
                         Button(action: {}) {
                             Image("testAvt")
@@ -53,12 +54,11 @@ struct EditProfileView: View {
                                     }
                                 )
                         }
-                        
                         Text("Change photo")
                     }
                     .padding()
-                    //                .frame(maxWidth: .infinity, alignment: .center) // Center align this section
                     
+                    // Content
                     VStack(alignment: .leading) { // Align text to the left
                         Text("Update profile")
                             .padding(.vertical)
@@ -118,6 +118,7 @@ struct EditProfileView: View {
                         .padding(.horizontal)
                         .padding(.vertical)
                         
+                        // Connections
                         VStack(alignment: .leading) {
                             Text("Connections")
                                 .bold()

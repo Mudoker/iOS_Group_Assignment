@@ -1,18 +1,18 @@
 /*
-  RMIT University Vietnam
-  Course: COSC2659 iOS Development
-  Semester: 2023B
-  Assessment: Assignment 3
-  Author: Apple Men
-  Doan Huu Quoc (s3927776)
-  Tran Vu Quang Anh (s3916566)
-  Nguyen Dinh Viet (s3927291)
-  Nguyen The Bao Ngoc (s3924436)
-
-  Created  date: 09/09/2023
-  Last modified: 11/09/2023
-  Acknowledgement: None
-*/
+ RMIT University Vietnam
+ Course: COSC2659 iOS Development
+ Semester: 2023B
+ Assessment: Assignment 3
+ Author: Apple Men
+ Doan Huu Quoc (s3927776)
+ Tran Vu Quang Anh (s3916566)
+ Nguyen Dinh Viet (s3927291)
+ Nguyen The Bao Ngoc (s3924436)
+ 
+ Created  date: 09/09/2023
+ Last modified: 11/09/2023
+ Acknowledgement: None
+ */
 
 import SwiftUI
 import LocalAuthentication
@@ -22,7 +22,6 @@ import GoogleSignInSwift
 struct Login: View {
     // View Model
     @StateObject var authVM = AuthenticationViewModel()
-
     @Environment(\.colorScheme) var colorScheme
     @EnvironmentObject var manager : AppManager
     
@@ -114,7 +113,7 @@ struct Login: View {
                         // Helpers
                         HStack {
                             Button(action: {
-//                                authVM.isForgotPassword.toggle()
+                                //                                authVM.isForgotPassword.toggle()
                                 Task {
                                     try await authVM.resetUserPassword(withEmail: "huuquoc7603@gmail.com")
                                 }
@@ -134,6 +133,7 @@ struct Login: View {
                                 )
                             }
                             
+                            // Push view
                             Spacer()
                             
                             NavigationLink(destination: SignUp(authVM: authVM)
@@ -148,13 +148,16 @@ struct Login: View {
                                 }
                         }
                         
+                        // Aligning items
                         HStack {
+                            // Push view
                             Spacer()
                             
                             VStack {
                                 Divider()
+                                
                                 HStack {
-                                    
+                                    // Google sign in
                                     Button(action: {
                                         authVM.isFetchingData = true
                                         Task{
@@ -183,11 +186,12 @@ struct Login: View {
                                                     )
                                             )
                                     }
-                                    
                                 }
                                 .padding(.vertical)
                                 
+                                // Biometrics login
                                 HStack {
+                                    // Push view
                                     Spacer()
                                     
                                     VStack {
@@ -206,10 +210,14 @@ struct Login: View {
                                                 .foregroundColor((colorScheme == .dark) ? Constants.darkThemeColor : Constants.lightThemeColor)
                                         }
                                     }
+                                    
+                                    // Push view
                                     Spacer()
                                 }
                                 .padding(.vertical)
                             }
+                            
+                            // Push view
                             Spacer()
                         }
                     }
@@ -223,15 +231,14 @@ struct Login: View {
                         authVM.resetView()
                     }
                     
+                    // Progress view when fetching user
                     if authVM.isFetchingData {
                         Color.gray.opacity(0.3).edgesIgnoringSafeArea(.all)
                         ProgressView("Loading...")
                     }
                 }
-               
                 .background((colorScheme == .dark) ? .black : .white)
             }
-            .ignoresSafeArea(.keyboard)
         }
     }
 }
