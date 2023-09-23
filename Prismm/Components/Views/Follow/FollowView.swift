@@ -18,8 +18,9 @@ import SwiftUI
 
 struct FollowView: View {
     //Control state
-    @StateObject var fvm = FollowViewModel()
-    
+    @ObservedObject var fvm : FollowViewModel
+    @Binding var currentUser : User
+    @Binding var userSetting : UserSetting
     var body: some View {
         ZStack {
             // Theme
@@ -29,7 +30,7 @@ struct FollowView: View {
             VStack(alignment: .center) {
                 //Navigation and Username
                 HStack{
-                    Text("Username")
+                    Text("\(currentUser.username)")
                         .font(.system(size: CGFloat(fvm.userNameFontSize)))
                         .fontWeight(.bold)
                     
@@ -45,7 +46,7 @@ struct FollowView: View {
                     Button {
                         fvm.trueIsShowing()
                     } label: {
-                        Text(LocalizedStringKey("0 Followers"))
+                        Text("\(fvm.followerList.count) Followers")
                             .font(.system(size: CGFloat(fvm.tabNameFontSize)))
                             .opacity(fvm.tabSelection == 1 ? 1 : 0.5)
                         
@@ -56,7 +57,7 @@ struct FollowView: View {
                         fvm.falseIsShowing()
                         
                     } label: {
-                        Text(LocalizedStringKey("0 Following"))
+                        Text("\(fvm.followingList.count) Following")
                             .font(.system(size: CGFloat(fvm.tabNameFontSize)))
                             .opacity(fvm.tabSelection == 2 ? 1 : 0.5)
                         
@@ -98,14 +99,21 @@ struct FollowView: View {
             .background{
                 fvm.isDarkMode ? Color.black : Color.white
             }
+            .onAppear{
+                Task{
+                    await fvm.fetchFollowData()
+                    
+                    print(fvm.followerList)
+                    print(fvm.followingList)
+                }
+            }
         }
     }
 }
 
 struct FollowView_Previews: PreviewProvider {
     static var previews: some View {
-        FollowView()
+        FollowView(fvm: FollowViewModel(), currentUser: .constant(User(id: "1231231313", account: "tranvuquanganh87@gmailcom")), userSetting: .constant(UserSetting(id: "123131", darkModeEnabled: false, language: "en", faceIdEnabled: true, pushNotificationsEnabled: true, messageNotificationsEnabled: true)))
         
-        FollowView().previewDevice("iPad Pro (11-inch) (4th generation)")
     }
 }
