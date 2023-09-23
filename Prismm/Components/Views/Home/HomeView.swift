@@ -130,10 +130,10 @@ struct HomeView: View {
                         CreatePostView(currentUser: $currentUser, userSetting: $userSetting ,homeVM: homeViewModel, isNewPost: $homeViewModel.isCreateNewPostOnIphone, isDarkModeEnabled: userSetting.darkModeEnabled )
                     }
                     .sheet(isPresented: $homeViewModel.isOpenCommentViewOnIpad) {
-                        CommentView(isShowComment: $homeViewModel.isOpenCommentViewOnIpad, currentUser: $currentUser, userSetting: $userSetting, homeVM: homeViewModel, isDarkModeEnabled: userSetting.darkModeEnabled, post: selectedPost)
+                        CommentView(isShowComment: $homeViewModel.isOpenCommentViewOnIpad, currentUser: $currentUser, userSetting: $userSetting, homeVM: homeViewModel, notiVM: notiVM, isDarkModeEnabled: userSetting.darkModeEnabled, post: selectedPost)
                     }
                     .fullScreenCover(isPresented: $homeViewModel.isOpenCommentViewOnIphone) {
-                        CommentView(isShowComment: $homeViewModel.isOpenCommentViewOnIphone, currentUser: $currentUser, userSetting: $userSetting, homeVM: homeViewModel, isDarkModeEnabled: userSetting.darkModeEnabled, post: selectedPost)
+                        CommentView(isShowComment: $homeViewModel.isOpenCommentViewOnIphone, currentUser: $currentUser, userSetting: $userSetting, homeVM: homeViewModel, notiVM: notiVM, isDarkModeEnabled: userSetting.darkModeEnabled, post: selectedPost)
                     }
                     .onAppear {
                         homeViewModel.proxySize = proxy.size
