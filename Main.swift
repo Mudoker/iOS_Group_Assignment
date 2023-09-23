@@ -17,14 +17,14 @@ struct PrismmApp: App {
     
     var body: some Scene {
         WindowGroup {
-            Test_Notification()
-//            if !manager.isSignIn {
-//                Login()
-//                    .environmentObject(manager)
-//            } else {
-//                TabBar()
-//                    .environmentObject(manager)
-//            }
+            //Test_Notification()
+            if !manager.isSignIn {
+                Login()
+                    .environmentObject(manager)
+            } else {
+                TabBar()
+                    .environmentObject(manager)
+            }
         }
         
         

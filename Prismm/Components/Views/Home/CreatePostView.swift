@@ -265,12 +265,12 @@ struct CreatePostView: View {
                 )
                 .padding(.bottom)
                 .sheet(isPresented: $shouldPresentPickerSheet) {
-                    UIImagePickerView(sourceType: .photoLibrary , isPresented: $shouldPresentPickerSheet, selectedMedia: $homeVM.newPostSelectedMedia)
+                    UIImagePickerView(isPresented: $shouldPresentPickerSheet , selectedMedia: $homeVM.newPostSelectedMedia, sourceType: .photoLibrary)
                         .presentationDetents(shouldPresentCamera ? [.large] : [.medium])
                     
                 }
                 .fullScreenCover(isPresented: $shouldPresentCamera) {
-                    UIImagePickerView(sourceType: .camera , isPresented: $shouldPresentCamera, selectedMedia: $homeVM.newPostSelectedMedia)
+                    UIImagePickerView(isPresented: $shouldPresentCamera , selectedMedia: $homeVM.newPostSelectedMedia, sourceType: .camera)
                         .ignoresSafeArea()
                 }
                 
@@ -343,12 +343,12 @@ struct CreatePostView: View {
                 )
                 .padding(.bottom)
                 .sheet(isPresented: $shouldPresentPickerSheet) {
-                    UIImagePickerView(sourceType: .photoLibrary , isPresented: $shouldPresentPickerSheet, selectedMedia: $homeVM.newPostSelectedMedia)
+                    UIImagePickerView(isPresented: $shouldPresentPickerSheet , selectedMedia: $homeVM.newPostSelectedMedia, sourceType: .photoLibrary)
                         .presentationDetents(shouldPresentCamera ? [.large] : [.medium])
                     
                 }
                 .fullScreenCover(isPresented: $shouldPresentCamera) {
-                    UIImagePickerView(sourceType: .camera , isPresented: $shouldPresentCamera, selectedMedia: $homeVM.newPostSelectedMedia)
+                    UIImagePickerView(isPresented: $shouldPresentCamera , selectedMedia: $homeVM.newPostSelectedMedia, sourceType: .camera)
                         .ignoresSafeArea()
                 }
                 
@@ -410,15 +410,15 @@ struct CreatePostView: View {
                 homeVM.selectedUserTag.removeAll()
             }
             .fullScreenCover(isPresented: $isOpenUserListViewOnIphone) {
-                UserListView(proxy: $proxySize, isDarkModeEnabled: isDarkModeEnabled, searchProfileText: $homeVM.userTagListSearchText, selectedUsers: $homeVM.selectedUserTag, isShowUserTagList: $isOpenUserListViewOnIphone, filteredUsers: filteredUsers)
+                UserListView(proxy: $proxySize, searchProfileText: $homeVM.userTagListSearchText, selectedUsers: $homeVM.selectedUserTag, isShowUserTagList: $isOpenUserListViewOnIphone, filteredUsers: filteredUsers, isDarkModeEnabled: isDarkModeEnabled)
             }
             .sheet(isPresented: $isOpenUserListViewOnIpad) {
-                UserListView(proxy: $proxySize, isDarkModeEnabled: isDarkModeEnabled, searchProfileText: $homeVM.userTagListSearchText, selectedUsers: $homeVM.selectedUserTag, isShowUserTagList: $isOpenUserListViewOnIpad, filteredUsers: filteredUsers)
+                UserListView(proxy: $proxySize, searchProfileText: $homeVM.userTagListSearchText, selectedUsers: $homeVM.selectedUserTag, isShowUserTagList: $isOpenUserListViewOnIpad, filteredUsers: filteredUsers, isDarkModeEnabled: isDarkModeEnabled)
             }.fullScreenCover(isPresented: $isOpenPostTagListViewOnIphone) {
-                PostTagListView(proxy: $proxySize, isDarkModeEnabled: isDarkModeEnabled, searchTagText: $homeVM.postTagListSearchText, selectedTags: $homeVM.selectedPostTag, isShowPostTagList: $isOpenPostTagListViewOnIphone, filteredTags: filteredTags)
+                PostTagListView(proxy: $proxySize, searchTagText: $homeVM.userTagListSearchText, selectedTags: $homeVM.selectedPostTag, isShowPostTagList:$isOpenPostTagListViewOnIphone, filteredTags:  filteredTags, isDarkModeEnabled: isDarkModeEnabled)
             }
             .sheet(isPresented: $isOpenPostTagListViewOnIpad) {
-                PostTagListView(proxy: $proxySize, isDarkModeEnabled: isDarkModeEnabled, searchTagText: $homeVM.userTagListSearchText, selectedTags: $homeVM.selectedPostTag, isShowPostTagList: $isOpenPostTagListViewOnIpad, filteredTags: filteredTags)
+                PostTagListView(proxy: $proxySize, searchTagText: $homeVM.userTagListSearchText, selectedTags: $homeVM.selectedPostTag, isShowPostTagList:$isOpenPostTagListViewOnIpad, filteredTags:  filteredTags, isDarkModeEnabled: isDarkModeEnabled)
             }
         }
         .foregroundColor(isDarkModeEnabled ? .white : .black)
