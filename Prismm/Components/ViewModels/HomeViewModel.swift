@@ -31,7 +31,7 @@ class HomeViewModel: ObservableObject {
     @Published var isOpenCommentViewOnIpad = false
     @Published var commentContent = ""
     @Published var selectedPostTag: [String] = []
-    @Published var selectedUserTag: [String] = []
+    @Published var selectedUserTag: [User] = []
     @Published var isShowUserTagListOnIphone = false
     @Published var isShowUserTagListOnIpad = false
     @Published var userTagListSearchText = ""
@@ -47,6 +47,7 @@ class HomeViewModel: ObservableObject {
     @Published var isSignOutAlertPresented = false
     @Published var selectedCommentFilter = "Newest"
     @Published var isFetchingPost = false
+    @Published var newPostId = ""
 
     // Firebase Listener
     private var commentListenerRegistration: ListenerRegistration?
@@ -66,6 +67,7 @@ class HomeViewModel: ObservableObject {
     @Published var currentUserFavouritePost = [FavouritePost]()
     @Published var unwrappedCurrentUserFavouritePost = [Post]()
 
+    @ObservedObject var notiVM = NotificationViewModel()
     
     @Published var newPostSelectedMedia: NSURL? = nil
     
@@ -448,6 +450,7 @@ class HomeViewModel: ObservableObject {
     
     // Create new post and upload to Firebase
     func createPost() async throws {
+    
         // Get the current user id
         let ownerID = Auth.auth().currentUser?.uid ?? "fail"
         
@@ -476,6 +479,7 @@ class HomeViewModel: ObservableObject {
             creationDate: Timestamp(),
             isAllowComment: true
         )
+        self.newPostId = postRef.documentID
         
         // Encode and store it in Firestore
         guard let encodedPost = try? Firestore.Encoder().encode(newPost) else { return }
@@ -551,7 +555,6 @@ class HomeViewModel: ObservableObject {
         }
     }
     
-
     
     @MainActor
     func fetchPosts() async throws {

@@ -42,5 +42,5 @@ struct Constants {
     static let notiReact = "liked your post"
     static let notiComment = "commented on your post"
     static let notiFollow = "started following you"
-    static let notiMention = "mentioned you"
+    static let notiMention = "just created a new post"
 }

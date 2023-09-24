@@ -124,10 +124,10 @@ struct HomeView: View {
                         
                     }
                     .sheet(isPresented: $homeViewModel.isCreateNewPostOnIpad) {
-                        CreatePostView(currentUser: $currentUser, userSetting: $userSetting ,homeVM: homeViewModel, isNewPost: $homeViewModel.isCreateNewPostOnIpad, isDarkModeEnabled: userSetting.darkModeEnabled )
+                        CreatePostView(currentUser: $currentUser, userSetting: $userSetting ,homeVM: homeViewModel, isNewPost: $homeViewModel.isCreateNewPostOnIpad, isDarkModeEnabled: userSetting.darkModeEnabled, notiVM: notiVM )
                     }
                     .fullScreenCover(isPresented: $homeViewModel.isCreateNewPostOnIphone) {
-                        CreatePostView(currentUser: $currentUser, userSetting: $userSetting ,homeVM: homeViewModel, isNewPost: $homeViewModel.isCreateNewPostOnIphone, isDarkModeEnabled: userSetting.darkModeEnabled )
+                        CreatePostView(currentUser: $currentUser, userSetting: $userSetting ,homeVM: homeViewModel, isNewPost: $homeViewModel.isCreateNewPostOnIphone, isDarkModeEnabled: userSetting.darkModeEnabled, notiVM: notiVM)
                     }
                     .sheet(isPresented: $homeViewModel.isOpenCommentViewOnIpad) {
                         CommentView(isShowComment: $homeViewModel.isOpenCommentViewOnIpad, currentUser: $currentUser, userSetting: $userSetting, isAllowComment: $isSelectedPostAllowComment, homeVM: homeViewModel, notiVM: notiVM, isDarkModeEnabled: userSetting.darkModeEnabled, post: selectedPost)
@@ -167,13 +167,14 @@ struct HomeView: View {
         } message: {
             Text("\nYou will not see this user again")
         }
+        
         .alert("Restrict this user?", isPresented: $homeViewModel.isRestrictUserAlert) {
             Button("Cancel", role: .cancel) {
             }
             Button("Restrict", role: .destructive) {
                 Task{
-//                    try await APIService.restrictOtherUser(forUserID: homeViewModel.currentPost!.ownerID)
-                    try await APIService.followOtherUser(forUserID: homeViewModel.currentPost!.ownerID)
+                    try await APIService.restrictOtherUser(forUserID: selectedPost.ownerID)
+                    //try await APIService.followOtherUser(forUserID: homeViewModel.currentPost!.ownerID)
 //                    try await APIService.unfollowOtherUser(forUserID: homeViewModel.currentPost!.ownerID)
                 }
                 print("restricted")
@@ -181,6 +182,7 @@ struct HomeView: View {
         } message: {
             Text("\nStop receiving notification from this user")
         }
+        
         .alert(isSelectedPostAllowComment ? "Turn off comment for this post?" : "Turn on comment for this post?", isPresented: $homeViewModel.isTurnOffCommentAlert) {
             Button("Cancel", role: .cancel) {
                 print(isSelectedPostAllowComment)

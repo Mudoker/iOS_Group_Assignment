@@ -247,7 +247,10 @@ struct PostView: View {
                 // Like post
                 Button(action: {
                     if isLike == false {
-                        
+                        Task {
+                            try await homeViewModel.likePost(likerId: currentUser.id, postId: post.id)
+                            _ = try await notiVM.createInAppNotification(senderId: currentUser.id, receiverId: post.ownerID, senderName: currentUser.username, message: Constants.notiReact, postId: post.id, category: .react, blockedByList: [], blockedList: [])
+                        }
                         isLike = true
                     } else {
                         Task {

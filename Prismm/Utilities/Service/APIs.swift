@@ -360,12 +360,12 @@ struct APIService {
             } else {
                 // If the block list exists, add the user ID to the blockedIds array
                 
-                let existingRestrictedIds = snapshotCurrentUserRestrictList["restrictIDs"] as? [String] ?? []
+                let existingRestrictedIds = snapshotCurrentUserRestrictList["restrictIds"] as? [String] ?? []
                 if !existingRestrictedIds.contains(userIDToRestrict) {
                     var updatedRestrictedIds = existingRestrictedIds
                     updatedRestrictedIds.append(userIDToRestrict)
                     
-                    try await userRestrictListCollection.document(currentUserID).updateData(["restrictIDs": updatedRestrictedIds])
+                    try await userRestrictListCollection.document(currentUserID).updateData(["restrictIds": updatedRestrictedIds])
                 }
             }
             
@@ -378,20 +378,21 @@ struct APIService {
    // Unblock
     static func unRestrictOtherUser(forUserID userIDToUnRestrict: String) async throws {
         do {
+            print("Already delete")
             let userRestrictListCollection = Firestore.firestore().collection("test_restrict")
             let currentUserID =  Auth.auth().currentUser?.uid ?? "ZMSfvuGAW9OOSfM4mLVG10kAJJk2"
-            
+            print(currentUserID)
             // Use a Firestore query to check if the user has already blocked another user
             let snapshotCurrentUserRestrictList = try await userRestrictListCollection.document(currentUserID).getDocument()
 
             // If there are no matching documents, it means the user hasn't blocked anyone, so create a new block list
-            if !snapshotCurrentUserRestrictList.exists {
+            if snapshotCurrentUserRestrictList.exists {
 
-                var existingRestrictIds = snapshotCurrentUserRestrictList["restrictIDs"] as? [String] ?? []
-                
+                var existingRestrictIds = snapshotCurrentUserRestrictList["restrictIds"] as? [String] ?? []
                 if let indexToRemove = existingRestrictIds.firstIndex(of: userIDToUnRestrict) {
                     existingRestrictIds.remove(at: indexToRemove)
-                    try await userRestrictListCollection.document(currentUserID).updateData(["restrictIDs": existingRestrictIds])
+                    try await userRestrictListCollection.document(currentUserID).updateData(["restrictIds": existingRestrictIds])
+                    print("removed!!!!!!")
                 }
                 
             }
@@ -558,14 +559,12 @@ struct APIService {
     static func fetchCurrentUserRestrictedList() async throws -> UserRestrictList? {
         guard let currentUser = Auth.auth().currentUser else { return nil }
         let snapshot = try await Firestore.firestore().collection("test_restrict").document(currentUser.uid).getDocument()
-
-
         print("got snapshot")
         if !snapshot.exists{
             do {
                 let newUserRestrictList = UserRestrictList(restrictIds: [])
                 let encodedList = try Firestore.Encoder().encode(newUserRestrictList)
-                
+
                 try await Firestore.firestore().collection("test_restrict").document(currentUser.uid).setData(encodedList)
                 print("got new user restrict list")
                 return newUserRestrictList
@@ -574,6 +573,28 @@ struct APIService {
             }
         } else {
             return try? snapshot.data(as: UserRestrictList.self)
+        }
+        return nil
+    }
+
+    
+    @MainActor
+    static func fetchUserRestrictedList(withUserId receiverId: String) async throws -> UserRestrictList? {
+        let snapshot = try await Firestore.firestore().collection("test_restrict").document(receiverId).getDocument()
+
+        if !snapshot.exists{
+            do {
+                let newUserRestrictList = UserRestrictList(restrictIds: [])
+                let encodedList = try Firestore.Encoder().encode(newUserRestrictList)
+                print("got new user restrict list")
+                return newUserRestrictList
+            } catch {
+                print("ERROR: Fail to add block list data")
+            }
+        } else {
+            print(try? snapshot.data(as: UserRestrictList.self))
+            return try? snapshot.data(as: UserRestrictList.self)
+            
         }
         return nil
     }
