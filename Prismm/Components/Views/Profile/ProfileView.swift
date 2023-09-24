@@ -65,7 +65,7 @@ struct ProfileView: View {
                                     FollowView(fvm: fvm, currentUser: $currentUser, userSetting: $userSetting)
                                 } label: {
                                     VStack{
-                                        Text("0")
+                                        Text("\(fvm.followerList.count)")
                                             .fontWeight(.bold)
                                         Text(LocalizedStringKey("Followers"))
                                     }
@@ -76,7 +76,7 @@ struct ProfileView: View {
                                     FollowView(fvm: fvm,currentUser: $currentUser, userSetting: $userSetting)
                                 } label: {
                                     VStack{
-                                        Text("0")
+                                        Text("\(fvm.followingList.count)")
                                             .fontWeight(.bold)
                                         Text(LocalizedStringKey("Following"))
                                     }
@@ -240,6 +240,7 @@ struct ProfileView: View {
         .onAppear {
             profileVM.proxySize = UIScreen.main.bounds.size
             Task{
+                await fvm.fetchFollowData()
                 currentUser = try await APIService.fetchCurrentUserData()!
                 userSetting = try await APIService.fetchCurrentSettingData()!
                 try await profileVM.fetchUserPosts(UserID: currentUser.id )

@@ -37,8 +37,8 @@ struct FollowerList: View {
             .padding(.vertical)
             
             // Content
-            ForEach(fvm.followerList.indices, id:\.self) { _ in
-                FollowerRow(fvm: fvm)
+            ForEach(fvm.followerList) { user in
+                FollowerRow(fvm: fvm, user: user)
                 
             }
         }
