@@ -30,7 +30,7 @@ struct User: Identifiable, Codable, Equatable, Hashable {
     
     init(id: String, account: String) {
         self.id = id
-        self.username = account.extractNameFromEmail()!
+        self.username = account.extractNameFromEmail() ?? "Undefined"
         self.account = account
         
         self.phoneNumber = ""
