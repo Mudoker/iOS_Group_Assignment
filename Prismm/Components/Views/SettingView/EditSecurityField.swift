@@ -15,13 +15,17 @@
 */
 
 import SwiftUI
+import Firebase
 
 struct EditSecurityField: View {
     // Control state
     @Binding var currentUser:User
     @Binding var userSetting:UserSetting
     @ObservedObject var settingVM:SettingViewModel
-
+    @Environment(\.presentationMode) var presentationMode
+    
+    @State var isGoogleSignIn: Bool = false
+    
     var body: some View {
         GeometryReader { proxy in
             VStack (alignment: .leading) {
@@ -147,6 +151,20 @@ struct EditSecurityField: View {
             }
             .foregroundColor(userSetting.darkModeEnabled ? .white : .black)
             .background(!userSetting.darkModeEnabled ? .white : .black)
+            .onAppear{
+               isGoogleSignIn = (Auth.auth().currentUser?.providerData[0].providerID == "google.com")
+            }
+            .alert("Unavailable", isPresented: $isGoogleSignIn) {
+                Button {
+                    presentationMode.wrappedValue.dismiss()
+                } label: {
+                    Text("Back")
+                        .foregroundColor(.red)
+                }
+
+            } message: {
+                Text("You are using Google to sign in" )
+            }
         }
     }
 }

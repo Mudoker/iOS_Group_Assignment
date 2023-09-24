@@ -38,7 +38,7 @@ struct RestrictedListRow: View {
             Button {
                 Task{
                     var removeIndex = 0
-                    try await APIService.restrictOtherUser(forUserID: user.id)
+                    try await APIService.unRestrictOtherUser(forUserID: user.id)
                     
                     
                     for index in restrictVM.userRestricList.indices{

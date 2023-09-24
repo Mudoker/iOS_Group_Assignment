@@ -7,7 +7,6 @@ struct PostGridView: View {
     @Binding var currentUser: User
     @Binding var userSetting: UserSetting
     @ObservedObject var profileVM: ProfileViewModel
-    @ObservedObject var homeVM: HomeViewModel
 
     var columnsGrid: [GridItem] = [
         GridItem(.fixed((UIScreen.main.bounds.width/3) - 2), spacing: 2),
@@ -16,7 +15,6 @@ struct PostGridView: View {
     ]
     
     var body: some View {
-        ScrollView {
             LazyVGrid(columns: columnsGrid, spacing: 2) {
                 // Show posts of current user
                 if profileVM.isShowAllUserPost == 1 {
@@ -50,7 +48,7 @@ struct PostGridView: View {
                         }
                     }
                 } else {
-                    ForEach(homeVM.unwrappedCurrentUserFavouritePost) { post in
+                    ForEach(profileVM.unwrappedCurrentUserFavouritePost) { post in
                         if let mediaURL = URL(string: post.mediaURL ?? "") {
                             if let mimeType = post.mediaMimeType {
                                 if !mimeType.hasPrefix("image") {
@@ -81,6 +79,6 @@ struct PostGridView: View {
                     }
                 }
             }
-        }
+        
     }
 }

@@ -20,7 +20,7 @@ struct EditProfileView: View {
     // Control state
     @Binding var currentUser:User
     @Binding var userSetting:UserSetting
-    @ObservedObject var settingVM:SettingViewModel
+    @ObservedObject var settingVM = SettingViewModel()
     @State var accountText: String = ""
     
     var body: some View {
@@ -97,6 +97,24 @@ struct EditProfileView: View {
                             .padding(.vertical)
                             
                             HStack {
+                                Text("Bio")
+                                
+                                Spacer()
+                                
+                                TextField("", text: $settingVM.newProfileBio, prompt: Text(verbatim: "bio").foregroundColor(userSetting.darkModeEnabled ? .white.opacity(0.5) : .black.opacity(0.3)))
+                                    .multilineTextAlignment(.trailing)
+                                    .onChange(of: settingVM.newProfileBio) { _ in
+                                        if settingVM.isProfileSettingChange() {
+                                            settingVM.hasProfileSettingChanged = true
+                                        } else {
+                                            settingVM.hasProfileSettingChanged = false
+                                            
+                                        }
+                                    }
+                            }
+                            .padding(.vertical)
+                            
+                            HStack {
                                 Text("Phone number")
                                 
                                 Spacer()
@@ -147,29 +165,6 @@ struct EditProfileView: View {
                             .padding(.vertical)
                             
                             HStack {
-                                Image("mail")
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fill)
-                                    .frame(width: proxy.size.width/15, height: proxy.size.width/15)
-                                
-                                Text("Email")
-                                
-                                Spacer()
-                                
-                                TextField("", text: $settingVM.newProfileGmail, prompt: Text(verbatim: "example.com").foregroundColor(userSetting.darkModeEnabled ? .white.opacity(0.5) : .black.opacity(0.3)))
-                                    .multilineTextAlignment(.trailing)
-                                    .onChange(of: settingVM.newProfileGmail) { _ in
-                                        if settingVM.isProfileSettingChange() {
-                                            settingVM.hasProfileSettingChanged = true
-                                        } else {
-                                            settingVM.hasProfileSettingChanged = false
-                                            
-                                        }
-                                    }
-                            }
-                            .padding(.vertical)
-                            
-                            HStack {
                                 Image("linkedin")
                                     .resizable()
                                     .aspectRatio(contentMode: .fill)
@@ -196,6 +191,14 @@ struct EditProfileView: View {
                                 Spacer()
                                 
                                 Button(action: {
+                                    //MARK: Update Profile
+                                    Task{
+                                        currentUser = await settingVM.updateProfile()!
+                                        settingVM.hasProfileSettingChanged.toggle()
+                                        settingVM.resetField()
+                                    }
+                                    
+                                    
                                 }) {
                                     Text("Confirm")
                                         .foregroundColor(settingVM.isProfileSettingChange() ? .white : .gray)
@@ -222,8 +225,4 @@ struct EditProfileView: View {
     }
 }
 
-//struct EditProfileView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        EditProfileView(, settingVM: <#SettingViewModel#>)
-//    }
-//}
+

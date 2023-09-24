@@ -51,7 +51,7 @@ struct TabBar: View {
                 .tag(3)
                 
                 NavigationView {
-                    ProfileView(homeVM: homeVM)
+                    ProfileView()
                 }
                 .tag(4)
             }
@@ -109,7 +109,7 @@ struct TabBar: View {
                     .tag(3)
                     
                     NavigationView {
-                        ProfileView(homeVM: homeVM)
+                        ProfileView()
                     }
                     .tag(4)
                 }
