@@ -195,7 +195,14 @@ class AuthenticationViewModel: ObservableObject {
                     // Fetch user data, store UID, and unlock device
                     Constants.currentUserID = userSession?.uid ?? "undefined"
                     
-
+                    let userSetting = try await APIService.fetchCurrentSettingData()
+                                            
+                    UserDefaults.standard.setValue((userSetting?.faceIdEnabled == true), forKey: "faceIdEnabled")
+                    
+                    //if (userSetting?.faceIdEnabled == true){
+                    UserDefaults.standard.setValue(email, forKey: "currentEmail")
+                    UserDefaults.standard.setValue(password, forKey: "currentPassword")
+                    //}
                     
                     
                     isFetchingData = false
@@ -230,30 +237,52 @@ class AuthenticationViewModel: ObservableObject {
     }
     
     // Biometrics login
-    func signInWithBiometrics() {
+    @MainActor
+    func signInWithBiometrics() async -> Bool {
+        if UserDefaults.standard.bool(forKey: "faceIdEnabled") != true {
+            return false
+        }
+        
+        
         let context = LAContext()
         var biometricError: NSError?
-        
+
         // Check if biometrics is available
         if context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &biometricError) {
             // Authenticate using biometrics
             let localizedReason = "Authenticate with Biometrics"
-            
-            context.evaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, localizedReason: localizedReason) { success, authenticationError in
-                DispatchQueue.main.async {
-                    if success {
-                        // Successful biometric authentication
-                        self.isBiometricUnlocked = true
-                    } else {
-                        // Handle biometric authentication failure
-                        if let error = authenticationError {
-                            print("Biometric auth failed: \(error.localizedDescription)")
+
+            let success = await withCheckedContinuation { (continuation: CheckedContinuation<Bool, Never>) in
+                context.evaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, localizedReason: localizedReason) { success, authenticationError in
+                    DispatchQueue.main.async {
+                        if success {
+                            // Successful biometric authentication
+                            Task {
+                                do {
+                                    try await self.signIn(withEmail: UserDefaults.standard.string(forKey: "currentEmail") ?? "",
+                                                           password: UserDefaults.standard.string(forKey: "currentPassword") ?? "")
+                                    self.isBiometricUnlocked = true
+                                    print("sign in success")
+                                    continuation.resume(returning: true)
+                                } catch {
+                                    print("sign in failed")
+                                    continuation.resume(returning: false)
+                                }
+                            }
                         } else {
-                            print("Biometric auth failed.")
+                            // Handle biometric authentication failure
+                            if let error = authenticationError {
+                                print("Biometric auth failed: \(error.localizedDescription)")
+                            } else {
+                                print("Biometric auth failed.")
+                            }
+                            continuation.resume(returning: false)
                         }
                     }
                 }
             }
+
+            return success
         } else {
             // Biometrics not available or supported
             if let error = biometricError {
@@ -261,6 +290,7 @@ class AuthenticationViewModel: ObservableObject {
             } else {
                 print("Biometrics not supported on this device.")
             }
+            return false
         }
     }
     
