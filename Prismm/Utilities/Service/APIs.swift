@@ -566,16 +566,16 @@ struct APIService {
                 let newUserRestrictList = UserRestrictList(restrictIds: [])
                 let encodedList = try Firestore.Encoder().encode(newUserRestrictList)
                 
-                try await Firestore.firestore().collection("test_block").document(currentUser.uid).setData(encodedList)
-                print("got new user block list")
+                try await Firestore.firestore().collection("test_restrict").document(currentUser.uid).setData(encodedList)
+                print("got new user restrict list")
                 return newUserRestrictList
             } catch {
-                print("ERROR: Fail to add block list data")
+                print("ERROR: Fail to add restrict list data")
             }
         } else {
-            print("got database setting")
             return try? snapshot.data(as: UserRestrictList.self)
         }
         return nil
     }
+
 }
