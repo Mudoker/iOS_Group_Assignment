@@ -159,8 +159,8 @@ struct HomeView: View {
             }
             Button("Block", role: .destructive) {
                 Task{
-//                    try await APIService.blockOtherUser(forUserID: homeViewModel.currentPost!.ownerID)
-                                        try await APIService.unfollowOtherUser(forUserID: homeViewModel.currentPost!.ownerID)
+                    try await APIService.blockOtherUser(forUserID: selectedPost.ownerID)
+
                 }
                 print("blocked")
             }

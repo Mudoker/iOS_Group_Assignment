@@ -23,6 +23,8 @@ struct EditProfileView: View {
     @ObservedObject var settingVM = SettingViewModel()
     @State var accountText: String = ""
     
+    @Environment(\.presentationMode) var presentationMode
+    
     var body: some View {
         GeometryReader { proxy in
             ScrollView(showsIndicators: false) {
@@ -193,9 +195,13 @@ struct EditProfileView: View {
                                 Button(action: {
                                     //MARK: Update Profile
                                     Task{
-                                        currentUser = await settingVM.updateProfile()!
+                                        let user = await settingVM.updateProfile()!
+                                        currentUser = user
+                                        print(user)
                                         settingVM.hasProfileSettingChanged.toggle()
                                         settingVM.resetField()
+                                        
+                                        presentationMode.wrappedValue.dismiss()
                                     }
                                     
                                     

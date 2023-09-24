@@ -107,7 +107,32 @@ class FollowViewModel: ObservableObject{
             }catch{
                 return
             }
-        }
+    }
 
+    
+    @MainActor
+    func fetchFollowData1(forUserID userID: String) async {
+
+            do{
+                
+                followingList.removeAll()
+                followerList.removeAll()
+                let userFollowListObj = try await APIService.fetchUserFollowList(forUserID: userID)
+                for userID in userFollowListObj!.followIds{
+                    let user = try await APIService.fetchUser(withUserID: userID)
+                    
+                    self.followingList.append(user)
+                }
+                
+                for userID in userFollowListObj!.beFollowedBy{
+                    let user = try await APIService.fetchUser(withUserID: userID)
+                    
+                    self.followerList.append(user)
+                }
+                
+            }catch{
+                return
+            }
+    }
     
 }
