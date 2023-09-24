@@ -87,20 +87,26 @@ struct ProfileView: View {
                             
                             //edit button and share button
                             HStack{
-                                Button {
+                                //Button {
                                     
-                                } label: {
+                                //} label: {
                                     
+                                NavigationLink(destination: {
+                                    EditProfileView(currentUser: $currentUser, userSetting: $userSetting)
+                                }, label: {
                                     Text(LocalizedStringKey("Edit Profile"))
-                                        .fontWeight(.bold)
-                                        .foregroundColor(.black)
-                                        .frame(width: profileVM.editButtonWidth, height: profileVM.editButtonHeight)
-                                        .background{
-                                            Color.gray
-                                                .opacity(0.3)
-                                        }
+                                            .fontWeight(.bold)
+                                            .foregroundColor(.black)
+                                            .frame(width: profileVM.editButtonWidth, height: profileVM.editButtonHeight)
+                                            .background{
+                                                Color.gray
+                                                    .opacity(0.3)
+                                            }
                                         .clipShape(RoundedRectangle(cornerRadius: profileVM.buttonRadiusSize))
-                                }
+                                }) //{
+                                    
+                                //}
+                                //}
                                 
                                 Button {
                                     
@@ -121,8 +127,9 @@ struct ProfileView: View {
                             .fontWeight(.bold)
                     }
                     
+                    //bio
                     HStack{
-                        Text(currentUser.username)
+                        Text(currentUser.bio!)
                     }
                 }
                 

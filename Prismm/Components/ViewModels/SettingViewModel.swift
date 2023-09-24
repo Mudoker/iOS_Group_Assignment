@@ -42,6 +42,7 @@ class SettingViewModel: ObservableObject {
     @Published var hasSecuritySettingChanged = false
     @Published var hasProfileSettingChanged = false
     @Published var newProfileUsername: String = ""
+    @Published var newProfileBio: String = ""
     @Published var newProfilePhoneNumber: String = ""
     @Published var newProfileFacebook: String = ""
     @Published var newProfileGmail: String = ""
@@ -112,7 +113,7 @@ class SettingViewModel: ObservableObject {
     // Check for profile setting change
     func isProfileSettingChange() -> Bool {
         return !newProfileUsername.isEmpty || !newProfilePhoneNumber.isEmpty ||
-        !newProfileFacebook.isEmpty || !newProfileGmail.isEmpty || !newProfileLinkedIn.isEmpty
+        !newProfileFacebook.isEmpty || !newProfileGmail.isEmpty || !newProfileLinkedIn.isEmpty || !newProfileBio.isEmpty
     }
     
     // Update user settings
@@ -147,30 +148,34 @@ class SettingViewModel: ObservableObject {
     }
     
     // update user information
-    func updateProfile() async {
+    func updateProfile() async -> User? {
         // get current user id
         let userID = Auth.auth().currentUser?.uid ?? ""
         
         // Get the user document from Firestore
-        guard let userSnapshot = try? await Firestore.firestore().collection("users").document(userID).getDocument() else { return }
+        guard let userSnapshot = try? await Firestore.firestore().collection("users").document(userID).getDocument() else { return nil}
         
         do {
             // Decode user data
             var updatedUser = try userSnapshot.data(as: User.self)
             
-            if updatedUser.username != newProfileUsername {
+            if !newProfileUsername.isEmpty {
                 updatedUser.username = newProfileUsername
             }
             
-            if updatedUser.phoneNumber != newProfilePhoneNumber {
+            if !newProfileBio.isEmpty{
+                updatedUser.bio = newProfileBio
+            }
+            
+            if !newProfilePhoneNumber.isEmpty {
                 updatedUser.phoneNumber = newProfilePhoneNumber
             }
             
-            if updatedUser.facebook != newProfileFacebook {
+            if !newProfileFacebook.isEmpty {
                 updatedUser.facebook = newProfileFacebook
             }
             
-            if updatedUser.linkedIn != newProfileLinkedIn {
+            if !newProfileLinkedIn.isEmpty {
                 updatedUser.linkedIn = newProfileLinkedIn
             }
             
@@ -183,8 +188,11 @@ class SettingViewModel: ObservableObject {
                 try await Firestore.firestore().collection("users").document(userID).updateData(encodedUser)
                 print("User data updated successfully to \(userID)")
             }
+            
+            return updatedUser
         } catch {
             print("ERROR: Failed to update user data.")
+            return nil
         }
     }
     
