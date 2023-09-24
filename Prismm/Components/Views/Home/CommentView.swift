@@ -189,7 +189,7 @@ struct CommentView: View {
                         Button(action: {
                             Task {
                                 _ = try await homeVM.createComment(content: homeVM.commentContent, commentor: (Auth.auth().currentUser?.uid)! , postId: post.id)
-                                _ = try await notiVM.createInAppNotification(senderId: currentUser.id, receiverId: post.ownerID, senderName: currentUser.username, message: Constants.notiComment, postId: post.id, category: .comment, restrictedByList: [], blockedByList: [], blockedList: [])
+                                _ = try await notiVM.createInAppNotification(senderId: currentUser.id, receiverId: post.ownerID, senderName: currentUser.username, message: Constants.notiComment, postId: post.id, category: .comment, blockedByList: [], blockedList: [])
                                 homeVM.commentContent = ""
                             }
                         }) {

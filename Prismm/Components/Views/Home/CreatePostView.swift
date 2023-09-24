@@ -395,7 +395,6 @@ struct CreatePostView: View {
                                     message: Constants.notiMention,
                                     postId: homeVM.newPostId,
                                     category: .mention,
-                                    restrictedByList: [],
                                     blockedByList: homeVM.currentUserBlockList.beBlockedBy,
                                     blockedList: homeVM.currentUserBlockList.blockedIds
                                 )

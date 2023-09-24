@@ -27,10 +27,11 @@ class NotificationViewModel: ObservableObject {
     private var notiListenerRegistration: ListenerRegistration?
     
     // create notification
-    func createInAppNotification(senderId: String, receiverId: String, senderName: String, message: String, postId: String, category: NotificationCategory, restrictedByList: [String], blockedByList: [String], blockedList: [String]) async throws -> AppNotification? {
+    func createInAppNotification(senderId: String, receiverId: String, senderName: String, message: String, postId: String, category: NotificationCategory, blockedByList: [String], blockedList: [String]) async throws -> AppNotification? {
         
-        // Check if the current user is in the restricted, blocked, or block list of the receiver
-        if restrictedByList.contains(receiverId) || blockedByList.contains(receiverId) || blockedList.contains(receiverId) || receiverId == senderId  {
+        let receiverResrictList = try await APIService.fetchUserRestrictedList(withUserId: receiverId)
+        print(receiverResrictList?.restrictIds.count)
+        if blockedByList.contains(receiverId) || blockedList.contains(receiverId) || receiverId == senderId || (((receiverResrictList?.restrictIds.contains(senderId)) == true)) {
             // Handle the situation here, e.g., log a message or return an error.
             print("Cannot send notification to \(receiverId) due to restrictions or blocks.")
             return nil

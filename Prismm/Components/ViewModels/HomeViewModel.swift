@@ -555,7 +555,6 @@ class HomeViewModel: ObservableObject {
         }
     }
     
-
     
     @MainActor
     func fetchPosts() async throws {
