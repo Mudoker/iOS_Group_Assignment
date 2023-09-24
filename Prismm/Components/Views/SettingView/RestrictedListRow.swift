@@ -47,7 +47,7 @@ struct RestrictedListRow: View {
                         }
                     }
                     
-                    withAnimation {
+                    withAnimation{
                         restrictVM.userRestricList.remove(at: removeIndex)
                     }
                 }

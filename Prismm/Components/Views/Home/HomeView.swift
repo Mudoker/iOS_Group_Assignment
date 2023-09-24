@@ -15,6 +15,7 @@
  */
 import SwiftUI
 import Firebase
+
 struct HomeView: View {
     // control state
     @State var currentUser = User(id: "default", account: "default@gmail.com")
@@ -173,9 +174,8 @@ struct HomeView: View {
             }
             Button("Restrict", role: .destructive) {
                 Task{
+
                     try await APIService.restrictOtherUser(forUserID: selectedPost.ownerID)
-                    //try await APIService.followOtherUser(forUserID: homeViewModel.currentPost!.ownerID)
-//                    try await APIService.unfollowOtherUser(forUserID: homeViewModel.currentPost!.ownerID)
                 }
                 print("restricted")
             }

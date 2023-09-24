@@ -19,6 +19,13 @@
 		2FB5DC8B2ABEBA0500ED47DF /* RestrictViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FB5DC8A2ABEBA0500ED47DF /* RestrictViewModel.swift */; };
 		2FF0ACC42AAAFA3C0033AEEB /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FF0ACC32AAAFA3C0033AEEB /* ProfileView.swift */; };
 		2FF0ACC62AAB05120033AEEB /* ProfileToolBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FF0ACC52AAB05120033AEEB /* ProfileToolBar.swift */; };
+		346908C02ABF4C4F00FF2177 /* DiscoverView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 346908BF2ABF4C4F00FF2177 /* DiscoverView.swift */; };
+		346908C62ABF4CA900FF2177 /* DropDownMenuOption.swift in Sources */ = {isa = PBXBuildFile; fileRef = 346908C22ABF4CA900FF2177 /* DropDownMenuOption.swift */; };
+		346908C72ABF4CA900FF2177 /* DropdownMenuList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 346908C32ABF4CA900FF2177 /* DropdownMenuList.swift */; };
+		346908C82ABF4CA900FF2177 /* DropDownMenuListRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 346908C42ABF4CA900FF2177 /* DropDownMenuListRow.swift */; };
+		346908C92ABF4CA900FF2177 /* DropdownMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 346908C52ABF4CA900FF2177 /* DropdownMenu.swift */; };
+		347B62522ABF530D008C69C3 /* DiscoverViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 347B62512ABF530D008C69C3 /* DiscoverViewModel.swift */; };
+		347B62542ABF6019008C69C3 /* GuestProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 347B62532ABF6019008C69C3 /* GuestProfileView.swift */; };
 		34B8A10E2ABC33440079A98C /* FirebaseConstant.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34B8A10D2ABC33440079A98C /* FirebaseConstant.swift */; };
 		34B8A1102ABC34470079A98C /* ChatLogViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34B8A10F2ABC34470079A98C /* ChatLogViewModel.swift */; };
 		85E235D42ABBFD2500224E56 /* ChatLogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85E235CA2ABBFD2500224E56 /* ChatLogView.swift */; };
@@ -111,6 +118,13 @@
 		2FB5DC8A2ABEBA0500ED47DF /* RestrictViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestrictViewModel.swift; sourceTree = "<group>"; };
 		2FF0ACC32AAAFA3C0033AEEB /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		2FF0ACC52AAB05120033AEEB /* ProfileToolBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileToolBar.swift; sourceTree = "<group>"; };
+		346908BF2ABF4C4F00FF2177 /* DiscoverView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiscoverView.swift; sourceTree = "<group>"; };
+		346908C22ABF4CA900FF2177 /* DropDownMenuOption.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DropDownMenuOption.swift; sourceTree = "<group>"; };
+		346908C32ABF4CA900FF2177 /* DropdownMenuList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DropdownMenuList.swift; sourceTree = "<group>"; };
+		346908C42ABF4CA900FF2177 /* DropDownMenuListRow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DropDownMenuListRow.swift; sourceTree = "<group>"; };
+		346908C52ABF4CA900FF2177 /* DropdownMenu.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DropdownMenu.swift; sourceTree = "<group>"; };
+		347B62512ABF530D008C69C3 /* DiscoverViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiscoverViewModel.swift; sourceTree = "<group>"; };
+		347B62532ABF6019008C69C3 /* GuestProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuestProfileView.swift; sourceTree = "<group>"; };
 		34B8A10D2ABC33440079A98C /* FirebaseConstant.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseConstant.swift; sourceTree = "<group>"; };
 		34B8A10F2ABC34470079A98C /* ChatLogViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatLogViewModel.swift; sourceTree = "<group>"; };
 		85E235CA2ABBFD2500224E56 /* ChatLogView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatLogView.swift; sourceTree = "<group>"; };
@@ -211,6 +225,26 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		346908BE2ABF4C4F00FF2177 /* Discover */ = {
+			isa = PBXGroup;
+			children = (
+				346908BF2ABF4C4F00FF2177 /* DiscoverView.swift */,
+			);
+			name = Discover;
+			path = ../../../../../Search_Feature/iOS_Group_Assignment/Prismm/Components/Views/Discover;
+			sourceTree = "<group>";
+		};
+		346908C12ABF4CA900FF2177 /* DropDownMenu */ = {
+			isa = PBXGroup;
+			children = (
+				346908C22ABF4CA900FF2177 /* DropDownMenuOption.swift */,
+				346908C32ABF4CA900FF2177 /* DropdownMenuList.swift */,
+				346908C42ABF4CA900FF2177 /* DropDownMenuListRow.swift */,
+				346908C52ABF4CA900FF2177 /* DropdownMenu.swift */,
+			);
+			path = DropDownMenu;
+			sourceTree = "<group>";
+		};
 		85E235C82ABBFD2500224E56 /* ChatView */ = {
 			isa = PBXGroup;
 			children = (
@@ -324,6 +358,8 @@
 		E10C0E362AAAEF6E00AEB220 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				346908C12ABF4CA900FF2177 /* DropDownMenu */,
+				346908BE2ABF4C4F00FF2177 /* Discover */,
 				85E235C82ABBFD2500224E56 /* ChatView */,
 				E11F6E9A2AB3329D00989514 /* Tab Bar */,
 				E11F6E992AB3326000989514 /* Notification */,
@@ -394,6 +430,7 @@
 				E1BB6F312AAEC1DF00051687 /* FollowViewModel.swift */,
 				990334FD2AB2C55B00159F22 /* ProfileViewModel.swift */,
 				E1FBA90E2AB83914007B6B15 /* NotificationViewModels.swift */,
+				347B62512ABF530D008C69C3 /* DiscoverViewModel.swift */,
 				2FB5DC8A2ABEBA0500ED47DF /* RestrictViewModel.swift */,
 			);
 			path = ViewModels;
@@ -414,6 +451,7 @@
 				E17E8CF72AAC85E500EF5EFB /* PostGridView.swift */,
 				2FF0ACC52AAB05120033AEEB /* ProfileToolBar.swift */,
 				2FF0ACC32AAAFA3C0033AEEB /* ProfileView.swift */,
+				347B62532ABF6019008C69C3 /* GuestProfileView.swift */,
 			);
 			path = Profile;
 			sourceTree = "<group>";
@@ -648,6 +686,7 @@
 				E1C6653D2AB19BF10095B388 /* Test+ScrollView.swift in Sources */,
 				E11F6E902AB2F6DC00989514 /* CreatePostView.swift in Sources */,
 				E1003B6C2ABAF1040049D04A /* NotificationHandler.swift in Sources */,
+				346908C62ABF4CA900FF2177 /* DropDownMenuOption.swift in Sources */,
 				E19D96832AAB2C0000E2CFAC /* Extension+String.swift in Sources */,
 				99A0F41C2ABC320000D6CA8D /* UserFollowList.swift in Sources */,
 				E1FBA9112AB83BF6007B6B15 /* Test+Notification.swift in Sources */,
@@ -681,6 +720,7 @@
 				E1CED5132AAB42BB00F7F94E /* Constants.swift in Sources */,
 				E1BB6F2D2AAEC1C700051687 /* FollowerList.swift in Sources */,
 				85E235D42ABBFD2500224E56 /* ChatLogView.swift in Sources */,
+				346908C02ABF4C4F00FF2177 /* DiscoverView.swift in Sources */,
 				990334FE2AB2C55B00159F22 /* ProfileViewModel.swift in Sources */,
 				E1C6652E2AB1710E0095B388 /* EditProfileView.swift in Sources */,
 				E11F6E982AB32F6200989514 /* NotificationView.swift in Sources */,
@@ -698,7 +738,10 @@
 				E12FA0302AAC29A0007890A3 /* AuthenticationViewModel.swift in Sources */,
 				2FF0ACC62AAB05120033AEEB /* ProfileToolBar.swift in Sources */,
 				2F6A329F2ABD95920043946A /* AppManager.swift in Sources */,
+				347B62522ABF530D008C69C3 /* DiscoverViewModel.swift in Sources */,
 				E11F6E942AB32D2900989514 /* Tabbar.swift in Sources */,
+				346908C92ABF4CA900FF2177 /* DropdownMenu.swift in Sources */,
+				346908C72ABF4CA900FF2177 /* DropdownMenuList.swift in Sources */,
 				E16BBB942AB5D3B6006884BE /* Test+Dropdownmenu.swift in Sources */,
 				E1BB6F2E2AAEC1C700051687 /* FollowingList.swift in Sources */,
 				85E235DC2ABBFD2500224E56 /* CreateNewMessageView.swift in Sources */,
@@ -707,10 +750,12 @@
 				E12FA0292AAC2963007890A3 /* UserModel.swift in Sources */,
 				E17E8CDB2AAC496F00EF5EFB /* CustomAlertView.swift in Sources */,
 				2F19D05A2AB84B3E0090EF14 /* ImagePickerView.swift in Sources */,
+				346908C82ABF4CA900FF2177 /* DropDownMenuListRow.swift in Sources */,
 				990335002AB2EB9200159F22 /* Test+Profile.swift in Sources */,
 				2FF0ACC42AAAFA3C0033AEEB /* ProfileView.swift in Sources */,
 				2FB5DC832ABE94E000ED47DF /* BlockViewModel.swift in Sources */,
 				2FB5DC8B2ABEBA0500ED47DF /* RestrictViewModel.swift in Sources */,
+				347B62542ABF6019008C69C3 /* GuestProfileView.swift in Sources */,
 				990335022AB2FD5600159F22 /* Test+DeleteComment.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
