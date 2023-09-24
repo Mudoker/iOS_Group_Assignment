@@ -18,12 +18,13 @@ import SwiftUI
 
 struct GuestProfileToolBar: View {
     // Control state
-    @Binding var currentUser:User
-    @Binding var userSetting:UserSetting
-    
+//    @Binding var currentUser:User
+//    @Binding var userSetting:UserSetting
+//
     var user: User
     
     @ObservedObject var profileVM: GuestProfileViewModel
+    @EnvironmentObject var tabVM: TabBarViewModel
 
     var body: some View {
         HStack{
@@ -42,7 +43,7 @@ struct GuestProfileToolBar: View {
                     .font(.system(size: profileVM.toolBarSettingButtonSize))
             }
         }
-        .foregroundColor(userSetting.darkModeEnabled ? .white : .black)
+        .foregroundColor(tabVM.userSetting.darkModeEnabled ? .white : .black)
     }
 }
 

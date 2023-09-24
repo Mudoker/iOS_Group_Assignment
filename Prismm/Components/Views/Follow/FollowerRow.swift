@@ -45,7 +45,21 @@ struct FollowerRow: View {
             Spacer()
             
             Button {
-                
+                Task{
+                    var removeIndex = 0
+                    try await APIService.removeFollowOtherUser(forUserID: user.id)
+                    
+                    
+                    for index in fvm.followerList.indices{
+                        if fvm.followerList[index].id == user.id{
+                            removeIndex = index
+                        }
+                    }
+                    
+                    withAnimation {
+                        fvm.followerList.remove(at: removeIndex)
+                    }
+                }
             } label: {
                 Text("Remove")
                     .font(.system(size: CGFloat(fvm.rowButtonFontSize)))

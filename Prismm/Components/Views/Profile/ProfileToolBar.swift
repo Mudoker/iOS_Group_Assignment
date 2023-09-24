@@ -18,13 +18,15 @@ import SwiftUI
 
 struct ProfileToolBar: View {
     // Control state
-    @Binding var currentUser:User
-    @Binding var userSetting:UserSetting
+//    @Binding var currentUser:User
+//    @Binding var userSetting:UserSetting
     @ObservedObject var profileVM: ProfileViewModel
+    
+    @EnvironmentObject var tabVM: TabBarViewModel
 
     var body: some View {
         HStack{
-            Text(currentUser.username)
+            Text(tabVM.currentUser.username)
                 .fontWeight(.bold)
                 .font(.system(size: profileVM.toolBarUserNameSize))
             
@@ -39,7 +41,7 @@ struct ProfileToolBar: View {
                     .font(.system(size: profileVM.toolBarSettingButtonSize))
             }
         }
-        .foregroundColor(userSetting.darkModeEnabled ? .white : .black)
+        .foregroundColor(tabVM.userSetting.darkModeEnabled ? .white : .black)
     }
 }
 

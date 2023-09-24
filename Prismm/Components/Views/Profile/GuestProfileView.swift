@@ -19,8 +19,8 @@ import Kingfisher
 
 struct GuestProfileView: View {
     // Control state
-    @State var currentUser = User(id: "default", account: "default@gmail.com")
-    @State var userSetting = UserSetting(id: "default", darkModeEnabled: false, language: "en", faceIdEnabled: true, pushNotificationsEnabled: true, messageNotificationsEnabled: false)
+//    @State var currentUser = User(id: "default", account: "default@gmail.com")
+//    @State var userSetting = UserSetting(id: "default", darkModeEnabled: false, language: "en", faceIdEnabled: true, pushNotificationsEnabled: true, messageNotificationsEnabled: false)
 
     var user: User
     
@@ -29,9 +29,11 @@ struct GuestProfileView: View {
     @StateObject var profileVM = GuestProfileViewModel()
     @StateObject var fvm = FollowViewModel()
     
+    @EnvironmentObject var tabVM:TabBarViewModel
+    
     var body: some View {
         VStack(alignment: .leading){
-            GuestProfileToolBar(currentUser: $currentUser, userSetting: $userSetting, user: user, profileVM: profileVM)
+            GuestProfileToolBar(user: user, profileVM: profileVM)
             
             ScrollView{
                 //MARK: PROFILE INFO BLOCK
@@ -173,7 +175,7 @@ struct GuestProfileView: View {
                                 .resizable()
                                 .scaledToFit()
                                 .frame(height: profileVM.tabIconHeight) //not responsive
-                                .foregroundColor(profileVM.isShowAllUserPost == 1 ? (userSetting.darkModeEnabled ? .white : .black) : .gray)
+                                .foregroundColor(profileVM.isShowAllUserPost == 1 ? (tabVM.userSetting.darkModeEnabled ? .white : .black) : .gray)
                         }
                         .frame(width: profileVM.tabButtonSize)
                     }
@@ -188,7 +190,7 @@ struct GuestProfileView: View {
                                 .resizable()
                                 .scaledToFit()
                                 .frame(height: profileVM.tabIconHeight)    //not responsive
-                                .foregroundColor(!(profileVM.isShowAllUserPost == 1) ? (userSetting.darkModeEnabled ? .white : .black) : .gray)
+                                .foregroundColor(!(profileVM.isShowAllUserPost == 1) ? (tabVM.userSetting.darkModeEnabled ? .white : .black) : .gray)
                         }
                     }
                     .frame(width: profileVM.tabButtonSize)
@@ -199,19 +201,19 @@ struct GuestProfileView: View {
                 ZStack{
                     Divider()
                         .overlay {
-                            userSetting.darkModeEnabled ? Color.white : Color.black
+                            tabVM.userSetting.darkModeEnabled ? Color.white : Color.black
                         }
                     
                     Divider()
                         .frame(width: profileVM.tabIndicatorWidth ,height: 1)
                         .overlay {
-                            userSetting.darkModeEnabled ? Color.white : Color.black
+                            tabVM.userSetting.darkModeEnabled ? Color.white : Color.black
                         }
                         .offset(x: profileVM.indicatorOffset)
                 }
                 
                 
-                GuestProfilePostGridView(currentUser: $currentUser, userSetting: $userSetting, profileVM: profileVM)
+                GuestProfilePostGridView(profileVM: profileVM)
                     .offset(y: -10)
 
             }
@@ -222,14 +224,14 @@ struct GuestProfileView: View {
             profileVM.proxySize = UIScreen.main.bounds.size
             Task{
                 await fvm.fetchFollowData1(forUserID: user.id)
-                currentUser = try await APIService.fetchCurrentUserData()!
-                userSetting = try await APIService.fetchCurrentSettingData()!
+                tabVM.currentUser = try await APIService.fetchCurrentUserData()!
+                tabVM.userSetting = try await APIService.fetchCurrentSettingData()!
                 
                 try await profileVM.fetchUserPosts(UserID: user.id )
                 profileVM.fetchUserFavouritePost(forUserId: user.id)
                 
                 for user in fvm.followerList{
-                    if user.id == currentUser.id{
+                    if user.id == tabVM.currentUser.id{
                         hasFollowerWithID = true
                         break
                     }
@@ -237,8 +239,8 @@ struct GuestProfileView: View {
                 
             }
         }
-        .foregroundColor(userSetting.darkModeEnabled ? .white : .black)
-        .background(!userSetting.darkModeEnabled ? .white : .black)
+        .foregroundColor(tabVM.userSetting.darkModeEnabled ? .white : .black)
+        .background(!tabVM.userSetting.darkModeEnabled ? .white : .black)
     }
 }
 

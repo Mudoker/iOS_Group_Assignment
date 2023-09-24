@@ -20,21 +20,23 @@ import Kingfisher
 
 struct ProfileView: View {
     // Control state
-    @State var currentUser = User(id: "default", account: "default@gmail.com")
-    @State var userSetting = UserSetting(id: "default", darkModeEnabled: false, language: "en", faceIdEnabled: true, pushNotificationsEnabled: true, messageNotificationsEnabled: false)
-    @State var isSample = true
+//    @Binding var currentUser: User
+//    @Binding var userSetting: UserSetting 
+    //@State var isSample = true
     @StateObject var profileVM = ProfileViewModel()
     @StateObject var fvm = FollowViewModel()
     
+    @EnvironmentObject var tabVM: TabBarViewModel
+    
     var body: some View {
         VStack(alignment: .leading){
-            ProfileToolBar(currentUser: $currentUser, userSetting: $userSetting, profileVM: profileVM)
+            ProfileToolBar(profileVM: profileVM)
             
             ScrollView{
                 //MARK: PROFILE INFO BLOCK
                 VStack(alignment: .leading){
                     HStack(alignment: .center){
-                        if let mediaURL = URL(string: currentUser.profileImageURL ?? "") {
+                        if let mediaURL = URL(string: tabVM.currentUser.profileImageURL ?? "") {
                             
                             KFImage(mediaURL)
                                 .resizable()
@@ -63,7 +65,7 @@ struct ProfileView: View {
                                 
                                 
                                 NavigationLink {
-                                    FollowView(fvm: fvm, currentUser: $currentUser, userSetting: $userSetting)
+                                    FollowView(fvm: fvm)
                                 } label: {
                                     VStack{
                                         Text("\(fvm.followerList.count)")
@@ -74,7 +76,7 @@ struct ProfileView: View {
                                 
                                 
                                 NavigationLink {
-                                    FollowView(fvm: fvm,currentUser: $currentUser, userSetting: $userSetting)
+                                    FollowView(fvm: fvm)
                                 } label: {
                                     VStack{
                                         Text("\(fvm.followingList.count)")
@@ -89,7 +91,7 @@ struct ProfileView: View {
                             //edit button and share button
                             HStack{
                                 NavigationLink(destination: {
-                                    EditProfileView(currentUser: $currentUser, userSetting: $userSetting)
+                                    EditProfileView()
                                 }, label: {
                                     Text(LocalizedStringKey("Edit Profile"))
                                             .fontWeight(.bold)
@@ -116,13 +118,13 @@ struct ProfileView: View {
                     
                     // Username
                     HStack{
-                        Text(currentUser.username)
+                        Text(tabVM.currentUser.username)
                             .fontWeight(.bold)
                     }
                     
                     //bio
                     HStack{
-                        Text(currentUser.bio!)
+                        Text(tabVM.currentUser.bio!)
                     }
                 }
                 
@@ -138,9 +140,9 @@ struct ProfileView: View {
                                 .resizable()
                                 .scaledToFit()
                                 .frame(height: profileVM.tabIconHeight) //not responsive
-                                .foregroundColor(profileVM.isShowAllUserPost == 1 ? (userSetting.darkModeEnabled ? .white : .black) : .gray)
+                                .foregroundColor(profileVM.isShowAllUserPost == 1 ? (tabVM.userSetting.darkModeEnabled ? .white : .black) : .gray)
                         }
-                        .frame(width: profileVM.tabButtonSize)
+//                        .frame(width: profileVM.tabButtonSize)
                     }
                     
                     Button {
@@ -153,7 +155,7 @@ struct ProfileView: View {
                                 .resizable()
                                 .scaledToFit()
                                 .frame(height: profileVM.tabIconHeight)    //not responsive
-                                .foregroundColor(!(profileVM.isShowAllUserPost == 1) ? (userSetting.darkModeEnabled ? .white : .black) : .gray)
+                                .foregroundColor(!(profileVM.isShowAllUserPost == 1) ? (tabVM.userSetting.darkModeEnabled ? .white : .black) : .gray)
                         }
                     }
                     .frame(width: profileVM.tabButtonSize)
@@ -164,19 +166,19 @@ struct ProfileView: View {
                 ZStack{
                     Divider()
                         .overlay {
-                            userSetting.darkModeEnabled ? Color.white : Color.black
+                            tabVM.userSetting.darkModeEnabled ? Color.white : Color.black
                         }
                     
                     Divider()
                         .frame(width: profileVM.tabIndicatorWidth ,height: 1)
                         .overlay {
-                            userSetting.darkModeEnabled ? Color.white : Color.black
+                            tabVM.userSetting.darkModeEnabled ? Color.white : Color.black
                         }
                         .offset(x: profileVM.indicatorOffset)
                 }
                 
                 
-                PostGridView(currentUser: $currentUser, userSetting: $userSetting, profileVM: profileVM)
+                PostGridView( profileVM: profileVM)
                     .offset(y: -10)
 
             }
@@ -193,13 +195,10 @@ struct ProfileView: View {
                 await fvm.fetchFollowData()
                 
                 
-                currentUser = try await APIService.fetchCurrentUserData() ?? User(id: "", account: "huuquoc@gmail.com")
-                
-                userSetting = try await APIService.fetchCurrentSettingData()!
                 
                 
-                try await profileVM.fetchUserPosts(UserID: currentUser.id)
-                profileVM.fetchUserFavouritePost(forUserId: currentUser.id)
+                try await profileVM.fetchUserPosts(UserID: tabVM.currentUser.id)
+                profileVM.fetchUserFavouritePost(forUserId: tabVM.currentUser.id)
             }
         }
         .refreshable {
@@ -207,18 +206,18 @@ struct ProfileView: View {
                 print("trigger")
                 await fvm.fetchFollowData()
                 
-                currentUser = try await APIService.fetchCurrentUserData() ?? User(id: "", account: "huuquoc@gmail.com")
-
-                userSetting = try await APIService.fetchCurrentSettingData()!
-                try await profileVM.fetchUserPosts(UserID: currentUser.id)
-                profileVM.fetchUserFavouritePost(forUserId: currentUser.id)
+                tabVM.currentUser = try await APIService.fetchCurrentUserData() ?? User(id: "", account: "huuquoc@gmail.com")
+             
+                tabVM.userSetting = try await APIService.fetchCurrentSettingData()!
+                try await profileVM.fetchUserPosts(UserID: tabVM.currentUser.id)
+                profileVM.fetchUserFavouritePost(forUserId: tabVM.currentUser.id)
             }
         }
         .fullScreenCover(isPresented: $profileVM.isSetting) {
-            SettingView(currentUser: $currentUser, userSetting: $userSetting, profileVM: profileVM, isSetting: $profileVM.isSetting)
+            SettingView(profileVM: profileVM, isSetting: $profileVM.isSetting)
         }
-        .foregroundColor(userSetting.darkModeEnabled ? .white : .black)
-        .background(!userSetting.darkModeEnabled ? .white : .black)
+        .foregroundColor(tabVM.userSetting.darkModeEnabled ? .white : .black)
+        .background(!tabVM.userSetting.darkModeEnabled ? .white : .black)
     }
 }
 

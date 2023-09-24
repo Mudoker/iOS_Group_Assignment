@@ -48,8 +48,20 @@ struct FollowingRow: View {
                 Button {
                     //Unfollow
                 
-                    Task {
-                         try await APIService.unfollowOtherUser(forUserID: user.id)
+                    Task{
+                        var removeIndex = 0
+                        try await APIService.unfollowOtherUser(forUserID: user.id)
+                        
+                        
+                        for index in fvm.followingList.indices{
+                            if fvm.followingList[index].id == user.id{
+                                removeIndex = index
+                            }
+                        }
+                        
+                        withAnimation {
+                            fvm.followingList.remove(at: removeIndex)
+                        }
                     }
                 } label: {
                     Text(  "Following" )//: "Follow")

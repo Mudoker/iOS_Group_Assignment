@@ -21,9 +21,10 @@ import SwiftUI
 struct EditPostView: View {
     @State private var users : [User] = []
     
-    @Binding var currentUser:User
-    @Binding var userSetting:UserSetting
+//    @Binding var currentUser:User
+//    @Binding var userSetting:UserSetting
     @ObservedObject var homeVM: HomeViewModel
+    @EnvironmentObject var tabVM: TabBarViewModel
     
     @State private var selectedTags: Set<String> = []
     
@@ -86,7 +87,7 @@ struct EditPostView: View {
                 }
                 
                 Divider()
-                    .overlay(userSetting.darkModeEnabled ? .white : .gray)
+                    .overlay(tabVM.userSetting.darkModeEnabled ? .white : .gray)
                 
                 HStack (alignment: .top) {
                     Image("testAvt")
@@ -96,7 +97,7 @@ struct EditPostView: View {
                         .clipShape(Circle())
                     
                     VStack(alignment: .leading, spacing: 0) {
-                        Text(currentUser.username)
+                        Text(tabVM.currentUser.username)
                             .bold()
                             .font(.title3)
                             .padding(.bottom, 8)
@@ -114,12 +115,12 @@ struct EditPostView: View {
                                     .resizable()
                                     .aspectRatio(contentMode: .fit)
                                     .frame(width: proxy.size.width/24)
-                                    .foregroundColor(!userSetting.darkModeEnabled ? Constants.lightThemeColor : Constants.darkThemeColor)
+                                    .foregroundColor(!tabVM.userSetting.darkModeEnabled ? Constants.lightThemeColor : Constants.darkThemeColor)
                                 
                                 if homeVM.selectedUserTag.isEmpty {
                                     Text("Notify your friend")
                                         .font(.callout)
-                                        .foregroundColor(!userSetting.darkModeEnabled ? Constants.lightThemeColor : Constants.darkThemeColor)
+                                        .foregroundColor(!tabVM.userSetting.darkModeEnabled ? Constants.lightThemeColor : Constants.darkThemeColor)
                                         .frame(height: proxy.size.height/40)
                                 } else {
                                     // Horizontal scroll view
@@ -147,7 +148,7 @@ struct EditPostView: View {
                                                     .padding(.leading, 2)
                                                     .padding(.vertical, 4.2)
                                                     .background(Capsule()
-                                                        .foregroundColor(userSetting.darkModeEnabled ? Constants.darkThemeColor : Constants.lightThemeColor))
+                                                        .foregroundColor(tabVM.userSetting.darkModeEnabled ? Constants.darkThemeColor : Constants.lightThemeColor))
                                                     .id(user)
                                                 }
                                                 .onChange(of: homeVM.selectedUserTag.count) { _ in
@@ -172,13 +173,13 @@ struct EditPostView: View {
                 ZStack (alignment: .topLeading) {
                     RoundedRectangle(cornerRadius: proxy.size.width/40)
                         .stroke(LinearGradient(
-                            gradient: Gradient(colors: userSetting.darkModeEnabled ? Constants.buttonGradientColorDark : Constants.buttonGradientColorLight),
+                            gradient: Gradient(colors: tabVM.userSetting.darkModeEnabled ? Constants.buttonGradientColorDark : Constants.buttonGradientColorLight),
                             startPoint: .topLeading,
                             endPoint: .bottomTrailing
                         ), lineWidth: 1.5)
                         .frame(height: proxy.size.height/4)
                     
-                    TextField("", text: $homeVM.editPostCaption, prompt:  Text("Share your updates...").foregroundColor(userSetting.darkModeEnabled ? .white.opacity(0.5) : .black.opacity(0.5))
+                    TextField("", text: $homeVM.editPostCaption, prompt:  Text("Share your updates...").foregroundColor(tabVM.userSetting.darkModeEnabled ? .white.opacity(0.5) : .black.opacity(0.5))
                         .font(.title3)
                     )
                     .autocorrectionDisabled(true)
@@ -206,11 +207,11 @@ struct EditPostView: View {
                                     .resizable()
                                     .aspectRatio(contentMode: .fit)
                                     .frame(width: proxy.size.width/24)
-                                    .foregroundColor(!userSetting.darkModeEnabled ? Constants.lightThemeColor : Constants.darkThemeColor)
+                                    .foregroundColor(!tabVM.userSetting.darkModeEnabled ? Constants.lightThemeColor : Constants.darkThemeColor)
                                 
                                 Text("Add a tag")
                                     .font(.callout)
-                                    .foregroundColor(!userSetting.darkModeEnabled ? Constants.lightThemeColor : Constants.darkThemeColor)
+                                    .foregroundColor(!tabVM.userSetting.darkModeEnabled ? Constants.lightThemeColor : Constants.darkThemeColor)
                                     .frame(height: proxy.size.height/40)
                             } else {
                                 // Horizontal scroll view
@@ -239,7 +240,7 @@ struct EditPostView: View {
                                                 .padding(.leading, 2)
                                                 .padding(.vertical, 4.2)
                                                 .background(Capsule()
-                                                    .foregroundColor(userSetting.darkModeEnabled ? Constants.darkThemeColor : Constants.lightThemeColor))
+                                                    .foregroundColor(tabVM.userSetting.darkModeEnabled ? Constants.darkThemeColor : Constants.lightThemeColor))
                                                 .id(tag)
                                             }
                                             .onChange(of: homeVM.editSelectedPostTag.count) { _ in
@@ -260,7 +261,7 @@ struct EditPostView: View {
                 .background(
                     RoundedRectangle(cornerRadius: proxy.size.width/40)
                         .stroke(LinearGradient(
-                            gradient: Gradient(colors: userSetting.darkModeEnabled ? Constants.buttonGradientColorDark : Constants.buttonGradientColorLight),
+                            gradient: Gradient(colors: tabVM.userSetting.darkModeEnabled ? Constants.buttonGradientColorDark : Constants.buttonGradientColorLight),
                             startPoint: .topLeading,
                             endPoint: .bottomTrailing
                         ), lineWidth: 1.5)
@@ -327,7 +328,7 @@ struct EditPostView: View {
                                 .resizable()
                                 .aspectRatio(contentMode: .fill)
                                 .frame(width: proxy.size.width/12)
-                                .foregroundColor(!userSetting.darkModeEnabled ? Constants.lightThemeColor : Constants.darkThemeColor)
+                                .foregroundColor(!tabVM.userSetting.darkModeEnabled ? Constants.lightThemeColor : Constants.darkThemeColor)
                         }
                     }
                 }
@@ -336,7 +337,7 @@ struct EditPostView: View {
                 .background(
                     RoundedRectangle(cornerRadius: proxy.size.width/40)
                         .stroke(LinearGradient(
-                            gradient: Gradient(colors: userSetting.darkModeEnabled ? Constants.buttonGradientColorDark : Constants.buttonGradientColorLight),
+                            gradient: Gradient(colors: tabVM.userSetting.darkModeEnabled ? Constants.buttonGradientColorDark : Constants.buttonGradientColorLight),
                             startPoint: .topLeading,
                             endPoint: .bottomTrailing
                         ), lineWidth: 1.5)
@@ -364,7 +365,7 @@ struct EditPostView: View {
                 .background(
                     RoundedRectangle(cornerRadius: proxy.size.width/40)
                         .stroke(LinearGradient(
-                            gradient: Gradient(colors: userSetting.darkModeEnabled ? Constants.buttonGradientColorDark : Constants.buttonGradientColorLight),
+                            gradient: Gradient(colors: tabVM.userSetting.darkModeEnabled ? Constants.buttonGradientColorDark : Constants.buttonGradientColorLight),
                             startPoint: .topLeading,
                             endPoint: .bottomTrailing
                         ), lineWidth: 1.5)
@@ -397,7 +398,7 @@ struct EditPostView: View {
                 }) {
                     RoundedRectangle(cornerRadius: proxy.size.width/40)
                         .frame(height: proxy.size.width/7)
-                        .foregroundColor(!userSetting.darkModeEnabled ? Constants.lightThemeColor : Constants.darkThemeColor)
+                        .foregroundColor(!tabVM.userSetting.darkModeEnabled ? Constants.lightThemeColor : Constants.darkThemeColor)
                         .overlay(
                             HStack {
                                 Text("Edit")
@@ -439,19 +440,19 @@ struct EditPostView: View {
             }
             .padding(.horizontal)
             .fullScreenCover(isPresented: $isOpenUserListViewOnIphone) {
-                UserListView(proxy: $proxySize, searchProfileText: $homeVM.userTagListSearchText, selectedUsers: $homeVM.selectedUserTag, isShowUserTagList: $isOpenUserListViewOnIphone, filteredUsers: $filteredUsers, isDarkModeEnabled: userSetting.darkModeEnabled)
+                UserListView(proxy: $proxySize, searchProfileText: $homeVM.userTagListSearchText, selectedUsers: $homeVM.selectedUserTag, isShowUserTagList: $isOpenUserListViewOnIphone, filteredUsers: $filteredUsers, isDarkModeEnabled: tabVM.userSetting.darkModeEnabled)
             }
             .sheet(isPresented: $isOpenUserListViewOnIpad) {
-                UserListView(proxy: $proxySize, searchProfileText: $homeVM.userTagListSearchText, selectedUsers: $homeVM.selectedUserTag, isShowUserTagList: $isOpenUserListViewOnIpad, filteredUsers: $filteredUsers, isDarkModeEnabled: userSetting.darkModeEnabled)
+                UserListView(proxy: $proxySize, searchProfileText: $homeVM.userTagListSearchText, selectedUsers: $homeVM.selectedUserTag, isShowUserTagList: $isOpenUserListViewOnIpad, filteredUsers: $filteredUsers, isDarkModeEnabled: tabVM.userSetting.darkModeEnabled)
             }.fullScreenCover(isPresented: $isOpenPostTagListViewOnIphone) {
-                PostTagListView(proxy: $proxySize, searchTagText: $homeVM.userTagListSearchText, selectedTags: $homeVM.selectedPostTag, isShowPostTagList:$isOpenPostTagListViewOnIphone, filteredTags:  filteredTags, isDarkModeEnabled: userSetting.darkModeEnabled)
+                PostTagListView(proxy: $proxySize, searchTagText: $homeVM.userTagListSearchText, selectedTags: $homeVM.selectedPostTag, isShowPostTagList:$isOpenPostTagListViewOnIphone, filteredTags:  filteredTags, isDarkModeEnabled: tabVM.userSetting.darkModeEnabled)
             }
             .sheet(isPresented: $isOpenPostTagListViewOnIpad) {
-                PostTagListView(proxy: $proxySize, searchTagText: $homeVM.userTagListSearchText, selectedTags: $homeVM.selectedPostTag, isShowPostTagList:$isOpenPostTagListViewOnIpad, filteredTags:  filteredTags, isDarkModeEnabled: userSetting.darkModeEnabled)
+                PostTagListView(proxy: $proxySize, searchTagText: $homeVM.userTagListSearchText, selectedTags: $homeVM.selectedPostTag, isShowPostTagList:$isOpenPostTagListViewOnIpad, filteredTags:  filteredTags, isDarkModeEnabled: tabVM.userSetting.darkModeEnabled)
             }
         }
-        .foregroundColor(userSetting.darkModeEnabled ? .white : .black)
-        .background(!userSetting.darkModeEnabled ? .white : .black)
+        .foregroundColor(tabVM.userSetting.darkModeEnabled ? .white : .black)
+        .background(!tabVM.userSetting.darkModeEnabled ? .white : .black)
     }
 }
 

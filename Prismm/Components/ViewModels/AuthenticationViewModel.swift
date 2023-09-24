@@ -198,6 +198,8 @@ class AuthenticationViewModel: ObservableObject {
                     try await homeVM.fetchPosts()
                     homeVM.fetchUserFavouritePost(forUserId: Constants.currentUserID)
                     
+                    
+                    
                     isFetchingData = false
                     isDeviceUnlocked = true
                     return true
@@ -303,6 +305,8 @@ class AuthenticationViewModel: ObservableObject {
             _ = googleSignInResult.user.email ?? ""
             print("User \(googleSignInResult.user.uid) signed in with \(googleSignInResult.user.email ?? "unknown" )")
             
+            
+            Constants.currentUserID = googleSignInResult.user.uid
             // Successful sign-in -> Unlock device
             isGoogleUnlocked = true
             return true

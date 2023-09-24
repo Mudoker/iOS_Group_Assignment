@@ -19,16 +19,17 @@ import Kingfisher
 
 struct EditProfileView: View {
     // Control state
-    @Binding var currentUser:User
-    @Binding var userSetting:UserSetting
+//    @Binding var currentUser:User
+//    @Binding var userSetting:UserSetting
     @ObservedObject var settingVM = SettingViewModel()
     @State var accountText: String = ""
     
     @State var isAdding = false
     @State var shouldPresentPickerSheet = false
     @State var shouldPresentCamera = false
-    
+    @State var userTest = User(id: "", account: "")
     @Environment(\.presentationMode) var presentationMode
+    @EnvironmentObject var tabVM: TabBarViewModel
     
     var body: some View {
         GeometryReader { proxy in
@@ -63,7 +64,7 @@ struct EditProfileView: View {
                             .frame(width: proxy.size.width / 4, height: proxy.size.width / 4)
                             .clipShape(Circle())
                             .overlay{
-                                if (settingVM.avatarSelectedMedia != NSURL(string: currentUser.profileImageURL ?? "")){
+                                if (settingVM.avatarSelectedMedia != NSURL(string: tabVM.currentUser.profileImageURL ?? "")){
                                     
                                 }else{
                                     ZStack {
@@ -126,7 +127,7 @@ struct EditProfileView: View {
                                 Spacer()
                                 
                                 Text(verbatim: "huuquoc7603@gmail.com")
-                                    .foregroundColor(userSetting.darkModeEnabled ? .white.opacity(0.5) : .black.opacity(0.3))
+                                    .foregroundColor(tabVM.userSetting.darkModeEnabled ? .white.opacity(0.5) : .black.opacity(0.3))
                             }
                             .padding(.vertical)
                             
@@ -135,7 +136,7 @@ struct EditProfileView: View {
                                 
                                 Spacer()
                                 
-                                TextField("", text: $settingVM.newProfileUsername, prompt: Text(verbatim: "qdoan7603").foregroundColor(userSetting.darkModeEnabled ? .white.opacity(0.5) : .black.opacity(0.3)))
+                                TextField("", text: $settingVM.newProfileUsername, prompt: Text(verbatim: "qdoan7603").foregroundColor(tabVM.userSetting.darkModeEnabled ? .white.opacity(0.5) : .black.opacity(0.3)))
                                     .multilineTextAlignment(.trailing)
                                     .onChange(of: settingVM.newProfileUsername) { _ in
                                         if settingVM.isProfileSettingChange() {
@@ -153,7 +154,7 @@ struct EditProfileView: View {
                                 
                                 Spacer()
                                 
-                                TextField("", text: $settingVM.newProfileBio, prompt: Text(verbatim: "bio").foregroundColor(userSetting.darkModeEnabled ? .white.opacity(0.5) : .black.opacity(0.3)))
+                                TextField("", text: $settingVM.newProfileBio, prompt: Text(verbatim: "bio").foregroundColor(tabVM.userSetting.darkModeEnabled ? .white.opacity(0.5) : .black.opacity(0.3)))
                                     .multilineTextAlignment(.trailing)
                                     .onChange(of: settingVM.newProfileBio) { _ in
                                         if settingVM.isProfileSettingChange() {
@@ -171,7 +172,7 @@ struct EditProfileView: View {
                                 
                                 Spacer()
                                 
-                                TextField("", text: $settingVM.newProfilePhoneNumber, prompt: Text(verbatim: "qdoan7603").foregroundColor(userSetting.darkModeEnabled ? .white.opacity(0.5) : .black.opacity(0.3)))
+                                TextField("", text: $settingVM.newProfilePhoneNumber, prompt: Text(verbatim: "qdoan7603").foregroundColor(tabVM.userSetting.darkModeEnabled ? .white.opacity(0.5) : .black.opacity(0.3)))
                                     .multilineTextAlignment(.trailing)
                                     .onChange(of: settingVM.newProfilePhoneNumber) { _ in
                                         if settingVM.isProfileSettingChange() {
@@ -203,7 +204,7 @@ struct EditProfileView: View {
                                 
                                 Spacer()
                                 
-                                TextField("", text: $settingVM.newProfileFacebook, prompt: Text(verbatim: "example.com").foregroundColor(userSetting.darkModeEnabled ? .white.opacity(0.5) : .black.opacity(0.3)))
+                                TextField("", text: $settingVM.newProfileFacebook, prompt: Text(verbatim: "example.com").foregroundColor(tabVM.userSetting.darkModeEnabled ? .white.opacity(0.5) : .black.opacity(0.3)))
                                     .multilineTextAlignment(.trailing)
                                     .onChange(of: settingVM.newProfileFacebook) { _ in
                                         if settingVM.isProfileSettingChange() {
@@ -226,7 +227,7 @@ struct EditProfileView: View {
                                 
                                 Spacer()
                                 
-                                TextField("", text: $settingVM.newProfileLinkedIn, prompt: Text(verbatim: "example.com").foregroundColor(userSetting.darkModeEnabled ? .white.opacity(0.5) : .black.opacity(0.3)))
+                                TextField("", text: $settingVM.newProfileLinkedIn, prompt: Text(verbatim: "example.com").foregroundColor(tabVM.userSetting.darkModeEnabled ? .white.opacity(0.5) : .black.opacity(0.3)))
                                     .multilineTextAlignment(.trailing)
                                     .onChange(of: settingVM.newProfileLinkedIn) { _ in
                                         if settingVM.isProfileSettingChange() {
@@ -245,13 +246,20 @@ struct EditProfileView: View {
                                 Button(action: {
                                     //MARK: Update Profile
                                     Task{
-                                        let user = await settingVM.updateProfile()!
-                                        currentUser = user
-                                        print(user)
-                                        settingVM.hasProfileSettingChanged.toggle()
-                                        settingVM.resetField()
+                                        do{
+                                            let user = try await settingVM.updateProfile()
+                                            if let user = user {
+                                                userTest = user
+                                            }
+
+                                            settingVM.hasProfileSettingChanged.toggle()
+                                            settingVM.resetField()
+                                            
+                                            presentationMode.wrappedValue.dismiss()
+                                        }catch{
+                                            print(error)
+                                        }
                                         
-                                        presentationMode.wrappedValue.dismiss()
                                     }
                                     
                                     
@@ -276,11 +284,14 @@ struct EditProfileView: View {
             }
             .padding(.top, 0.1)
         }
-        .onAppear{
-            settingVM.avatarSelectedMedia = NSURL(string: currentUser.profileImageURL ?? "")
+        .onChange(of: userTest) { _ in
+            tabVM.currentUser = userTest
         }
-        .foregroundColor(userSetting.darkModeEnabled ? .white : .black)
-        .background(!userSetting.darkModeEnabled ? .white : .black)
+        .onAppear{
+            settingVM.avatarSelectedMedia = NSURL(string: tabVM.currentUser.profileImageURL ?? "")
+        }
+        .foregroundColor(tabVM.userSetting.darkModeEnabled ? .white : .black)
+        .background(!tabVM.userSetting.darkModeEnabled ? .white : .black)
     }
 }
 

@@ -17,8 +17,9 @@ import Kingfisher
 struct DiscoverView: View {
     @StateObject var discoverVm  = DiscoverViewModel()
     
-    @State var currentUser = User(id: "default", account: "default@gmail.com")
-    @State var userSetting = UserSetting(id: "default", darkModeEnabled: false, language: "en", faceIdEnabled: true, pushNotificationsEnabled: true, messageNotificationsEnabled: false)
+
+    @EnvironmentObject var tabbarVM: TabBarViewModel
+    
     @State var selectedPost = Post(id: "", ownerID: "", creationDate: Timestamp(), isAllowComment: true)
     @ObservedObject var notiVM: NotificationViewModel
     
@@ -134,7 +135,7 @@ struct DiscoverView: View {
                                             }
                                             .padding(.horizontal,15)
                                             ForEach(discoverVm.defaultPost) { post in
-                                                PostView(post: post, currentUser: $currentUser, userSetting: $userSetting, homeViewModel: homeVM, notiVM: notiVM, selectedPost: $selectedPost, isAllowComment: $discoverVm.isSelectedPostAllowComment)
+                                                PostView(post: post,homeViewModel: homeVM, notiVM: notiVM, selectedPost: $selectedPost, isAllowComment: $discoverVm.isSelectedPostAllowComment)
                                             }
                                             
                                             HStack{
@@ -199,7 +200,7 @@ struct DiscoverView: View {
                                         },id: \.id) { post in
                                             //                                    Text(post.caption!)
                                             //                                    Text(searchTerm)
-                                            PostView(post: post, currentUser: $currentUser, userSetting: $userSetting, homeViewModel: homeVM, notiVM: notiVM, selectedPost: $selectedPost, isAllowComment: $discoverVm.isSelectedPostAllowComment)
+                                            PostView(post: post, homeViewModel: homeVM, notiVM: notiVM, selectedPost: $selectedPost, isAllowComment: $discoverVm.isSelectedPostAllowComment)
                                                 .padding(.bottom, 50)
                                         }
                                     }
@@ -242,9 +243,9 @@ struct DiscoverView: View {
                 }
                 .onAppear{
                     Task{
-                        currentUser = try await APIService.fetchCurrentUserData() ?? User(id: "default", account: "default@gmail.com")
-                        userSetting = try await APIService.fetchCurrentSettingData() ?? UserSetting(id: "default", darkModeEnabled: false, language: "en", faceIdEnabled: false, pushNotificationsEnabled: false, messageNotificationsEnabled: false)
-                        notiVM.fetchNotifcationRealTime(userId: currentUser.id)
+//                        currentUser = try await APIService.fetchCurrentUserData() ?? User(id: "default", account: "default@gmail.com")
+//                        userSetting = try await APIService.fetchCurrentSettingData() ?? UserSetting(id: "default", darkModeEnabled: false, language: "en", faceIdEnabled: false, pushNotificationsEnabled: false, messageNotificationsEnabled: false)
+                        notiVM.fetchNotifcationRealTime(userId: tabbarVM.currentUser.id)
                         
                         try await discoverVm.fetchAllPosts()
                         try await discoverVm.fetchAllUser()

@@ -20,8 +20,8 @@ import SwiftUI
 struct CreatePostView: View {
     // Control state
     @State private var users : [User] = []
-    @Binding var currentUser:User
-    @Binding var userSetting:UserSetting
+//    @Binding var currentUser:User
+//    @Binding var userSetting:UserSetting
     @ObservedObject var homeVM: HomeViewModel
     @State private var selectedTags: Set<String> = []
     @State var shouldPresentPickerSheet = false
@@ -36,6 +36,7 @@ struct CreatePostView: View {
     @State var isCreatingPost = false
     @State var isEmptyCaptionAlert = false
     
+    @EnvironmentObject var tabVM: TabBarViewModel
     
     @ObservedObject var notiVM: NotificationViewModel
     
@@ -94,7 +95,7 @@ struct CreatePostView: View {
                         .clipShape(Circle())
                     
                     VStack(alignment: .leading, spacing: 0) {
-                        Text(currentUser.username.extractNameFromEmail() ?? currentUser.username)
+                        Text(tabVM.currentUser.username.extractNameFromEmail() ?? tabVM.currentUser.username)
                             .bold()
                             .font(.title3)
                             .padding(.bottom, 8)
@@ -390,9 +391,9 @@ struct CreatePostView: View {
                             // Create mentioned notification @@@@
                             for user in homeVM.selectedUserTag {
                                 let _ = try await notiVM.createInAppNotification(
-                                    senderId: currentUser.id,
+                                    senderId: tabVM.currentUser.id,
                                     receiverId: user.id,
-                                    senderName: currentUser.username,
+                                    senderName: tabVM.currentUser.username,
                                     message: Constants.notiMention,
                                     postId: homeVM.newPostId,
                                     category: .mention,
