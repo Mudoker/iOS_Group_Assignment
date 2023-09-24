@@ -25,7 +25,7 @@ struct TabBar: View {
     @EnvironmentObject var manager: AppManager
     
     // Localization
-    @AppStorage("selectedLanguage") var selectedLanguage = "en"
+    @AppStorage("selectedLanguage") var selectedLanguage = "vi"
     
     var body: some View {
         if UIDevice.current.userInterfaceIdiom == .phone{
@@ -147,7 +147,7 @@ struct CustomTabbar: View {
     @Namespace var namespace
     
     // Localization
-    @AppStorage("selectedLanguage") var selectedLanguage = "en"
+    @AppStorage("selectedLanguage") var selectedLanguage = "vi"
     
     // List of views
     let tabItems: [(image: String, page: String)] = [
