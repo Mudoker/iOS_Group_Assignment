@@ -19,6 +19,12 @@
 		2FB5DC8B2ABEBA0500ED47DF /* RestrictViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FB5DC8A2ABEBA0500ED47DF /* RestrictViewModel.swift */; };
 		2FF0ACC42AAAFA3C0033AEEB /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FF0ACC32AAAFA3C0033AEEB /* ProfileView.swift */; };
 		2FF0ACC62AAB05120033AEEB /* ProfileToolBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FF0ACC52AAB05120033AEEB /* ProfileToolBar.swift */; };
+		348DDA072AC018DD00D9E15C /* DiscoverView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 348DDA062AC018DD00D9E15C /* DiscoverView.swift */; };
+		348DDA092AC0191000D9E15C /* DiscoverViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 348DDA082AC0191000D9E15C /* DiscoverViewModel.swift */; };
+		348DDA0C2AC0195B00D9E15C /* DropDownMenuOption.swift in Sources */ = {isa = PBXBuildFile; fileRef = 348DDA0B2AC0195B00D9E15C /* DropDownMenuOption.swift */; };
+		348DDA0E2AC0197400D9E15C /* DropDownMenuList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 348DDA0D2AC0197400D9E15C /* DropDownMenuList.swift */; };
+		348DDA102AC0198E00D9E15C /* DropDownMenuListRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 348DDA0F2AC0198E00D9E15C /* DropDownMenuListRow.swift */; };
+		348DDA122AC019A700D9E15C /* DropDownMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 348DDA112AC019A700D9E15C /* DropDownMenu.swift */; };
 		34B8A10E2ABC33440079A98C /* FirebaseConstant.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34B8A10D2ABC33440079A98C /* FirebaseConstant.swift */; };
 		34B8A1102ABC34470079A98C /* ChatLogViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34B8A10F2ABC34470079A98C /* ChatLogViewModel.swift */; };
 		85E235D42ABBFD2500224E56 /* ChatLogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85E235CA2ABBFD2500224E56 /* ChatLogView.swift */; };
@@ -111,6 +117,12 @@
 		2FB5DC8A2ABEBA0500ED47DF /* RestrictViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestrictViewModel.swift; sourceTree = "<group>"; };
 		2FF0ACC32AAAFA3C0033AEEB /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		2FF0ACC52AAB05120033AEEB /* ProfileToolBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileToolBar.swift; sourceTree = "<group>"; };
+		348DDA062AC018DD00D9E15C /* DiscoverView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiscoverView.swift; sourceTree = "<group>"; };
+		348DDA082AC0191000D9E15C /* DiscoverViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiscoverViewModel.swift; sourceTree = "<group>"; };
+		348DDA0B2AC0195B00D9E15C /* DropDownMenuOption.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DropDownMenuOption.swift; sourceTree = "<group>"; };
+		348DDA0D2AC0197400D9E15C /* DropDownMenuList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DropDownMenuList.swift; sourceTree = "<group>"; };
+		348DDA0F2AC0198E00D9E15C /* DropDownMenuListRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DropDownMenuListRow.swift; sourceTree = "<group>"; };
+		348DDA112AC019A700D9E15C /* DropDownMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DropDownMenu.swift; sourceTree = "<group>"; };
 		34B8A10D2ABC33440079A98C /* FirebaseConstant.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseConstant.swift; sourceTree = "<group>"; };
 		34B8A10F2ABC34470079A98C /* ChatLogViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatLogViewModel.swift; sourceTree = "<group>"; };
 		85E235CA2ABBFD2500224E56 /* ChatLogView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatLogView.swift; sourceTree = "<group>"; };
@@ -211,6 +223,25 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		348DDA052AC018C600D9E15C /* Discover */ = {
+			isa = PBXGroup;
+			children = (
+				348DDA062AC018DD00D9E15C /* DiscoverView.swift */,
+			);
+			path = Discover;
+			sourceTree = "<group>";
+		};
+		348DDA0A2AC0193A00D9E15C /* DropDownMenu */ = {
+			isa = PBXGroup;
+			children = (
+				348DDA0B2AC0195B00D9E15C /* DropDownMenuOption.swift */,
+				348DDA0D2AC0197400D9E15C /* DropDownMenuList.swift */,
+				348DDA0F2AC0198E00D9E15C /* DropDownMenuListRow.swift */,
+				348DDA112AC019A700D9E15C /* DropDownMenu.swift */,
+			);
+			path = DropDownMenu;
+			sourceTree = "<group>";
+		};
 		85E235C82ABBFD2500224E56 /* ChatView */ = {
 			isa = PBXGroup;
 			children = (
@@ -324,6 +355,8 @@
 		E10C0E362AAAEF6E00AEB220 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				348DDA0A2AC0193A00D9E15C /* DropDownMenu */,
+				348DDA052AC018C600D9E15C /* Discover */,
 				85E235C82ABBFD2500224E56 /* ChatView */,
 				E11F6E9A2AB3329D00989514 /* Tab Bar */,
 				E11F6E992AB3326000989514 /* Notification */,
@@ -395,6 +428,7 @@
 				990334FD2AB2C55B00159F22 /* ProfileViewModel.swift */,
 				E1FBA90E2AB83914007B6B15 /* NotificationViewModels.swift */,
 				2FB5DC8A2ABEBA0500ED47DF /* RestrictViewModel.swift */,
+				348DDA082AC0191000D9E15C /* DiscoverViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -645,9 +679,11 @@
 				E1BB6F302AAEC1C700051687 /* FollowView.swift in Sources */,
 				E1BB6F2F2AAEC1C700051687 /* FollowerRow.swift in Sources */,
 				E10C0E412AAAF53E00AEB220 /* CustomTextField.swift in Sources */,
+				348DDA122AC019A700D9E15C /* DropDownMenu.swift in Sources */,
 				E1C6653D2AB19BF10095B388 /* Test+ScrollView.swift in Sources */,
 				E11F6E902AB2F6DC00989514 /* CreatePostView.swift in Sources */,
 				E1003B6C2ABAF1040049D04A /* NotificationHandler.swift in Sources */,
+				348DDA0C2AC0195B00D9E15C /* DropDownMenuOption.swift in Sources */,
 				E19D96832AAB2C0000E2CFAC /* Extension+String.swift in Sources */,
 				99A0F41C2ABC320000D6CA8D /* UserFollowList.swift in Sources */,
 				E1FBA9112AB83BF6007B6B15 /* Test+Notification.swift in Sources */,
@@ -667,11 +703,13 @@
 				E1BB6F152AAEBE0500051687 /* PersonalAboutUs.swift in Sources */,
 				E1C665362AB1714C0095B388 /* SettingView.swift in Sources */,
 				E1003B6E2ABAFC5B0049D04A /* Test+LocalPushNotification.swift in Sources */,
+				348DDA102AC0198E00D9E15C /* DropDownMenuListRow.swift in Sources */,
 				E1D2444D2ABBFF5600A0A57D /* LikedPostModel.swift in Sources */,
 				E1FBA90F2AB83914007B6B15 /* NotificationViewModels.swift in Sources */,
 				2FB5DC872ABEA72000ED47DF /* RestrictedView.swift in Sources */,
 				99A0F4202ABC324700D6CA8D /* UserBlockList.swift in Sources */,
 				E10C0E432AAAFFA300AEB220 /* Login.swift in Sources */,
+				348DDA0E2AC0197400D9E15C /* DropDownMenuList.swift in Sources */,
 				E17E8CE12AAC6ABF00EF5EFB /* SettingModel.swift in Sources */,
 				E12FA0362AAC2EE3007890A3 /* HomeView.swift in Sources */,
 				990335082AB40EF700159F22 /* Test+Like+Unlike.swift in Sources */,
@@ -681,6 +719,7 @@
 				E1CED5132AAB42BB00F7F94E /* Constants.swift in Sources */,
 				E1BB6F2D2AAEC1C700051687 /* FollowerList.swift in Sources */,
 				85E235D42ABBFD2500224E56 /* ChatLogView.swift in Sources */,
+				348DDA072AC018DD00D9E15C /* DiscoverView.swift in Sources */,
 				990334FE2AB2C55B00159F22 /* ProfileViewModel.swift in Sources */,
 				E1C6652E2AB1710E0095B388 /* EditProfileView.swift in Sources */,
 				E11F6E982AB32F6200989514 /* NotificationView.swift in Sources */,
@@ -710,6 +749,7 @@
 				990335002AB2EB9200159F22 /* Test+Profile.swift in Sources */,
 				2FF0ACC42AAAFA3C0033AEEB /* ProfileView.swift in Sources */,
 				2FB5DC832ABE94E000ED47DF /* BlockViewModel.swift in Sources */,
+				348DDA092AC0191000D9E15C /* DiscoverViewModel.swift in Sources */,
 				2FB5DC8B2ABEBA0500ED47DF /* RestrictViewModel.swift in Sources */,
 				990335022AB2FD5600159F22 /* Test+DeleteComment.swift in Sources */,
 			);
