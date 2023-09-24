@@ -249,7 +249,7 @@ struct PostView: View {
                     if isLike == false {
                         Task {
                             try await homeViewModel.likePost(likerId: currentUser.id, postId: post.id)
-                            _ = try await notiVM.createInAppNotification(senderId: currentUser.id, receiverId: post.ownerID, senderName: currentUser.username, message: Constants.notiReact, postLink: post.id, category: .react, restrictedByList: [], blockedByList: [], blockedList: [])
+                            _ = try await notiVM.createInAppNotification(senderId: currentUser.id, receiverId: post.ownerID, senderName: currentUser.username, message: Constants.notiReact, postId: post.id, category: .react, blockedByList: [], blockedList: [])
                         }
                         isLike = true
                     } else {

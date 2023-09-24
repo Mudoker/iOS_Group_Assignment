@@ -58,33 +58,43 @@ struct NotificationView: View {
 struct NotificationRow: View {
     let notification: AppNotification
     var imageSize: CGFloat = 40
+    @State var unwrapPost = Post(id: "", ownerID: "", creationDate: Timestamp(), isAllowComment: false)
     @Binding var isDarkMode: Bool
+    @State var isShowPost = false
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            // Notificaiton content
-            HStack {
-                Image("testAvt")
-                    .resizable()
-                    .aspectRatio(contentMode: .fill)
-                    .frame(width: imageSize, height: imageSize)
-                    .clipShape(Circle())
-
-                VStack(alignment: .leading) {
-                    Text(notification.senderName)
-                        .font(.headline)
-
-                    Text(notification.messageContent)
-                        .font(.body)
-                }
-
-                // Push view
-                Spacer()
-
+        Button (action: {
+            Task {
+                unwrapPost = try await APIService.fetchPost(withPostID: notification.postId)
+                isShowPost = true
             }
+        }) {
+            VStack(alignment: .leading, spacing: 8) {
+                // Notificaiton content
+                HStack {
+                    Image("testAvt")
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                        .frame(width: imageSize, height: imageSize)
+                        .clipShape(Circle())
+
+                    VStack(alignment: .leading) {
+                        Text(notification.senderName)
+                            .font(.headline)
+
+                        Text(notification.messageContent)
+                            .font(.body)
+                    }
+
+                    // Push view
+                    Spacer()
+
+                }
+            }
+            .foregroundColor(!isDarkMode ? .black : .white)
+            .background(isDarkMode ? .black : .white)
         }
-        .foregroundColor(!isDarkMode ? .black : .white)
-        .background(isDarkMode ? .black : .white)
+//        .navigationDestination(isPresented: $isShowPost, destination: PostView(post: unwrapPost, currentUser: , userSetting: <#T##Binding<UserSetting>#>, homeViewModel: <#T##HomeViewModel#>, notiVM: <#T##NotificationViewModel#>, selectedPost: <#T##Binding<Post>#>, isAllowComment: <#T##Binding<Bool>#>))
     }
 }
 
