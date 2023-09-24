@@ -141,7 +141,9 @@ struct AllChat : View {
                                 HStack{
                                     Text("Message (\(vm.recentMessages.count))")
                                         .foregroundColor(.blue)
+                                    
                                     Spacer()
+                                    
                                     Text("Request (0)")
                                         .foregroundColor(.blue)
                                 }

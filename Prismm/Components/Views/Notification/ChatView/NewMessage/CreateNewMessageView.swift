@@ -110,7 +110,7 @@ struct CreateNewMessageView: View {
                     }
                     
                     ToolbarItemGroup(placement: .navigationBarLeading) {
-                        Text("sNew Message")
+                        Text("New Messages")
                             .font(.title)
                             .fontWeight(.bold)
                     }

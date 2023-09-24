@@ -163,7 +163,7 @@ struct EditSecurityField: View {
                 }
 
             } message: {
-                Text("You are using Google to sign in" )
+                Text("You are using Google account to sign in" )
             }
         }
     }

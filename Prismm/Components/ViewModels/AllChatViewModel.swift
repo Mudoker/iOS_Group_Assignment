@@ -6,9 +6,9 @@
 //
 
 import Foundation
-
 import Firebase
 import FirebaseFirestoreSwift
+
 struct RecentMessage: Codable,Identifiable {
     @DocumentID var id : String?
     let text, email: String
@@ -37,11 +37,9 @@ class MainMessagesViewModel :  ObservableObject {
             chatUser = try await APIService.fetchCurrentUserData()
             fetchRecentMessages()
             print(recentMessages)
-        }catch{
+        } catch {
             print("failed")
-        }
-        
-        
+        }        
     }
     
     @Published var recentMessages = [RecentMessage]()

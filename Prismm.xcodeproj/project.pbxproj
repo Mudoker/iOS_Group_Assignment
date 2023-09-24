@@ -215,8 +215,6 @@
 			isa = PBXGroup;
 			children = (
 				85E235C92ABBFD2500224E56 /* ChatLog */,
-				85E235CD2ABBFD2500224E56 /* AllChatViewModel.swift */,
-				85E235D02ABBFD2500224E56 /* AllChat.swift */,
 				85E235D12ABBFD2500224E56 /* NewMessage */,
 			);
 			name = ChatView;
@@ -226,9 +224,8 @@
 		85E235C92ABBFD2500224E56 /* ChatLog */ = {
 			isa = PBXGroup;
 			children = (
+				85E235D02ABBFD2500224E56 /* AllChat.swift */,
 				85E235CA2ABBFD2500224E56 /* ChatLogView.swift */,
-				85E235CB2ABBFD2500224E56 /* ChatLogModel.swift */,
-				34B8A10F2ABC34470079A98C /* ChatLogViewModel.swift */,
 			);
 			path = ChatLog;
 			sourceTree = "<group>";
@@ -236,7 +233,6 @@
 		85E235D12ABBFD2500224E56 /* NewMessage */ = {
 			isa = PBXGroup;
 			children = (
-				85E235D22ABBFD2500224E56 /* CreateNewMessageViewModel.swift */,
 				85E235D32ABBFD2500224E56 /* CreateNewMessageView.swift */,
 			);
 			path = NewMessage;
@@ -368,6 +364,7 @@
 		E12FA0272AAC2953007890A3 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				85E235CB2ABBFD2500224E56 /* ChatLogModel.swift */,
 				E12FA0282AAC2963007890A3 /* UserModel.swift */,
 				E17E8CE02AAC6ABF00EF5EFB /* SettingModel.swift */,
 				E17E8CE22AAC6B5200EF5EFB /* PostModel.swift */,
@@ -386,8 +383,11 @@
 		E12FA02E2AAC298A007890A3 /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
+				34B8A10F2ABC34470079A98C /* ChatLogViewModel.swift */,
+				85E235D22ABBFD2500224E56 /* CreateNewMessageViewModel.swift */,
 				2FB5DC822ABE94E000ED47DF /* BlockViewModel.swift */,
 				2F6A329E2ABD95920043946A /* AppManager.swift */,
+				85E235CD2ABBFD2500224E56 /* AllChatViewModel.swift */,
 				E1C6652B2AB170F40095B388 /* SettingViewModel.swift */,
 				E12FA02F2AAC29A0007890A3 /* AuthenticationViewModel.swift */,
 				E1BB6F242AAEC12F00051687 /* HomeViewModel.swift */,

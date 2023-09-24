@@ -116,7 +116,7 @@ struct HomeView: View {
                                     .font(.title)
                                     .foregroundColor(.pink)
                                 
-                                Text("You've seen all new posts from creators you follow")
+                                Text("You've seen all new posts")
                                     .opacity(0.5)
                                     .padding(.bottom)
                             }
@@ -200,7 +200,7 @@ struct HomeView: View {
                 }
             }
         } message: {
-            Text(isSelectedPostAllowComment ? "\nTurn off comment from this post" : "\nTurn on comment for this post" )
+            Text(isSelectedPostAllowComment ? "\nTurn off comment for this post" : "\nTurn on comment for this post" )
         }
         .alert("Delete this post?", isPresented: $homeViewModel.isDeletePostAlert) {
             Button("Cancel", role: .cancel) {}

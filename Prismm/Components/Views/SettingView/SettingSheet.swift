@@ -25,7 +25,7 @@ struct SettingSheet: View {
     var body: some View {
         VStack (alignment: .center) {
             // Title
-            Text("Accont Manager")
+            Text("Account Manager")
                 .bold()
                 .padding(.horizontal)
                 .font(.title)
