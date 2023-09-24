@@ -32,7 +32,7 @@ struct Constants {
     
     // Post's tags
     static let availableTags = [
-        "Art", "Astronomy", "Books", "Business", "Computers", "Documentation", "Education",
+        "All","Art", "Astronomy", "Books", "Business", "Computers", "Documentation", "Education",
         "Engineering", "Fashion", "Food", "FYP", "Gaming", "Health", "History", "Mathematics",
         "Movies", "Music", "Nature", "Personal", "Pets", "Politics", "QnA", "Religion", "Science",
         "Society", "Sports", "Technology", "Travel", "Trivial", "Wonders"
