@@ -88,10 +88,6 @@ struct ProfileView: View {
                             
                             //edit button and share button
                             HStack{
-                                //Button {
-                                    
-                                //} label: {
-                                    
                                 NavigationLink(destination: {
                                     EditProfileView(currentUser: $currentUser, userSetting: $userSetting)
                                 }, label: {
@@ -104,11 +100,7 @@ struct ProfileView: View {
                                                     .opacity(0.3)
                                             }
                                         .clipShape(RoundedRectangle(cornerRadius: profileVM.buttonRadiusSize))
-                                }) //{
-                                    
-                                //}
-                                //}
-                                
+                                })
                                 Button {
                                     
                                 } label: {
@@ -132,53 +124,6 @@ struct ProfileView: View {
                     HStack{
                         Text(currentUser.bio!)
                     }
-                }
-                
-                //MARK: Highlight stories
-                if profileVM.hasStoryHightlight {
-                    
-                } else {
-                    VStack(alignment: .leading){
-                        HStack{
-                            Text(LocalizedStringKey("Story highlights"))
-                                .fontWeight(.bold)
-                            
-                            // Push view
-                            Spacer()
-                            
-                            Button {
-                                isSample.toggle()
-                            } label: {
-                                Image(systemName: isSample ? "chevron.up" : "chevron.down")
-                                    .foregroundColor(userSetting.darkModeEnabled ? .white : .black)
-                            }
-                        }
-                        
-                        //Stories sample
-                        if isSample {
-                            Text("Keep your favourite stories on your profile")
-                            
-                            VStack{
-                                ZStack{
-                                    Image(systemName: "plus")
-                                        .resizable()
-                                        .scaledToFit()
-                                        .frame(width: UIDevice.current.userInterfaceIdiom == .phone ? 20 : 30)
-                                }
-                                .frame(width: profileVM.plusButtonSize,height: profileVM.plusButtonSize)
-                                .clipShape(Circle())
-                                .overlay(Circle().stroke(userSetting.darkModeEnabled ? Color.white : Color.black).shadow(radius: 5))
-                                
-                                Text("New")
-                            }
-                            
-                        } else {
-                            Divider()
-                                .frame(height: 1)
-                                .overlay(userSetting.darkModeEnabled ? .white : .gray)
-                        }
-                    }
-                    .padding(.top,20)
                 }
                 
                 //MARK: tab changing between user post and archived posts
@@ -235,8 +180,11 @@ struct ProfileView: View {
                     .offset(y: -10)
 
             }
+//            .padding(.horizontal, 10)
+            
+            
         }
-        .padding(.horizontal,10)
+//        .padding(.horizontal,10)
         .frame(minWidth: 0,maxWidth: .infinity)
         .onAppear {
             profileVM.proxySize = UIScreen.main.bounds.size
