@@ -50,6 +50,10 @@ class HomeViewModel: ObservableObject {
     @Published var selectedCommentFilter = "Newest"
     @Published var isFetchingPost = false
     @Published var newPostId = ""
+    @Published var isEditNewPostOnIpad = false
+    @Published var isEditNewPostOnIphone = false
+    @Published var editPostCaption = ""
+    @Published var editSelectedPostTag: [String] = []
 
     // Firebase Listener
     private var commentListenerRegistration: ListenerRegistration?
@@ -591,22 +595,26 @@ class HomeViewModel: ObservableObject {
 
     
     // Edit the current post
-    func editCurrentPost(postID: String, newPostCaption: String?, newMediaURL: String?, newMimeType: String?) async throws {
+    func editCurrentPost(postID: String, newPostCaption: String?, newMediaURL: NSURL?, editSelectedTag : [String?]) async throws {
         do {
-            // Get a reference to the post
             let postRef = Firestore.firestore().collection("test_posts").document(postID)
-            
-            // Retrieve the post data
             var post = try await postRef.getDocument().data(as: Post.self)
             
-            
-            // Update post properties with new values
             post.caption = newPostCaption
-            post.mediaURL = newMediaURL
-            post.mediaMimeType = newMimeType
+            
+            
+            var mediaURL = ""
+            var mediaMimeType = ""
+            
+            if newMediaURL != nil{
+                mediaURL = try await APIService.createMediaToFirebase(newPostSelectedMedia: newMediaURL!)
+                mediaMimeType = mimeType(for: try Data(contentsOf: newMediaURL as? URL ?? URL(fileURLWithPath: "")))
+            }
+            post.mediaURL = mediaURL
+            post.mediaMimeType = mediaMimeType
+            post.tag = editSelectedPostTag
             post.creationDate = Timestamp()
             
-            // Set the updated post data back to Firestore
             try postRef.setData(from: post) { error in
                 if let error = error {
                     print("Error updating document: \(error)")
@@ -651,6 +659,10 @@ class HomeViewModel: ObservableObject {
                 do {
                     let user = try await APIService.fetchUser(withUserID: ownerID)
                     fetchedAllPosts[i].unwrappedOwner = user
+                    
+                    if fetchedAllPosts[i].id == "KW3Ky9IYcVICAjU2WVqF"{
+                        print(fetchedAllPosts[i])
+                    }
                 } catch {
                     print("Error fetching user: \(error)")
                 }

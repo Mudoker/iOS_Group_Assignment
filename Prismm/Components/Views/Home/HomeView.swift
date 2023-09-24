@@ -123,6 +123,10 @@ struct HomeView: View {
                         }
                         
                     }
+                    .fullScreenCover(isPresented: $homeViewModel.isEditNewPostOnIphone){
+                        EditPostView(currentUser: $currentUser, userSetting: $userSetting, homeVM: homeViewModel, isEditPost: $homeViewModel.isEditNewPostOnIphone, post: $selectedPost)
+                                        }
+                    
                     .sheet(isPresented: $homeViewModel.isCreateNewPostOnIpad) {
                         CreatePostView(currentUser: $currentUser, userSetting: $userSetting ,homeVM: homeViewModel, isNewPost: $homeViewModel.isCreateNewPostOnIpad, isDarkModeEnabled: userSetting.darkModeEnabled, notiVM: notiVM )
                     }
@@ -160,7 +164,7 @@ struct HomeView: View {
             Button("Block", role: .destructive) {
                 Task{
                     try await APIService.blockOtherUser(forUserID: selectedPost.ownerID)
-                                        //try await APIService.unfollowOtherUser(forUserID: homeViewModel.currentPost!.ownerID)
+
                 }
                 print("blocked")
             }
