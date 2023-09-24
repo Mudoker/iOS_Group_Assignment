@@ -23,7 +23,7 @@ struct HomeView: View {
     
     @ObservedObject var homeViewModel: HomeViewModel
     @ObservedObject var notiVM: NotificationViewModel
-    @State var selectedPost = Post(id: "", ownerID: "", creationDate: Timestamp(), isAllowComment: true)
+    
     @State var isSelectedPostAllowComment = false
     
     @EnvironmentObject var tabVM: TabBarViewModel
@@ -93,7 +93,7 @@ struct HomeView: View {
                         if !homeViewModel.isFetchingPost {
                             VStack {
                                 ForEach(homeViewModel.fetchedAllPosts) { post in
-                                    PostView(post: post, homeViewModel: homeViewModel, notiVM: notiVM, selectedPost: $selectedPost, isAllowComment: $isSelectedPostAllowComment)
+                                    PostView(post: post, homeViewModel: homeViewModel, notiVM: notiVM, selectedPost: $homeViewModel.selectedPost, isAllowComment: $isSelectedPostAllowComment)
                                         .padding(.bottom, 50)
                                 }
                                 
@@ -128,7 +128,7 @@ struct HomeView: View {
                         
                     }
                     .fullScreenCover(isPresented: $homeViewModel.isEditNewPostOnIphone){
-                        EditPostView(homeVM: homeViewModel, isEditPost: $homeViewModel.isEditNewPostOnIphone, post: $selectedPost)
+                        EditPostView(homeVM: homeViewModel, isEditPost: $homeViewModel.isEditNewPostOnIphone, post: $homeViewModel.selectedPost)
                                         }
                     
                     .sheet(isPresented: $homeViewModel.isCreateNewPostOnIpad) {
@@ -138,10 +138,10 @@ struct HomeView: View {
                         CreatePostView(homeVM: homeViewModel, isNewPost: $homeViewModel.isCreateNewPostOnIphone, isDarkModeEnabled: tabVM.userSetting.darkModeEnabled, notiVM: notiVM)
                     }
                     .sheet(isPresented: $homeViewModel.isOpenCommentViewOnIpad) {
-                        CommentView(isShowComment: $homeViewModel.isOpenCommentViewOnIpad, isAllowComment: $isSelectedPostAllowComment, homeVM: homeViewModel, notiVM: notiVM, isDarkModeEnabled: tabVM.userSetting.darkModeEnabled, post: selectedPost)
+                        CommentView(isShowComment: $homeViewModel.isOpenCommentViewOnIpad, isAllowComment: $isSelectedPostAllowComment, homeVM: homeViewModel, notiVM: notiVM, isDarkModeEnabled: tabVM.userSetting.darkModeEnabled, post: homeViewModel.selectedPost)
                     }
                     .fullScreenCover(isPresented: $homeViewModel.isOpenCommentViewOnIphone) {
-                        CommentView(isShowComment: $homeViewModel.isOpenCommentViewOnIphone, isAllowComment: $isSelectedPostAllowComment, homeVM: homeViewModel, notiVM: notiVM, isDarkModeEnabled: tabVM.userSetting.darkModeEnabled, post: selectedPost)
+                        CommentView(isShowComment: $homeViewModel.isOpenCommentViewOnIphone, isAllowComment: $isSelectedPostAllowComment, homeVM: homeViewModel, notiVM: notiVM, isDarkModeEnabled: tabVM.userSetting.darkModeEnabled, post: homeViewModel.selectedPost)
                     }
                     .onAppear {
                         homeViewModel.proxySize = proxy.size
@@ -167,7 +167,7 @@ struct HomeView: View {
             }
             Button("Block", role: .destructive) {
                 Task{
-                    try await APIService.blockOtherUser(forUserID: selectedPost.ownerID)
+                    try await APIService.blockOtherUser(forUserID: homeViewModel.selectedPost.ownerID)
 
                 }
                 print("blocked")
@@ -181,7 +181,7 @@ struct HomeView: View {
             }
             Button("Restrict", role: .destructive) {
                 Task{
-                    try await APIService.restrictOtherUser(forUserID: selectedPost.ownerID)
+                    try await APIService.restrictOtherUser(forUserID: homeViewModel.selectedPost.ownerID)
                     //try await APIService.followOtherUser(forUserID: homeViewModel.currentPost!.ownerID)
 //                    try await APIService.unfollowOtherUser(forUserID: homeViewModel.currentPost!.ownerID)
                 }
@@ -197,14 +197,14 @@ struct HomeView: View {
             }
             Button(isSelectedPostAllowComment ? "Turn off" : "Turn on", role: .destructive) {
                 isSelectedPostAllowComment = !isSelectedPostAllowComment
-                if let index = homeViewModel.fetchedAllPosts.firstIndex(where: { $0 == selectedPost }) {
+                if let index = homeViewModel.fetchedAllPosts.firstIndex(where: { $0 == homeViewModel.selectedPost }) {
                     // Now you have the index of selectedPost in the array
                     homeViewModel.fetchedAllPosts[index].isAllowComment = isSelectedPostAllowComment
                     print(homeViewModel.fetchedAllPosts[index].isAllowComment)
                 }
                 
                 Task{
-                    try await homeViewModel.toggleCommentOnPost(postID: selectedPost.id ,isDisable: isSelectedPostAllowComment)
+                    try await homeViewModel.toggleCommentOnPost(postID: homeViewModel.selectedPost.id ,isDisable: isSelectedPostAllowComment)
                 }
             }
         } message: {
@@ -214,15 +214,15 @@ struct HomeView: View {
             Button("Cancel", role: .cancel) {}
             Button("Delete", role: .destructive) {
                 Task {
-                    print(selectedPost.id)
+                    //print(selectedPost.id)
                     withAnimation {
-                        if let index = homeViewModel.fetchedAllPosts.firstIndex(where: { $0 == selectedPost }) {
+                        if let index = homeViewModel.fetchedAllPosts.firstIndex(where: { $0 == homeViewModel.selectedPost }) {
                             // Now you have the index of selectedPost in the array
                             homeViewModel.fetchedAllPosts.remove(at: index)
                         }
                     }
                    
-                    try await homeViewModel.deletePost(postID: selectedPost.id)
+                    try await homeViewModel.deletePost(postID: homeViewModel.selectedPost.id)
                 }
             }
         } message: {

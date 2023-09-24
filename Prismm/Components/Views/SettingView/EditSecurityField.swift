@@ -134,6 +134,10 @@ struct EditSecurityField: View {
                     Spacer()
                     
                     Button(action: {
+                        
+                        APIService.changePassword(withEmail: tabVM.currentUser.account!, password: settingVM.changePasswordCurrentPassword, newpassword: settingVM.changePasswordNewPassword)
+                        
+                        
                         settingVM.hasSecuritySettingChanged.toggle()
                     }) {
                         Text("Confirm")

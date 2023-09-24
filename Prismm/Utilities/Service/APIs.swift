@@ -354,6 +354,28 @@ struct APIService {
         }
     }
     
+    static func changePassword(withEmail email: String, password: String, newpassword: String) {
+        let user = Auth.auth().currentUser
+        
+        let credential = EmailAuthProvider.credential(withEmail: email, password: password)
+
+        // Prompt the user to re-provide their sign-in credentials
+ 
+        user?.reauthenticate(with: credential) { result,error  in
+          if let error = error {
+            print("Wrong current password")
+            return
+          } else {
+            // User re-authenticated.
+              Auth.auth().currentUser?.updatePassword(to: newpassword) { (error) in
+                return
+              }
+              print("success")
+          }
+        }
+    }
+    
+    
     @MainActor
     static func fetchCurrentUserFollowList() async throws-> UserFollowList? {
         guard let currentUser = Auth.auth().currentUser else { return nil }
