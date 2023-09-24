@@ -15,12 +15,20 @@ struct UIImagePickerView: UIViewControllerRepresentable{
     // Default source type for the image picker is the photo library.
     var sourceType: UIImagePickerController.SourceType = .photoLibrary
     
+    var allowVideos: Bool = true
+    
     // Creates and configures a UIImagePickerController instance.
     func makeUIViewController(context: Context) -> UIImagePickerController {
         let pickerController = UIImagePickerController()
         pickerController.sourceType = sourceType
         pickerController.delegate = context.coordinator
-        pickerController.mediaTypes = ["public.image", "public.movie"]
+        
+        if allowVideos {
+            pickerController.mediaTypes = ["public.image", "public.movie"]
+        }else{
+            pickerController.mediaTypes = ["public.image"]
+        }
+        
         
         return pickerController
     }

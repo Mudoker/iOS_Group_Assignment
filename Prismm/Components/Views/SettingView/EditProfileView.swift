@@ -15,6 +15,7 @@
  */
 
 import SwiftUI
+import Kingfisher
 
 struct EditProfileView: View {
     // Control state
@@ -22,6 +23,10 @@ struct EditProfileView: View {
     @Binding var userSetting:UserSetting
     @ObservedObject var settingVM = SettingViewModel()
     @State var accountText: String = ""
+    
+    @State var isAdding = false
+    @State var shouldPresentPickerSheet = false
+    @State var shouldPresentCamera = false
     
     @Environment(\.presentationMode) var presentationMode
     
@@ -37,13 +42,30 @@ struct EditProfileView: View {
                     
                     // Change avatar
                     VStack(alignment: .center) {
-                        Button(action: {}) {
-                            Image("testAvt")
-                                .resizable()
-                                .aspectRatio(contentMode: .fill)
-                                .frame(width: proxy.size.width / 4, height: proxy.size.width / 4)
-                                .clipShape(Circle())
-                                .overlay(
+                        Button(action: { isAdding = true}) {
+                            
+                            VStack{
+                                if let mediaURL = URL(string: settingVM.avatarSelectedMedia?.absoluteString ?? "") {
+                                    
+                                    KFImage(mediaURL)
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fill)
+                                        
+                                    
+                                } else {
+                                    // Handle the case where the media URL is invalid or empty.
+                                    Image(systemName: "person.circle.fill")
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fill)
+                                        
+                                }
+                            }
+                            .frame(width: proxy.size.width / 4, height: proxy.size.width / 4)
+                            .clipShape(Circle())
+                            .overlay{
+                                if (settingVM.avatarSelectedMedia != NSURL(string: currentUser.profileImageURL ?? "")){
+                                    
+                                }else{
                                     ZStack {
                                         Circle()
                                             .fill(Color.black.opacity(0.6))
@@ -54,7 +76,35 @@ struct EditProfileView: View {
                                             .aspectRatio(contentMode: .fit)
                                             .frame(width: proxy.size.width / 12)
                                     }
-                                )
+                                }
+                                
+                            }
+                            .actionSheet(isPresented: $isAdding) { () -> ActionSheet in
+                                ActionSheet(title: Text("Choose mode"), message: Text("Please choose your preferred mode to set your profile image"), buttons: [ActionSheet.Button.default(Text("Camera"), action: {
+                                    self.shouldPresentPickerSheet = false
+                                    self.shouldPresentCamera = true
+                                }), ActionSheet.Button.default(Text("Photo Library"), action: {
+                                    self.shouldPresentPickerSheet = true
+                                    self.shouldPresentCamera = false
+                                }), ActionSheet.Button.cancel()])
+                            }
+                        
+                            
+                            .sheet(isPresented: $shouldPresentPickerSheet) {
+                                UIImagePickerView(isPresented: $shouldPresentPickerSheet , selectedMedia: $settingVM.avatarSelectedMedia, sourceType: .photoLibrary , allowVideos: false)
+                                    .presentationDetents(shouldPresentCamera ? [.large] : [.medium])
+                                
+                            }
+                            .fullScreenCover(isPresented: $shouldPresentCamera) {
+                                UIImagePickerView(isPresented: $shouldPresentCamera , selectedMedia: $settingVM.avatarSelectedMedia, sourceType: .camera, allowVideos: false)
+                                    .ignoresSafeArea()
+                            }
+                            
+                            .onChange(of: settingVM.avatarSelectedMedia) { _ in
+                                settingVM.hasProfileSettingChanged = true
+                            }
+
+
                         }
                         Text("Change photo")
                     }
@@ -225,6 +275,9 @@ struct EditProfileView: View {
                 }
             }
             .padding(.top, 0.1)
+        }
+        .onAppear{
+            settingVM.avatarSelectedMedia = NSURL(string: currentUser.profileImageURL ?? "")
         }
         .foregroundColor(userSetting.darkModeEnabled ? .white : .black)
         .background(!userSetting.darkModeEnabled ? .white : .black)

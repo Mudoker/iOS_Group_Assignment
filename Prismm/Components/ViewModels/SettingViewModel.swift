@@ -35,6 +35,7 @@ class SettingViewModel: ObservableObject {
     @Published var isSignOutAlertPresented = false
     @Published var isSigningOut = false
     
+    @Published var avatarSelectedMedia: NSURL? = nil
     
     @Published var changePasswordCurrentPassword = ""
     @Published var changePasswordNewPassword = ""
@@ -177,6 +178,13 @@ class SettingViewModel: ObservableObject {
             
             if !newProfileLinkedIn.isEmpty {
                 updatedUser.linkedIn = newProfileLinkedIn
+            }
+            
+            if avatarSelectedMedia != NSURL(string: updatedUser.profileImageURL ?? "") {
+                print("update avt")
+                let mediaURL = try await APIService.createMediaToFirebase(newPostSelectedMedia: avatarSelectedMedia!)
+                updatedUser.profileImageURL = mediaURL
+                
             }
             
             let encodedUser = try Firestore.Encoder().encode(updatedUser)
