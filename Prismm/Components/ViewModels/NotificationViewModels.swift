@@ -30,7 +30,7 @@ class NotificationViewModel: ObservableObject {
     func createInAppNotification(senderId: String, receiverId: String, senderName: String, message: String, postId: String, category: NotificationCategory, blockedByList: [String], blockedList: [String]) async throws -> AppNotification? {
         
         let receiverResrictList = try await APIService.fetchUserRestrictedList(withUserId: receiverId)
-        print(receiverResrictList?.restrictIds.count)
+
         if blockedByList.contains(receiverId) || blockedList.contains(receiverId) || receiverId == senderId || (((receiverResrictList?.restrictIds.contains(senderId)) == true)) {
             // Handle the situation here, e.g., log a message or return an error.
             print("Cannot send notification to \(receiverId) due to restrictions or blocks.")

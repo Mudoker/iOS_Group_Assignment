@@ -30,6 +30,7 @@ class HomeViewModel: ObservableObject {
     @Published var isOpenCommentViewOnIphone = false
     @Published var isOpenCommentViewOnIpad = false
     @Published var commentContent = ""
+    @Published var editCommentContent = ""
     @Published var selectedPostTag: [String] = []
     @Published var selectedUserTag: [User] = []
     @Published var isShowUserTagListOnIphone = false
@@ -42,6 +43,7 @@ class HomeViewModel: ObservableObject {
     @Published var isPostOnScreen = false
     @Published var isRestrictUserAlert = false
     @Published var isBlockUserAlert = false
+    @Published var isDeleteCommentAlert = false
     @Published var isDeletePostAlert = false
     @Published var isTurnOffCommentAlert = false
     @Published var isSignOutAlertPresented = false
@@ -188,21 +190,36 @@ class HomeViewModel: ObservableObject {
                 return
             }
             
-            // Convert query results to Comment objects
-            let commentsToAdd = documents.compactMap { queryDocumentSnapshot in
-                try? queryDocumentSnapshot.data(as: Comment.self)
+            // Create an array to store updated comments
+            var updatedComments = [Comment]()
+            
+            Task {
+                for queryDocumentSnapshot in documents {
+                    var comment = try? queryDocumentSnapshot.data(as: Comment.self)
+                    
+                    if let commenterId = comment?.commenterId {
+                        do {
+                            // Fetch and unwrap the commenter's user data
+                            comment?.unwrapCommentor = try await APIService.fetchUser(withUserID: commenterId)
+                            updatedComments.append(comment!)
+                        } catch {
+                            print("Error fetching user data: \(error)")
+                        }
+                    }
+                }
+                
+                // If "postID" not in fetched comments -> create an empty set
+                var existingComments = self.fetchedCommentsByPostId[postID, default: Set<Comment>()]
+                
+                // Add the comments to the existing set
+                existingComments.formUnion(updatedComments)
+                
+                // Update the fetched_comments dictionary with the merged set of comments
+                self.fetchedCommentsByPostId[postID] = existingComments
             }
-            
-            // If "postID" not in fetched comments -> create an empty set
-            var existingComments = fetchedCommentsByPostId[postID, default: Set<Comment>()]
-            
-            // Add the comments to the existing set
-            existingComments.formUnion(commentsToAdd)
-            
-            // Update the fetched_comments dictionary with the merged set of comments
-            fetchedCommentsByPostId[postID] = existingComments
         }
     }
+
     
     // check if user has archived this post
     func isUserFavouritePost(withPostId postId: String, withUserId userId: String) -> Bool {
@@ -333,6 +350,53 @@ class HomeViewModel: ObservableObject {
         guard let encodedComment = try? Firestore.Encoder().encode(newComment) else { return nil }
         try await commentRef.setData(encodedComment)
         return newComment
+    }
+    
+    func editCurrentComment(commentID: String, newContent: String?) async throws {
+        do {
+            // Get a reference to the post
+            let commentRef = Firestore.firestore().collection("test_comments").document(commentID)
+            
+            // Retrieve the post data
+            var comment = try await commentRef.getDocument().data(as: Comment.self)
+            
+            
+            // Update post properties with new values
+            comment.content = newContent
+            comment.creationDate = Timestamp()
+            
+            // Set the updated post data back to Firestore
+            try commentRef.setData(from: comment) { error in
+                if let error = error {
+                    print("Error updating document: \(error)")
+                } else {
+                    print("Document successfully updated.")
+                }
+            }
+        } catch {
+            throw error
+        }
+    }
+    
+    func deleteComment(commentID: String) async throws {
+        print("Is deleting")
+        do {
+            let commentCollection = Firestore.firestore().collection("test_comments")
+            
+            // Create a query to find the document(s) that match the criteria
+            let query = commentCollection.whereField("id", isEqualTo: commentID)
+            
+            let querySnapshot = try await query.getDocuments()
+            
+            // Loop through the documents found and delete them
+            for document in querySnapshot.documents {
+                try await document.reference.delete()
+                print("Deleted")
+            }
+        } catch {
+            print("Error deleting comment: \(error)")
+            throw error // Rethrow the error for the caller to handle
+        }
     }
     
     // Like a post

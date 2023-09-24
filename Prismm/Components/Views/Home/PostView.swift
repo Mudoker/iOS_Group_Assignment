@@ -378,14 +378,38 @@ struct PostView: View {
                         .frame(width: 40, height: 40)
                 }
                 
-                TextField("Comment..", text: $homeViewModel.commentContent)
-                    .font(homeViewModel.commentTextFiledFont)
-                    .padding(.horizontal) // Add horizontal padding to the text field
+                Button(action: {
+                    if UIDevice.current.userInterfaceIdiom == .pad {
+                        selectedPost = post
+                        homeViewModel.isOpenCommentViewOnIpad.toggle()
+                        homeViewModel.fetchAllComments(forPostID: post.id)
+                    } else {
+                        selectedPost = post
+                        homeViewModel.isOpenCommentViewOnIphone.toggle()
+                        homeViewModel.fetchAllComments(forPostID: post.id)
+                    }
+                }) {
+                    HStack {
+                        Text("Comment")
+                            .font(homeViewModel.commentTextFiledFont)
+                            .padding(.horizontal)
+                            .frame(height: 40) // Set the desired button height
+                            
+                        Spacer()
+
+                    }
                     .background(
-                        RoundedRectangle(cornerRadius: homeViewModel.commentTextFieldCornerRadius) // Adjust the corner radius as needed
-                            .fill(Color.gray.opacity(0.1)) // Customize the background color
-                            .frame(height: homeViewModel.commentTextFieldCornerRadius)
+                        RoundedRectangle(cornerRadius: homeViewModel.commentTextFieldCornerRadius)
+                            .fill(Color.gray.opacity(0.1))
                     )
+                    .foregroundColor(.primary) // Customize text color
+                    .contentShape(Rectangle()) // Make the entire button area tappable
+                    .multilineTextAlignment(.leading) // Set text alignment to leading
+                    .frame(maxWidth: .infinity)
+
+                }
+
+                
             }
             .padding(.horizontal)
         }

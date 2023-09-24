@@ -19,10 +19,11 @@ import Firebase
 
 struct Comment: Identifiable, Codable, Hashable {
     let id: String
-    let content: String
+    var content: String?
     let commenterId: String
     let postId: String
-    let creationDate: Timestamp
+    var creationDate: Timestamp
+    var unwrapCommentor: User?
     
     func hash(into hasher: inout Hasher) {
         hasher.combine(id)
