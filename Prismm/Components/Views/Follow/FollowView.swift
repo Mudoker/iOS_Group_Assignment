@@ -99,14 +99,7 @@ struct FollowView: View {
             .background{
                 fvm.isDarkMode ? Color.black : Color.white
             }
-            .onAppear{
-                Task{
-                    await fvm.fetchFollowData()
-                    
-                    print(fvm.followerList)
-                    print(fvm.followingList)
-                }
-            }
+ 
         }
     }
 }

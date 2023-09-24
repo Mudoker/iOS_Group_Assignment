@@ -523,8 +523,6 @@
 				9903350A2AB41A7600159F22 /* Test+EditPost.swift */,
 				E16BBB932AB5D3B6006884BE /* Test+Dropdownmenu.swift */,
 				E1FBA9102AB83BF6007B6B15 /* Test+Notification.swift */,
-				99A0F4212ABC356B00D6CA8D /* Test+BlockUser.swift */,
-				99A0F4232ABC48AF00D6CA8D /* Test+Restrict.swift */,
 				E1003B6D2ABAFC5B0049D04A /* Test+LocalPushNotification.swift */,
 			);
 			path = Test;

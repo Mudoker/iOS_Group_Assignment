@@ -20,6 +20,8 @@ struct FollowerRow: View {
     // Control state
     @ObservedObject var fvm: FollowViewModel
     
+    var user:User
+    
     var body: some View {
         HStack{
             // User information
@@ -30,10 +32,10 @@ struct FollowerRow: View {
                 .clipShape(Circle())
             
             VStack(alignment: .leading){
-                Text("UserName")
+                Text(user.username)
                     .font(.system(size: CGFloat(fvm.rowUserNameFontSize)))
                 
-                Text("bio")
+                Text(user.bio!)
                     .font(.system(size: CGFloat(fvm.rowBioFontSize)))
                     .opacity(0.4)
             }
@@ -62,10 +64,10 @@ struct FollowerRow: View {
     }
 }
 
-struct RowView_Previews: PreviewProvider {
-    static var previews: some View {
-        FollowerRow(fvm: FollowViewModel())
-        
-        FollowerRow(fvm: FollowViewModel()).previewDevice("iPad Pro (11-inch) (4th generation)")
-    }
-}
+//struct RowView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        FollowerRow(fvm: FollowViewModel())
+//        
+//        FollowerRow(fvm: FollowViewModel()).previewDevice("iPad Pro (11-inch) (4th generation)")
+//    }
+//}
