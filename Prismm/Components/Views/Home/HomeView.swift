@@ -174,7 +174,7 @@ struct HomeView: View {
             Button("Restrict", role: .destructive) {
                 Task{
 //                    try await APIService.restrictOtherUser(forUserID: homeViewModel.currentPost!.ownerID)
-                    try await APIService.followOtherUser(forUserID: homeViewModel.currentPost!.ownerID)
+                    try await APIService.followOtherUser(forUserID: homeViewModel.currentPost!.ownerID ?? "")
 //                    try await APIService.unfollowOtherUser(forUserID: homeViewModel.currentPost!.ownerID)
                 }
                 print("restricted")

@@ -13,7 +13,7 @@ class DiscoverViewModel : ObservableObject{
     @Published var isOpenFilterOnIphone = false
     
     
-   
+    
     @Published var isSelectedPostAllowComment = false
     
     @Published var activeTab : String = "All"
@@ -26,6 +26,7 @@ class DiscoverViewModel : ObservableObject{
     @Published var allUser : [User] = []
     @Published var postList : [Post] = []
     
+    @Published var defaultPost : [Post] = []
     @MainActor
     func fetchAllUser() async throws {
         allUser = try await APIService.fetchAllUsers()
@@ -93,5 +94,29 @@ class DiscoverViewModel : ObservableObject{
         }
         
         return sortedPosts
+    }
+    @MainActor
+    func getDefaultPostList() {
+        for i in 0...5 {
+            defaultPost.append(postList[i])
+        }
+    }
+    
+    @MainActor
+    func getRandomPosts(){
+        defaultPost.removeAll()
+        var randomIndices: Set<Int> = []
+        //        var randomPosts: [Post] = []
+        if (postList.count > 0){
+            while randomIndices.count < 5 {
+                let randomIndex = Int.random(in: 0..<postList.count)
+                randomIndices.insert(randomIndex)
+            }
+        }
+        
+        for index in randomIndices {
+            defaultPost.append(postList[index])
+            print(index)
+        }
     }
 }
