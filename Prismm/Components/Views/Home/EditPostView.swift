@@ -1,3 +1,4 @@
+
 /*
  RMIT University Vietnam
  Course: COSC2659 iOS Development
@@ -17,35 +18,31 @@
 
 import SwiftUI
 
-struct CreatePostView: View {
-    // Control state
+struct EditPostView: View {
     @State private var users : [User] = []
+    
     @Binding var currentUser:User
     @Binding var userSetting:UserSetting
     @ObservedObject var homeVM: HomeViewModel
+    
     @State private var selectedTags: Set<String> = []
+    
     @State var shouldPresentPickerSheet = false
     @State var shouldPresentCamera = false
-    @Binding var isNewPost: Bool
-    var isDarkModeEnabled: Bool
+    @State var selected = false
+    
+    
+    @Binding var isEditPost: Bool
+
+    
     @State var isOpenUserListViewOnIphone = false
     @State var isOpenUserListViewOnIpad = false
     @State var isOpenPostTagListViewOnIphone = false
     @State var isOpenPostTagListViewOnIpad = false
+    
     @State var proxySize = CGSize()
-    @State var isCreatingPost = false
-    @State var isEmptyCaptionAlert = false
     
-    
-    @ObservedObject var notiVM: NotificationViewModel
-    
-    var filteredTags: [String] {
-        if homeVM.postTagListSearchText.isEmpty {
-            return Constants.availableTags
-        } else {
-            return Constants.availableTags.filter { $0.localizedCaseInsensitiveContains(homeVM.postTagListSearchText) }
-        }
-    }
+    @Binding var post:Post
     
     @State var filteredUsers: [User] = []
     // Fiter user by text field
@@ -59,22 +56,28 @@ struct CreatePostView: View {
         }
     }
     
+    var filteredTags: [String] {
+        if homeVM.postTagListSearchText.isEmpty {
+            return Constants.availableTags
+        } else {
+            return Constants.availableTags.filter { $0.localizedCaseInsensitiveContains(homeVM.postTagListSearchText) }
+        }
+    }
+    
     var body: some View {
         GeometryReader { proxy in
             VStack {
                 ZStack {
-                    // Title
-                    Text("Create new post")
+                    Text("Edit your post")
                         .bold()
                         .font(.title)
                         .padding(.vertical)
                     
                     HStack {
-                        // push view
                         Spacer()
                         
                         Button(action: {
-                            isNewPost = false // Close the sheet
+                            isEditPost = false // Close the sheet
                         }) {
                             Image(systemName: "xmark.circle.fill") // You can use any close button icon
                                 .font(.title)
@@ -83,9 +86,8 @@ struct CreatePostView: View {
                 }
                 
                 Divider()
-                    .overlay(isDarkModeEnabled ? .white : .gray)
+                    .overlay(userSetting.darkModeEnabled ? .white : .gray)
                 
-                // USer infor
                 HStack (alignment: .top) {
                     Image("testAvt")
                         .resizable()
@@ -94,37 +96,37 @@ struct CreatePostView: View {
                         .clipShape(Circle())
                     
                     VStack(alignment: .leading, spacing: 0) {
-                        Text(currentUser.username.extractNameFromEmail() ?? currentUser.username)
+                        Text(currentUser.username)
                             .bold()
                             .font(.title3)
                             .padding(.bottom, 8)
                         
-                        // Tag other users
                         Button(action: {
                             if UIDevice.current.userInterfaceIdiom == .pad {
                                 isOpenUserListViewOnIpad = true
                             } else {
                                 isOpenUserListViewOnIphone = true
                             }
+                            print("ok")
                         }) {
                             HStack {
                                 Image(systemName: "plus.app")
                                     .resizable()
                                     .aspectRatio(contentMode: .fit)
                                     .frame(width: proxy.size.width/24)
-                                    .foregroundColor(!isDarkModeEnabled ? Constants.lightThemeColor : Constants.darkThemeColor)
+                                    .foregroundColor(!userSetting.darkModeEnabled ? Constants.lightThemeColor : Constants.darkThemeColor)
                                 
                                 if homeVM.selectedUserTag.isEmpty {
                                     Text("Notify your friend")
                                         .font(.callout)
-                                        .foregroundColor(!isDarkModeEnabled ? Constants.lightThemeColor : Constants.darkThemeColor)
+                                        .foregroundColor(!userSetting.darkModeEnabled ? Constants.lightThemeColor : Constants.darkThemeColor)
                                         .frame(height: proxy.size.height/40)
                                 } else {
                                     // Horizontal scroll view
                                     ScrollView(.horizontal, showsIndicators: false) {
                                         ScrollViewReader { scrollProxy in
                                             HStack(spacing: proxy.size.width/30) {
-                                                ForEach(homeVM.selectedUserTag) { user in
+                                                ForEach(homeVM.selectedUserTag, id: \.self) { user in
                                                     HStack {
                                                         Text(user.username)
                                                             .foregroundColor(.white)
@@ -145,7 +147,7 @@ struct CreatePostView: View {
                                                     .padding(.leading, 2)
                                                     .padding(.vertical, 4.2)
                                                     .background(Capsule()
-                                                        .foregroundColor(isDarkModeEnabled ? Constants.darkThemeColor : Constants.lightThemeColor))
+                                                        .foregroundColor(userSetting.darkModeEnabled ? Constants.darkThemeColor : Constants.lightThemeColor))
                                                     .id(user)
                                                 }
                                                 .onChange(of: homeVM.selectedUserTag.count) { _ in
@@ -163,23 +165,20 @@ struct CreatePostView: View {
                         }
                     }
                     
-                    // Push view
                     Spacer()
                 }
                 .padding(.top)
                 
-                // Caption
                 ZStack (alignment: .topLeading) {
-                    // Background
                     RoundedRectangle(cornerRadius: proxy.size.width/40)
                         .stroke(LinearGradient(
-                            gradient: Gradient(colors: isDarkModeEnabled ? Constants.buttonGradientColorDark : Constants.buttonGradientColorLight),
+                            gradient: Gradient(colors: userSetting.darkModeEnabled ? Constants.buttonGradientColorDark : Constants.buttonGradientColorLight),
                             startPoint: .topLeading,
                             endPoint: .bottomTrailing
                         ), lineWidth: 1.5)
                         .frame(height: proxy.size.height/4)
                     
-                    TextField("", text: $homeVM.createNewPostCaption, prompt:  Text("Share your updates...").foregroundColor(isDarkModeEnabled ? .white.opacity(0.5) : .black.opacity(0.5))
+                    TextField("", text: $homeVM.editPostCaption, prompt:  Text("Share your updates...").foregroundColor(userSetting.darkModeEnabled ? .white.opacity(0.5) : .black.opacity(0.5))
                         .font(.title3)
                     )
                     .autocorrectionDisabled(true)
@@ -188,16 +187,12 @@ struct CreatePostView: View {
                 }
                 .padding(.vertical)
                 
-                // Post tags
                 HStack {
                     Text("Tags")
                         .bold()
                         .font(.title3)
-                    
-                    // Push view
                     Spacer()
                     
-                    // Choose a tag
                     Button(action: {
                         if UIDevice.current.userInterfaceIdiom == .pad {
                             isOpenPostTagListViewOnIpad = true
@@ -206,24 +201,23 @@ struct CreatePostView: View {
                         }
                     }) {
                         HStack {
-                            // Show tag
-                            if homeVM.selectedPostTag.isEmpty {
+                            if homeVM.editSelectedPostTag.isEmpty {
                                 Image(systemName: "tag")
                                     .resizable()
                                     .aspectRatio(contentMode: .fit)
                                     .frame(width: proxy.size.width/24)
-                                    .foregroundColor(!isDarkModeEnabled ? Constants.lightThemeColor : Constants.darkThemeColor)
+                                    .foregroundColor(!userSetting.darkModeEnabled ? Constants.lightThemeColor : Constants.darkThemeColor)
                                 
                                 Text("Add a tag")
                                     .font(.callout)
-                                    .foregroundColor(!isDarkModeEnabled ? Constants.lightThemeColor : Constants.darkThemeColor)
+                                    .foregroundColor(!userSetting.darkModeEnabled ? Constants.lightThemeColor : Constants.darkThemeColor)
                                     .frame(height: proxy.size.height/40)
                             } else {
                                 // Horizontal scroll view
                                 ScrollView(.horizontal, showsIndicators: false) {
                                     ScrollViewReader { scrollProxy in
                                         HStack(spacing: proxy.size.width/30) {
-                                            ForEach(homeVM.selectedPostTag, id: \.self) { tag in
+                                            ForEach(homeVM.editSelectedPostTag, id: \.self) { tag in
                                                 HStack {
                                                     Spacer()
                                                     Text(tag)
@@ -232,8 +226,8 @@ struct CreatePostView: View {
                                                     
                                                     Button(action: {
                                                         // Remove the user from the tagList
-                                                        if let index = homeVM.selectedPostTag.firstIndex(of: tag) {
-                                                            homeVM.selectedPostTag.remove(at: index)
+                                                        if let index = homeVM.editSelectedPostTag.firstIndex(of: tag) {
+                                                            homeVM.editSelectedPostTag.remove(at: index)
                                                         }
                                                     }) {
                                                         Image(systemName: "x.circle.fill")
@@ -245,13 +239,13 @@ struct CreatePostView: View {
                                                 .padding(.leading, 2)
                                                 .padding(.vertical, 4.2)
                                                 .background(Capsule()
-                                                    .foregroundColor(isDarkModeEnabled ? Constants.darkThemeColor : Constants.lightThemeColor))
+                                                    .foregroundColor(userSetting.darkModeEnabled ? Constants.darkThemeColor : Constants.lightThemeColor))
                                                 .id(tag)
                                             }
-                                            .onChange(of: homeVM.selectedPostTag.count) { _ in
+                                            .onChange(of: homeVM.editSelectedPostTag.count) { _ in
                                                 withAnimation {
                                                     // automatically scroll to end
-                                                    scrollProxy.scrollTo(homeVM.selectedPostTag.last, anchor: .trailing)
+                                                    scrollProxy.scrollTo(homeVM.editSelectedPostTag.last, anchor: .trailing)
                                                 }
                                             }
                                         }
@@ -266,7 +260,7 @@ struct CreatePostView: View {
                 .background(
                     RoundedRectangle(cornerRadius: proxy.size.width/40)
                         .stroke(LinearGradient(
-                            gradient: Gradient(colors: isDarkModeEnabled ? Constants.buttonGradientColorDark : Constants.buttonGradientColorLight),
+                            gradient: Gradient(colors: userSetting.darkModeEnabled ? Constants.buttonGradientColorDark : Constants.buttonGradientColorLight),
                             startPoint: .topLeading,
                             endPoint: .bottomTrailing
                         ), lineWidth: 1.5)
@@ -282,22 +276,19 @@ struct CreatePostView: View {
                         .ignoresSafeArea()
                 }
                 
-                // Post media
+                
                 HStack {
                     Text("Post Media")
                         .bold()
                         .font(.title3)
-                    
-                    // push view
                     Spacer()
                     
-                    // Media choosing
                     if homeVM.newPostSelectedMedia != nil {
                         AsyncImage(url: homeVM.newPostSelectedMedia as? URL) { media in
                             media
                                 .resizable()
                                 .scaledToFit()
-                                .frame(height: proxy.size.height/20 )
+                                .frame(height: proxy.size.height/20 ) // Set the desired width and height for your circular image
                             
                         } placeholder: {
                             ProgressView()
@@ -309,7 +300,7 @@ struct CreatePostView: View {
                         Button {
                             homeVM.newPostSelectedMedia = nil
                         } label: {
-                            Image(systemName: "xmark.circle.fill")
+                            Image(systemName: "xmark.circle.fill") // You can use any close button icon
                             
                         }
                         .foregroundColor(.gray)
@@ -336,15 +327,16 @@ struct CreatePostView: View {
                                 .resizable()
                                 .aspectRatio(contentMode: .fill)
                                 .frame(width: proxy.size.width/12)
-                                .foregroundColor(!isDarkModeEnabled ? Constants.lightThemeColor : Constants.darkThemeColor)
+                                .foregroundColor(!userSetting.darkModeEnabled ? Constants.lightThemeColor : Constants.darkThemeColor)
                         }
                     }
                 }
+                
                 .padding()
                 .background(
                     RoundedRectangle(cornerRadius: proxy.size.width/40)
                         .stroke(LinearGradient(
-                            gradient: Gradient(colors: isDarkModeEnabled ? Constants.buttonGradientColorDark : Constants.buttonGradientColorLight),
+                            gradient: Gradient(colors: userSetting.darkModeEnabled ? Constants.buttonGradientColorDark : Constants.buttonGradientColorLight),
                             startPoint: .topLeading,
                             endPoint: .bottomTrailing
                         ), lineWidth: 1.5)
@@ -356,11 +348,10 @@ struct CreatePostView: View {
                     
                 }
                 .fullScreenCover(isPresented: $shouldPresentCamera) {
-                    UIImagePickerView(isPresented: $shouldPresentCamera , selectedMedia: $homeVM.newPostSelectedMedia, sourceType: .camera)
+                    UIImagePickerView(isPresented:  $shouldPresentCamera , selectedMedia: $homeVM.newPostSelectedMedia, sourceType: .camera )
                         .ignoresSafeArea()
                 }
                 
-                // Reminder
                 VStack(alignment: .leading) {
                     Text ("No Sensitive, Explicit, or Harmful Content")
                         .bold()
@@ -373,47 +364,43 @@ struct CreatePostView: View {
                 .background(
                     RoundedRectangle(cornerRadius: proxy.size.width/40)
                         .stroke(LinearGradient(
-                            gradient: Gradient(colors: isDarkModeEnabled ? Constants.buttonGradientColorDark : Constants.buttonGradientColorLight),
+                            gradient: Gradient(colors: userSetting.darkModeEnabled ? Constants.buttonGradientColorDark : Constants.buttonGradientColorLight),
                             startPoint: .topLeading,
                             endPoint: .bottomTrailing
                         ), lineWidth: 1.5)
                 )
                 
-                // Button to create post @@@@@@
                 Button(action: {
-                    if (homeVM.createNewPostCaption.isEmpty) {
-                        isEmptyCaptionAlert = true
-                    } else {
-                        Task {
-                            isCreatingPost = true
-                            let _ = try await homeVM.createPost()
-                            // Create mentioned notification @@@@
-                            for user in homeVM.selectedUserTag {
-                                let _ = try await notiVM.createInAppNotification(
-                                    senderId: currentUser.id,
-                                    receiverId: user.id,
-                                    senderName: currentUser.username,
-                                    message: Constants.notiMention,
-                                    postId: homeVM.newPostId,
-                                    category: .mention,
-                                    blockedByList: homeVM.currentUserBlockList.beBlockedBy,
-                                    blockedList: homeVM.currentUserBlockList.blockedIds
-                                )
+                    Task {
+                        
+                        if let commentToUpdate = homeVM.fetchedAllPosts.firstIndex(where: { $0.id == post.id }) {
+                            // Create a modified version of the comment with updated content
+                            var updatedComment = homeVM.fetchedAllPosts[commentToUpdate]
+                            updatedComment.caption = homeVM.editPostCaption
+
+                            // Optionally, use withAnimation to animate the update
+                            withAnimation {
+                                // Assuming that you want to update the array element after updating the content
+                                homeVM.fetchedAllPosts[commentToUpdate] = updatedComment
                             }
-                            
-                            try await homeVM.fetchPosts()
-                            isNewPost = false
-                            //                        homeVM.selectedUserTag
-                            isCreatingPost = false
                         }
+
+                        
+                        let _ = try await homeVM.editCurrentPost(postID: post.id, newPostCaption: homeVM.editPostCaption, newMediaURL: homeVM.newPostSelectedMedia, editSelectedTag: homeVM.selectedPostTag)
+                        try await homeVM.fetchPosts()
+                        print(homeVM.editSelectedPostTag)
+                        isEditPost = false
                     }
+                    
+                    //MARK: xiu hoi
+                    homeVM.isPostOnScreen.toggle()
                 }) {
                     RoundedRectangle(cornerRadius: proxy.size.width/40)
                         .frame(height: proxy.size.width/7)
-                        .foregroundColor(!isDarkModeEnabled ? Constants.lightThemeColor : Constants.darkThemeColor)
+                        .foregroundColor(!userSetting.darkModeEnabled ? Constants.lightThemeColor : Constants.darkThemeColor)
                         .overlay(
                             HStack {
-                                Text("Post")
+                                Text("Edit")
                                     .font(.title3)
                                     .bold()
                                 
@@ -429,55 +416,55 @@ struct CreatePostView: View {
                 
                 Spacer()
             }
-            .padding(.horizontal)
-            .onChange(of: homeVM.userTagListSearchText) { _ in
-                filterUsers()
-            }
             .onAppear {
+                
                 Task {
                     users = try await APIService.fetchAllUsers()
                 }
-                //reset selected field when create new post
                 proxySize = proxy.size
-                homeVM.newPostSelectedMedia = nil
-                homeVM.createNewPostCaption = ""
-                homeVM.selectedPostTag.removeAll()
-                homeVM.selectedUserTag.removeAll()
+                if let caption = post.caption {
+                    homeVM.editPostCaption = caption
+                } else {
+                    homeVM.editPostCaption = ""
+                }
+                homeVM.newPostSelectedMedia = NSURL(string: post.mediaURL ?? "")
+                homeVM.editSelectedPostTag = post.tag
+                print(post)
+                print("\(post.caption)")
+                print("\(homeVM.editPostCaption)222")
+                print("\(homeVM.createNewPostCaption)111")
+
+
+                    
             }
+            .padding(.horizontal)
             .fullScreenCover(isPresented: $isOpenUserListViewOnIphone) {
-                UserListView(proxy: $proxySize, searchProfileText: $homeVM.userTagListSearchText, selectedUsers: $homeVM.selectedUserTag, isShowUserTagList: $isOpenUserListViewOnIphone, filteredUsers: $filteredUsers, isDarkModeEnabled: isDarkModeEnabled)
+                UserListView(proxy: $proxySize, searchProfileText: $homeVM.userTagListSearchText, selectedUsers: $homeVM.selectedUserTag, isShowUserTagList: $isOpenUserListViewOnIphone, filteredUsers: $filteredUsers, isDarkModeEnabled: userSetting.darkModeEnabled)
             }
             .sheet(isPresented: $isOpenUserListViewOnIpad) {
-                UserListView(proxy: $proxySize, searchProfileText: $homeVM.userTagListSearchText, selectedUsers: $homeVM.selectedUserTag, isShowUserTagList: $isOpenUserListViewOnIpad, filteredUsers: $filteredUsers, isDarkModeEnabled: isDarkModeEnabled)
+                UserListView(proxy: $proxySize, searchProfileText: $homeVM.userTagListSearchText, selectedUsers: $homeVM.selectedUserTag, isShowUserTagList: $isOpenUserListViewOnIpad, filteredUsers: $filteredUsers, isDarkModeEnabled: userSetting.darkModeEnabled)
             }.fullScreenCover(isPresented: $isOpenPostTagListViewOnIphone) {
-                PostTagListView(proxy: $proxySize, searchTagText: $homeVM.userTagListSearchText, selectedTags: $homeVM.selectedPostTag, isShowPostTagList:$isOpenPostTagListViewOnIphone, filteredTags:  filteredTags, isDarkModeEnabled: isDarkModeEnabled)
+                PostTagListView(proxy: $proxySize, searchTagText: $homeVM.userTagListSearchText, selectedTags: $homeVM.selectedPostTag, isShowPostTagList:$isOpenPostTagListViewOnIphone, filteredTags:  filteredTags, isDarkModeEnabled: userSetting.darkModeEnabled)
             }
             .sheet(isPresented: $isOpenPostTagListViewOnIpad) {
-                PostTagListView(proxy: $proxySize, searchTagText: $homeVM.userTagListSearchText, selectedTags: $homeVM.selectedPostTag, isShowPostTagList:$isOpenPostTagListViewOnIpad, filteredTags:  filteredTags, isDarkModeEnabled: isDarkModeEnabled)
-            }
-            .alert("Error", isPresented: $isEmptyCaptionAlert) {
-                Button("Close", role: .cancel) {}
-            } message: {
-                Text("\nCaption cannot be empty!")
+                PostTagListView(proxy: $proxySize, searchTagText: $homeVM.userTagListSearchText, selectedTags: $homeVM.selectedPostTag, isShowPostTagList:$isOpenPostTagListViewOnIpad, filteredTags:  filteredTags, isDarkModeEnabled: userSetting.darkModeEnabled)
             }
         }
-        .foregroundColor(isDarkModeEnabled ? .white : .black)
-        .background(!isDarkModeEnabled ? .white : .black)
+        .foregroundColor(userSetting.darkModeEnabled ? .white : .black)
+        .background(!userSetting.darkModeEnabled ? .white : .black)
     }
 }
 
-struct PostTagListView: View {
-    // Control state
+struct EditPostTagListView: View {
     @Binding var proxy: CGSize
+    var isDarkModeEnabled: Bool
     @Binding var searchTagText: String
     @Binding var selectedTags: [String]
     @Binding var isShowPostTagList: Bool
     var filteredTags: [String]
-    var isDarkModeEnabled: Bool
     
     var body: some View {
         VStack {
-            // Title
             HStack(alignment: .firstTextBaseline) {
                 VStack(alignment: .leading) {
                     Text("Select a tag")
@@ -502,24 +489,21 @@ struct PostTagListView: View {
             }
             .padding(.horizontal)
             
-            // Search a tag
             TextField("Search Tags", text: $searchTagText)
                 .textFieldStyle(RoundedBorderTextFieldStyle())
                 .padding([.horizontal, .bottom])
             
-            // All tags
             ScrollView(showsIndicators: false) {
                 FlowLayout {
                     ForEach(filteredTags, id: \.self) { tag in
                         HStack {
                             Button(action: {
                                 if !selectedTags.contains(tag){
-                                    // Allow at most 3 tags
                                     if selectedTags.count < 3 {
                                         selectedTags.append(tag)
                                     }
                                 } else {
-                                    // Remove the tag from the tagList
+                                    // Remove the user from the tagList
                                     if let index = selectedTags.firstIndex(of: tag) {
                                         selectedTags.remove(at: index)
                                     }
@@ -556,7 +540,6 @@ struct PostTagListView: View {
                 }
             }
             
-            // Push view
             Spacer()
         }
         .foregroundColor(isDarkModeEnabled ? .white : .black)
@@ -564,18 +547,16 @@ struct PostTagListView: View {
     }
 }
 
-struct UserListView: View {
-    // control state
+struct EditUserListView: View {
     @Binding var proxy: CGSize
-    @Binding var searchProfileText: String
-    @Binding var selectedUsers: [User]
-    @Binding var isShowUserTagList: Bool
-    @Binding var filteredUsers: [User]
     var isDarkModeEnabled: Bool
+    @Binding var searchProfileText: String
+    @Binding var selectedUsers: [String]
+    @Binding var isShowUserTagList: Bool
+    var filteredUsers: [String]
     
     var body: some View {
         VStack {
-            // Title
             HStack(alignment: .firstTextBaseline) {
                 Text("Tag a friend")
                     .bold()
@@ -583,7 +564,6 @@ struct UserListView: View {
                     .padding(.top)
                     .padding(.horizontal)
                 
-                // Push view
                 Spacer()
                 
                 Button(action: {
@@ -595,7 +575,6 @@ struct UserListView: View {
                 }
             }
             
-            // Content
             VStack {
                 ZStack(alignment: .topLeading) {
                     RoundedRectangle(cornerRadius: proxy.width / 40)
@@ -609,10 +588,8 @@ struct UserListView: View {
                         )
                         .frame(height: proxy.height / 15)
                     
-                    // Search a firend
                     TextField("", text: $searchProfileText, prompt: Text("Search a friend...").foregroundColor(isDarkModeEnabled ? .white.opacity(0.5) : .black.opacity(0.5))
                         .font(.title3)
-                        
                     )
                     .disableAutocorrection(true)
                     .autocapitalization(.none)
@@ -620,15 +597,13 @@ struct UserListView: View {
                 }
                 .padding([.horizontal, .bottom])
                 
-                // All users
                 ScrollView {
                     LazyVStack(spacing: 8) {
-                        ForEach(filteredUsers) { user in
+                        ForEach(filteredUsers, id: \.self) { user in
                             Button(action: {
-                                if !selectedUsers.contains(where: { $0 == user }) {
+                                if !selectedUsers.contains(user) {
                                     selectedUsers.append(user)
                                 }
-
                                 isShowUserTagList.toggle()
                             }) {
                                 HStack {
@@ -638,7 +613,7 @@ struct UserListView: View {
                                         .frame(width: proxy.width / 7, height: proxy.width / 7)
                                         .clipShape(Circle())
                                     
-                                    Text(user.username)
+                                    Text(user)
                                     Spacer()
                                 }
                                 .padding(8)
@@ -655,22 +630,14 @@ struct UserListView: View {
                 }
             }
         }
-        .onAppear {
-            Task {
-                filteredUsers = try await APIService.fetchAllUsers()
-            }
-        }
         .foregroundColor(isDarkModeEnabled ? .white : .black)
         .background(isDarkModeEnabled ? Color.black : Color.white)
         .presentationDetents([.medium, .large])
         .presentationBackgroundInteraction(.enabled)
     }
-    
-    
 }
 
-// Screen-width HStack
-struct FlowLayout: Layout {
+struct EditFlowLayout: Layout {
     func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
         let sizes = subviews.map { $0.sizeThatFits(.unspecified) }
         

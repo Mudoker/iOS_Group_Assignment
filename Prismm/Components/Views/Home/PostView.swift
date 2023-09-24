@@ -167,7 +167,16 @@ struct PostView: View {
                     
                     // Edit post
                     Button(action: {
-                        selectedPost = post
+                        if UIDevice.current.userInterfaceIdiom == .pad {
+                            selectedPost = post
+                                                homeViewModel.isEditNewPostOnIpad.toggle()
+                                                
+                                            } else {
+                                                selectedPost = post
+                                                print(selectedPost)
+                                                homeViewModel.isEditNewPostOnIphone.toggle()
+                                                
+                                            }
                     }) {
                         HStack {
                             Image(systemName: "square.and.pencil")

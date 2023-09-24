@@ -12,6 +12,7 @@
 		2F68AD812AAF753E0059E1AF /* GoogleSignInSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 2F68AD802AAF753E0059E1AF /* GoogleSignInSwift */; };
 		2F6A329F2ABD95920043946A /* AppManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F6A329E2ABD95920043946A /* AppManager.swift */; };
 		2F6A32A12ABDFEE10043946A /* BlockView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F6A32A02ABDFEE10043946A /* BlockView.swift */; };
+		2FA272402AC03D3900BBDE37 /* EditPostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FA2723F2AC03D3900BBDE37 /* EditPostView.swift */; };
 		2FB5DC832ABE94E000ED47DF /* BlockViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FB5DC822ABE94E000ED47DF /* BlockViewModel.swift */; };
 		2FB5DC852ABE9F5600ED47DF /* BlockListRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FB5DC842ABE9F5500ED47DF /* BlockListRow.swift */; };
 		2FB5DC872ABEA72000ED47DF /* RestrictedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FB5DC862ABEA72000ED47DF /* RestrictedView.swift */; };
@@ -114,6 +115,7 @@
 		2F19D0592AB84B3E0090EF14 /* ImagePickerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImagePickerView.swift; sourceTree = "<group>"; };
 		2F6A329E2ABD95920043946A /* AppManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppManager.swift; sourceTree = "<group>"; };
 		2F6A32A02ABDFEE10043946A /* BlockView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = BlockView.swift; path = Prismm/Utilities/Service/BlockView.swift; sourceTree = SOURCE_ROOT; };
+		2FA2723F2AC03D3900BBDE37 /* EditPostView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditPostView.swift; sourceTree = "<group>"; };
 		2FB5DC822ABE94E000ED47DF /* BlockViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = BlockViewModel.swift; path = Prismm/Components/Views/SettingView/BlockViewModel.swift; sourceTree = SOURCE_ROOT; };
 		2FB5DC842ABE9F5500ED47DF /* BlockListRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockListRow.swift; sourceTree = SOURCE_ROOT; };
 		2FB5DC862ABEA72000ED47DF /* RestrictedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestrictedView.swift; sourceTree = "<group>"; };
@@ -468,6 +470,7 @@
 			isa = PBXGroup;
 			children = (
 				E12FA0352AAC2EE3007890A3 /* HomeView.swift */,
+				2FA2723F2AC03D3900BBDE37 /* EditPostView.swift */,
 				E12FA0372AAC2EEE007890A3 /* PostView.swift */,
 				E12FA0392AAC2EFB007890A3 /* StoryView.swift */,
 				E11F6E8F2AB2F6DC00989514 /* CreatePostView.swift */,
@@ -716,6 +719,7 @@
 				85E235D52ABBFD2500224E56 /* ChatLogModel.swift in Sources */,
 				E1BB6F152AAEBE0500051687 /* PersonalAboutUs.swift in Sources */,
 				E1C665362AB1714C0095B388 /* SettingView.swift in Sources */,
+				2FA272402AC03D3900BBDE37 /* EditPostView.swift in Sources */,
 				2FB5DC942AC0177000ED47DF /* GuestProfilePostGridView.swift in Sources */,
 				E1003B6E2ABAFC5B0049D04A /* Test+LocalPushNotification.swift in Sources */,
 				E1D2444D2ABBFF5600A0A57D /* LikedPostModel.swift in Sources */,
