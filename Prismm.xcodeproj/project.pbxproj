@@ -17,6 +17,10 @@
 		2FB5DC872ABEA72000ED47DF /* RestrictedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FB5DC862ABEA72000ED47DF /* RestrictedView.swift */; };
 		2FB5DC892ABEA73600ED47DF /* RestrictedListRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FB5DC882ABEA73600ED47DF /* RestrictedListRow.swift */; };
 		2FB5DC8B2ABEBA0500ED47DF /* RestrictViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FB5DC8A2ABEBA0500ED47DF /* RestrictViewModel.swift */; };
+		2FB5DC902AC0168F00ED47DF /* GuestProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FB5DC8F2AC0168F00ED47DF /* GuestProfileView.swift */; };
+		2FB5DC922AC0171800ED47DF /* GuestProfileToolBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FB5DC912AC0171800ED47DF /* GuestProfileToolBar.swift */; };
+		2FB5DC942AC0177000ED47DF /* GuestProfilePostGridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FB5DC932AC0177000ED47DF /* GuestProfilePostGridView.swift */; };
+		2FB5DC962AC0178E00ED47DF /* GuestProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FB5DC952AC0178E00ED47DF /* GuestProfileViewModel.swift */; };
 		2FF0ACC42AAAFA3C0033AEEB /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FF0ACC32AAAFA3C0033AEEB /* ProfileView.swift */; };
 		2FF0ACC62AAB05120033AEEB /* ProfileToolBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FF0ACC52AAB05120033AEEB /* ProfileToolBar.swift */; };
 		34B8A10E2ABC33440079A98C /* FirebaseConstant.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34B8A10D2ABC33440079A98C /* FirebaseConstant.swift */; };
@@ -109,6 +113,10 @@
 		2FB5DC862ABEA72000ED47DF /* RestrictedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestrictedView.swift; sourceTree = "<group>"; };
 		2FB5DC882ABEA73600ED47DF /* RestrictedListRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestrictedListRow.swift; sourceTree = "<group>"; };
 		2FB5DC8A2ABEBA0500ED47DF /* RestrictViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestrictViewModel.swift; sourceTree = "<group>"; };
+		2FB5DC8F2AC0168F00ED47DF /* GuestProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuestProfileView.swift; sourceTree = "<group>"; };
+		2FB5DC912AC0171800ED47DF /* GuestProfileToolBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuestProfileToolBar.swift; sourceTree = "<group>"; };
+		2FB5DC932AC0177000ED47DF /* GuestProfilePostGridView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuestProfilePostGridView.swift; sourceTree = "<group>"; };
+		2FB5DC952AC0178E00ED47DF /* GuestProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuestProfileViewModel.swift; sourceTree = "<group>"; };
 		2FF0ACC32AAAFA3C0033AEEB /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		2FF0ACC52AAB05120033AEEB /* ProfileToolBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileToolBar.swift; sourceTree = "<group>"; };
 		34B8A10D2ABC33440079A98C /* FirebaseConstant.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseConstant.swift; sourceTree = "<group>"; };
@@ -395,6 +403,7 @@
 				990334FD2AB2C55B00159F22 /* ProfileViewModel.swift */,
 				E1FBA90E2AB83914007B6B15 /* NotificationViewModels.swift */,
 				2FB5DC8A2ABEBA0500ED47DF /* RestrictViewModel.swift */,
+				2FB5DC952AC0178E00ED47DF /* GuestProfileViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -414,6 +423,9 @@
 				E17E8CF72AAC85E500EF5EFB /* PostGridView.swift */,
 				2FF0ACC52AAB05120033AEEB /* ProfileToolBar.swift */,
 				2FF0ACC32AAAFA3C0033AEEB /* ProfileView.swift */,
+				2FB5DC8F2AC0168F00ED47DF /* GuestProfileView.swift */,
+				2FB5DC912AC0171800ED47DF /* GuestProfileToolBar.swift */,
+				2FB5DC932AC0177000ED47DF /* GuestProfilePostGridView.swift */,
 			);
 			path = Profile;
 			sourceTree = "<group>";
@@ -637,6 +649,7 @@
 				99A0F41E2ABC323300D6CA8D /* UserRestrictList.swift in Sources */,
 				2F6A32A12ABDFEE10043946A /* BlockView.swift in Sources */,
 				E1BB6F1E2AAEBEE900051687 /* SplashScreen.swift in Sources */,
+				2FB5DC962AC0178E00ED47DF /* GuestProfileViewModel.swift in Sources */,
 				E1C6652C2AB170F40095B388 /* SettingViewModel.swift in Sources */,
 				E12FA0262AAC2915007890A3 /* Main.swift in Sources */,
 				34B8A10E2ABC33440079A98C /* FirebaseConstant.swift in Sources */,
@@ -650,6 +663,7 @@
 				E1003B6C2ABAF1040049D04A /* NotificationHandler.swift in Sources */,
 				E19D96832AAB2C0000E2CFAC /* Extension+String.swift in Sources */,
 				99A0F41C2ABC320000D6CA8D /* UserFollowList.swift in Sources */,
+				2FB5DC922AC0171800ED47DF /* GuestProfileToolBar.swift in Sources */,
 				E1FBA9112AB83BF6007B6B15 /* Test+Notification.swift in Sources */,
 				E1C665422AB1BBCF0095B388 /* APIs.swift in Sources */,
 				E1BB6F2C2AAEC1C700051687 /* FollowingRow.swift in Sources */,
@@ -666,6 +680,7 @@
 				85E235D52ABBFD2500224E56 /* ChatLogModel.swift in Sources */,
 				E1BB6F152AAEBE0500051687 /* PersonalAboutUs.swift in Sources */,
 				E1C665362AB1714C0095B388 /* SettingView.swift in Sources */,
+				2FB5DC942AC0177000ED47DF /* GuestProfilePostGridView.swift in Sources */,
 				E1003B6E2ABAFC5B0049D04A /* Test+LocalPushNotification.swift in Sources */,
 				E1D2444D2ABBFF5600A0A57D /* LikedPostModel.swift in Sources */,
 				E1FBA90F2AB83914007B6B15 /* NotificationViewModels.swift in Sources */,
@@ -703,6 +718,7 @@
 				E1BB6F2E2AAEC1C700051687 /* FollowingList.swift in Sources */,
 				85E235DC2ABBFD2500224E56 /* CreateNewMessageView.swift in Sources */,
 				990334FA2AB2375300159F22 /* Test+Follow.swift in Sources */,
+				2FB5DC902AC0168F00ED47DF /* GuestProfileView.swift in Sources */,
 				2FB5DC852ABE9F5600ED47DF /* BlockListRow.swift in Sources */,
 				E12FA0292AAC2963007890A3 /* UserModel.swift in Sources */,
 				E17E8CDB2AAC496F00EF5EFB /* CustomAlertView.swift in Sources */,

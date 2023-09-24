@@ -38,155 +38,157 @@ struct PostView: View {
     var body: some View {
         VStack {
             //Post info.
-            HStack {
-                // User profile image
-                if let mediaURL = URL(string: post.mediaURL ?? "") {
-                    if let mimeType = post.mediaMimeType {
-                        if mimeType.hasPrefix("image") {
-                            KFImage(mediaURL)
-                                .resizable()
-                                .frame(width: homeViewModel.profileImageSize, height: homeViewModel.profileImageSize)
-                                .clipShape(Circle())
-                                .background(Circle().foregroundColor(Color.gray))
-                        } else {
-                            // Handle image
-                            Image(systemName: "person.circle.fill")
-                                .font(.system(size: 48))
-                        }
+            HStack
+            {
+            NavigationLink {
+                GuestProfileView(user: post.unwrappedOwner!)
+                   
+            } label: {
+                HStack {
+                    // User profile image
+                    if let mediaURL = URL(string: post.unwrappedOwner?.profileImageURL ?? "") {
+                        
+                        KFImage(mediaURL)
+                            .resizable()
+                            .frame(width: homeViewModel.profileImageSize, height: homeViewModel.profileImageSize)
+                            .clipShape(Circle())
+                            .background(Circle().foregroundColor(Color.gray))
+                        
                     } else {
-                        // Handle the case where the mimeType is nil
-                        Text("Invalid MIME type")
-                    }
-                } else {
-                    // Handle the case where the media URL is invalid or empty.
-                    Image(systemName: "person.circle.fill")
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                        .frame(width: 55, height: 55)
-                    
-                }
-                
-                // Username
-                VStack (alignment: .leading, spacing: UIScreen.main.bounds.height * 0.01) {
-                    if let user = post.unwrappedOwner {
-                        Text(user.username.extractNameFromEmail() ?? user.username)
-                            .font(Font.system(size: homeViewModel.usernameFont, weight: .semibold))
-                    }
-                    
-                    Text(formatTimeDifference(from: post.creationDate))
-                        .font(Font.system(size: homeViewModel.timeFont, weight: .medium))
-                        .opacity(0.3)
-                }
-                
-                // Push view
-                Spacer()
-                
-                // Menu
-                Menu {
-                    if (currentUser.id != post.ownerID) {
-                        Button(action: {
-                            selectedPost = post
-                            homeViewModel.isBlockUserAlert = true
-                            print("alerted")
-                        }) {
-                            HStack {
-                                Image(systemName: "person.crop.circle.badge.xmark")
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(width: homeViewModel.seeMoreButtonSize)
-                                    .padding(.trailing)
-                                
-                                Text("Block this user")
-                            }
-                        }
-                        .alert("Block this user?", isPresented: $homeViewModel.isBlockUserAlert) {
-                            Button("Cancel", role: .cancel) {}
-                            Button("Block", role: .destructive) {}
-                        } message: {
-                            Text("\nYou will not see this user again")
-                        }
-
+                        // Handle the case where the media URL is invalid or empty.
+                        Image(systemName: "person.circle.fill")
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                            .frame(width: 55, height: 55)
                         
-                        Button(action: {
-                            selectedPost = post
-                            homeViewModel.isRestrictUserAlert = true
-                            print("alerted")}
-                            ) {
-                            HStack {
-                                Image(systemName: "rectangle.portrait.slash")
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(width: homeViewModel.seeMoreButtonSize)
-                                    .padding(.trailing)
-                                Text("Restrict this user")
-                            }
-                        }
-                        .alert("Restrict this user?", isPresented: $homeViewModel.isSignOutAlertPresented) {
-                            Button("Cancel", role: .cancel) {}
-                            Button("Restrict", role: .destructive) {}
-                        } message: {
-                            Text("\nStop receiving notification from this user")
-                        }
                     }
                     
-
-                    if (currentUser.id == post.ownerID) {
-                        // Delete post
-                        Button(action: {
-                            selectedPost = post
-                            homeViewModel.isDeletePostAlert = true
-                        }) {
-                            HStack {
-                                Image(systemName: "delete.left")
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(width: homeViewModel.seeMoreButtonSize)
-                                    .padding(.trailing)
-                                
-                                Text("Delete Post")
-                            }
+                    // Username
+                    VStack (alignment: .leading, spacing: UIScreen.main.bounds.height * 0.01) {
+                        if let user = post.unwrappedOwner {
+                            Text(user.username.extractNameFromEmail() ?? user.username)
+                                .font(Font.system(size: homeViewModel.usernameFont, weight: .semibold))
                         }
                         
-                        // Turn off comment
-                        Button(action: {
-                            selectedPost = post
-                            homeViewModel.isTurnOffCommentAlert = true
-                        }) {
-                            HStack {
-                                Image(systemName: "text.badge.xmark")
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(width: homeViewModel.seeMoreButtonSize)
-                                    .padding(.trailing)
-                                Text(isAllowComment ? "Turn off comment" : "Turn on comment")
-                            }
-                        }
-
-                        // Edit post
-                        Button(action: {
-                            selectedPost = post
-                        }) {
-                            HStack {
-                                Image(systemName: "square.and.pencil")
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(width: homeViewModel.seeMoreButtonSize)
-                                    .padding(.trailing)
-                                
-                                Text("Edit post")
-                            }
-                        }
+                        Text(formatTimeDifference(from: post.creationDate))
+                            .font(Font.system(size: homeViewModel.timeFont, weight: .medium))
+                            .opacity(0.3)
                     }
-                } label: {
-                    Image(systemName: "ellipsis.circle")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: homeViewModel.seeMoreButtonSize)
-                        .foregroundColor(.black)
+                    
+                    // Push view
+                    Spacer()
+                    
+                    // Menu
+                    
                 }
+                
             }
-            .padding(.horizontal)
+            .foregroundColor(userSetting.darkModeEnabled ? .white : .black)
             
+            Menu {
+                if (currentUser.id != post.ownerID) {
+                    Button(action: {
+                        selectedPost = post
+                        homeViewModel.isBlockUserAlert = true
+                        print("alerted")
+                    }) {
+                        HStack {
+                            Image(systemName: "person.crop.circle.badge.xmark")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: homeViewModel.seeMoreButtonSize)
+                                .padding(.trailing)
+                            
+                            Text("Block this user")
+                        }
+                    }
+                    .alert("Block this user?", isPresented: $homeViewModel.isBlockUserAlert) {
+                        Button("Cancel", role: .cancel) {}
+                        Button("Block", role: .destructive) {}
+                    } message: {
+                        Text("\nYou will not see this user again")
+                    }
+                    
+                    
+                    Button(action: {
+                        selectedPost = post
+                        homeViewModel.isRestrictUserAlert = true
+                        print("alerted")}
+                    ) {
+                        HStack {
+                            Image(systemName: "rectangle.portrait.slash")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: homeViewModel.seeMoreButtonSize)
+                                .padding(.trailing)
+                            Text("Restrict this user")
+                        }
+                    }
+                    .alert("Restrict this user?", isPresented: $homeViewModel.isSignOutAlertPresented) {
+                        Button("Cancel", role: .cancel) {}
+                        Button("Restrict", role: .destructive) {}
+                    } message: {
+                        Text("\nStop receiving notification from this user")
+                    }
+                }
+                
+                
+                if (currentUser.id == post.ownerID) {
+                    // Delete post
+                    Button(action: {
+                        selectedPost = post
+                        homeViewModel.isDeletePostAlert = true
+                    }) {
+                        HStack {
+                            Image(systemName: "delete.left")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: homeViewModel.seeMoreButtonSize)
+                                .padding(.trailing)
+                            
+                            Text("Delete Post")
+                        }
+                    }
+                    
+                    // Turn off comment
+                    Button(action: {
+                        selectedPost = post
+                        homeViewModel.isTurnOffCommentAlert = true
+                    }) {
+                        HStack {
+                            Image(systemName: "text.badge.xmark")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: homeViewModel.seeMoreButtonSize)
+                                .padding(.trailing)
+                            Text(isAllowComment ? "Turn off comment" : "Turn on comment")
+                        }
+                    }
+                    
+                    // Edit post
+                    Button(action: {
+                        selectedPost = post
+                    }) {
+                        HStack {
+                            Image(systemName: "square.and.pencil")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: homeViewModel.seeMoreButtonSize)
+                                .padding(.trailing)
+                            
+                            Text("Edit post")
+                        }
+                    }
+                }
+            } label: {
+                Image(systemName: "ellipsis.circle")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: homeViewModel.seeMoreButtonSize)
+                    .foregroundColor(.black)
+            }
+        }
+            .padding(.horizontal)
             
             //Caption
             HStack {

@@ -25,31 +25,35 @@ import FirebaseFirestoreSwift
 // Communicating with firebase
 struct APIService {
     
-    
+    @MainActor
     static func fetchUser(withUserID userID: String) async throws -> User {
         let snapshot = try await Firestore.firestore().collection("users").document(userID).getDocument()
         return try snapshot.data(as: User.self)
     }
     
     // Fetch comment with id
+    @MainActor
     static func fetchComment(withCommentID commentID: String) async throws -> Comment {
         let snapshot = try await Firestore.firestore().collection("test_comments").document(commentID).getDocument()
         return try snapshot.data(as: Comment.self)
     }
     
     // Fetch all posts of user
+    @MainActor
     static func fetchPostsOwned(byUserID userID: String) async throws -> [Post] {
         let snapshot = try await Firestore.firestore().collection("test_posts").whereField("ownerID", isEqualTo: userID).getDocuments()
         return try snapshot.documents.compactMap({ try $0.data(as: Post.self) })
     }
     
     // Fetch a post
+    @MainActor
     static func fetchPost(withPostID postID: String) async throws -> Post {
         let snapshot = try await Firestore.firestore().collection("test_posts").document(postID).getDocument()
         return try snapshot.data(as: Post.self)
     }
 
     // Fetch current user data from Firebase
+    @MainActor
     static func fetchCurrentUserData() async throws -> User? {
         // Get the current authenticated user
         guard let currentUser = Auth.auth().currentUser else { return nil }
@@ -71,13 +75,15 @@ struct APIService {
                 print("ERROR: Fail to add user data")
             }
         } else {
-            return try? userSnapshot.data(as: User.self)
+            return try userSnapshot.data(as: User.self)
         }
         
         return nil
     }
     
+    
     // Fetch settings of current user
+    @MainActor
     static func fetchCurrentSettingData() async throws -> UserSetting? {
         // Get the current user id
         guard let currentUserId = Auth.auth().currentUser?.uid else { return nil }
@@ -107,6 +113,7 @@ struct APIService {
     }
     
     // Block (not receiving notification + post/story + message + other cannot see your post)
+    @MainActor
     static func blockOtherUser(forUserID userIDToBlock: String) async throws {
         do {
             let userBlockListCollection = Firestore.firestore().collection("test_block")
@@ -325,6 +332,33 @@ struct APIService {
                 let encodedList = try Firestore.Encoder().encode(newUserFollowList)
                 
                 try await Firestore.firestore().collection("test_follow").document(currentUser.uid).setData(encodedList)
+                print("got new user block list")
+                return newUserFollowList
+            } catch {
+                print("ERROR: Fail to add block list data")
+            }
+        } else {
+            print("got database setting")
+            return try? snapshot.data(as: UserFollowList.self)
+        }
+        return nil
+        
+    }
+    
+    @MainActor
+    static func fetchUserFollowList(forUserID userID: String) async throws-> UserFollowList? {
+
+        let snapshot = try await Firestore.firestore().collection("test_follow").document(userID).getDocument()
+
+
+        print("got snapshot")
+        if !snapshot.exists{
+            do {
+                let newUserFollowList = UserFollowList(followIds: [], beFollowedBy: [])
+                
+                let encodedList = try Firestore.Encoder().encode(newUserFollowList)
+                
+                try await Firestore.firestore().collection("test_follow").document(userID).setData(encodedList)
                 print("got new user block list")
                 return newUserFollowList
             } catch {
