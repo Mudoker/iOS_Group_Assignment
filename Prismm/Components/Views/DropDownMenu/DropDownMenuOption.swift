@@ -18,7 +18,6 @@ struct DropdownMenuOption: Identifiable, Hashable {
 extension DropdownMenuOption {
     static let testSingleMonth: DropdownMenuOption = DropdownMenuOption(option: "March")
     static let testAllMonths: [DropdownMenuOption] = [
-        DropdownMenuOption(option: "For you"),
         DropdownMenuOption(option: "Posts"),
         DropdownMenuOption(option: "People"),
     ]

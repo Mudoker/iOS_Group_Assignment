@@ -219,6 +219,7 @@ struct APIService {
     // Follow users
     static func followOtherUser(forUserID userIDToFollow: String) async throws {
         do {
+            print("trigger")
             let userFollowListCollection = Firestore.firestore().collection("test_follow")
             let currentUserID =  Auth.auth().currentUser?.uid ?? "ZMSfvuGAW9OOSfM4mLVG10kAJJk2"
             

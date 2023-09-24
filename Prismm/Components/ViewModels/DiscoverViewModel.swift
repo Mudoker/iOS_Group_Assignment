@@ -21,7 +21,7 @@ class DiscoverViewModel : ObservableObject{
     @Published var searchTerm : String = ""
     @Published var searchState : Bool = true
     
-    @Published var birthMonth: DropdownMenuOption? =  DropdownMenuOption(option: "For you")
+    @Published var birthMonth: DropdownMenuOption? =  DropdownMenuOption(option: "Posts")
     
     @Published var allUser : [User] = []
     @Published var postList : [Post] = []

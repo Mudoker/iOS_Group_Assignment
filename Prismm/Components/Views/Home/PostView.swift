@@ -41,7 +41,12 @@ struct PostView: View {
             HStack
             {
             NavigationLink {
-                GuestProfileView(user: post.unwrappedOwner!)
+                if(post.unwrappedOwner!.id == currentUser.id){
+                    ProfileView()
+                }else{
+                    GuestProfileView(user: post.unwrappedOwner!)
+                }
+                
                    
             } label: {
                 HStack {

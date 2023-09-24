@@ -40,7 +40,7 @@ struct DiscoverView: View {
         GeometryReader { reader in
             VStack{
                 VStack(alignment: .leading){
-                    Text("\(discoverVm.birthMonth?.option == "Posts" ? "What do people think?" : (discoverVm.birthMonth?.option == "People" ? "People around you" : "Let's explore"))")
+                    Text("\(discoverVm.birthMonth?.option == "Posts" && !discoverVm.searchTerm.isEmpty ? "What do people think?" : (discoverVm.birthMonth?.option == "People" && !discoverVm.searchTerm.isEmpty ? "People around you" : "Let's explore"))")
                         .padding(.leading,20)
                         .font(.title)
                         .fontWeight(.semibold)
@@ -87,7 +87,7 @@ struct DiscoverView: View {
                                     }
                                     .frame(height: 25)
                                 }
-                                if (discoverVm.birthMonth?.option == "Posts") {
+                                if (!discoverVm.searchTerm.isEmpty) {
                                     ScrollView(.horizontal){
                                         LazyHStack{
                                             ForEach(filteredTags, id: \.self){ tag in
@@ -117,128 +117,125 @@ struct DiscoverView: View {
                                     }
                                     .padding(.leading,20)
                                 }
-                                
-                                if (discoverVm.birthMonth?.option == "Posts") {
-                                    ForEach(discoverVm.postList.filter { post in
-                                        (post.tag.contains(discoverVm.activeTab) && discoverVm.searchTerm.isEmpty
-                                         || discoverVm.activeTab == "All" && discoverVm.searchTerm.isEmpty
-                                         || (post.unwrappedOwner!.username.localizedCaseInsensitiveContains(discoverVm.searchTerm) && (post.tag.contains(discoverVm.activeTab) || discoverVm.activeTab == "All"))
-                                         || (post.caption!.localizedCaseInsensitiveContains(discoverVm.searchTerm) && (post.tag.contains(discoverVm.activeTab) || discoverVm.activeTab == "All")))
-                                    },id: \.id) { post in
-                                        //                                    Text(post.caption!)
-                                        //                                    Text(searchTerm)
-                                        PostView(post: post, currentUser: $currentUser, userSetting: $userSetting, homeViewModel: homeVM, notiVM: notiVM, selectedPost: $selectedPost, isAllowComment: $discoverVm.isSelectedPostAllowComment)
-                                            .padding(.bottom, 50)
-                                    }
-                                }
-                                else if (discoverVm.birthMonth?.option == "People") {
-                                    ForEach(discoverVm.allUser.filter{ user in
-                                        (user.username.localizedCaseInsensitiveContains(discoverVm.searchTerm) || discoverVm.searchTerm.isEmpty)
-                                    }, id: \.id){ user in
-                                        HStack{
-                                            //  User information
-                                            Image("testAvt")
-                                                .resizable()
-                                                .scaledToFit()
-                                                .frame(width: UIScreen.main.bounds.width/(UIDevice.current.userInterfaceIdiom == .phone ? 6 : 10))
-                                                .clipShape(Circle())
-                                            
-                                            VStack(alignment: .leading){
-                                                Text(user.username)
-                                                    .font(.system(size: UIDevice.current.userInterfaceIdiom == .phone ? 20 : 24))
-                                                    .fontWeight(.medium)
-                                                
-                                                Text(user.bio ?? "")
-                                                    .font(.system(size: UIDevice.current.userInterfaceIdiom == .phone ? 16 : 20))
-                                                    .opacity(0.4)
-                                            }
-                                            .foregroundColor(.black)
-                                            Spacer()
-                                            
-                                        }
-                                        .padding(10)
-                                        .padding(.horizontal,10)
-                                        .frame(minWidth: 0,maxWidth: .infinity)
-                                    }
-                                }
-                                else if (discoverVm.birthMonth?.option == "For you"){
-                                    if (discoverVm.searchTerm.isEmpty){
-                                        HStack{
-                                            Text("Posts")
-                                                .font(.title)
-                                                .fontWeight(.bold)
-                                            Spacer()
-                                            Text("see all")
-                                                .foregroundColor(.blue)
-                                                .onTapGesture{
-                                                    withAnimation(.easeInOut(duration: 0.3)){
-                                                        discoverVm.birthMonth?.option = "Posts"
-                                                    }
-                                                }
-                                        }
-                                        .padding(.horizontal,15)
-                                        ForEach(discoverVm.defaultPost) { post in
-                                            PostView(post: post, currentUser: $currentUser, userSetting: $userSetting, homeViewModel: homeVM, notiVM: notiVM, selectedPost: $selectedPost, isAllowComment: $discoverVm.isSelectedPostAllowComment)
-                                        }
-                                        
-                                        HStack{
-                                            Text("People")
-                                                .font(.title)
-                                                .fontWeight(.bold)
-                                            Spacer()
-                                            Text("see all")
-                                                .foregroundColor(.blue)
-                                                .onTapGesture{
-                                                    withAnimation(.easeInOut(duration: 0.3)){
-                                                        discoverVm.birthMonth?.option = "People"
-                                                    }
-                                                }
-                                        }
-                                        .padding(.horizontal,15)
-                                        ScrollView(.horizontal){
-                                            LazyHStack{
-                                                ForEach(discoverVm.defaultPeople) { person in
-                                                    RoundedRectangle(cornerRadius: 20)
-                                                        .frame(width: 260, height: 300)
-                                                        .foregroundColor(Color(.gray).opacity(0.2))
-                                                        .overlay{
-                                                            VStack{
-                                                                //  User information
-                                                                Image("testAvt")
-                                                                    .resizable()
-                                                                    .scaledToFit()
-                                                                    .frame(width: UIScreen.main.bounds.width/(UIDevice.current.userInterfaceIdiom == .phone ? 2 : 10))
-                                                                    .clipShape(Circle())
-                                                                
-                                                                VStack(alignment: .leading){
-                                                                    Text(person.username)
-                                                                        .font(.system(size: UIDevice.current.userInterfaceIdiom == .phone ? 20 : 24))
-                                                                        .fontWeight(.medium)
-                                                                    
-                                                                    Text(person.bio ?? "")
-                                                                        .font(.system(size: UIDevice.current.userInterfaceIdiom == .phone ? 16 : 20))
-                                                                        .opacity(0.4)
-                                                                }
-                                                                .frame(width: 140)
-                                                                .foregroundColor(.black)
-                                                                Spacer()
-                                                                
-                                                            }
-                                                            .padding(10)
-                                                            .padding(.horizontal,10)
-                                                            .frame(minWidth: 0,maxWidth: .infinity)
+                                if discoverVm.searchTerm.isEmpty {
+                                    
+                                            HStack{
+                                                Text("Posts")
+                                                    .font(.title)
+                                                    .fontWeight(.bold)
+                                                Spacer()
+                                                Text("see all")
+                                                    .foregroundColor(.blue)
+                                                    .onTapGesture{
+                                                        withAnimation(.easeInOut(duration: 0.3)){
+                                                            discoverVm.birthMonth?.option = "Posts"
                                                         }
+                                                    }
+                                            }
+                                            .padding(.horizontal,15)
+                                            ForEach(discoverVm.defaultPost) { post in
+                                                PostView(post: post, currentUser: $currentUser, userSetting: $userSetting, homeViewModel: homeVM, notiVM: notiVM, selectedPost: $selectedPost, isAllowComment: $discoverVm.isSelectedPostAllowComment)
+                                            }
+                                            
+                                            HStack{
+                                                Text("People")
+                                                    .font(.title)
+                                                    .fontWeight(.bold)
+                                                Spacer()
+                                                Text("see all")
+                                                    .foregroundColor(.blue)
+                                                    .onTapGesture{
+                                                        withAnimation(.easeInOut(duration: 0.3)){
+                                                            discoverVm.birthMonth?.option = "People"
+                                                        }
+                                                    }
+                                            }
+                                            .padding(.horizontal,15)
+                                            ScrollView(.horizontal){
+                                                LazyHStack{
+                                                    ForEach(discoverVm.defaultPeople) { person in
+                                                        RoundedRectangle(cornerRadius: 20)
+                                                            .frame(width: 260, height: 300)
+                                                            .foregroundColor(Color(.gray).opacity(0.2))
+                                                            .overlay{
+                                                                VStack{
+                                                                    //  User information
+                                                                    Image("testAvt")
+                                                                        .resizable()
+                                                                        .scaledToFit()
+                                                                        .frame(width: UIScreen.main.bounds.width/(UIDevice.current.userInterfaceIdiom == .phone ? 2 : 10))
+                                                                        .clipShape(Circle())
+                                                                    
+                                                                    VStack(alignment: .leading){
+                                                                        Text(person.username)
+                                                                            .font(.system(size: UIDevice.current.userInterfaceIdiom == .phone ? 20 : 24))
+                                                                            .fontWeight(.medium)
+                                                                        
+                                                                        Text(person.bio ?? "")
+                                                                            .font(.system(size: UIDevice.current.userInterfaceIdiom == .phone ? 16 : 20))
+                                                                            .opacity(0.4)
+                                                                    }
+                                                                    .frame(width: 140)
+                                                                    .foregroundColor(.black)
+                                                                    Spacer()
+                                                                    
+                                                                }
+                                                                .padding(10)
+                                                                .padding(.horizontal,10)
+                                                                .frame(minWidth: 0,maxWidth: .infinity)
+                                                            }
+                                                    }
                                                 }
                                             }
+                                            .padding(.horizontal,15)
+                                        
+                                }else{
+                                    if (discoverVm.birthMonth?.option == "Posts") {
+                                        ForEach(discoverVm.postList.filter { post in
+                                            (post.tag.contains(discoverVm.activeTab) && discoverVm.searchTerm.isEmpty
+                                             || discoverVm.activeTab == "All" && discoverVm.searchTerm.isEmpty
+                                             || (post.unwrappedOwner!.username.localizedCaseInsensitiveContains(discoverVm.searchTerm) && (post.tag.contains(discoverVm.activeTab) || discoverVm.activeTab == "All"))
+                                             || (post.caption!.localizedCaseInsensitiveContains(discoverVm.searchTerm) && (post.tag.contains(discoverVm.activeTab) || discoverVm.activeTab == "All")))
+                                        },id: \.id) { post in
+                                            //                                    Text(post.caption!)
+                                            //                                    Text(searchTerm)
+                                            PostView(post: post, currentUser: $currentUser, userSetting: $userSetting, homeViewModel: homeVM, notiVM: notiVM, selectedPost: $selectedPost, isAllowComment: $discoverVm.isSelectedPostAllowComment)
+                                                .padding(.bottom, 50)
                                         }
-                                        .padding(.horizontal,15)
                                     }
-                                    else{
-//                                        zip(discoverVm.allUser, discoverVm.$postList).forEach{ user, post in
-//                                            
-//                                        }
+                                    else if (discoverVm.birthMonth?.option == "People") {
+                                        ForEach(discoverVm.allUser.filter{ user in
+                                            (user.username.localizedCaseInsensitiveContains(discoverVm.searchTerm) || discoverVm.searchTerm.isEmpty)
+                                        }, id: \.id){ user in
+                                            HStack{
+                                                //  User information
+                                                Image("testAvt")
+                                                    .resizable()
+                                                    .scaledToFit()
+                                                    .frame(width: UIScreen.main.bounds.width/(UIDevice.current.userInterfaceIdiom == .phone ? 6 : 10))
+                                                    .clipShape(Circle())
+                                                
+                                                VStack(alignment: .leading){
+                                                    Text(user.username)
+                                                        .font(.system(size: UIDevice.current.userInterfaceIdiom == .phone ? 20 : 24))
+                                                        .fontWeight(.medium)
+                                                    
+                                                    Text(user.bio ?? "")
+                                                        .font(.system(size: UIDevice.current.userInterfaceIdiom == .phone ? 16 : 20))
+                                                        .opacity(0.4)
+                                                }
+                                                .foregroundColor(.black)
+                                                Spacer()
+                                                
+                                            }
+                                            .padding(10)
+                                            .padding(.horizontal,10)
+                                            .frame(minWidth: 0,maxWidth: .infinity)
+                                        }
                                     }
                                 }
+                                
+                                
                             }
                         }
                     }

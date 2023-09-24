@@ -24,6 +24,8 @@ struct GuestProfileView: View {
 
     var user: User
     
+    @State var hasFollowerWithID : Bool = false
+    
     @StateObject var profileVM = GuestProfileViewModel()
     @StateObject var fvm = FollowViewModel()
     
@@ -90,24 +92,48 @@ struct GuestProfileView: View {
                             
                             //Follow button
                             HStack{
-                                Button {
-                                    Task{
-                                        try await APIService.unfollowOtherUser(forUserID: user.id)
-                                    }
-                                    
-                                } label: {
-                                    
-                                    
-                                    Text(LocalizedStringKey("Follow"))
-                                        .fontWeight(.bold)
-                                        .foregroundColor(.black)
-                                        .frame(width: profileVM.editButtonWidth, height: profileVM.editButtonHeight)
-                                        .background{
-                                            Color.gray
-                                                .opacity(0.3)
+                                if (hasFollowerWithID){
+                                    Button {
+                                        Task{
+                                            try await APIService.unfollowOtherUser(forUserID: user.id)
+                                            hasFollowerWithID = false
                                         }
-                                        .clipShape(RoundedRectangle(cornerRadius: profileVM.buttonRadiusSize))
+                                        
+                                    } label: {
+                                        
+                                        
+                                        Text(LocalizedStringKey("Unfollow"))
+                                            .fontWeight(.bold)
+                                            .foregroundColor(.black)
+                                            .frame(width: profileVM.editButtonWidth, height: profileVM.editButtonHeight)
+                                            .background{
+                                                Color.gray
+                                                    .opacity(0.3)
+                                            }
+                                            .clipShape(RoundedRectangle(cornerRadius: profileVM.buttonRadiusSize))
+                                    }
+                                }else{
+                                    Button {
+                                        Task{
+                                            try await APIService.followOtherUser(forUserID: user.id)
+                                            hasFollowerWithID = true
+                                        }
+                                        
+                                    } label: {
+                                        
+                                        
+                                        Text(LocalizedStringKey("Follow"))
+                                            .fontWeight(.bold)
+                                            .foregroundColor(.black)
+                                            .frame(width: profileVM.editButtonWidth, height: profileVM.editButtonHeight)
+                                            .background{
+                                                Color.gray
+                                                    .opacity(0.3)
+                                            }
+                                            .clipShape(RoundedRectangle(cornerRadius: profileVM.buttonRadiusSize))
+                                    }
                                 }
+                                
                                     
                                 Button {
                                     
@@ -201,6 +227,14 @@ struct GuestProfileView: View {
                 
                 try await profileVM.fetchUserPosts(UserID: user.id )
                 profileVM.fetchUserFavouritePost(forUserId: user.id)
+                
+                for user in fvm.followerList{
+                    if user.id == currentUser.id{
+                        hasFollowerWithID = true
+                        break
+                    }
+                }
+                
             }
         }
         .foregroundColor(userSetting.darkModeEnabled ? .white : .black)
