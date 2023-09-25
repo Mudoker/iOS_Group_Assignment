@@ -19,8 +19,10 @@ import SwiftUI
 struct SettingSheet: View {
     //Control state
     @Binding var isSheetPresented: Bool
-    @Binding var currentUser:User
-    @Binding var userSetting:UserSetting
+//    @Binding var currentUser:User
+//    @Binding var userSetting:UserSetting
+    @EnvironmentObject var tabVM:TabBarViewModel
+    
     @ObservedObject var settingVM:SettingViewModel
     var body: some View {
         VStack (alignment: .center) {
@@ -33,7 +35,7 @@ struct SettingSheet: View {
             // Content
             VStack {
                 // Profile setting
-                NavigationLink(destination: EditProfileView(currentUser: $currentUser, userSetting: $userSetting, settingVM: settingVM)) {
+                NavigationLink(destination: EditProfileView( settingVM: settingVM)) {
                     HStack {
                         Image(systemName: "person.badge.plus")
                             .resizable()
@@ -48,14 +50,14 @@ struct SettingSheet: View {
                     }
                     .padding()
                     .background(RoundedRectangle(cornerRadius: 10)
-                        .fill(!userSetting.darkModeEnabled ? .gray.opacity(0.1) : .gray.opacity(0.4))
+                        .fill(!tabVM.userSetting.darkModeEnabled ? .gray.opacity(0.1) : .gray.opacity(0.4))
                     )
                 }
                 .padding(.top)
                 .padding(.horizontal)
                 
                 // Security setting
-                NavigationLink(destination: EditSecurityField(currentUser: $currentUser, userSetting: $userSetting, settingVM: settingVM)) {
+                NavigationLink(destination: EditSecurityField(settingVM: settingVM)) {
                     HStack {
                         Image(systemName: "lock.circle")
                             .resizable()
@@ -70,7 +72,7 @@ struct SettingSheet: View {
                     }
                     .padding()
                     .background(RoundedRectangle(cornerRadius: 10)
-                        .fill(!userSetting.darkModeEnabled ? .gray.opacity(0.1) : .gray.opacity(0.4))
+                        .fill(!tabVM.userSetting.darkModeEnabled ? .gray.opacity(0.1) : .gray.opacity(0.4))
                     )
                 }
                 .padding()
@@ -79,8 +81,8 @@ struct SettingSheet: View {
             Spacer()
         }
         .frame(maxWidth: .infinity)
-        .foregroundColor(userSetting.darkModeEnabled ? .white : .black)
-        .background(userSetting.darkModeEnabled ? .black : .white)
+        .foregroundColor(tabVM.userSetting.darkModeEnabled ? .white : .black)
+        .background(tabVM.userSetting.darkModeEnabled ? .black : .white)
         .navigationBarItems(trailing: Button("Close") {
             isSheetPresented.toggle()
         })

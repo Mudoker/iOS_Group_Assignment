@@ -15,34 +15,31 @@
  */
 
 import SwiftUI
-import Firebase
 import Kingfisher
 
-struct ProfileView: View {
+struct GuestProfileView: View {
     // Control state
-//    @Binding var currentUser: User
-//    @Binding var userSetting: UserSetting 
-    //@State var isSample = true
-    @StateObject var profileVM = ProfileViewModel()
+//    @State var currentUser = User(id: "default", account: "default@gmail.com")
+//    @State var userSetting = UserSetting(id: "default", darkModeEnabled: false, language: "en", faceIdEnabled: true, pushNotificationsEnabled: true, messageNotificationsEnabled: false)
+
+    var user: User
+    
+    @State var hasFollowerWithID : Bool = false
+    
+    @StateObject var profileVM = GuestProfileViewModel()
     @StateObject var fvm = FollowViewModel()
     
-    @EnvironmentObject var tabVM: TabBarViewModel
+    @EnvironmentObject var tabVM:TabBarViewModel
     
     var body: some View {
         VStack(alignment: .leading){
-
-          
-            VStack{
-               ProfileToolBar(profileVM: profileVM)
-            }
-            .padding(.horizontal,15)
-
+            GuestProfileToolBar(user: user, profileVM: profileVM)
             
             ScrollView{
                 //MARK: PROFILE INFO BLOCK
                 VStack(alignment: .leading){
                     HStack(alignment: .center){
-                        if let mediaURL = URL(string: tabVM.currentUser.profileImageURL ?? "") {
+                        if let mediaURL = URL(string: user.profileImageURL ?? "") {
                             
                             KFImage(mediaURL)
                                 .resizable()
@@ -69,48 +66,77 @@ struct ProfileView: View {
                                     
                                 }
                                 
-                                
-                                NavigationLink {
-                                    FollowView(fvm: fvm)
-                                } label: {
+                                //MARK: not set
+//                                NavigationLink {
+//                                    FollowView(fvm: fvm, currentUser: $currentUser, userSetting: $userSetting)
+//                                } label: {
                                     VStack{
                                         Text("\(fvm.followerList.count)")
                                             .fontWeight(.bold)
                                         Text(LocalizedStringKey("Followers"))
                                     }
-                                    .frame(height: 40)
-                                }
+//                                }
+//
                                 
-                                
-                                NavigationLink {
-                                    FollowView(fvm: fvm)
-                                } label: {
+//                                NavigationLink {
+//                                    FollowView(fvm: fvm,currentUser: $currentUser, userSetting: $userSetting)
+//                                } label: {
                                     VStack{
                                         Text("\(fvm.followingList.count)")
                                             .fontWeight(.bold)
                                         Text(LocalizedStringKey("Following"))
                                     }
-                                    .frame(height: 40)
-                                }
-                                
+//                                }
+//                                
                                 
                             }
                             
-                            //edit button and share button
+                            
+                            //Follow button
                             HStack{
-                                NavigationLink(destination: {
-                                    EditProfileView()
-                                }, label: {
-                                    Text(LocalizedStringKey("Edit Profile"))
-                                            .fontWeight(.semibold)
+                                if (hasFollowerWithID){
+                                    Button {
+                                        Task{
+                                            try await APIService.unfollowOtherUser(forUserID: user.id)
+                                            hasFollowerWithID = false
+                                        }
+                                        
+                                    } label: {
+                                        
+                                        
+                                        Text(LocalizedStringKey("Unfollow"))
+                                            .fontWeight(.bold)
                                             .foregroundColor(.black)
                                             .frame(width: profileVM.editButtonWidth, height: profileVM.editButtonHeight)
                                             .background{
                                                 Color.gray
                                                     .opacity(0.3)
                                             }
-                                        .clipShape(RoundedRectangle(cornerRadius: profileVM.buttonRadiusSize))
-                                })
+                                            .clipShape(RoundedRectangle(cornerRadius: profileVM.buttonRadiusSize))
+                                    }
+                                }else{
+                                    Button {
+                                        Task{
+                                            try await APIService.followOtherUser(forUserID: user.id)
+                                            hasFollowerWithID = true
+                                        }
+                                        
+                                    } label: {
+                                        
+                                        
+                                        Text(LocalizedStringKey("Follow"))
+                                            .fontWeight(.bold)
+                                            .foregroundColor(.black)
+                                            .frame(width: profileVM.editButtonWidth, height: profileVM.editButtonHeight)
+                                            .background{
+                                                Color.gray
+                                                    .opacity(0.3)
+                                            }
+                                            .clipShape(RoundedRectangle(cornerRadius: profileVM.buttonRadiusSize))
+                                    }
+                                }
+                                
+                                    
                                 Button {
                                     
                                 } label: {
@@ -123,21 +149,20 @@ struct ProfileView: View {
                             }
                         }
                     }
-                    .padding(.horizontal,15)
                     
                     // Username
                     HStack{
-                        Text(tabVM.currentUser.username)
+                        Text(user.username)
                             .fontWeight(.bold)
                     }
-                    .padding(.horizontal,15)
+                    
                     //bio
                     HStack{
-                        Text(tabVM.currentUser.bio!)
+                        Text(user.bio!)
                     }
-                    .padding(.horizontal,15)
                 }
                 
+
                 //MARK: tab changing between user post and archived posts
                 HStack{
                     Button {
@@ -152,9 +177,8 @@ struct ProfileView: View {
                                 .frame(height: profileVM.tabIconHeight) //not responsive
                                 .foregroundColor(profileVM.isShowAllUserPost == 1 ? (tabVM.userSetting.darkModeEnabled ? .white : .black) : .gray)
                         }
-                        
+                        .frame(width: profileVM.tabButtonSize)
                     }
-                    .frame(width: profileVM.tabButtonSize)
                     
                     Button {
                         withAnimation {
@@ -189,43 +213,31 @@ struct ProfileView: View {
                 }
                 
                 
-                PostGridView( profileVM: profileVM)
+                GuestProfilePostGridView(profileVM: profileVM)
                     .offset(y: -10)
 
             }
-//            .padding(.horizontal, 10)
-            
-            
         }
-//        .padding(.horizontal,10)
+        .padding(.horizontal,10)
         .frame(minWidth: 0,maxWidth: .infinity)
         .onAppear {
             profileVM.proxySize = UIScreen.main.bounds.size
             Task{
-                print("trigger")
-                await fvm.fetchFollowData()
-                
-                
-                
-                
-                try await profileVM.fetchUserPosts(UserID: tabVM.currentUser.id)
-                profileVM.fetchUserFavouritePost(forUserId: tabVM.currentUser.id)
-            }
-        }
-        .refreshable {
-            Task{
-                print("trigger")
-                await fvm.fetchFollowData()
-                
-                tabVM.currentUser = try await APIService.fetchCurrentUserData() ?? User(id: "", account: "huuquoc@gmail.com")
-             
+                await fvm.fetchFollowData1(forUserID: user.id)
+                tabVM.currentUser = try await APIService.fetchCurrentUserData()!
                 tabVM.userSetting = try await APIService.fetchCurrentSettingData()!
-                try await profileVM.fetchUserPosts(UserID: tabVM.currentUser.id)
-                profileVM.fetchUserFavouritePost(forUserId: tabVM.currentUser.id)
+                
+                try await profileVM.fetchUserPosts(UserID: user.id )
+                profileVM.fetchUserFavouritePost(forUserId: user.id)
+                
+                for user in fvm.followerList{
+                    if user.id == tabVM.currentUser.id{
+                        hasFollowerWithID = true
+                        break
+                    }
+                }
+                
             }
-        }
-        .fullScreenCover(isPresented: $profileVM.isSetting) {
-            SettingView(profileVM: profileVM, isSetting: $profileVM.isSetting)
         }
         .foregroundColor(tabVM.userSetting.darkModeEnabled ? .white : .black)
         .background(!tabVM.userSetting.darkModeEnabled ? .white : .black)

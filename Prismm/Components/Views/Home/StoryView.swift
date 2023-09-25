@@ -20,8 +20,8 @@ import SwiftUI
 struct StoryView: View {
     // control state
     //let story: Story
-    @Binding var currentUser:User
-    @Binding var userSetting:UserSetting
+//    @Binding var currentUser:User
+//    @Binding var userSetting:UserSetting
     @ObservedObject var homeVM: HomeViewModel
     
     var body: some View {

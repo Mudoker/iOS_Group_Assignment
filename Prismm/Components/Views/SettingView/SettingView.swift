@@ -22,10 +22,12 @@ import FirebaseFirestoreSwift
 struct SettingView : View {
     // Control state
     @EnvironmentObject var manager: AppManager
-    @Binding var currentUser:User
-    @Binding var userSetting:UserSetting
+//    @Binding var currentUser:User
+//    @Binding var userSetting:UserSetting
     @StateObject var settingVM = SettingViewModel()
     @ObservedObject var profileVM:ProfileViewModel
+    
+    @EnvironmentObject var tabVM: TabBarViewModel
     
     @Binding var isSetting: Bool
     
@@ -64,7 +66,7 @@ struct SettingView : View {
                             }) {
                                 ZStack {
                                     RoundedRectangle(cornerRadius: settingVM.cornerRadius)
-                                        .fill(!userSetting.darkModeEnabled ? .gray.opacity(0.1) : .gray.opacity(0.4))
+                                        .fill(!tabVM.userSetting.darkModeEnabled ? .gray.opacity(0.1) : .gray.opacity(0.4))
                                         .frame(height: settingVM.accountSettingHeight)
                                     HStack {
                                         
@@ -74,11 +76,11 @@ struct SettingView : View {
                                             .frame(width: settingVM.accountSettingImageWidth)
                                         
                                         VStack(alignment: .leading) {
-                                            Text(currentUser.username )
+                                            Text(tabVM.currentUser.username )
                                                 .font(settingVM.accountSettingUsernameFont)
                                                 .bold()
                                             
-                                            Text(currentUser.account! )
+                                            Text(tabVM.currentUser.account! )
                                                 .opacity(0.8)
                                                 .accentColor(.white)
                                                 .font(settingVM.accountSettingEmailFont)
@@ -115,11 +117,11 @@ struct SettingView : View {
                                     }
                                     .pickerStyle(MenuPickerStyle())
                                     .onChange(of: settingVM.selectedLanguage) { newValue in
-                                        userSetting.language = newValue
-                                        
+                                        tabVM.userSetting.language = newValue
+                                        print("new language: \(tabVM.userSetting.language)")
                                         Task{
                                             await
-                                            settingVM.updateSettings(userSetting: userSetting)
+                                            settingVM.updateSettings(userSetting: tabVM.userSetting)
                                         }
                                         
                                     }
@@ -128,7 +130,7 @@ struct SettingView : View {
                                 .padding(.bottom)
                                 
                                 Divider()
-                                    .overlay(userSetting.darkModeEnabled ? .gray : .gray)
+                                    .overlay(tabVM.userSetting.darkModeEnabled ? .gray : .gray)
 
                                 HStack {
                                     Image(systemName: "moon")
@@ -145,11 +147,11 @@ struct SettingView : View {
                                     
                                     //setting
                                         .onChange(of: settingVM.isDarkModeEnabled) { newValue in
-                                            userSetting.darkModeEnabled = newValue
+                                            tabVM.userSetting.darkModeEnabled = newValue
 
                                             Task{
                                                 await
-                                                settingVM.updateSettings(userSetting: userSetting)
+                                                settingVM.updateSettings(userSetting: tabVM.userSetting)
                                             }
                                             
                                         }
@@ -160,7 +162,7 @@ struct SettingView : View {
                             .padding(.horizontal)
                             .padding(.top)
                             .background(RoundedRectangle(cornerRadius: proxy.size.width/40)
-                                .fill(!userSetting.darkModeEnabled ? .gray.opacity(0.1) : .gray.opacity(0.4))
+                                .fill(!tabVM.userSetting.darkModeEnabled ? .gray.opacity(0.1) : .gray.opacity(0.4))
                             )
                             .padding(.bottom)
                             
@@ -183,11 +185,11 @@ struct SettingView : View {
                                     
                                     Toggle("", isOn: $settingVM.isPushNotificationEnabled)
                                         .onChange(of: settingVM.isPushNotificationEnabled) { newValue in
-                                            userSetting.pushNotificationsEnabled = newValue
+                                            tabVM.userSetting.pushNotificationsEnabled = newValue
                                             
                                             Task{
                                                 await
-                                                settingVM.updateSettings(userSetting: userSetting)
+                                                settingVM.updateSettings(userSetting: tabVM.userSetting)
                                             }
                                             
                                         }
@@ -196,38 +198,14 @@ struct SettingView : View {
                                 
                                 
                                 Divider()
-                                    .overlay(userSetting.darkModeEnabled ? .gray : .gray)
+                                    .overlay(tabVM.userSetting.darkModeEnabled ? .gray : .gray)
 
-                                HStack {
-                                    Image(systemName: "message")
-                                        .resizable()
-                                        .aspectRatio(contentMode: .fill)
-                                        .frame(width: settingVM.iconSize, height: settingVM.iconSize)
-                                    
-                                    Text("Message Notification")
-                                        .font(settingVM.contentFont)
-                                    
-                                    Spacer()
-                                    
-                                    Toggle("", isOn: $settingVM.isMessageNotificationEnabled)
-                                        .padding(.vertical)
-                                        .onChange(of: settingVM.isMessageNotificationEnabled) { newValue in
-                                            userSetting.messageNotificationsEnabled = newValue
-                                            
-                                            Task{
-                                                await
-                                                settingVM.updateSettings(userSetting: userSetting)
-                                            }
-                                            
-                                        }
-                                }
-                                .padding(.bottom)
                                 
                             }
                             .padding(.horizontal)
                             .padding(.top)
                             .background(RoundedRectangle(cornerRadius: proxy.size.width/40)
-                                .fill(!userSetting.darkModeEnabled ? .gray.opacity(0.1) : .gray.opacity(0.4))
+                                .fill(!tabVM.userSetting.darkModeEnabled ? .gray.opacity(0.1) : .gray.opacity(0.4))
                             )
                             .padding(.bottom)
                             
@@ -260,7 +238,7 @@ struct SettingView : View {
                                 }
                                 
                                 Divider()
-                                    .overlay(userSetting.darkModeEnabled ? .gray : .gray)
+                                    .overlay(tabVM.userSetting.darkModeEnabled ? .gray : .gray)
 
                                 HStack {
                                     Button(action: {settingVM.isRestrictedListSheetPresentedOniPhone = true}) {
@@ -287,43 +265,11 @@ struct SettingView : View {
                             .padding(.horizontal)
                             .padding(.top)
                             .background(RoundedRectangle(cornerRadius: proxy.size.width/40)
-                                .fill(!userSetting.darkModeEnabled ? .gray.opacity(0.1) : .gray.opacity(0.4))
+                                .fill(!tabVM.userSetting.darkModeEnabled ? .gray.opacity(0.1) : .gray.opacity(0.4))
                             )
                             .padding(.bottom)
                             
-                            VStack(alignment: .leading) {
-                                Text("Info")
-                                    .bold()
-                                    .padding(.bottom)
-                                    .font(settingVM.contentFont)
-                                
-                                HStack {
-                                    Button(action: {}) {
-                                        Image(systemName: "info.circle")
-                                            .resizable()
-                                            .aspectRatio(contentMode: .fill)
-                                            .frame(width: settingVM.iconSize, height: settingVM.iconSize)
-                                        
-                                        Text("About us")
-                                            .font(settingVM.contentFont)
-                                        
-                                        Spacer()
-                                        
-                                        Image(systemName: "arrow.right.square")
-                                            .resizable()
-                                            .aspectRatio(contentMode: .fill)
-                                            .frame(width: settingVM.iconSize, height: settingVM.iconSize)
-                                            .padding(.vertical)
-                                    }
-                                    .padding(.bottom)
-                                }
-                            }
-                            .padding(.horizontal)
-                            .padding(.top)
-                            .background(RoundedRectangle(cornerRadius: proxy.size.width/40)
-                                .fill(!userSetting.darkModeEnabled ? .gray.opacity(0.1) : .gray.opacity(0.4))
-                            )
-                            .padding(.bottom)
+                            
                             
                             Spacer()
                             
@@ -362,12 +308,12 @@ struct SettingView : View {
                         .padding(.horizontal)
                         .sheet(isPresented: $settingVM.isAccountSettingSheetPresentedOniPad) {
                             NavigationView {
-                                SettingSheet(isSheetPresented: $settingVM.isAccountSettingSheetPresentedOniPad, currentUser: $currentUser, userSetting: $userSetting, settingVM: settingVM)
+                                SettingSheet(isSheetPresented: $settingVM.isAccountSettingSheetPresentedOniPad, settingVM: settingVM)
                             }
                         }
                         .fullScreenCover(isPresented: $settingVM.isAccountSettingSheetPresentedOniPhone) {
                             NavigationView {
-                                SettingSheet(isSheetPresented: $settingVM.isAccountSettingSheetPresentedOniPhone, currentUser: $currentUser, userSetting: $userSetting, settingVM: settingVM)
+                                SettingSheet(isSheetPresented: $settingVM.isAccountSettingSheetPresentedOniPhone, settingVM: settingVM)
                             }
                         }
                         .fullScreenCover(isPresented: $settingVM.isBlockListSheetPresentedOniPhone) {
@@ -385,12 +331,12 @@ struct SettingView : View {
                     
                         .onAppear {
                             settingVM.proxySize = proxy.size
-                            settingVM.setValue(setting: userSetting)
+                            settingVM.setValue(setting: tabVM.userSetting)
                             
                         }
                 }
-                .foregroundColor(userSetting.darkModeEnabled ? .white : .black)
-                .background(!userSetting.darkModeEnabled ? .white : .black)
+                .foregroundColor(tabVM.userSetting.darkModeEnabled ? .white : .black)
+                .background(!tabVM.userSetting.darkModeEnabled ? .white : .black)
             }
         }
         

@@ -23,15 +23,14 @@ import MobileCoreServices
 import AVFoundation
 import FirebaseFirestoreSwift
 
-class ProfileViewModel: ObservableObject {
+class GuestProfileViewModel: ObservableObject {
     // Control State
-    @Published var userPosts = [Post]()
-    //@Published var blockList = [UserBlockList]()
-    @Published var hasStoryHightlight = false
-    @Published var isSetting = false
+    
+
+    @Published var isPopover = false
+
     
     
-    @Published var unwrappedCurrentUserFavouritePost = [Post]()
     private var favouritePostListenerRegistration: ListenerRegistration?
     
     @Published var isShowAllUserPost = 1
@@ -55,8 +54,12 @@ class ProfileViewModel: ObservableObject {
         }
     }
  
-
+    @Published var userPosts = [Post]()
+    @Published var unwrappedCurrentUserFavouritePost = [Post]()
     @Published var currentUserFavouritePost = [FavouritePost]()
+    
+    
+    
     @Published var indicatorOffset = -(UIScreen.main.bounds.width/4)
     
     //MARK: RESPONSIVE VALUE
@@ -74,7 +77,7 @@ class ProfileViewModel: ObservableObject {
     }
     
     var infoBlockSpacing : CGFloat{
-        UIDevice.current.userInterfaceIdiom == .phone ? 12 : 20
+        UIDevice.current.userInterfaceIdiom == .phone ? 15 : 20
     }
     
     var editButtonWidth : CGFloat{

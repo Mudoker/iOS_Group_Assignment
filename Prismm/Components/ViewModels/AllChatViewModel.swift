@@ -16,9 +16,7 @@ struct RecentMessage: Codable,Identifiable {
     let timestamp:  Date
     let isSeen : Bool
     
-    var username: String {
-        email.components(separatedBy: "@").first ?? email
-    }
+    
     
     var timeAgo: String {
         let formatter = RelativeDateTimeFormatter()

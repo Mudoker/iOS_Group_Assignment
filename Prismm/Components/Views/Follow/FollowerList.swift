@@ -38,7 +38,13 @@ struct FollowerList: View {
             
             // Content
             ForEach(fvm.followerList) { user in
-                FollowerRow(fvm: fvm, user: user)
+                NavigationLink {
+                    GuestProfileView(user: user)
+                } label: {
+                    FollowerRow(fvm: fvm, user: user)
+                }
+
+                
                 
             }
         }

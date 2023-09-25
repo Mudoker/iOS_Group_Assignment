@@ -49,7 +49,14 @@ class HomeViewModel: ObservableObject {
     @Published var isSignOutAlertPresented = false
     @Published var selectedCommentFilter = "Newest"
     @Published var isFetchingPost = false
+    @Published var isUploadingPost = false
     @Published var newPostId = ""
+    @Published var isEditNewPostOnIpad = false
+    @Published var isEditNewPostOnIphone = false
+    @Published var editPostCaption = ""
+    @Published var editSelectedPostTag: [String] = []
+    
+    @Published var selectedPost = Post(id: "", ownerID: "", creationDate: Timestamp(), isAllowComment: true)
 
     // Firebase Listener
     private var commentListenerRegistration: ListenerRegistration?
@@ -62,8 +69,8 @@ class HomeViewModel: ObservableObject {
     // Fetched values
     @Published var fetchedCommentsByPostId = [String: Set<Comment>]()
     @Published var currentUserBlockList = UserBlockList(blockedIds: [], beBlockedBy: [])
-    @Published var currentUserFollowList = [UserFollowList]()
-    @Published var currentUserRestrictList = [UserRestrictList]()
+    @Published var currentUserFollowList = UserFollowList(followIds: [], beFollowedBy: [])
+    @Published var currentUserRestrictList = UserRestrictList(restrictIds: [])
     @Published var fetchedAllPosts = [Post]()
     @Published var fetchedAllStories = [Story]()
     @Published var currentUserFavouritePost = [FavouritePost]()
@@ -274,8 +281,8 @@ class HomeViewModel: ObservableObject {
             }
             
             // Convert query results to UserRestrictList objects
-            self.currentUserRestrictList = documents.compactMap { queryDocumentSnapshot in
-                try? queryDocumentSnapshot.data(as: UserRestrictList.self)
+            if let userRestrictList = documents.first.flatMap({ try? $0.data(as: UserRestrictList.self) }) {
+                self.currentUserRestrictList = userRestrictList
             }
         }
     }
@@ -295,10 +302,9 @@ class HomeViewModel: ObservableObject {
                 print("No documents")
                 return
             }
-            
-            // Convert query results to UserFollowList objects
-            self.currentUserFollowList = documents.compactMap { queryDocumentSnapshot in
-                try? queryDocumentSnapshot.data(as: UserFollowList.self)
+
+            if let userFollowList = documents.first.flatMap({ try? $0.data(as: UserFollowList.self) }) {
+                self.currentUserFollowList = userFollowList
             }
         }
     }
@@ -591,22 +597,26 @@ class HomeViewModel: ObservableObject {
 
     
     // Edit the current post
-    func editCurrentPost(postID: String, newPostCaption: String?, newMediaURL: String?, newMimeType: String?) async throws {
+    func editCurrentPost(postID: String, newPostCaption: String?, newMediaURL: NSURL?, editSelectedTag : [String?]) async throws {
         do {
-            // Get a reference to the post
             let postRef = Firestore.firestore().collection("test_posts").document(postID)
-            
-            // Retrieve the post data
             var post = try await postRef.getDocument().data(as: Post.self)
             
-            
-            // Update post properties with new values
             post.caption = newPostCaption
-            post.mediaURL = newMediaURL
-            post.mediaMimeType = newMimeType
+            
+            
+            var mediaURL = ""
+            var mediaMimeType = ""
+            
+            if newMediaURL != nil{
+                mediaURL = try await APIService.createMediaToFirebase(newPostSelectedMedia: newMediaURL!)
+                mediaMimeType = mimeType(for: try Data(contentsOf: newMediaURL as? URL ?? URL(fileURLWithPath: "")))
+            }
+            post.mediaURL = mediaURL
+            post.mediaMimeType = mediaMimeType
+            post.tag = editSelectedPostTag
             post.creationDate = Timestamp()
             
-            // Set the updated post data back to Firestore
             try postRef.setData(from: post) { error in
                 if let error = error {
                     print("Error updating document: \(error)")
@@ -642,7 +652,7 @@ class HomeViewModel: ObservableObject {
             
             // Sort the fetched posts by time in descending order
             fetchedAllPosts = sortPostByTime(order: "desc", posts: fetchedAllPosts)
-            
+            fetchedAllPosts = filterPostsByLists(restrictedList: currentUserRestrictList.restrictIds, blockedList: currentUserBlockList.blockedIds, beBlockedList: currentUserBlockList.beBlockedBy, posts: fetchedAllPosts)
             // Fetch user for each post's owner
             for i in 0..<fetchedAllPosts.count {
                 let post = fetchedAllPosts[i]
@@ -651,6 +661,10 @@ class HomeViewModel: ObservableObject {
                 do {
                     let user = try await APIService.fetchUser(withUserID: ownerID)
                     fetchedAllPosts[i].unwrappedOwner = user
+                    
+                    if fetchedAllPosts[i].id == "KW3Ky9IYcVICAjU2WVqF"{
+                        print(fetchedAllPosts[i])
+                    }
                 } catch {
                     print("Error fetching user: \(error)")
                 }
@@ -786,9 +800,8 @@ class HomeViewModel: ObservableObject {
     }
     
     // Filter posts and comments based on restricted and blocked lists for the current user
-    func filterPostsAndCommentsByLists(restrictedList: [String], blockedList: [String], posts: [Post], comments: [Comment]) -> ([Post], [Comment]) {
+    func filterPostsByLists(restrictedList: [String], blockedList: [String], beBlockedList: [String], posts: [Post]) -> ([Post]) {
         var filteredPosts: [Post] = []
-        var filteredComments: [Comment] = []
         
         for post in posts {
             // Check if the post owner's ID is not in the restricted or blocked list
@@ -797,27 +810,12 @@ class HomeViewModel: ObservableObject {
             }
         }
         
-        for comment in comments {
-            // Check if the commenter's ID is not in the restricted or blocked list
-            if !restrictedList.contains(comment.commenterId) && !blockedList.contains(comment.commenterId) {
-                filteredComments.append(comment)
-            }
-        }
-        
-        return (filteredPosts, filteredComments)
+        return (filteredPosts)
     }
     
     // Filter posts and comments to prevent interactions between blocked users
-    func filterPostsAndCommentsByLists(beBlockedList: [String], posts: [Post], comments: [Comment]) -> ([Post], [Comment]) {
-        var filteredPosts: [Post] = []
+    func filterCommentsByLists(restrictedList: [String], blockedList: [String], beBlockedList: [String], comments: [Comment]) -> ([Comment]) {
         var filteredComments: [Comment] = []
-        
-        for post in posts {
-            // Check if the post owner's ID is not in the restricted or blocked list
-            if !beBlockedList.contains(post.ownerID) {
-                filteredPosts.append(post)
-            }
-        }
         
         for comment in comments {
             // Check if the commenter's ID is not in the restricted or blocked list
@@ -826,7 +824,7 @@ class HomeViewModel: ObservableObject {
             }
         }
         
-        return (filteredPosts, filteredComments)
+        return (filteredComments)
     }
     
     

@@ -24,8 +24,8 @@ import FirebaseAuth
 struct PostView: View {
     // Control state
     var post: Post
-    @Binding var currentUser:User
-    @Binding var userSetting:UserSetting
+//    @Binding var currentUser:User
+//    @Binding var userSetting:UserSetting
     @ObservedObject var homeViewModel: HomeViewModel
     @ObservedObject var notiVM: NotificationViewModel
     @Binding var selectedPost: Post
@@ -35,158 +35,176 @@ struct PostView: View {
     @State var currentLike = 0
     @State var isArchive = false
     
+    @EnvironmentObject var tabVM: TabBarViewModel
+    
     var body: some View {
         VStack {
             //Post info.
-            HStack {
-                // User profile image
-                if let mediaURL = URL(string: post.mediaURL ?? "") {
-                    if let mimeType = post.mediaMimeType {
-                        if mimeType.hasPrefix("image") {
-                            KFImage(mediaURL)
-                                .resizable()
-                                .frame(width: homeViewModel.profileImageSize, height: homeViewModel.profileImageSize)
-                                .clipShape(Circle())
-                                .background(Circle().foregroundColor(Color.gray))
-                        } else {
-                            // Handle image
-                            Image(systemName: "person.circle.fill")
-                                .font(.system(size: 48))
-                        }
-                    } else {
-                        // Handle the case where the mimeType is nil
-                        Text("Invalid MIME type")
-                    }
+            HStack
+            {
+            NavigationLink {
+                if(post.unwrappedOwner!.id == tabVM.currentUser.id){
+                    ProfileView()
                 } else {
-                    // Handle the case where the media URL is invalid or empty.
-                    Image(systemName: "person.circle.fill")
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                        .frame(width: 55, height: 55)
-                    
+                    GuestProfileView(user: post.unwrappedOwner!)
                 }
                 
-                // Username
-                VStack (alignment: .leading, spacing: UIScreen.main.bounds.height * 0.01) {
-                    if let user = post.unwrappedOwner {
-                        Text(user.username.extractNameFromEmail() ?? user.username)
-                            .font(Font.system(size: homeViewModel.usernameFont, weight: .semibold))
-                    }
-                    
-                    Text(formatTimeDifference(from: post.creationDate))
-                        .font(Font.system(size: homeViewModel.timeFont, weight: .medium))
-                        .opacity(0.3)
-                }
-                
-                // Push view
-                Spacer()
-                
-                // Menu
-                Menu {
-                    if (currentUser.id != post.ownerID) {
-                        Button(action: {
-                            selectedPost = post
-                            homeViewModel.isBlockUserAlert = true
-                            print("alerted")
-                        }) {
-                            HStack {
-                                Image(systemName: "person.crop.circle.badge.xmark")
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(width: homeViewModel.seeMoreButtonSize)
-                                    .padding(.trailing)
-                                
-                                Text("Block this user")
-                            }
-                        }
-                        .alert("Block this user?", isPresented: $homeViewModel.isBlockUserAlert) {
-                            Button("Cancel", role: .cancel) {}
-                            Button("Block", role: .destructive) {}
-                        } message: {
-                            Text("\nYou will not see this user again")
-                        }
-
+                   
+            } label: {
+                HStack {
+                    // User profile image
+                    if let mediaURL = URL(string: post.unwrappedOwner?.profileImageURL ?? "") {
                         
-                        Button(action: {
-                            selectedPost = post
-                            homeViewModel.isRestrictUserAlert = true
-                            print("alerted")}
-                            ) {
-                            HStack {
-                                Image(systemName: "rectangle.portrait.slash")
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(width: homeViewModel.seeMoreButtonSize)
-                                    .padding(.trailing)
-                                Text("Restrict this user")
-                            }
-                        }
-                        .alert("Restrict this user?", isPresented: $homeViewModel.isSignOutAlertPresented) {
-                            Button("Cancel", role: .cancel) {}
-                            Button("Restrict", role: .destructive) {}
-                        } message: {
-                            Text("\nStop receiving notification from this user")
-                        }
+                        KFImage(mediaURL)
+                            .resizable()
+                            .frame(width: homeViewModel.profileImageSize, height: homeViewModel.profileImageSize)
+                            .clipShape(Circle())
+                            .background(Circle().foregroundColor(Color.gray))
+                        
+                    } else {
+                        // Handle the case where the media URL is invalid or empty.
+                        Image(systemName: "person.circle.fill")
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                            .frame(width: 55, height: 55)
+                        
                     }
                     
-
-                    if (currentUser.id == post.ownerID) {
-                        // Delete post
-                        Button(action: {
-                            selectedPost = post
-                            homeViewModel.isDeletePostAlert = true
-                        }) {
-                            HStack {
-                                Image(systemName: "delete.left")
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(width: homeViewModel.seeMoreButtonSize)
-                                    .padding(.trailing)
-                                
-                                Text("Delete Post")
-                            }
+                    // Username
+                    VStack (alignment: .leading, spacing: UIScreen.main.bounds.height * 0.01) {
+                        if let user = post.unwrappedOwner {
+                            Text(user.username.extractNameFromEmail() ?? user.username)
+                                .font(Font.system(size: homeViewModel.usernameFont, weight: .semibold))
                         }
                         
-                        // Turn off comment
-                        Button(action: {
-                            selectedPost = post
-                            homeViewModel.isTurnOffCommentAlert = true
-                        }) {
-                            HStack {
-                                Image(systemName: "text.badge.xmark")
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(width: homeViewModel.seeMoreButtonSize)
-                                    .padding(.trailing)
-                                Text(isAllowComment ? "Turn off comment" : "Turn on comment")
-                            }
-                        }
-
-                        // Edit post
-                        Button(action: {
-                            selectedPost = post
-                        }) {
-                            HStack {
-                                Image(systemName: "square.and.pencil")
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(width: homeViewModel.seeMoreButtonSize)
-                                    .padding(.trailing)
-                                
-                                Text("Edit post")
-                            }
-                        }
+                        Text(formatTimeDifference(from: post.creationDate))
+                            .font(Font.system(size: homeViewModel.timeFont, weight: .medium))
+                            .opacity(0.3)
                     }
-                } label: {
-                    Image(systemName: "ellipsis.circle")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: homeViewModel.seeMoreButtonSize)
-                        .foregroundColor(.black)
+                    
+                    // Push view
+                    Spacer()
+                    
+                    // Menu
+                    
                 }
+                
             }
-            .padding(.horizontal)
+            .foregroundColor(tabVM.userSetting.darkModeEnabled ? .white : .black)
             
+            Menu {
+                if (tabVM.currentUser.id != post.ownerID) {
+                    Button(action: {
+                        selectedPost = post
+                        homeViewModel.isBlockUserAlert = true
+                        print("alerted")
+                    }) {
+                        HStack {
+                            Image(systemName: "person.crop.circle.badge.xmark")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: homeViewModel.seeMoreButtonSize)
+                                .padding(.trailing)
+                            
+                            Text("Block this user")
+                        }
+                    }
+                    .alert("Block this user?", isPresented: $homeViewModel.isBlockUserAlert) {
+                        Button("Cancel", role: .cancel) {}
+                        Button("Block", role: .destructive) {}
+                    } message: {
+                        Text("\nYou will not see this user again")
+                    }
+                    
+                    
+                    Button(action: {
+                        selectedPost = post
+                        homeViewModel.isRestrictUserAlert = true
+                        print("alerted")}
+                    ) {
+                        HStack {
+                            Image(systemName: "rectangle.portrait.slash")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: homeViewModel.seeMoreButtonSize)
+                                .padding(.trailing)
+                            Text("Restrict this user")
+                        }
+                    }
+                    .alert("Restrict this user?", isPresented: $homeViewModel.isSignOutAlertPresented) {
+                        Button("Cancel", role: .cancel) {}
+                        Button("Restrict", role: .destructive) {}
+                    } message: {
+                        Text("\nStop receiving notification from this user")
+                    }
+                }
+                
+                
+                if (tabVM.currentUser.id == post.ownerID) {
+                    // Delete post
+                    Button(action: {
+                        selectedPost = post
+                        homeViewModel.isDeletePostAlert = true
+                    }) {
+                        HStack {
+                            Image(systemName: "delete.left")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: homeViewModel.seeMoreButtonSize)
+                                .padding(.trailing)
+                            
+                            Text("Delete Post")
+                        }
+                    }
+                    
+                    // Turn off comment
+                    Button(action: {
+                        selectedPost = post
+                        homeViewModel.isTurnOffCommentAlert = true
+                    }) {
+                        HStack {
+                            Image(systemName: "text.badge.xmark")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: homeViewModel.seeMoreButtonSize)
+                                .padding(.trailing)
+                            Text(isAllowComment ? "Turn off comment" : "Turn on comment")
+                        }
+                    }
+                    
+                    // Edit post
+                    Button(action: {
+                        if UIDevice.current.userInterfaceIdiom == .pad {
+                            selectedPost = post
+                                                homeViewModel.isEditNewPostOnIpad.toggle()
+                                                
+                                            } else {
+                                                selectedPost = post
+                                                print(selectedPost)
+                                                homeViewModel.isEditNewPostOnIphone.toggle()
+                                                
+                                            }
+                    }) {
+                        HStack {
+                            Image(systemName: "square.and.pencil")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: homeViewModel.seeMoreButtonSize)
+                                .padding(.trailing)
+                            
+                            Text("Edit post")
+                        }
+                    }
+                }
+            } label: {
+                Image(systemName: "ellipsis.circle")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: homeViewModel.seeMoreButtonSize)
+                    .foregroundColor(tabVM.userSetting.darkModeEnabled ? .gray : .black)
+            }
+        }
+            .padding(.horizontal)
             
             //Caption
             HStack {
@@ -248,13 +266,13 @@ struct PostView: View {
                 Button(action: {
                     if isLike == false {
                         Task {
-                            try await homeViewModel.likePost(likerId: currentUser.id, postId: post.id)
-                            _ = try await notiVM.createInAppNotification(senderId: currentUser.id, receiverId: post.ownerID, senderName: currentUser.username, message: Constants.notiReact, postId: post.id, category: .react, blockedByList: [], blockedList: [])
+                            try await homeViewModel.likePost(likerId: tabVM.currentUser.id, postId: post.id)
+                            _ = try await notiVM.createInAppNotification(senderId: tabVM.currentUser.id, receiverId: post.ownerID, senderName: tabVM.currentUser.username, message: Constants.notiReact, postId: post.id, category: .react, blockedByList: [], blockedList: [])
                         }
                         isLike = true
                     } else {
                         Task {
-                            try await homeViewModel.unLikePost(likerId: currentUser.id, postId: post.id)
+                            try await homeViewModel.unLikePost(likerId: tabVM.currentUser.id, postId: post.id)
                         }
                         isLike = false
                     }
@@ -264,7 +282,7 @@ struct PostView: View {
                             .resizable()
                             .aspectRatio(contentMode: .fit)
                             .frame(width: homeViewModel.postStatsImageSize)
-                            .foregroundColor(isLike ? .pink : .black)
+                            .foregroundColor(tabVM.userSetting.darkModeEnabled ? .pink : .pink)
                             .overlay (
                                 Image(systemName: "heart.fill")
                                     .resizable()
@@ -288,6 +306,22 @@ struct PostView: View {
                         selectedPost = post
                         homeViewModel.isOpenCommentViewOnIpad.toggle()
                         homeViewModel.fetchAllComments(forPostID: post.id)
+                        if let postComments = homeViewModel.fetchedCommentsByPostId[post.id] {
+                            // Convert the set to an array
+                            let commentArray = Array(postComments)
+                            
+                            // Call the function with the converted array
+                            let filteredComments = homeViewModel.filterCommentsByLists(
+                                restrictedList: homeViewModel.currentUserRestrictList.restrictIds,
+                                blockedList: homeViewModel.currentUserBlockList.blockedIds,
+                                beBlockedList: homeViewModel.currentUserBlockList.beBlockedBy,
+                                comments: commentArray
+                            )
+                            
+                            // Update the value in your model with the filtered comments (if needed)
+                            homeViewModel.fetchedCommentsByPostId[post.id] = Set(filteredComments)
+                        }
+
                     } else {
                         selectedPost = post
                         homeViewModel.isOpenCommentViewOnIphone.toggle()
@@ -299,7 +333,7 @@ struct PostView: View {
                             .resizable()
                             .aspectRatio(contentMode: .fit)
                             .frame(width: homeViewModel.postStatsImageSize)
-                            .foregroundColor(.black)
+                            .foregroundColor(tabVM.userSetting.darkModeEnabled ? .gray : .black)
                     }
                 }
                 
@@ -310,12 +344,12 @@ struct PostView: View {
                 Button(action: {
                     if isArchive {
                         Task {
-                            try await homeViewModel.unFavorPost(ownerId: currentUser.id ,postId: post.id)
+                            try await homeViewModel.unFavorPost(ownerId: tabVM.currentUser.id ,postId: post.id)
                         }
                         isArchive = false
                     } else {
                         Task {
-                            try await homeViewModel.favorPost(ownerId: currentUser.id ,postId: post.id)
+                            try await homeViewModel.favorPost(ownerId: tabVM.currentUser.id ,postId: post.id)
                         }
                         isArchive = true
                     }
@@ -332,7 +366,7 @@ struct PostView: View {
                                     .resizable()
                                     .aspectRatio(contentMode: .fit)
                                     .frame(width: homeViewModel.postStatsImageSize)
-                                    .foregroundColor(isArchive ? .black : .black)
+                                    .foregroundColor(tabVM.userSetting.darkModeEnabled ? .gray : .black)
                             )
                     }
                     .padding(.trailing)
@@ -365,6 +399,7 @@ struct PostView: View {
                         .resizable()
                         .aspectRatio(contentMode: .fill)
                         .frame(width: 40, height: 40)
+                        
                 }
                 
                 Button(action: {
@@ -389,7 +424,7 @@ struct PostView: View {
                     }
                     .background(
                         RoundedRectangle(cornerRadius: homeViewModel.commentTextFieldCornerRadius)
-                            .fill(Color.gray.opacity(0.1))
+                            .fill(Color.gray.opacity(tabVM.userSetting.darkModeEnabled ? 0.7 : 0.1))
                     )
                     .foregroundColor(.primary) // Customize text color
                     .contentShape(Rectangle()) // Make the entire button area tappable
@@ -402,16 +437,18 @@ struct PostView: View {
             }
             .padding(.horizontal)
         }
+        .foregroundColor(tabVM.userSetting.darkModeEnabled ? .white :  .black)
         .onAppear {
             homeViewModel.getLikeCount(forPostID: post.id) { totalCount in
                 currentLike = totalCount
             }
             
-            homeViewModel.isUserLikePost(forPostID: post.id, withUserId: currentUser.id) {isLikePost in
+            homeViewModel.isUserLikePost(forPostID: post.id, withUserId: tabVM.currentUser.id) {isLikePost in
                 isLike = isLikePost
             }
             
-            isArchive = homeViewModel.isUserFavouritePost(withPostId: post.id, withUserId: currentUser.id)
+            isArchive = homeViewModel.isUserFavouritePost(withPostId: post.id, withUserId: tabVM.currentUser.id)
+            print(isArchive)
             
             isAllowComment = post.isAllowComment
         }

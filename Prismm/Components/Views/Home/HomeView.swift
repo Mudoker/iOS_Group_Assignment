@@ -17,12 +17,16 @@ import SwiftUI
 import Firebase
 struct HomeView: View {
     // control state
-    @State var currentUser = User(id: "default", account: "default@gmail.com")
-    @State var userSetting = UserSetting(id: "default", darkModeEnabled: false, language: "en", faceIdEnabled: true, pushNotificationsEnabled: true, messageNotificationsEnabled: false)
+//    @State var currentUser = User(id: "default", account: "default@gmail.com")
+//    @State var userSetting = UserSetting(id: "default", darkModeEnabled: false, language: "en", faceIdEnabled: true, pushNotificationsEnabled: true, messageNotificationsEnabled: false)
+    
+    
     @ObservedObject var homeViewModel: HomeViewModel
     @ObservedObject var notiVM: NotificationViewModel
-    @State var selectedPost = Post(id: "", ownerID: "", creationDate: Timestamp(), isAllowComment: true)
+    
     @State var isSelectedPostAllowComment = false
+    
+    @EnvironmentObject var tabVM: TabBarViewModel
     
     var body: some View {
         GeometryReader { proxy in
@@ -31,7 +35,7 @@ struct HomeView: View {
                     ZStack(alignment: .top) {
                         // App logo
                         HStack {
-                            Image("logolight.text")
+                            Image(tabVM.userSetting.darkModeEnabled ? "logodark.text" : "logolight.text")
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
                                 .frame(width: homeViewModel.appLogoSize, height: homeViewModel.appLogoSize)
@@ -54,7 +58,7 @@ struct HomeView: View {
                                         .resizable()
                                         .aspectRatio(contentMode: .fit)
                                         .frame(width: homeViewModel.messageLogoSize, height: homeViewModel.messageLogoSize)
-                                        .foregroundColor(.pink.opacity(0.8))
+                                        .foregroundColor(tabVM.userSetting.darkModeEnabled ? Constants.darkThemeColor.opacity(0.8) : Constants.lightThemeColor.opacity(0.8))
                                         .padding()
                                 }
                                 else{
@@ -62,7 +66,7 @@ struct HomeView: View {
                                         .resizable()
                                         .aspectRatio(contentMode: .fit)
                                         .frame(width:homeViewModel.messageLogoSize , height: homeViewModel.messageLogoSize)
-                                        .foregroundColor(.pink.opacity(0.8))
+                                        .foregroundColor(tabVM.userSetting.darkModeEnabled ? Constants.darkThemeColor.opacity(0.8) : Constants.lightThemeColor.opacity(0.8))
                                         .padding()
                                 }
                             }
@@ -72,24 +76,14 @@ struct HomeView: View {
                         
                     }
                     ScrollView(.vertical, showsIndicators: false) {
-                        Divider()
-                        
-                        // Story view
-                        ScrollView(.horizontal, showsIndicators: false) {
-                            HStack(spacing: 40) {
-                                ForEach(0..<5, id: \.self) { _ in
-                                    StoryView(currentUser: $currentUser, userSetting: $userSetting, homeVM: homeViewModel)
-                                        .frame(width: homeViewModel.storyViewWidth, height: homeViewModel.storyViewHeight)
-                                }
-                            }
-                            .padding()
-                        }
+
+                       
                         
                         // Post view
                         if !homeViewModel.isFetchingPost {
                             VStack {
                                 ForEach(homeViewModel.fetchedAllPosts) { post in
-                                    PostView(post: post,currentUser: $currentUser, userSetting: $userSetting ,homeViewModel: homeViewModel, notiVM: notiVM, selectedPost: $selectedPost, isAllowComment: $isSelectedPostAllowComment)
+                                    PostView(post: post, homeViewModel: homeViewModel, notiVM: notiVM, selectedPost: $homeViewModel.selectedPost, isAllowComment: $isSelectedPostAllowComment)
                                         .padding(.bottom, 50)
                                 }
                                 
@@ -100,7 +94,7 @@ struct HomeView: View {
                                     .overlay(
                                         LinearGradient(
                                             gradient: Gradient(
-                                                colors: userSetting.darkModeEnabled ? Constants.buttonGradientColorDark : Constants.buttonGradientColorLight
+                                                colors: tabVM.userSetting.darkModeEnabled ? Constants.buttonGradientColorDark : Constants.buttonGradientColorLight
                                             ),
                                             startPoint: .topLeading,
                                             endPoint: .bottomTrailing
@@ -114,7 +108,7 @@ struct HomeView: View {
                                 
                                 Text("You have caught up !")
                                     .font(.title)
-                                    .foregroundColor(.pink)
+                                    .foregroundColor(tabVM.userSetting.darkModeEnabled ? Constants.darkThemeColor :  Constants.lightThemeColor )
                                 
                                 Text("You've seen all new posts")
                                     .opacity(0.5)
@@ -123,17 +117,21 @@ struct HomeView: View {
                         }
                         
                     }
+                    .fullScreenCover(isPresented: $homeViewModel.isEditNewPostOnIphone){
+                        EditPostView(homeVM: homeViewModel, isEditPost: $homeViewModel.isEditNewPostOnIphone, post: $homeViewModel.selectedPost)
+                                        }
+                    
                     .sheet(isPresented: $homeViewModel.isCreateNewPostOnIpad) {
-                        CreatePostView(currentUser: $currentUser, userSetting: $userSetting ,homeVM: homeViewModel, isNewPost: $homeViewModel.isCreateNewPostOnIpad, isDarkModeEnabled: userSetting.darkModeEnabled, notiVM: notiVM )
+                        CreatePostView(homeVM: homeViewModel, isNewPost: $homeViewModel.isCreateNewPostOnIpad, isDarkModeEnabled: tabVM.userSetting.darkModeEnabled, notiVM: notiVM )
                     }
                     .fullScreenCover(isPresented: $homeViewModel.isCreateNewPostOnIphone) {
-                        CreatePostView(currentUser: $currentUser, userSetting: $userSetting ,homeVM: homeViewModel, isNewPost: $homeViewModel.isCreateNewPostOnIphone, isDarkModeEnabled: userSetting.darkModeEnabled, notiVM: notiVM)
+                        CreatePostView(homeVM: homeViewModel, isNewPost: $homeViewModel.isCreateNewPostOnIphone, isDarkModeEnabled: tabVM.userSetting.darkModeEnabled, notiVM: notiVM)
                     }
                     .sheet(isPresented: $homeViewModel.isOpenCommentViewOnIpad) {
-                        CommentView(isShowComment: $homeViewModel.isOpenCommentViewOnIpad, currentUser: $currentUser, userSetting: $userSetting, isAllowComment: $isSelectedPostAllowComment, homeVM: homeViewModel, notiVM: notiVM, isDarkModeEnabled: userSetting.darkModeEnabled, post: selectedPost)
+                        CommentView(isShowComment: $homeViewModel.isOpenCommentViewOnIpad, isAllowComment: $isSelectedPostAllowComment, homeVM: homeViewModel, notiVM: notiVM, isDarkModeEnabled: tabVM.userSetting.darkModeEnabled, post: homeViewModel.selectedPost)
                     }
                     .fullScreenCover(isPresented: $homeViewModel.isOpenCommentViewOnIphone) {
-                        CommentView(isShowComment: $homeViewModel.isOpenCommentViewOnIphone, currentUser: $currentUser, userSetting: $userSetting, isAllowComment: $isSelectedPostAllowComment, homeVM: homeViewModel, notiVM: notiVM, isDarkModeEnabled: userSetting.darkModeEnabled, post: selectedPost)
+                        CommentView(isShowComment: $homeViewModel.isOpenCommentViewOnIphone, isAllowComment: $isSelectedPostAllowComment, homeVM: homeViewModel, notiVM: notiVM, isDarkModeEnabled: tabVM.userSetting.darkModeEnabled, post: homeViewModel.selectedPost)
                     }
                     .onAppear {
                         homeViewModel.proxySize = proxy.size
@@ -152,15 +150,17 @@ struct HomeView: View {
                     Color.gray.opacity(0.3).edgesIgnoringSafeArea(.all)
                     ProgressView("Loading ...")
                 }
+                
             }
         }
+        .background(tabVM.userSetting.darkModeEnabled ?.black: .white)
         .alert("Block this user?", isPresented: $homeViewModel.isBlockUserAlert) {
             Button("Cancel", role: .cancel) {
             }
             Button("Block", role: .destructive) {
                 Task{
-                    try await APIService.blockOtherUser(forUserID: selectedPost.ownerID)
-                                        //try await APIService.unfollowOtherUser(forUserID: homeViewModel.currentPost!.ownerID)
+                    try await APIService.blockOtherUser(forUserID: homeViewModel.selectedPost.ownerID)
+
                 }
                 print("blocked")
             }
@@ -173,7 +173,7 @@ struct HomeView: View {
             }
             Button("Restrict", role: .destructive) {
                 Task{
-                    try await APIService.restrictOtherUser(forUserID: selectedPost.ownerID)
+                    try await APIService.restrictOtherUser(forUserID: homeViewModel.selectedPost.ownerID)
                     //try await APIService.followOtherUser(forUserID: homeViewModel.currentPost!.ownerID)
 //                    try await APIService.unfollowOtherUser(forUserID: homeViewModel.currentPost!.ownerID)
                 }
@@ -189,14 +189,14 @@ struct HomeView: View {
             }
             Button(isSelectedPostAllowComment ? "Turn off" : "Turn on", role: .destructive) {
                 isSelectedPostAllowComment = !isSelectedPostAllowComment
-                if let index = homeViewModel.fetchedAllPosts.firstIndex(where: { $0 == selectedPost }) {
+                if let index = homeViewModel.fetchedAllPosts.firstIndex(where: { $0 == homeViewModel.selectedPost }) {
                     // Now you have the index of selectedPost in the array
                     homeViewModel.fetchedAllPosts[index].isAllowComment = isSelectedPostAllowComment
                     print(homeViewModel.fetchedAllPosts[index].isAllowComment)
                 }
                 
                 Task{
-                    try await homeViewModel.toggleCommentOnPost(postID: selectedPost.id ,isDisable: isSelectedPostAllowComment)
+                    try await homeViewModel.toggleCommentOnPost(postID: homeViewModel.selectedPost.id ,isDisable: isSelectedPostAllowComment)
                 }
             }
         } message: {
@@ -206,15 +206,15 @@ struct HomeView: View {
             Button("Cancel", role: .cancel) {}
             Button("Delete", role: .destructive) {
                 Task {
-                    print(selectedPost.id)
+                    //print(selectedPost.id)
                     withAnimation {
-                        if let index = homeViewModel.fetchedAllPosts.firstIndex(where: { $0 == selectedPost }) {
+                        if let index = homeViewModel.fetchedAllPosts.firstIndex(where: { $0 == homeViewModel.selectedPost }) {
                             // Now you have the index of selectedPost in the array
                             homeViewModel.fetchedAllPosts.remove(at: index)
                         }
                     }
                    
-                    try await homeViewModel.deletePost(postID: selectedPost.id)
+                    try await homeViewModel.deletePost(postID: homeViewModel.selectedPost.id)
                 }
             }
         } message: {
@@ -222,9 +222,9 @@ struct HomeView: View {
         }
         .onAppear{
             Task{
-                currentUser = try await APIService.fetchCurrentUserData() ?? User(id: "default", account: "default@gmail.com")
-                userSetting = try await APIService.fetchCurrentSettingData() ?? UserSetting(id: "default", darkModeEnabled: false, language: "en", faceIdEnabled: false, pushNotificationsEnabled: false, messageNotificationsEnabled: false)
-                notiVM.fetchNotifcationRealTime(userId: currentUser.id)
+                tabVM.currentUser = try await APIService.fetchCurrentUserData() ?? User(id: "default", account: "default@gmail.com")
+                tabVM.userSetting = try await APIService.fetchCurrentSettingData() ?? UserSetting(id: "default", darkModeEnabled: false, language: "en", faceIdEnabled: false, pushNotificationsEnabled: false, messageNotificationsEnabled: false)
+                notiVM.fetchNotifcationRealTime(userId: tabVM.currentUser.id)
             }
         }
     }

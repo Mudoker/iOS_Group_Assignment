@@ -16,17 +16,19 @@
 
 import SwiftUI
 
-struct ProfileToolBar: View {
+struct GuestProfileToolBar: View {
     // Control state
 //    @Binding var currentUser:User
 //    @Binding var userSetting:UserSetting
-    @ObservedObject var profileVM: ProfileViewModel
+//
+    var user: User
     
+    @ObservedObject var profileVM: GuestProfileViewModel
     @EnvironmentObject var tabVM: TabBarViewModel
 
     var body: some View {
         HStack{
-            Text(tabVM.currentUser.username)
+            Text(user.username)
                 .fontWeight(.bold)
                 .font(.system(size: profileVM.toolBarUserNameSize))
             
@@ -35,9 +37,9 @@ struct ProfileToolBar: View {
             
             // Setting
             Button {
-                profileVM.isSetting = true
+                profileVM.isPopover = true
             } label: {
-                Image(systemName: "gear")
+                Image(systemName: "ellipsis")
                     .font(.system(size: profileVM.toolBarSettingButtonSize))
             }
         }

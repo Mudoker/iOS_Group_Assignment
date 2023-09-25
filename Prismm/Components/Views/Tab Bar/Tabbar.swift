@@ -22,38 +22,58 @@ struct TabBar: View {
     @StateObject var notiVM = NotificationViewModel()
     @StateObject var homeVM = HomeViewModel()
     
+    
+//    @State var currentUser = User(id: "default", account: "default@gmail.com")
+//    @State var userSetting = UserSetting(id: "default", darkModeEnabled: false, language: "en", faceIdEnabled: true, pushNotificationsEnabled: true, messageNotificationsEnabled: false)
+    
     @EnvironmentObject var manager: AppManager
+    @EnvironmentObject var tabVM: TabBarViewModel
     
     // Localization
-    @AppStorage("selectedLanguage") var selectedLanguage = "en"
+    @AppStorage("selectedLanguage") var selectedLanguage = "vi"
     
     var body: some View {
-        if UIDevice.current.userInterfaceIdiom == .phone{
+        if UIDevice.current.userInterfaceIdiom == .phone {
             TabView(selection: $tabSelection) {
                 NavigationView {
                     HomeView(homeViewModel: homeVM, notiVM: notiVM)
                 }
                 .tag(0)
+                .tabItem {
+                    Image(systemName: "house")
+                }
                 
                 NavigationView {
                     AllChat()
                 }
                 .tag(1)
+                .tabItem {
+                    Image(systemName: "bubble.middle.bottom")
+                }
                 
                 NavigationView {
-                    AllChat()
+                    DiscoverView(notiVM: notiVM, homeVM: homeVM)
                 }
                 .tag(2)
+                .tabItem {
+                    Image(systemName: "magnifyingglass")
+                }
                 
                 NavigationView {
                     NotificationView(notiVM: notiVM)
                 }
                 .tag(3)
+                .tabItem {
+                    Image(systemName: "bell")
+                }
                 
                 NavigationView {
                     ProfileView()
                 }
                 .tag(4)
+                .tabItem {
+                    Image(systemName: "person")
+                }
             }
             .onAppear {
                 let tabBarAppearance = UITabBarAppearance()
@@ -61,16 +81,21 @@ struct TabBar: View {
                 UITabBar.appearance().scrollEdgeAppearance = tabBarAppearance
                 Task {
                     print("OK")
+                        tabVM.currentUser = try await APIService.fetchCurrentUserData() ?? User(id: "default", account: "default@gmail.com")
+                    tabVM.userSetting = try await APIService.fetchCurrentSettingData() ?? UserSetting(id: "default", darkModeEnabled: false, language: "en", faceIdEnabled: false, pushNotificationsEnabled: false, messageNotificationsEnabled: false)
+                    
                     homeVM.isFetchingPost = true
-                    homeVM.fetchUserFavouritePost(forUserId: Constants.currentUserID)
+                    homeVM.fetchUserFavouritePost(forUserId: tabVM.currentUser.id)
                     try await homeVM.fetchPosts()
                     homeVM.isFetchingPost = false
                 }
             }
-            .environment(\.locale, Locale(identifier: selectedLanguage)) // Localization
-            .overlay(alignment: .bottom) {
-                CustomTabbar(tabSelection: $tabSelection)
-            }
+            .environment(\.locale, Locale(identifier: tabVM.userSetting.language)) // Localization
+//            .overlay(alignment: .bottom) {
+//
+//                    CustomTabbar(tabSelection: $tabSelection)
+//
+//            }
             .onChange(of: manager.isSignIn, perform: { newValue in
                 print("reload")
                 tabSelection = 0
@@ -84,7 +109,7 @@ struct TabBar: View {
                             .onAppear {
                                 Task {
                                     homeVM.isFetchingPost = true
-                                    homeVM.fetchUserFavouritePost(forUserId: Constants.currentUserID)
+                                    homeVM.fetchUserFavouritePost(forUserId: tabVM.currentUser.id)
                                     try await homeVM.fetchPosts()
                                     homeVM.isFetchingPost = false
                                     
@@ -92,26 +117,43 @@ struct TabBar: View {
                             }
                     }
                     .tag(0)
+                    .tabItem {
+                        Image(systemName: "house")
+                    }
+                   
+     
                     
                     NavigationView {
                         AllChat()
                     }
                     .tag(1)
+                    .tabItem {
+                        Image(systemName: "bubble.middle.bottom")
+                    }
                     
                     NavigationView {
-                        AllChat()
+                        DiscoverView(notiVM: notiVM, homeVM: homeVM)
                     }
                     .tag(2)
+                    .tabItem {
+                        Image(systemName: "magnifyingglass")
+                    }
                     
                     NavigationView {
                         NotificationView(notiVM: notiVM)
                     }
                     .tag(3)
+                    .tabItem {
+                        Image(systemName: "bell")
+                    }
                     
                     NavigationView {
                         ProfileView()
                     }
                     .tag(4)
+                    .tabItem {
+                        Image(systemName: "person")
+                    }
                 }
                 .onAppear {
                     let tabBarAppearance = UITabBarAppearance()
@@ -119,16 +161,19 @@ struct TabBar: View {
                     UITabBar.appearance().scrollEdgeAppearance = tabBarAppearance
                     Task {
                         print("OK")
+                        tabVM.currentUser = try await APIService.fetchCurrentUserData() ?? User(id: "default", account: "default@gmail.com")
+                        tabVM.userSetting = try await APIService.fetchCurrentSettingData() ?? UserSetting(id: "default", darkModeEnabled: false, language: "en", faceIdEnabled: false, pushNotificationsEnabled: false, messageNotificationsEnabled: false)
+                        
                         homeVM.isFetchingPost = true
-                        homeVM.fetchUserFavouritePost(forUserId: Constants.currentUserID)
+                        homeVM.fetchUserFavouritePost(forUserId: tabVM.currentUser.id)
                         try await homeVM.fetchPosts()
                         homeVM.isFetchingPost = false
                     }
                 }
-                .environment(\.locale, Locale(identifier: selectedLanguage)) // Localization
-                .overlay(alignment: .bottom) {
-                    CustomTabbar(tabSelection: $tabSelection)
-                }
+                .environment(\.locale, Locale(identifier: tabVM.userSetting.language)) // Localization
+//                .overlay(alignment: .bottom) {
+//                    CustomTabbar(tabSelection: $tabSelection)
+//                }
             }
             .navigationViewStyle(StackNavigationViewStyle())
             .onChange(of: manager.isSignIn, perform: { newValue in
@@ -147,7 +192,9 @@ struct CustomTabbar: View {
     @Namespace var namespace
     
     // Localization
-    @AppStorage("selectedLanguage") var selectedLanguage = "en"
+    @AppStorage("selectedLanguage") var selectedLanguage = "vi"
+    
+    @EnvironmentObject var manager: AppManager
     
     // List of views
     let tabItems: [(image: String, page: String)] = [
@@ -179,13 +226,11 @@ struct CustomTabbar: View {
                                     Image(systemName: tabItems[index].image)
                                         .font(.title3)
                                         .foregroundColor(tabSelection == index ? .blue : .gray)
-                                        .frame(width: 24, height: 24)
+                                        .frame(width: 50, height: 50)
                                         .cornerRadius(10)
                                         .matchedGeometryEffect(id: tabItems[index].page, in: namespace)
                                     
-                                    Text(LocalizedStringKey(tabItems[index].page))
-                                        .font(.caption)
-                                        .foregroundColor(tabSelection == index ? .blue : .gray)
+
                                 }
                             }
                         }
@@ -197,7 +242,10 @@ struct CustomTabbar: View {
                 .padding(.vertical)
             }
             .edgesIgnoringSafeArea(.all)
+            .disabled(manager.isChat)
+            .opacity(manager.isChat ? 0 : 1)
         }
+        
         .environment(\.locale, Locale(identifier: selectedLanguage)) // Localization
     }
 }

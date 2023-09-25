@@ -35,6 +35,7 @@ class SettingViewModel: ObservableObject {
     @Published var isSignOutAlertPresented = false
     @Published var isSigningOut = false
     
+    @Published var avatarSelectedMedia: NSURL? = nil
     
     @Published var changePasswordCurrentPassword = ""
     @Published var changePasswordNewPassword = ""
@@ -47,6 +48,8 @@ class SettingViewModel: ObservableObject {
     @Published var newProfileFacebook: String = ""
     @Published var newProfileGmail: String = ""
     @Published var newProfileLinkedIn: String = ""
+    
+    @Published var isUpdateProfile = false
     
     func setValue(setting: UserSetting) {
         self.isDarkModeEnabled = setting.darkModeEnabled
@@ -148,7 +151,7 @@ class SettingViewModel: ObservableObject {
     }
     
     // update user information
-    func updateProfile() async -> User? {
+    func updateProfile() async throws -> User? {
         // get current user id
         let userID = Auth.auth().currentUser?.uid ?? ""
         
@@ -179,15 +182,20 @@ class SettingViewModel: ObservableObject {
                 updatedUser.linkedIn = newProfileLinkedIn
             }
             
+            if avatarSelectedMedia != NSURL(string: updatedUser.profileImageURL ?? "") {
+                print("update avt")
+                let mediaURL = try await APIService.createMediaToFirebase(newPostSelectedMedia: avatarSelectedMedia!)
+                updatedUser.profileImageURL = mediaURL
+                
+            }
+            
             let encodedUser = try Firestore.Encoder().encode(updatedUser)
             
             // Create or update user data in Firestore
-            if !userSnapshot.exists {
+            
                 try await Firestore.firestore().collection("users").document(userID).setData(encodedUser)
-            } else {
-                try await Firestore.firestore().collection("users").document(userID).updateData(encodedUser)
-                print("User data updated successfully to \(userID)")
-            }
+            
+          
             
             return updatedUser
         } catch {

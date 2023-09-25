@@ -199,7 +199,14 @@ struct Login: View {
                                             .font(authVM.conentFont)
                                         
                                         Button(action: {
-                                            authVM.signInWithBiometrics()
+                                            Task{
+                                                let result = await authVM.signInWithBiometrics()
+                                                
+                                                manager.isSignIn = result
+                                                print("Bio Test")
+                                                print(manager.isSignIn)
+                                            }
+                                            
                                         }) {
                                             Image(systemName: "faceid")
                                                 .resizable()

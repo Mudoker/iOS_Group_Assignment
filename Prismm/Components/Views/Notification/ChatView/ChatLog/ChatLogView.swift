@@ -21,6 +21,8 @@ struct ChatLogView: View {
     @ObservedObject var vm : ChatLogViewModel
     @State var isUserActive : Bool = true
     
+    @EnvironmentObject var manager : AppManager
+    @EnvironmentObject var tabVM : TabBarViewModel
     var body: some View {
         VStack {
             Spacer()
@@ -118,11 +120,16 @@ struct ChatLogView: View {
                 }
             }
         }
-//        .navigationTitle(vm.chatUser?.email.replacingOccurrences(of: "@gmail.com", with: "")  ?? "")
+        .toolbar(.hidden, for: .tabBar)
         .navigationBarTitleDisplayMode(.inline)
+//        .onAppear{
+//            
+//        }
         .onDisappear{
             vm.firestoreListener?.remove()
+            manager.isChat = false
         }
+        .background(tabVM.userSetting.darkModeEnabled ? .black : .white)
     }
 }
 

@@ -2,12 +2,13 @@ import SwiftUI
 import Kingfisher
 import AVKit
 
-struct PostGridView: View {
+struct GuestProfilePostGridView: View {
     // Control state
 //    @Binding var currentUser: User
 //    @Binding var userSetting: UserSetting
-    @ObservedObject var profileVM: ProfileViewModel
-    @EnvironmentObject var tabVM : TabBarViewModel
+    @ObservedObject var profileVM: GuestProfileViewModel
+    @EnvironmentObject var tabVM: TabBarViewModel
+    
 
     var columnsGrid: [GridItem] = [
         GridItem(.fixed((UIScreen.main.bounds.width/3) - 2), spacing: 2),

@@ -9,8 +9,9 @@ import Foundation
 
 class AppManager: ObservableObject{
     @Published var isSignIn = false
-    
+    @Published var isChat = false
     init(isSignIn: Bool = false) {
         self.isSignIn = isSignIn
+        self.isChat = false
     }
 }
