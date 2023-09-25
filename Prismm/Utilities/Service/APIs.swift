@@ -68,8 +68,16 @@ struct APIService {
                 let data = try documentSnapshot.data(as: User.self)
                 return data
             } else {
+                
+                // Create a new setting if it not exist
+                let newUser = User(id: currentUser.uid, account: currentUser.email ?? "default@gmail.com")
+                
+                let encodedUser = try Firestore.Encoder().encode(newUser)
+                
+                try await Firestore.firestore().collection("users").document(currentUser.uid).setData(encodedUser)
+
                 print("Document does not exist")
-                return nil
+                return newUser
             }
         } catch {
             print("Error fetching document: \(error)")
