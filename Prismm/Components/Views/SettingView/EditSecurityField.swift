@@ -116,17 +116,35 @@ struct EditSecurityField: View {
                         // Push view
                         Spacer()
                         
+                        
+                        
                         Toggle("", isOn: $settingVM.isFaceIdEnabled)
                             .padding(.bottom)
-                            .onChange(of: settingVM.isFaceIdEnabled) { _ in
-                                if settingVM.checkSecuritySettingChange() {
-                                    settingVM.hasSecuritySettingChanged = true
-                                } else {
-                                    settingVM.hasSecuritySettingChanged = false
+                            .onChange(of: settingVM.isFaceIdEnabled) { newValue in
+                                print(newValue)
+                                if newValue == true {
+                                    Task{
+                                        let checked = await settingVM.checkBiometrics()
+                                        if checked == true {
+                                            print("Success")
+                                            tabVM.userSetting.faceIdEnabled = true
+                                            await settingVM.updateSettings(userSetting: tabVM.userSetting)
+                                            
+                                            UserDefaults.standard.setValue(true, forKey: "faceIdEnabled")
+                                        }else{
+                                            print("Failed")
+                                            settingVM.isFaceIdEnabled = false
+                                        }
+                                        
+                                    }
+                                }else{
+                                    Task{
+                                        tabVM.userSetting.faceIdEnabled = false
+                                        await settingVM.updateSettings(userSetting: tabVM.userSetting)
+                                        UserDefaults.standard.setValue(false, forKey: "faceIdEnabled")
+                                    }
                                 }
-                                Task{
-                                    await settingVM.updateSettings(userSetting: tabVM.userSetting)
-                                }
+                                
                             }
                     }
                     .padding(.horizontal)

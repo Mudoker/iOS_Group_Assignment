@@ -13,9 +13,9 @@
  Last modified: 09/09/2023
  Acknowledgement: None
  */
-
-import SwiftUI
 import Foundation
+import LocalAuthentication
+import SwiftUI
 import Firebase
 import FirebaseAuth
 import FirebaseFirestore
@@ -201,6 +201,47 @@ class SettingViewModel: ObservableObject {
         } catch {
             print("ERROR: Failed to update user data.")
             return nil
+        }
+    }
+    
+    @MainActor
+    func checkBiometrics() async  -> Bool {
+        let context = LAContext()
+        var biometricError: NSError?
+
+        // Check if biometrics is available
+        if context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &biometricError) {
+            // Authenticate using biometrics
+            let localizedReason = "Authenticate with Biometrics"
+
+            let success = await withCheckedContinuation { (continuation: CheckedContinuation<Bool, Never>) in
+                context.evaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, localizedReason: localizedReason) { success, authenticationError in
+                    DispatchQueue.main.async {
+                        if success {
+                            // Successful biometric authentication
+                            continuation.resume(returning: true)
+                        } else {
+                            // Handle biometric authentication failure
+                            if let error = authenticationError {
+                                print("Biometric auth failed: \(error.localizedDescription)")
+                            } else {
+                                print("Biometric auth failed.")
+                            }
+                            continuation.resume(returning: false)
+                        }
+                    }
+                }
+            }
+
+            return success
+        } else {
+            // Biometrics not available or supported
+            if let error = biometricError {
+                print("Biometrics not available: \(error.localizedDescription)")
+            } else {
+                print("Biometrics not supported on this device.")
+            }
+            return false
         }
     }
     
