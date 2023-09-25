@@ -50,30 +50,30 @@ struct APIService {
     }
 
     // Fetch current user data from Firebase
+    
     static func fetchCurrentUserData() async throws -> User? {
-        // Get the current authenticated user
-        guard let currentUser = Auth.auth().currentUser else { return nil }
-        
-        // Fetch user data from Firestore
-        guard let userSnapshot = try? await Firestore.firestore().collection("users").document(currentUser.uid).getDocument() else { return nil }
-        
-        // Check if the user data exists
-        if !userSnapshot.exists {
-            do {
-                // Create new user data if it not exist
-                let newUser = User(id: currentUser.uid, account: currentUser.email!)
-                
-                let encodedUser = try Firestore.Encoder().encode(newUser)
-                try await Firestore.firestore().collection("users").document(currentUser.uid).setData(encodedUser)
-                
-                return newUser
-            } catch {
-                print("ERROR: Fail to add user data")
+            // Get the current authenticated user
+            guard let currentUser = Auth.auth().currentUser else { return nil }
+            
+            // Fetch user data from Firestore
+            guard let userSnapshot = try await Firestore.firestore().collection("users").document(currentUser.uid).getDocument() else { return nil }
+            
+            // Check if the user data exists
+            if !userSnapshot.exists {
+                do {
+                    // Create new user data if it not exist
+                    let newUser = User(id: currentUser.uid, account: currentUser.email!)
+                    
+                    let encodedUser = try Firestore.Encoder().encode(newUser)
+                    try await Firestore.firestore().collection("users").document(currentUser.uid).setData(encodedUser)
+                    
+                    return newUser
+                } catch {
+                    print("ERROR: Fail to add user data")
+                }
+            } else {
+                return try? userSnapshot.data(as: User.self)
             }
-        } else {
-            return try? userSnapshot.data(as: User.self)
-        }
-        
         return nil
     }
     
