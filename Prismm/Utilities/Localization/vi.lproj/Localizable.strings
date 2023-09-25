@@ -32,6 +32,10 @@
 "Dashboard" = "Trang chủ";
 "Message" = "Tin nhắn";
 "Explore" = "Khám phá";
+"Let's explore" = "Khám phá nào";
+"Posts" = "Bài viết";
+"People" = "Ngừoi dùng";
+"see all" = "Xem hết";
 "Notification" = "Thông báo";
 "Profile" = "Hồ sơ";
 "Search" = "Tìm kiếm";
@@ -76,7 +80,7 @@
 "Connections" = "Liên kết";
 "Followers" = "Người theo dõi";
 "Following" = "Đang theo dõi";
-"Edit Profile" = "Cập nhật thông tin";
+"Edit Profile" = "Cập nhật";
 "Facebook Link" = "Facebook Link";
 "FullName" = "Tên đầy đủ";
 "Quote" = "Trích dẫn";
@@ -140,8 +144,8 @@
 "Restrict this user" = "Hạn chế người dùng này";
 "Restrict" = "Hạn chế";
 "Stop receiving notification from this user" = "Ngừng nhận thông báo từ người dùng này";
-"Turn off comment for this post" = "Tắt bình luận cho bài viết này"
-"Turn on comment for this post" = "Bật bình luận cho bài viết này"
+"Turn off comment for this post" = "Tắt bình luận cho bài viết này";
+"Turn on comment for this post" = "Bật bình luận cho bài viết này";
 "Turn off" = "Tắt";
 "Turn on" = "Bật";
 "Delete this post" = "Xoá bài viết này";
@@ -149,3 +153,4 @@
 "This will permanently delete this post" = "Xoá vĩnh viễn bài viết này";
 "Comment" = "Bình luận";
 "Just now" = "Ngay bây giờ";
+"Uploading ..." = "Tải lên ...";

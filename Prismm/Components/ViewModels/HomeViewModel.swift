@@ -49,6 +49,7 @@ class HomeViewModel: ObservableObject {
     @Published var isSignOutAlertPresented = false
     @Published var selectedCommentFilter = "Newest"
     @Published var isFetchingPost = false
+    @Published var isUploadingPost = false
     @Published var newPostId = ""
     @Published var isEditNewPostOnIpad = false
     @Published var isEditNewPostOnIphone = false

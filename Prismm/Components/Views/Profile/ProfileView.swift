@@ -28,7 +28,10 @@ struct ProfileView: View {
     
     var body: some View {
         VStack(alignment: .leading){
-            ProfileToolBar(currentUser: $currentUser, userSetting: $userSetting, profileVM: profileVM)
+            VStack{
+                ProfileToolBar(currentUser: $currentUser, userSetting: $userSetting, profileVM: profileVM)
+            }
+            .padding(.horizontal,15)
             
             ScrollView{
                 //MARK: PROFILE INFO BLOCK
@@ -70,6 +73,7 @@ struct ProfileView: View {
                                             .fontWeight(.bold)
                                         Text(LocalizedStringKey("Followers"))
                                     }
+                                    .frame(height: 40)
                                 }
                                 
                                 
@@ -81,6 +85,7 @@ struct ProfileView: View {
                                             .fontWeight(.bold)
                                         Text(LocalizedStringKey("Following"))
                                     }
+                                    .frame(height: 40)
                                 }
                                 
                                 
@@ -92,7 +97,7 @@ struct ProfileView: View {
                                     EditProfileView(currentUser: $currentUser, userSetting: $userSetting)
                                 }, label: {
                                     Text(LocalizedStringKey("Edit Profile"))
-                                            .fontWeight(.bold)
+                                            .fontWeight(.semibold)
                                             .foregroundColor(.black)
                                             .frame(width: profileVM.editButtonWidth, height: profileVM.editButtonHeight)
                                             .background{
@@ -113,17 +118,19 @@ struct ProfileView: View {
                             }
                         }
                     }
+                    .padding(.horizontal,15)
                     
                     // Username
                     HStack{
                         Text(currentUser.username)
                             .fontWeight(.bold)
                     }
-                    
+                    .padding(.horizontal,15)
                     //bio
                     HStack{
                         Text(currentUser.bio!)
                     }
+                    .padding(.horizontal,15)
                 }
                 
                 //MARK: tab changing between user post and archived posts
