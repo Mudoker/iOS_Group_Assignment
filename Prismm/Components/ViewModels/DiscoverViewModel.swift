@@ -98,8 +98,15 @@ class DiscoverViewModel : ObservableObject{
     }
     @MainActor
     func getDefaultPostList() {
-        for i in 0...5 {
-            defaultPost.append(postList[i])
+        if postList.count > 6{
+            for i in 0...5 {
+                defaultPost.append(postList[i])
+            }
+        }
+        else{
+            for i in 0..<postList.count{
+                defaultPeople.append(allUser[i])
+            }
         }
     }
     
@@ -123,8 +130,15 @@ class DiscoverViewModel : ObservableObject{
     
     @MainActor
     func getDefaultPeopleList() {
-        for i in 0...5 {
-            defaultPeople.append(allUser[i])
+        if allUser.count > 6{
+            for i in 0...5 {
+                defaultPeople.append(allUser[i])
+            }
+        }
+        else{
+            for i in 0..<allUser.count{
+                defaultPeople.append(allUser[i])
+            }
         }
     }
     

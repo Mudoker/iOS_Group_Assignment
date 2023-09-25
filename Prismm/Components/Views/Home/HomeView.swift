@@ -160,6 +160,7 @@ struct HomeView: View {
                     Color.gray.opacity(0.3).edgesIgnoringSafeArea(.all)
                     ProgressView("Loading ...")
                 }
+                
             }
         }
         .alert("Block this user?", isPresented: $homeViewModel.isBlockUserAlert) {

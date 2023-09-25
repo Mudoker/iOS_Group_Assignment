@@ -74,7 +74,7 @@ class ProfileViewModel: ObservableObject {
     }
     
     var infoBlockSpacing : CGFloat{
-        UIDevice.current.userInterfaceIdiom == .phone ? 15 : 20
+        UIDevice.current.userInterfaceIdiom == .phone ? 12 : 20
     }
     
     var editButtonWidth : CGFloat{

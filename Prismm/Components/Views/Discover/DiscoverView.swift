@@ -88,7 +88,7 @@ struct DiscoverView: View {
                                     }
                                     .frame(height: 25)
                                 }
-                                if (!discoverVm.searchTerm.isEmpty) {
+                                if (!discoverVm.searchTerm.isEmpty && discoverVm.birthMonth?.option == "Posts") {
                                     ScrollView(.horizontal){
                                         LazyHStack{
                                             ForEach(filteredTags, id: \.self){ tag in
@@ -161,11 +161,27 @@ struct DiscoverView: View {
                                                             .overlay{
                                                                 VStack{
                                                                     //  User information
-                                                                    Image("testAvt")
-                                                                        .resizable()
-                                                                        .scaledToFit()
-                                                                        .frame(width: UIScreen.main.bounds.width/(UIDevice.current.userInterfaceIdiom == .phone ? 2 : 10))
-                                                                        .clipShape(Circle())
+                                                                    if let mediaURL = URL(string: person.profileImageURL ?? "") {
+                                                                        
+                                                                        KFImage(mediaURL)
+                                                                            .resizable()
+                                                                            .frame(width:  UIScreen.main.bounds.width/(UIDevice.current.userInterfaceIdiom == .phone ? 2 : 10))
+                                                                            .clipShape(Circle())
+                                                                            .background(Circle().foregroundColor(Color.gray))
+                                                                        
+                                                                    } else {
+                                                                        // Handle the case where the media URL is invalid or empty.
+                                                                        Image(systemName: "person.circle.fill")
+                                                                            .resizable()
+                                                                            .scaledToFit()
+                                                                            .frame(width:  UIScreen.main.bounds.width/(UIDevice.current.userInterfaceIdiom == .phone ? 2 : 10))
+                                                                    }
+                                                                    
+//                                                                    Image("\(person.profileImageURL ?? "")")
+//                                                                        .resizable()
+//                                                                        .scaledToFit()
+//                                                                        .frame(width: UIScreen.main.bounds.width/(UIDevice.current.userInterfaceIdiom == .phone ? 2 : 10))
+//                                                                        .clipShape(Circle())
                                                                     
                                                                     VStack(alignment: .leading){
                                                                         Text(person.username)
@@ -281,20 +297,20 @@ struct filterView : View{
     @Binding var isOpenFilterOnIphone : Bool
     var body: some View{
         VStack{
-            VStack{
-                Button{
-                    isOpenFilterOnIphone = false
-                } label: {
-                    Image(systemName: "x.circle")
-                }
-            }
+//            VStack{
+//                Button{
+//                    isOpenFilterOnIphone = false
+//                } label: {
+//                    Image(systemName: "x.circle")
+//                }
+//            }
             DropdownMenu(
                 selectedOption: self.$birthMonth,
                 placeholder: "Select your birth month",
                 options: DropdownMenuOption.testAllMonths
             )
         }
-        .frame(width: 200, height: 200)
+        .frame(width: 150, height: 150)
         .presentationCompactAdaptation(.popover)
     }
 }
