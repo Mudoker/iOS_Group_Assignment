@@ -16,8 +16,6 @@ struct RecentMessage: Codable,Identifiable {
     let timestamp:  Date
     let isSeen : Bool
     
-    
-    
     var timeAgo: String {
         let formatter = RelativeDateTimeFormatter()
         formatter.unitsStyle = .abbreviated

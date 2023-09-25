@@ -30,7 +30,6 @@ struct PrismmApp: App {
             }
         }
         
-        
     }
     
     // Configure firebase

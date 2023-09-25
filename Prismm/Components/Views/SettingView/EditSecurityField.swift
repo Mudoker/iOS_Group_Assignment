@@ -169,7 +169,7 @@ struct EditSecurityField: View {
                 .foregroundColor(tabVM.userSetting.darkModeEnabled ? .white : .black)
                 .background(!tabVM.userSetting.darkModeEnabled ? .white : .black)
                 .onAppear{
-                    isGoogleSignIn = (Auth.auth().currentUser?.providerData[0].providerID == "google.com")
+                    isGoogleSignIn = (Auth.auth().currentUser?.providerData[0].providerID == "google.com" && Auth.auth().currentUser?.providerData.count ?? 0 < 2)
                 }
                 .alert("Unavailable", isPresented: $isGoogleSignIn) {
                     Button {

@@ -50,6 +50,7 @@ class HomeViewModel: ObservableObject {
     @Published var selectedCommentFilter = "Newest"
     @Published var isFetchingPost = false
     @Published var isUploadingPost = false
+    @Published var isEditingPost = false
     @Published var newPostId = ""
     @Published var isEditNewPostOnIpad = false
     @Published var isEditNewPostOnIphone = false
@@ -57,7 +58,7 @@ class HomeViewModel: ObservableObject {
     @Published var editSelectedPostTag: [String] = []
     
     @Published var selectedPost = Post(id: "", ownerID: "", creationDate: Timestamp(), isAllowComment: true)
-
+    
     // Firebase Listener
     private var commentListenerRegistration: ListenerRegistration?
     private var likePostListenerRegistration: ListenerRegistration?
@@ -65,7 +66,7 @@ class HomeViewModel: ObservableObject {
     private var currentUserBlockListListenerRegistration: ListenerRegistration?
     private var currentUserRestrictListListenerRegistration: ListenerRegistration?
     private var currentUserFollowListListenerRegistration: ListenerRegistration?
-
+    
     // Fetched values
     @Published var fetchedCommentsByPostId = [String: Set<Comment>]()
     @Published var currentUserBlockList = UserBlockList(blockedIds: [], beBlockedBy: [])
@@ -75,7 +76,7 @@ class HomeViewModel: ObservableObject {
     @Published var fetchedAllStories = [Story]()
     @Published var currentUserFavouritePost = [FavouritePost]()
     @Published var unwrappedCurrentUserFavouritePost = [Post]()
-
+    
     @ObservedObject var notiVM = NotificationViewModel()
     
     @Published var newPostSelectedMedia: NSURL? = nil
@@ -86,6 +87,19 @@ class HomeViewModel: ObservableObject {
     
     // Responsive
     @Published var proxySize: CGSize = CGSize(width: 0, height: 0)
+    
+    
+    var buttonCreatePostViewHeight  : CGFloat{
+        UIDevice.current.userInterfaceIdiom == .phone ? proxySize.width / 7 : 100
+    }
+    
+    var iconCreatePostViewWidth1  : CGFloat{
+        UIDevice.current.userInterfaceIdiom == .phone ? proxySize.width / 13 : 30
+    }
+    
+    var iconCreatePostViewWidth  : CGFloat{
+        UIDevice.current.userInterfaceIdiom == .phone ? proxySize.width / 10 : 50
+    }
     
     var cornerRadius: CGFloat {
         UIDevice.current.userInterfaceIdiom == .phone ? proxySize.width / 40 : proxySize.width / 50
@@ -128,7 +142,7 @@ class HomeViewModel: ObservableObject {
     }
     
     var messageLogoSize: CGFloat {
-        UIDevice.current.userInterfaceIdiom == .phone ? proxySize.width / 14 : proxySize.width * 0.06
+        UIDevice.current.userInterfaceIdiom == .phone ? proxySize.width / 14 : proxySize.width * 0.04
     }
     
     var profileImageSize: CGFloat {
@@ -175,7 +189,7 @@ class HomeViewModel: ObservableObject {
     var commentTextFieldCornerRadius: CGFloat {
         UIDevice.current.userInterfaceIdiom == .phone ? proxySize.width * 0.1 : proxySize.width * 0.08
     }
-
+    
     // Fetch all comments for a post
     @MainActor
     func fetchAllComments(forPostID postID: String) {
@@ -222,7 +236,7 @@ class HomeViewModel: ObservableObject {
             }
         }
     }
-
+    
     
     // check if user has archived this post
     func isUserFavouritePost(withPostId postId: String, withUserId userId: String) -> Bool {
@@ -236,23 +250,23 @@ class HomeViewModel: ObservableObject {
     func fetchCurrentUserBlockList(completion: @escaping (UserBlockList?) -> Void) {
         currentUserBlockListListenerRegistration = Firestore.firestore().collection("test_block").whereField("ownerId", isEqualTo: "ZMSfvuGAW9OOSfM4mLVG10kAJJk2").addSnapshotListener { [weak self] querySnapshot, error in
             guard let self = self else { return }
-
+            
             if let error = error {
                 print("Error fetching block list: \(error)")
                 completion(nil)
                 return
             }
-
+            
             guard let documents = querySnapshot?.documents, !documents.isEmpty else {
                 print("No documents")
                 completion(nil)
                 return
             }
-
+            
             if documents.count > 1 {
                 print("Warning: More than one document found, using the first one.")
             }
-
+            
             if let userBlockList = try? documents[0].data(as: UserBlockList.self) {
                 self.currentUserBlockList = userBlockList
                 completion(userBlockList)
@@ -262,19 +276,19 @@ class HomeViewModel: ObservableObject {
             }
         }
     }
-
+    
     
     // Fetch the current user restrict list
     @MainActor
     func fetchCurrentUserRestrictList() {
         currentUserBlockListListenerRegistration = Firestore.firestore().collection("test_restrict").whereField("ownerId", isEqualTo: "ao2PKDpap4Mq7M5cn3Nrc1Mvoa42").addSnapshotListener { [weak self] querySnapshot, error in
             guard let self = self else { return }
-
+            
             if let error = error {
                 print("Error fetching restrict list: \(error)")
                 return
             }
-
+            
             guard let documents = querySnapshot?.documents else {
                 print("No documents")
                 return
@@ -292,17 +306,17 @@ class HomeViewModel: ObservableObject {
     func fetchCurrentUserFollowList() {
         currentUserFollowListListenerRegistration = Firestore.firestore().collection("test_follow").whereField("ownerId", isEqualTo: "ao2PKDpap4Mq7M5cn3Nrc1Mvoa42").addSnapshotListener { [weak self] querySnapshot, error in
             guard let self = self else { return }
-
+            
             if let error = error {
                 print("Error fetching follow list: \(error)")
                 return
             }
-
+            
             guard let documents = querySnapshot?.documents else {
                 print("No documents")
                 return
             }
-
+            
             if let userFollowList = documents.first.flatMap({ try? $0.data(as: UserFollowList.self) }) {
                 self.currentUserFollowList = userFollowList
             }
@@ -314,17 +328,17 @@ class HomeViewModel: ObservableObject {
     func fetchUserFavouritePost(forUserId userId: String) {
         favouritePostListenerRegistration = Firestore.firestore().collection("test_favourites").whereField("ownerId", isEqualTo: userId).addSnapshotListener { [weak self] querySnapshot, error in
             guard let self = self else { return }
-
+            
             if let error = error {
                 print("Error fetching posts: \(error)")
                 return
             }
-
+            
             guard let documents = querySnapshot?.documents else {
                 print("No documents")
                 return
             }
-
+            
             // Create a task group to fetch and append posts concurrently
             Task {
                 for queryDocumentSnapshot in documents {
@@ -520,7 +534,7 @@ class HomeViewModel: ObservableObject {
     
     // Create new post and upload to Firebase
     func createPost() async throws {
-    
+        
         // Get the current user id
         let ownerID = Auth.auth().currentUser?.uid ?? "fail"
         
@@ -542,7 +556,7 @@ class HomeViewModel: ObservableObject {
             id: postRef.documentID,
             ownerID: ownerID,
             caption: createNewPostCaption,
-
+            
             mediaURL: mediaURL,
             mediaMimeType: mediaMimeType,
             tag: selectedPostTag,
@@ -586,7 +600,7 @@ class HomeViewModel: ObservableObject {
         do {
             let postRef = Firestore.firestore().collection("test_posts").document(postID)
             _ = try await postRef.getDocument().data(as: Post.self)
-
+            
             // Now delete the post itself
             try await postRef.delete()
         } catch {
@@ -594,7 +608,7 @@ class HomeViewModel: ObservableObject {
             throw error // Rethrow the error for the caller to handle
         }
     }
-
+    
     
     // Edit the current post
     func editCurrentPost(postID: String, newPostCaption: String?, newMediaURL: NSURL?, editSelectedTag : [String?]) async throws {
@@ -677,7 +691,7 @@ class HomeViewModel: ObservableObject {
             throw error
         }
     }
-
+    
     // Fetch stories from Firestore
     @MainActor
     func fetchStories() async throws {
@@ -722,7 +736,7 @@ class HomeViewModel: ObservableObject {
             throw error
         }
     }
-
+    
     //Sort post by creation date
     func sortPostByTime(order: String, posts: [Post]) -> [Post] {
         var sortedPosts = posts
@@ -828,7 +842,7 @@ class HomeViewModel: ObservableObject {
     }
     
     
-
+    
     @MainActor
     func getLikeCount(forPostID postID: String, completion: @escaping (Int)  -> Void) {
         likePostListenerRegistration = Firestore.firestore().collection("test_likes").whereField("postId", isEqualTo: postID).addSnapshotListener { [weak self] querySnapshot, error in
@@ -845,7 +859,7 @@ class HomeViewModel: ObservableObject {
                 completion(0) // Return 0 when there's an error, and false for the boolean
                 return
             }
-
+            
             completion(documents.count)
         }
     }

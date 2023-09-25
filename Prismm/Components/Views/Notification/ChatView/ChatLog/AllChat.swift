@@ -16,10 +16,11 @@ import Foundation
 import Foundation
 import SwiftUI
 import Firebase
+import Kingfisher
 
 struct AllChat : View {
-//    @State var currentUser = User(id: "default", account: "default@gmail.com")
-//    @State var currentSetting = UserSetting(id: "default", darkModeEnabled: false, language: "en", faceIdEnabled: true, pushNotificationsEnabled: true, messageNotificationsEnabled: false)
+    //    @State var currentUser = User(id: "default", account: "default@gmail.com")
+    //    @State var currentSetting = UserSetting(id: "default", darkModeEnabled: false, language: "en", faceIdEnabled: true, pushNotificationsEnabled: true, messageNotificationsEnabled: false)
     
     @EnvironmentObject var tabbarVM: TabBarViewModel
     
@@ -43,7 +44,7 @@ struct AllChat : View {
                 ChatLogView(vm: chatLogViewModal)
             }
         }
-
+        
     }
     
     
@@ -101,7 +102,7 @@ struct AllChat : View {
                                             } label: {
                                                 HStack(spacing: 16) {
                                                     VStack{
-                                                        Image("sample_avatar")
+                                                        Image("testAvt")
                                                             .resizable()
                                                             .aspectRatio(contentMode: .fit)
                                                             .frame(width : 80, height : 80)
@@ -167,8 +168,6 @@ struct AllChat : View {
                                                     self.showChatLogVIew.toggle()
                                                     if let firstMessage = vm.recentMessages.first {
                                                         vm.updateIsSeen(forMessageWithID: firstMessage.id!)
-                                                        
-                                                        
                                                         
                                                     }
                                                     
@@ -249,7 +248,7 @@ struct AllChat : View {
                         //                        .frame(width: geometry.size.width)
                         
                     }
-                  
+                    
                     .frame(maxWidth: .infinity)
                     //                    .padding(.horizontal,190)
                     

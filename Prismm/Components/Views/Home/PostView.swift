@@ -343,17 +343,21 @@ struct PostView: View {
                 // Save post
                 Button(action: {
                     if isArchive {
-                        Task {
-                            try await homeViewModel.unFavorPost(ownerId: tabVM.currentUser.id ,postId: post.id)
-                        }
-                        isArchive = false
-                    } else {
-                        Task {
-                            try await homeViewModel.favorPost(ownerId: tabVM.currentUser.id ,postId: post.id)
-                        }
-                        isArchive = true
-                    }
-                }) {
+                                            if let index = homeViewModel.currentUserFavouritePost.firstIndex(where: { $0.postId == post.id }) {
+                                                homeViewModel.currentUserFavouritePost.remove(at: index)
+                                            }
+                                            Task {
+                                                try await homeViewModel.unFavorPost(ownerId: tabVM.currentUser.id ,postId: post.id)
+                                            }
+                                            
+                                            isArchive = false
+                                        } else {
+                                            Task {
+                                                try await homeViewModel.favorPost(ownerId: tabVM.currentUser.id ,postId: post.id)
+                                            }
+                                            isArchive = true
+                                        }
+                                }) {
                     HStack {
                         Image(systemName: "archivebox.fill")
                             .resizable()
@@ -376,23 +380,14 @@ struct PostView: View {
             
             // Comment bar
             HStack{
-                if let mediaURL = URL(string: post.mediaURL ?? "") {
-                    if let mimeType = post.mediaMimeType {
-                        if mimeType.hasPrefix("image") {
+                if let mediaURL = URL(string: tabVM.currentUser.profileImageURL ?? "") {
                             KFImage(mediaURL)
                                 .resizable()
                                 .scaledToFill()
                                 .frame(width: homeViewModel.commentProfileImageSize, height: homeViewModel.commentProfileImageSize ) // Set the desired width and height for your circular image
                                 .background(Color.gray)
                                 .clipShape(Circle())
-                        } else {
-                            // Handle image
-                            Text("Video detected!")
-                        }
-                    } else {
-                        // Handle the case where the mimeType is nil
-                        Text("Invalid MIME type")
-                    }
+                    
                 } else {
                     // Handle the case where the media URL is invalid or empty.
                     Image(systemName: "person.circle.fill")

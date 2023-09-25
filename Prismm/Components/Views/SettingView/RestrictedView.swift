@@ -13,55 +13,60 @@ struct RestrictedView: View {
     @ObservedObject var settingVM: SettingViewModel
     
     @StateObject var restrictVM = RestrictViewModel()
+    @EnvironmentObject var tabVM : TabBarViewModel
     
     var body: some View {
-        VStack{
-            HStack {
-                Button {
-                    settingVM.isRestrictedListSheetPresentedOniPhone = false
-                } label: {
-                    Text("Back")
-                        .foregroundColor(.black)
-                }
-               
-                Text("Restricted Account")
-                    .bold()
-                    .font(.body)
-                    .padding(.horizontal)
-                    .offset(x: 55)
-                Spacer()
-            }
-            .frame(height: 60)
-            .padding(.horizontal, 10)
-
-            
-            ScrollView{
-                ForEach(restrictVM.userRestricList) { user in
-                    VStack{
-                        RestrictedListRow(user: user, restrictVM: restrictVM)
+        ZStack {
+            VStack{
+                HStack {
+                    Button {
+                        settingVM.isRestrictedListSheetPresentedOniPhone = false
+                    } label: {
+                        Text("Back")
+                            .foregroundColor(tabVM.userSetting.darkModeEnabled ? .white : .black )
                     }
-                    .padding(.horizontal, 10)
-                    .padding(.vertical, 5)
+                    
+                    Text("Restricted Account")
+                        .bold()
+                        .font(.body)
+                        .padding(.horizontal)
+                        .offset(x: 55)
+                    Spacer()
+                }
+                .frame(height: 60)
+                .padding(.horizontal, 10)
+                
+                
+                ScrollView{
+                    ForEach(restrictVM.userRestricList) { user in
+                        VStack{
+                            RestrictedListRow(user: user, restrictVM: restrictVM)
+                        }
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 5)
+                    }
+                }
+                
+                Spacer()
+                
+            }
+            .onAppear{
+                Task {
+                    await restrictVM.fetchCurrentUserRestrictList()
+                    print("View")
+                    print(restrictVM.userRestricList)
                 }
             }
-            
-            Spacer()
-
-        }
-        .onAppear{
-            Task {
+            .refreshable {
+                restrictVM.userRestricList.removeAll()
                 await restrictVM.fetchCurrentUserRestrictList()
                 print("View")
                 print(restrictVM.userRestricList)
+                
             }
         }
-        .refreshable {
-            restrictVM.userRestricList.removeAll()
-            await restrictVM.fetchCurrentUserRestrictList()
-            print("View")
-            print(restrictVM.userRestricList)
-        
-        }
+        .background(tabVM.userSetting.darkModeEnabled ? .black : .white)
+        .foregroundColor(tabVM.userSetting.darkModeEnabled ? .white : .black )
     }
 }
 

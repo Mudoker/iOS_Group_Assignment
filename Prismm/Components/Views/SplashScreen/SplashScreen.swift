@@ -16,18 +16,26 @@
 
 import Foundation
 import SwiftUI
-
+import Firebase
 struct SplashScreen: View {
     @State private var isActive = false
     @State private var size = 0.8
     @State private var opacity = 0.5
     @State private var isText = false
     @State private var isDarMode = false
+    @StateObject var manager = AppManager(isSignIn:  Auth.auth().currentUser != nil ? true : false )
     var body: some View {
         NavigationStack{
             GeometryReader{ geometry in
                 if isActive {
-                    
+                    if !manager.isSignIn {
+                        Login()
+                           
+                            
+                    } else {
+                        TabBar()
+                            
+                    }
                 }
                 else{
                     ZStack{
@@ -65,10 +73,10 @@ struct SplashScreen: View {
                             }
                         }
                         .onAppear{
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 2.0){
-                                //                            self.isAcdtive = true
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 3.0){
                                 withAnimation(){
                                     self.isText = true
+                                    self.isActive = true
                                 }
                             }
                         }

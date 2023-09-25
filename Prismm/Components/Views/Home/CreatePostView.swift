@@ -20,8 +20,8 @@ import SwiftUI
 struct CreatePostView: View {
     // Control state
     @State private var users : [User] = []
-//    @Binding var currentUser:User
-//    @Binding var userSetting:UserSetting
+    //    @Binding var currentUser:User
+    //    @Binding var userSetting:UserSetting
     @ObservedObject var homeVM: HomeViewModel
     @State private var selectedTags: Set<String> = []
     @State var shouldPresentPickerSheet = false
@@ -33,7 +33,7 @@ struct CreatePostView: View {
     @State var isOpenPostTagListViewOnIphone = false
     @State var isOpenPostTagListViewOnIpad = false
     @State var proxySize = CGSize()
-
+    
     @State var isEmptyCaptionAlert = false
     
     @EnvironmentObject var tabVM: TabBarViewModel
@@ -113,7 +113,7 @@ struct CreatePostView: View {
                                     Image(systemName: "plus.app")
                                         .resizable()
                                         .aspectRatio(contentMode: .fit)
-                                        .frame(width: proxy.size.width/24)
+                                        .frame(width: homeVM.messageLogoSize, height: homeVM.messageLogoSize)
                                         .foregroundColor(!isDarkModeEnabled ? Constants.lightThemeColor : Constants.darkThemeColor)
                                     
                                     if homeVM.selectedUserTag.isEmpty {
@@ -324,10 +324,10 @@ struct CreatePostView: View {
                                 Image(systemName: "photo")
                                     .resizable()
                                     .aspectRatio(contentMode: .fill)
-                                    .frame(width: proxy.size.width/12)
+                                    .frame(width: homeVM.iconCreatePostViewWidth, height: homeVM.iconCreatePostViewWidth)
                                     .foregroundColor(.green)
                             }
-                            .padding(.trailing, 8)
+                            .padding(.trailing, 13)
                             
                             
                             Button(action: {
@@ -337,7 +337,7 @@ struct CreatePostView: View {
                                 Image(systemName: "camera.fill")
                                     .resizable()
                                     .aspectRatio(contentMode: .fill)
-                                    .frame(width: proxy.size.width/12)
+                                    .frame(width: homeVM.iconCreatePostViewWidth, height: homeVM.iconCreatePostViewWidth)
                                     .foregroundColor(!isDarkModeEnabled ? Constants.lightThemeColor : Constants.darkThemeColor)
                             }
                         }
@@ -351,7 +351,7 @@ struct CreatePostView: View {
                                 endPoint: .bottomTrailing
                             ), lineWidth: 1.5)
                     )
-                    .padding(.bottom)
+                    .padding(.bottom, UIDevice.current.userInterfaceIdiom == .phone ? 0 : 20)
                     .sheet(isPresented: $shouldPresentPickerSheet) {
                         UIImagePickerView(isPresented: $shouldPresentPickerSheet , selectedMedia: $homeVM.newPostSelectedMedia, sourceType: .photoLibrary)
                             .presentationDetents(shouldPresentCamera ? [.large] : [.medium])
@@ -364,8 +364,16 @@ struct CreatePostView: View {
                     
                     // Reminder
                     VStack(alignment: .leading) {
-                        Text ("No Sensitive, Explicit, or Harmful Content")
-                            .bold()
+                        HStack{
+                            Text ("No Sensitive, Explicit, or Harmful Content")
+                                .bold()
+                            Spacer()
+                            Image(systemName: "exclamationmark.triangle")
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width: homeVM.iconCreatePostViewWidth1, height: homeVM.iconCreatePostViewWidth1)
+                                .foregroundColor(!isDarkModeEnabled ? Constants.lightThemeColor : Constants.darkThemeColor)
+                        }
                         
                         Text ("Please refrain from these contents, as well as hate speech or harassment for a safer community.")
                             .opacity(0.8)
@@ -411,7 +419,7 @@ struct CreatePostView: View {
                         }
                     }) {
                         RoundedRectangle(cornerRadius: proxy.size.width/40)
-                            .frame(height: proxy.size.width/7)
+                            .frame(height: homeVM.buttonCreatePostViewHeight)
                             .foregroundColor(!isDarkModeEnabled ? Constants.lightThemeColor : Constants.darkThemeColor)
                             .overlay(
                                 HStack {
@@ -622,7 +630,7 @@ struct UserListView: View {
                     // Search a firend
                     TextField("", text: $searchProfileText, prompt: Text("Search a friend...").foregroundColor(isDarkModeEnabled ? .white.opacity(0.5) : .black.opacity(0.5))
                         .font(.title3)
-                        
+                              
                     )
                     .disableAutocorrection(true)
                     .autocapitalization(.none)
@@ -638,7 +646,7 @@ struct UserListView: View {
                                 if !selectedUsers.contains(where: { $0 == user }) {
                                     selectedUsers.append(user)
                                 }
-
+                                
                                 isShowUserTagList.toggle()
                             }) {
                                 HStack {

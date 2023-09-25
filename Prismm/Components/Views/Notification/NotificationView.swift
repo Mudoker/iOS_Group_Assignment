@@ -16,6 +16,8 @@
 import SwiftUI
 import Firebase
 import FirebaseAuth
+import Kingfisher
+
 struct NotificationView: View {
     // Control state
     @ObservedObject var notiVM: NotificationViewModel
@@ -43,7 +45,7 @@ struct NotificationView: View {
 
                     // Content
                     ForEach(notiVM.fetchedAllNotifications) { notification in
-                        NotificationRow(notification: notification, imageSize: proxy.size.width/7, isDarkMode: $isDarkMode)
+                        NotificationRow(notification: notification, imageSize: proxy.size.width/7, isDarkMode: $isDarkMode, sender: User(id: "", account: ""))
                             .padding()
                     }
 
@@ -64,7 +66,7 @@ struct NotificationRow: View {
     @Binding var isDarkMode: Bool
     @State var isShowPost = false
     @EnvironmentObject var tabVM : TabBarViewModel
-    
+    @State var sender: User
     var body: some View {
         Button (action: {
             Task {
@@ -75,17 +77,27 @@ struct NotificationRow: View {
             VStack(alignment: .leading, spacing: 8) {
                 // Notificaiton content
                 HStack {
-                    Image("testAvt")
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                        .frame(width: imageSize, height: imageSize)
-                        .clipShape(Circle())
+                    if let mediaURL = URL(string: sender.profileImageURL ?? "") {
+                        KFImage(mediaURL)
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                            .frame(width: imageSize, height: imageSize)
+                            .clipShape(Circle())
+                        
+                    } else {
+                        // Handle the case where the media URL is invalid or empty.
+                        Image(systemName: "person.circle.fill")
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                            .frame(width: imageSize, height: imageSize)
+                            .clipShape(Circle())
+                    }
 
                     VStack(alignment: .leading) {
                         Text(notification.senderName)
                             .font(.headline)
 
-                        Text(notification.messageContent)
+                        Text(LocalizedStringKey(stringLiteral: notification.messageContent) )
                             .font(.body)
                     }
 
@@ -96,6 +108,11 @@ struct NotificationRow: View {
             }
             .foregroundColor(tabVM.userSetting.darkModeEnabled ? .white : .black)
             .background(tabVM.userSetting.darkModeEnabled ? .black : .white)
+            .onAppear {
+                Task {
+                    sender = try await APIService.fetchUser(withUserID: notification.senderId)
+                }
+            }
         }
 //        .navigationDestination(isPresented: $isShowPost, destination: PostView(post: unwrapPost, currentUser: , userSetting: <#T##Binding<UserSetting>#>, homeViewModel: <#T##HomeViewModel#>, notiVM: <#T##NotificationViewModel#>, selectedPost: <#T##Binding<Post>#>, isAllowComment: <#T##Binding<Bool>#>))
     }

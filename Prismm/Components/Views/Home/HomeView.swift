@@ -27,7 +27,7 @@ struct HomeView: View {
     @State var isSelectedPostAllowComment = false
     
     @EnvironmentObject var tabVM: TabBarViewModel
-    
+    var notiManager = NotificationManager()
     var body: some View {
         GeometryReader { proxy in
             ZStack {
@@ -54,7 +54,7 @@ struct HomeView: View {
                                 homeViewModel.isCreateNewPostOnIphone.toggle()
                             }}) {
                                 if UIDevice.current.userInterfaceIdiom == .phone{
-                                    Image(systemName: "plus.app")
+                                    Image(systemName: "plus.app")			
                                         .resizable()
                                         .aspectRatio(contentMode: .fit)
                                         .frame(width: homeViewModel.messageLogoSize, height: homeViewModel.messageLogoSize)
@@ -73,8 +73,9 @@ struct HomeView: View {
                             
                         }
                         .frame(height: homeViewModel.appLogoSize / 4)
-                        
                     }
+                    .padding(.bottom)
+                    
                     ScrollView(.vertical, showsIndicators: false) {
 
                        
@@ -117,8 +118,11 @@ struct HomeView: View {
                         }
                         
                     }
+                    .sheet(isPresented: $homeViewModel.isEditNewPostOnIpad){
+                        EditPostView(homeVM: homeViewModel, isDarkModeEnabled: tabVM.userSetting.darkModeEnabled, isEditPost: $homeViewModel.isEditNewPostOnIpad, post: $homeViewModel.selectedPost)
+                                        }
                     .fullScreenCover(isPresented: $homeViewModel.isEditNewPostOnIphone){
-                        EditPostView(homeVM: homeViewModel, isEditPost: $homeViewModel.isEditNewPostOnIphone, post: $homeViewModel.selectedPost)
+                        EditPostView(homeVM: homeViewModel, isDarkModeEnabled: tabVM.userSetting.darkModeEnabled, isEditPost: $homeViewModel.isEditNewPostOnIphone, post: $homeViewModel.selectedPost)
                                         }
                     
                     .sheet(isPresented: $homeViewModel.isCreateNewPostOnIpad) {
@@ -221,6 +225,7 @@ struct HomeView: View {
             Text("\nThis will permanently delete this post")
         }
         .onAppear{
+            notiManager.requestNotificationPermission()
             Task{
                 tabVM.currentUser = try await APIService.fetchCurrentUserData() ?? User(id: "default", account: "default@gmail.com")
                 tabVM.userSetting = try await APIService.fetchCurrentSettingData() ?? UserSetting(id: "default", darkModeEnabled: false, language: "en", faceIdEnabled: false, pushNotificationsEnabled: false, messageNotificationsEnabled: false)

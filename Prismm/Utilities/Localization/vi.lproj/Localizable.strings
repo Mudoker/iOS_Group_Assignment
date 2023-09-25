@@ -156,3 +156,15 @@
 "Uploading ..." = "Tải lên ...";
 "Message" = "Tin nhắn";
 "Request" = "Đang chờ";
+"liked your post" = "đã thích bài viết của bạn";
+"commented on your post" = "đã bình luận";
+"started following you" = "đã bắt đầu theo dõi bạn";
+"just created a new post" = "vừa tạo bài viết mới";
+"m ago" = "p trước";
+"h ago" = "t trước";
+"d ago" = "ng trước";
+"Username" = "Tài khoản";
+"Username or Account" = "Tên đăng nhập";
+"Password" = "Mật khẩu";
+"Current Password" = "Mật khẩu hiện tại";
+

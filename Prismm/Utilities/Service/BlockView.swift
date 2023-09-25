@@ -13,55 +13,61 @@ struct BlockView: View {
     @ObservedObject var settingVM: SettingViewModel
     
     @StateObject var blockVM = BlockViewModel()
+    @EnvironmentObject var tabVM : TabBarViewModel
     
     var body: some View {
-        VStack{
-            HStack {
-                Button {
-                    settingVM.isBlockListSheetPresentedOniPhone = false
-                } label: {
-                    Text("Back")
-                        .foregroundColor(.black)
-                }
-               
-                Text("Blocked Accounts")
-                    .bold()
-                    .font(.body)
-                    .padding(.horizontal)
-                    .offset(x: 55)
-                Spacer()
-            }
-            .frame(height: 60)
-            .padding(.horizontal, 10)
-
-            
-            ScrollView{
-                ForEach(blockVM.userBlockList) { user in
-                    VStack{
-                        BlockListRow(user: user, blockVM: blockVM)
+        
+        ZStack {
+            VStack{
+                HStack {
+                    Button {
+                        settingVM.isBlockListSheetPresentedOniPhone = false
+                    } label: {
+                        Text("Back")
+                            .foregroundColor(tabVM.userSetting.darkModeEnabled ? .white : .black )
                     }
-                    .padding(.horizontal, 10)
-                    .padding(.vertical, 5)
+                    
+                    Text("Blocked Accounts")
+                        .bold()
+                        .font(.body)
+                        .padding(.horizontal)
+                        .offset(x: 55)
+                    Spacer()
+                }
+                .frame(height: 60)
+                .padding(.horizontal, 10)
+                
+                
+                ScrollView{
+                    ForEach(blockVM.userBlockList) { user in
+                        VStack{
+                            BlockListRow(user: user, blockVM: blockVM)
+                        }
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 5)
+                    }
+                }
+                
+                Spacer()
+                
+            }
+            .onAppear{
+                Task {
+                    await blockVM.fetchCurrentUserBlockList()
+                    print("View")
+                    print(blockVM.userBlockList)
                 }
             }
-            
-            Spacer()
-
-        }
-        .onAppear{
-            Task {
-                await blockVM.fetchCurrentUserBlockList() 
+            .refreshable {
+                blockVM.userBlockList.removeAll()
+                await blockVM.fetchCurrentUserBlockList()
                 print("View")
                 print(blockVM.userBlockList)
+                
             }
         }
-        .refreshable {
-            blockVM.userBlockList.removeAll()
-            await blockVM.fetchCurrentUserBlockList()
-            print("View")
-            print(blockVM.userBlockList)
-        
-        }
+        .background(tabVM.userSetting.darkModeEnabled ? .black : .white)
+        .foregroundColor(tabVM.userSetting.darkModeEnabled ? .white : .black )
     }
 }
 

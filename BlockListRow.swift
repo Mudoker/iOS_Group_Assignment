@@ -11,61 +11,66 @@ import Kingfisher
 struct BlockListRow: View {
     let user: User
     @ObservedObject var blockVM: BlockViewModel
+    @EnvironmentObject var tabVM : TabBarViewModel
+    
     var body: some View {
-        HStack{
-
-            if user.profileImageURL != "" {
-                KFImage(URL(string: user.profileImageURL ?? ""))
-                    .resizable()
-                    .frame(width: 50 , height: 50)
-                    .clipShape(Circle())
-                    .background(Circle().foregroundColor(Color.gray))
-            
-
-            } else {
-                // Handle the case where the media URL is invalid or empty.
-                Image(systemName: "person.circle.fill")
-                    .resizable()
-                    .aspectRatio(contentMode: .fill)
-                    .frame(width: 55, height: 55)
+        ZStack {
+            HStack{
                 
-            }
-            
-            Text(user.username)
-            
-            Spacer()
-            Button {
-                
-                Task{
-                    var removeIndex = 0
-                    try await APIService.unblockOtherUser(forUserID: user.id)
+                if user.profileImageURL != "" {
+                    KFImage(URL(string: user.profileImageURL ?? ""))
+                        .resizable()
+                        .frame(width: 50 , height: 50)
+                        .clipShape(Circle())
+                        .background(Circle().foregroundColor(Color.gray))
                     
                     
-                    for index in blockVM.userBlockList.indices{
-                        if blockVM.userBlockList[index].id == user.id{
-                            removeIndex = index
+                } else {
+                    // Handle the case where the media URL is invalid or empty.
+                    Image(systemName: "person.circle.fill")
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                        .frame(width: 55, height: 55)
+                    
+                }
+                
+                Text(user.username)
+                    .foregroundColor(tabVM.userSetting.darkModeEnabled ? .white : .black )
+                
+                Spacer()
+                Button {
+                    
+                    Task{
+                        var removeIndex = 0
+                        try await APIService.unblockOtherUser(forUserID: user.id)
+                        
+                        
+                        for index in blockVM.userBlockList.indices{
+                            if blockVM.userBlockList[index].id == user.id{
+                                removeIndex = index
+                            }
+                        }
+                        
+                        withAnimation {
+                            blockVM.userBlockList.remove(at: removeIndex)
                         }
                     }
                     
-                    withAnimation {
-                        blockVM.userBlockList.remove(at: removeIndex)
-                    }
-                }
-                
-                
-                
-            } label: {
-                Text("Unblock")
-                    .foregroundColor(.red)
-                    .frame(width: 100, height: 30)
-                    .background{
-                        Color.gray
-                    }
-                    .clipShape(RoundedRectangle(cornerRadius: 10))
                     
+                    
+                } label: {
+                    Text("Unblock")
+                        .foregroundColor(.red)
+                        .frame(width: 100, height: 30)
+                        .background{
+                            Color.gray
+                        }
+                        .clipShape(RoundedRectangle(cornerRadius: 10))
+                    
+                }
             }
-
         }
+        
     }
     
     

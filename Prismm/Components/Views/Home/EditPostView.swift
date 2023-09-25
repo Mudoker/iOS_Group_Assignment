@@ -21,8 +21,8 @@ import SwiftUI
 struct EditPostView: View {
     @State private var users : [User] = []
     
-//    @Binding var currentUser:User
-//    @Binding var userSetting:UserSetting
+    //    @Binding var currentUser:User
+    //    @Binding var userSetting:UserSetting
     @ObservedObject var homeVM: HomeViewModel
     @EnvironmentObject var tabVM: TabBarViewModel
     
@@ -32,9 +32,10 @@ struct EditPostView: View {
     @State var shouldPresentCamera = false
     @State var selected = false
     
+    var isDarkModeEnabled: Bool
     
     @Binding var isEditPost: Bool
-
+    
     
     @State var isOpenUserListViewOnIphone = false
     @State var isOpenUserListViewOnIpad = false
@@ -67,58 +68,150 @@ struct EditPostView: View {
     
     var body: some View {
         GeometryReader { proxy in
-            VStack {
-                ZStack {
-                    Text("Edit your post")
-                        .bold()
-                        .font(.title)
-                        .padding(.vertical)
+            ZStack{
+                VStack {
+                    ZStack {
+                        Text("Edit your post")
+                            .bold()
+                            .font(.title)
+                            .padding(.vertical)
+                        
+                        HStack {
+                            Spacer()
+                            
+                            Button(action: {
+                                isEditPost = false // Close the sheet
+                            }) {
+                                Image(systemName: "xmark.circle.fill") // You can use any close button icon
+                                    .font(.title)
+                            }
+                        }
+                    }
+                    
+                    Divider()
+                        .overlay(tabVM.userSetting.darkModeEnabled ? .white : .gray)
+                    
+                    HStack (alignment: .top) {
+                        Image("testAvt")
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                            .frame(width: proxy.size.width/7, height: proxy.size.width/7)
+                            .clipShape(Circle())
+                        
+                        VStack(alignment: .leading, spacing: 0) {
+                            Text(tabVM.currentUser.username)
+                                .bold()
+                                .font(.title3)
+                                .padding(.bottom, 8)
+                            
+                            Button(action: {
+                                if UIDevice.current.userInterfaceIdiom == .pad {
+                                    isOpenUserListViewOnIpad = true
+                                } else {
+                                    isOpenUserListViewOnIphone = true
+                                }
+                                print("ok")
+                            }) {
+                                HStack {
+                                    Image(systemName: "plus.app")
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fit)
+                                        .frame(width: proxy.size.width/24)
+                                        .foregroundColor(!tabVM.userSetting.darkModeEnabled ? Constants.lightThemeColor : Constants.darkThemeColor)
+                                    
+                                    if homeVM.selectedUserTag.isEmpty {
+                                        Text("Notify your friend")
+                                            .font(.callout)
+                                            .foregroundColor(!tabVM.userSetting.darkModeEnabled ? Constants.lightThemeColor : Constants.darkThemeColor)
+                                            .frame(height: proxy.size.height/40)
+                                    } else {
+                                        // Horizontal scroll view
+                                        ScrollView(.horizontal, showsIndicators: false) {
+                                            ScrollViewReader { scrollProxy in
+                                                HStack(spacing: proxy.size.width/30) {
+                                                    ForEach(homeVM.selectedUserTag, id: \.self) { user in
+                                                        HStack {
+                                                            Text(user.username)
+                                                                .foregroundColor(.white)
+                                                                .font(.callout)
+                                                            
+                                                            Button(action: {
+                                                                // Remove the user from the tagList
+                                                                if let index = homeVM.selectedUserTag.firstIndex(of: user) {
+                                                                    homeVM.selectedUserTag.remove(at: index)
+                                                                }
+                                                            }) {
+                                                                Image(systemName: "x.circle.fill")
+                                                                    .font(.callout)
+                                                                    .foregroundColor(.white)
+                                                            }
+                                                        }
+                                                        .padding(.horizontal, 8)
+                                                        .padding(.leading, 2)
+                                                        .padding(.vertical, 4.2)
+                                                        .background(Capsule()
+                                                            .foregroundColor(tabVM.userSetting.darkModeEnabled ? Constants.darkThemeColor : Constants.lightThemeColor))
+                                                        .id(user)
+                                                    }
+                                                    .onChange(of: homeVM.selectedUserTag.count) { _ in
+                                                        withAnimation {
+                                                            // automatically scroll to end
+                                                            scrollProxy.scrollTo(homeVM.selectedUserTag.last, anchor: .trailing)
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        .frame(height: proxy.size.height/40)
+                                    }
+                                }
+                            }
+                        }
+                        
+                        Spacer()
+                    }
+                    .padding(.top)
+                    
+                    ZStack (alignment: .topLeading) {
+                        RoundedRectangle(cornerRadius: proxy.size.width/40)
+                            .stroke(LinearGradient(
+                                gradient: Gradient(colors: tabVM.userSetting.darkModeEnabled ? Constants.buttonGradientColorDark : Constants.buttonGradientColorLight),
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            ), lineWidth: 1.5)
+                            .frame(height: proxy.size.height/4)
+                        
+                        TextField("", text: $homeVM.editPostCaption, prompt:  Text("Share your updates...").foregroundColor(tabVM.userSetting.darkModeEnabled ? .white.opacity(0.5) : .black.opacity(0.5))
+                            .font(.title3)
+                        )
+                        .autocorrectionDisabled(true)
+                        .textInputAutocapitalization(.never)
+                        .padding()
+                    }
+                    .padding(.vertical)
                     
                     HStack {
+                        Text("Tags")
+                            .bold()
+                            .font(.title3)
                         Spacer()
                         
                         Button(action: {
-                            isEditPost = false // Close the sheet
-                        }) {
-                            Image(systemName: "xmark.circle.fill") // You can use any close button icon
-                                .font(.title)
-                        }
-                    }
-                }
-                
-                Divider()
-                    .overlay(tabVM.userSetting.darkModeEnabled ? .white : .gray)
-                
-                HStack (alignment: .top) {
-                    Image("testAvt")
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                        .frame(width: proxy.size.width/7, height: proxy.size.width/7)
-                        .clipShape(Circle())
-                    
-                    VStack(alignment: .leading, spacing: 0) {
-                        Text(tabVM.currentUser.username)
-                            .bold()
-                            .font(.title3)
-                            .padding(.bottom, 8)
-                        
-                        Button(action: {
                             if UIDevice.current.userInterfaceIdiom == .pad {
-                                isOpenUserListViewOnIpad = true
+                                isOpenPostTagListViewOnIpad = true
                             } else {
-                                isOpenUserListViewOnIphone = true
+                                isOpenPostTagListViewOnIphone = true
                             }
-                            print("ok")
                         }) {
                             HStack {
-                                Image(systemName: "plus.app")
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fit)
-                                    .frame(width: proxy.size.width/24)
-                                    .foregroundColor(!tabVM.userSetting.darkModeEnabled ? Constants.lightThemeColor : Constants.darkThemeColor)
-                                
-                                if homeVM.selectedUserTag.isEmpty {
-                                    Text("Notify your friend")
+                                if homeVM.editSelectedPostTag.isEmpty {
+                                    Image(systemName: "tag")
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fit)
+                                        .frame(width: proxy.size.width/24)
+                                        .foregroundColor(!tabVM.userSetting.darkModeEnabled ? Constants.lightThemeColor : Constants.darkThemeColor)
+                                    
+                                    Text("Add a tag")
                                         .font(.callout)
                                         .foregroundColor(!tabVM.userSetting.darkModeEnabled ? Constants.lightThemeColor : Constants.darkThemeColor)
                                         .frame(height: proxy.size.height/40)
@@ -127,16 +220,17 @@ struct EditPostView: View {
                                     ScrollView(.horizontal, showsIndicators: false) {
                                         ScrollViewReader { scrollProxy in
                                             HStack(spacing: proxy.size.width/30) {
-                                                ForEach(homeVM.selectedUserTag, id: \.self) { user in
+                                                ForEach(homeVM.editSelectedPostTag, id: \.self) { tag in
                                                     HStack {
-                                                        Text(user.username)
+                                                        Spacer()
+                                                        Text(tag)
                                                             .foregroundColor(.white)
                                                             .font(.callout)
                                                         
                                                         Button(action: {
                                                             // Remove the user from the tagList
-                                                            if let index = homeVM.selectedUserTag.firstIndex(of: user) {
-                                                                homeVM.selectedUserTag.remove(at: index)
+                                                            if let index = homeVM.editSelectedPostTag.firstIndex(of: tag) {
+                                                                homeVM.editSelectedPostTag.remove(at: index)
                                                             }
                                                         }) {
                                                             Image(systemName: "x.circle.fill")
@@ -149,12 +243,12 @@ struct EditPostView: View {
                                                     .padding(.vertical, 4.2)
                                                     .background(Capsule()
                                                         .foregroundColor(tabVM.userSetting.darkModeEnabled ? Constants.darkThemeColor : Constants.lightThemeColor))
-                                                    .id(user)
+                                                    .id(tag)
                                                 }
-                                                .onChange(of: homeVM.selectedUserTag.count) { _ in
+                                                .onChange(of: homeVM.editSelectedPostTag.count) { _ in
                                                     withAnimation {
                                                         // automatically scroll to end
-                                                        scrollProxy.scrollTo(homeVM.selectedUserTag.last, anchor: .trailing)
+                                                        scrollProxy.scrollTo(homeVM.editSelectedPostTag.last, anchor: .trailing)
                                                     }
                                                 }
                                             }
@@ -165,290 +259,215 @@ struct EditPostView: View {
                             }
                         }
                     }
-                    
-                    Spacer()
-                }
-                .padding(.top)
-                
-                ZStack (alignment: .topLeading) {
-                    RoundedRectangle(cornerRadius: proxy.size.width/40)
-                        .stroke(LinearGradient(
-                            gradient: Gradient(colors: tabVM.userSetting.darkModeEnabled ? Constants.buttonGradientColorDark : Constants.buttonGradientColorLight),
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
-                        ), lineWidth: 1.5)
-                        .frame(height: proxy.size.height/4)
-                    
-                    TextField("", text: $homeVM.editPostCaption, prompt:  Text("Share your updates...").foregroundColor(tabVM.userSetting.darkModeEnabled ? .white.opacity(0.5) : .black.opacity(0.5))
-                        .font(.title3)
-                    )
-                    .autocorrectionDisabled(true)
-                    .textInputAutocapitalization(.never)
                     .padding()
-                }
-                .padding(.vertical)
-                
-                HStack {
-                    Text("Tags")
-                        .bold()
-                        .font(.title3)
-                    Spacer()
+                    .background(
+                        RoundedRectangle(cornerRadius: proxy.size.width/40)
+                            .stroke(LinearGradient(
+                                gradient: Gradient(colors: tabVM.userSetting.darkModeEnabled ? Constants.buttonGradientColorDark : Constants.buttonGradientColorLight),
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            ), lineWidth: 1.5)
+                    )
+                    .padding(.bottom)
+                    .sheet(isPresented: $shouldPresentPickerSheet) {
+                        UIImagePickerView(isPresented: $shouldPresentPickerSheet , selectedMedia: $homeVM.newPostSelectedMedia, sourceType: .photoLibrary)
+                            .presentationDetents(shouldPresentCamera ? [.large] : [.medium])
+                        
+                    }
+                    .fullScreenCover(isPresented: $shouldPresentCamera) {
+                        UIImagePickerView(isPresented: $shouldPresentCamera , selectedMedia: $homeVM.newPostSelectedMedia, sourceType: .camera)
+                            .ignoresSafeArea()
+                    }
+                    
+                    
+                    HStack {
+                        Text("Post Media")
+                            .bold()
+                            .font(.title3)
+                        Spacer()
+                        
+                        if homeVM.newPostSelectedMedia != nil {
+                            AsyncImage(url: homeVM.newPostSelectedMedia as? URL) { media in
+                                media
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(height: proxy.size.height/20 ) // Set the desired width and height for your circular image
+                                
+                            } placeholder: {
+                                ProgressView()
+                            }
+                            
+                            
+                            Text((homeVM.newPostSelectedMedia?.absoluteString)!)
+                                .opacity(0.5)
+                            Button {
+                                homeVM.newPostSelectedMedia = nil
+                            } label: {
+                                Image(systemName: "xmark.circle.fill") // You can use any close button icon
+                                
+                            }
+                            .foregroundColor(.gray)
+                            
+                        } else {
+                            Button(action: {
+                                shouldPresentCamera = false
+                                shouldPresentPickerSheet = true
+                            }) {
+                                Image(systemName: "photo")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fill)
+                                    .frame(width: homeVM.iconCreatePostViewWidth, height: homeVM.iconCreatePostViewWidth)
+                                    .foregroundColor(.green)
+                            }
+                            .padding(.trailing, 8)
+                            
+                            
+                            Button(action: {
+                                shouldPresentCamera = true
+                                shouldPresentPickerSheet = false
+                            }) {
+                                Image(systemName: "camera.fill")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fill)
+                                    .frame(width: homeVM.iconCreatePostViewWidth, height: homeVM.iconCreatePostViewWidth)
+                                    .foregroundColor(!tabVM.userSetting.darkModeEnabled ? Constants.lightThemeColor : Constants.darkThemeColor)
+                            }
+                        }
+                    }
+                    
+                    .padding()
+                    .background(
+                        RoundedRectangle(cornerRadius: proxy.size.width/40)
+                            .stroke(LinearGradient(
+                                gradient: Gradient(colors: tabVM.userSetting.darkModeEnabled ? Constants.buttonGradientColorDark : Constants.buttonGradientColorLight),
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            ), lineWidth: 1.5)
+                    )
+                    .padding(.bottom)
+                    .sheet(isPresented: $shouldPresentPickerSheet) {
+                        UIImagePickerView(isPresented: $shouldPresentPickerSheet , selectedMedia: $homeVM.newPostSelectedMedia, sourceType: .photoLibrary)
+                            .presentationDetents(shouldPresentCamera ? [.large] : [.medium])
+                        
+                    }
+                    .fullScreenCover(isPresented: $shouldPresentCamera) {
+                        UIImagePickerView(isPresented:  $shouldPresentCamera , selectedMedia: $homeVM.newPostSelectedMedia, sourceType: .camera )
+                            .ignoresSafeArea()
+                    }
+                    
+                    VStack(alignment: .leading) {
+                        HStack{
+                            Text ("No Sensitive, Explicit, or Harmful Content")
+                                .bold()
+                            Spacer()
+                            Image(systemName: "exclamationmark.triangle")
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width: homeVM.iconCreatePostViewWidth1, height: homeVM.iconCreatePostViewWidth1)
+                                .foregroundColor(!isDarkModeEnabled ? Constants.lightThemeColor : Constants.darkThemeColor)
+                        }
+                        
+                        Text ("Please refrain from these contents, as well as hate speech or harassment for a safer community.")
+                            .opacity(0.8)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                    .padding()
+                    .background(
+                        RoundedRectangle(cornerRadius: proxy.size.width/40)
+                            .stroke(LinearGradient(
+                                gradient: Gradient(colors: tabVM.userSetting.darkModeEnabled ? Constants.buttonGradientColorDark : Constants.buttonGradientColorLight),
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            ), lineWidth: 1.5)
+                    )
                     
                     Button(action: {
-                        if UIDevice.current.userInterfaceIdiom == .pad {
-                            isOpenPostTagListViewOnIpad = true
-                        } else {
-                            isOpenPostTagListViewOnIphone = true
-                        }
-                    }) {
-                        HStack {
-                            if homeVM.editSelectedPostTag.isEmpty {
-                                Image(systemName: "tag")
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fit)
-                                    .frame(width: proxy.size.width/24)
-                                    .foregroundColor(!tabVM.userSetting.darkModeEnabled ? Constants.lightThemeColor : Constants.darkThemeColor)
+                        Task {
+                            
+                            if let commentToUpdate = homeVM.fetchedAllPosts.firstIndex(where: { $0.id == post.id }) {
+                                // Create a modified version of the comment with updated content
+                                var updatedComment = homeVM.fetchedAllPosts[commentToUpdate]
+                                updatedComment.caption = homeVM.editPostCaption
                                 
-                                Text("Add a tag")
-                                    .font(.callout)
-                                    .foregroundColor(!tabVM.userSetting.darkModeEnabled ? Constants.lightThemeColor : Constants.darkThemeColor)
-                                    .frame(height: proxy.size.height/40)
-                            } else {
-                                // Horizontal scroll view
-                                ScrollView(.horizontal, showsIndicators: false) {
-                                    ScrollViewReader { scrollProxy in
-                                        HStack(spacing: proxy.size.width/30) {
-                                            ForEach(homeVM.editSelectedPostTag, id: \.self) { tag in
-                                                HStack {
-                                                    Spacer()
-                                                    Text(tag)
-                                                        .foregroundColor(.white)
-                                                        .font(.callout)
-                                                    
-                                                    Button(action: {
-                                                        // Remove the user from the tagList
-                                                        if let index = homeVM.editSelectedPostTag.firstIndex(of: tag) {
-                                                            homeVM.editSelectedPostTag.remove(at: index)
-                                                        }
-                                                    }) {
-                                                        Image(systemName: "x.circle.fill")
-                                                            .font(.callout)
-                                                            .foregroundColor(.white)
-                                                    }
-                                                }
-                                                .padding(.horizontal, 8)
-                                                .padding(.leading, 2)
-                                                .padding(.vertical, 4.2)
-                                                .background(Capsule()
-                                                    .foregroundColor(tabVM.userSetting.darkModeEnabled ? Constants.darkThemeColor : Constants.lightThemeColor))
-                                                .id(tag)
-                                            }
-                                            .onChange(of: homeVM.editSelectedPostTag.count) { _ in
-                                                withAnimation {
-                                                    // automatically scroll to end
-                                                    scrollProxy.scrollTo(homeVM.editSelectedPostTag.last, anchor: .trailing)
-                                                }
-                                            }
-                                        }
-                                    }
+                                // Optionally, use withAnimation to animate the update
+                                withAnimation {
+                                    // Assuming that you want to update the array element after updating the content
+                                    homeVM.fetchedAllPosts[commentToUpdate] = updatedComment
                                 }
-                                .frame(height: proxy.size.height/40)
                             }
+                            
+                            homeVM.isEditingPost = true
+                            let _ = try await homeVM.editCurrentPost(postID: post.id, newPostCaption: homeVM.editPostCaption, newMediaURL: homeVM.newPostSelectedMedia, editSelectedTag: homeVM.selectedPostTag)
+                            try await homeVM.fetchPosts()
+                            print(homeVM.editSelectedPostTag)
+                            isEditPost = false
+                            homeVM.isEditingPost = true
                         }
+                        
+                        //MARK: xiu hoi
+                        homeVM.isPostOnScreen.toggle()
+                    }) {
+                        RoundedRectangle(cornerRadius: proxy.size.width/40)
+                            .frame(height: proxy.size.width/7)
+                            .foregroundColor(!tabVM.userSetting.darkModeEnabled ? Constants.lightThemeColor : Constants.darkThemeColor)
+                            .overlay(
+                                HStack {
+                                    Text("Edit")
+                                        .font(.title3)
+                                        .bold()
+                                    
+                                    Image(systemName: "paperplane.fill")
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fit)
+                                        .frame(width: proxy.size.width/18)
+                                }
+                                    .foregroundColor(.white)
+                            )
                     }
-                }
-                .padding()
-                .background(
-                    RoundedRectangle(cornerRadius: proxy.size.width/40)
-                        .stroke(LinearGradient(
-                            gradient: Gradient(colors: tabVM.userSetting.darkModeEnabled ? Constants.buttonGradientColorDark : Constants.buttonGradientColorLight),
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
-                        ), lineWidth: 1.5)
-                )
-                .padding(.bottom)
-                .sheet(isPresented: $shouldPresentPickerSheet) {
-                    UIImagePickerView(isPresented: $shouldPresentPickerSheet , selectedMedia: $homeVM.newPostSelectedMedia, sourceType: .photoLibrary)
-                        .presentationDetents(shouldPresentCamera ? [.large] : [.medium])
+                    .padding(.top)
                     
-                }
-                .fullScreenCover(isPresented: $shouldPresentCamera) {
-                    UIImagePickerView(isPresented: $shouldPresentCamera , selectedMedia: $homeVM.newPostSelectedMedia, sourceType: .camera)
-                        .ignoresSafeArea()
-                }
-                
-                
-                HStack {
-                    Text("Post Media")
-                        .bold()
-                        .font(.title3)
                     Spacer()
-                    
-                    if homeVM.newPostSelectedMedia != nil {
-                        AsyncImage(url: homeVM.newPostSelectedMedia as? URL) { media in
-                            media
-                                .resizable()
-                                .scaledToFit()
-                                .frame(height: proxy.size.height/20 ) // Set the desired width and height for your circular image
-                            
-                        } placeholder: {
-                            ProgressView()
-                        }
-                        
-                        
-                        Text((homeVM.newPostSelectedMedia?.absoluteString)!)
-                            .opacity(0.5)
-                        Button {
-                            homeVM.newPostSelectedMedia = nil
-                        } label: {
-                            Image(systemName: "xmark.circle.fill") // You can use any close button icon
-                            
-                        }
-                        .foregroundColor(.gray)
-                        
-                    } else {
-                        Button(action: {
-                            shouldPresentCamera = false
-                            shouldPresentPickerSheet = true
-                        }) {
-                            Image(systemName: "photo")
-                                .resizable()
-                                .aspectRatio(contentMode: .fill)
-                                .frame(width: proxy.size.width/12)
-                                .foregroundColor(.green)
-                        }
-                        .padding(.trailing, 8)
-                        
-                        
-                        Button(action: {
-                            shouldPresentCamera = true
-                            shouldPresentPickerSheet = false
-                        }) {
-                            Image(systemName: "camera.fill")
-                                .resizable()
-                                .aspectRatio(contentMode: .fill)
-                                .frame(width: proxy.size.width/12)
-                                .foregroundColor(!tabVM.userSetting.darkModeEnabled ? Constants.lightThemeColor : Constants.darkThemeColor)
-                        }
-                    }
                 }
                 
-                .padding()
-                .background(
-                    RoundedRectangle(cornerRadius: proxy.size.width/40)
-                        .stroke(LinearGradient(
-                            gradient: Gradient(colors: tabVM.userSetting.darkModeEnabled ? Constants.buttonGradientColorDark : Constants.buttonGradientColorLight),
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
-                        ), lineWidth: 1.5)
-                )
-                .padding(.bottom)
-                .sheet(isPresented: $shouldPresentPickerSheet) {
-                    UIImagePickerView(isPresented: $shouldPresentPickerSheet , selectedMedia: $homeVM.newPostSelectedMedia, sourceType: .photoLibrary)
-                        .presentationDetents(shouldPresentCamera ? [.large] : [.medium])
+                .onAppear {
                     
-                }
-                .fullScreenCover(isPresented: $shouldPresentCamera) {
-                    UIImagePickerView(isPresented:  $shouldPresentCamera , selectedMedia: $homeVM.newPostSelectedMedia, sourceType: .camera )
-                        .ignoresSafeArea()
-                }
-                
-                VStack(alignment: .leading) {
-                    Text ("No Sensitive, Explicit, or Harmful Content")
-                        .bold()
-                    
-                    Text ("Please refrain from these contents, as well as hate speech or harassment for a safer community.")
-                        .opacity(0.8)
-                        .fixedSize(horizontal: false, vertical: true)
-                }
-                .padding()
-                .background(
-                    RoundedRectangle(cornerRadius: proxy.size.width/40)
-                        .stroke(LinearGradient(
-                            gradient: Gradient(colors: tabVM.userSetting.darkModeEnabled ? Constants.buttonGradientColorDark : Constants.buttonGradientColorLight),
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
-                        ), lineWidth: 1.5)
-                )
-                
-                Button(action: {
                     Task {
-                        
-                        if let commentToUpdate = homeVM.fetchedAllPosts.firstIndex(where: { $0.id == post.id }) {
-                            // Create a modified version of the comment with updated content
-                            var updatedComment = homeVM.fetchedAllPosts[commentToUpdate]
-                            updatedComment.caption = homeVM.editPostCaption
-
-                            // Optionally, use withAnimation to animate the update
-                            withAnimation {
-                                // Assuming that you want to update the array element after updating the content
-                                homeVM.fetchedAllPosts[commentToUpdate] = updatedComment
-                            }
-                        }
-
-                        
-                        let _ = try await homeVM.editCurrentPost(postID: post.id, newPostCaption: homeVM.editPostCaption, newMediaURL: homeVM.newPostSelectedMedia, editSelectedTag: homeVM.selectedPostTag)
-                        try await homeVM.fetchPosts()
-                        print(homeVM.editSelectedPostTag)
-                        isEditPost = false
+                        users = try await APIService.fetchAllUsers()
                     }
+                    proxySize = proxy.size
+                    if let caption = post.caption {
+                        homeVM.editPostCaption = caption
+                    } else {
+                        homeVM.editPostCaption = ""
+                    }
+                    homeVM.newPostSelectedMedia = NSURL(string: post.mediaURL ?? "")
+                    homeVM.editSelectedPostTag = post.tag
+                    print(post)
+                    print("\(post.caption)")
+                    print("\(homeVM.editPostCaption)222")
+                    print("\(homeVM.createNewPostCaption)111")
                     
-                    //MARK: xiu hoi
-                    homeVM.isPostOnScreen.toggle()
-                }) {
-                    RoundedRectangle(cornerRadius: proxy.size.width/40)
-                        .frame(height: proxy.size.width/7)
-                        .foregroundColor(!tabVM.userSetting.darkModeEnabled ? Constants.lightThemeColor : Constants.darkThemeColor)
-                        .overlay(
-                            HStack {
-                                Text("Edit")
-                                    .font(.title3)
-                                    .bold()
-                                
-                                Image(systemName: "paperplane.fill")
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fit)
-                                    .frame(width: proxy.size.width/18)
-                            }
-                                .foregroundColor(.white)
-                        )
-                }
-                .padding(.top)
-                
-                Spacer()
-            }
-            .onAppear {
-                
-                Task {
-                    users = try await APIService.fetchAllUsers()
-                }
-                proxySize = proxy.size
-                if let caption = post.caption {
-                    homeVM.editPostCaption = caption
-                } else {
-                    homeVM.editPostCaption = ""
-                }
-                homeVM.newPostSelectedMedia = NSURL(string: post.mediaURL ?? "")
-                homeVM.editSelectedPostTag = post.tag
-                print(post)
-                print("\(post.caption)")
-                print("\(homeVM.editPostCaption)222")
-                print("\(homeVM.createNewPostCaption)111")
-
-
                     
-            }
-            .padding(.horizontal)
-            .fullScreenCover(isPresented: $isOpenUserListViewOnIphone) {
-                UserListView(proxy: $proxySize, searchProfileText: $homeVM.userTagListSearchText, selectedUsers: $homeVM.selectedUserTag, isShowUserTagList: $isOpenUserListViewOnIphone, filteredUsers: $filteredUsers, isDarkModeEnabled: tabVM.userSetting.darkModeEnabled)
-            }
-            .sheet(isPresented: $isOpenUserListViewOnIpad) {
-                UserListView(proxy: $proxySize, searchProfileText: $homeVM.userTagListSearchText, selectedUsers: $homeVM.selectedUserTag, isShowUserTagList: $isOpenUserListViewOnIpad, filteredUsers: $filteredUsers, isDarkModeEnabled: tabVM.userSetting.darkModeEnabled)
-            }.fullScreenCover(isPresented: $isOpenPostTagListViewOnIphone) {
-                PostTagListView(proxy: $proxySize, searchTagText: $homeVM.userTagListSearchText, selectedTags: $homeVM.selectedPostTag, isShowPostTagList:$isOpenPostTagListViewOnIphone, filteredTags:  filteredTags, isDarkModeEnabled: tabVM.userSetting.darkModeEnabled)
-            }
-            .sheet(isPresented: $isOpenPostTagListViewOnIpad) {
-                PostTagListView(proxy: $proxySize, searchTagText: $homeVM.userTagListSearchText, selectedTags: $homeVM.selectedPostTag, isShowPostTagList:$isOpenPostTagListViewOnIpad, filteredTags:  filteredTags, isDarkModeEnabled: tabVM.userSetting.darkModeEnabled)
+                    
+                }
+                .padding(.horizontal)
+                .fullScreenCover(isPresented: $isOpenUserListViewOnIphone) {
+                    UserListView(proxy: $proxySize, searchProfileText: $homeVM.userTagListSearchText, selectedUsers: $homeVM.selectedUserTag, isShowUserTagList: $isOpenUserListViewOnIphone, filteredUsers: $filteredUsers, isDarkModeEnabled: tabVM.userSetting.darkModeEnabled)
+                }
+                .sheet(isPresented: $isOpenUserListViewOnIpad) {
+                    UserListView(proxy: $proxySize, searchProfileText: $homeVM.userTagListSearchText, selectedUsers: $homeVM.selectedUserTag, isShowUserTagList: $isOpenUserListViewOnIpad, filteredUsers: $filteredUsers, isDarkModeEnabled: tabVM.userSetting.darkModeEnabled)
+                }.fullScreenCover(isPresented: $isOpenPostTagListViewOnIphone) {
+                    PostTagListView(proxy: $proxySize, searchTagText: $homeVM.userTagListSearchText, selectedTags: $homeVM.selectedPostTag, isShowPostTagList:$isOpenPostTagListViewOnIphone, filteredTags:  filteredTags, isDarkModeEnabled: tabVM.userSetting.darkModeEnabled)
+                }
+                .sheet(isPresented: $isOpenPostTagListViewOnIpad) {
+                    PostTagListView(proxy: $proxySize, searchTagText: $homeVM.userTagListSearchText, selectedTags: $homeVM.selectedPostTag, isShowPostTagList:$isOpenPostTagListViewOnIpad, filteredTags:  filteredTags, isDarkModeEnabled: tabVM.userSetting.darkModeEnabled)
+                }
+                if (homeVM.isEditingPost){
+                    Color.gray
+                        .opacity(0.3)
+                        .edgesIgnoringSafeArea(.all)
+                    ProgressView("Editing ...")
+                }
             }
         }
         .foregroundColor(tabVM.userSetting.darkModeEnabled ? .white : .black)

@@ -82,7 +82,7 @@ struct CommentView: View {
                             ForEach(commentsForPost.sorted { $0.id < $1.id }) { comment in
                                 // Comment content
                                 HStack {
-                                    if let profileURLString = commentor.profileImageURL,
+                                    if let profileURLString = comment.unwrapCommentor?.profileImageURL,
                                        let mediaURL = URL(string: profileURLString) {
                                         KFImage(mediaURL)
                                             .resizable()

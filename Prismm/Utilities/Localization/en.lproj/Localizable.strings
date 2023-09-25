@@ -97,6 +97,9 @@
 "%@d ago" = "%@d ago";
 "%@h ago" = "%@h ago";
 "%@m ago" = "%@m ago";
+"m ago" = "m ago";
+"h ago" = "h ago";
+"d ago" = "d ago";
 "%@s ago" = "%@s ago";
 "Create new post" = "Create new post";
 "Notify your friend" = "Notify your friend";
@@ -156,4 +159,7 @@
 "Let's explore" = "Let's explore";
 "Message" = "Message";
 "Request" = "Request";
-
+"liked your post" = "liked your post";
+"commented on your post" = "commented on your post";
+"started following you" = "started following you";
+"just created a new post" = "just created a new post";
