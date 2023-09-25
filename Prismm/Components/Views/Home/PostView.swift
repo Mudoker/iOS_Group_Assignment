@@ -201,7 +201,7 @@ struct PostView: View {
                     .resizable()
                     .scaledToFit()
                     .frame(width: homeViewModel.seeMoreButtonSize)
-                    .foregroundColor(.black)
+                    .foregroundColor(tabVM.userSetting.darkModeEnabled ? .gray : .black)
             }
         }
             .padding(.horizontal)
@@ -282,7 +282,7 @@ struct PostView: View {
                             .resizable()
                             .aspectRatio(contentMode: .fit)
                             .frame(width: homeViewModel.postStatsImageSize)
-                            .foregroundColor(isLike ? .pink : .black)
+                            .foregroundColor(tabVM.userSetting.darkModeEnabled ? .pink : .pink)
                             .overlay (
                                 Image(systemName: "heart.fill")
                                     .resizable()
@@ -306,6 +306,22 @@ struct PostView: View {
                         selectedPost = post
                         homeViewModel.isOpenCommentViewOnIpad.toggle()
                         homeViewModel.fetchAllComments(forPostID: post.id)
+                        if let postComments = homeViewModel.fetchedCommentsByPostId[post.id] {
+                            // Convert the set to an array
+                            let commentArray = Array(postComments)
+                            
+                            // Call the function with the converted array
+                            let filteredComments = homeViewModel.filterCommentsByLists(
+                                restrictedList: homeViewModel.currentUserRestrictList.restrictIds,
+                                blockedList: homeViewModel.currentUserBlockList.blockedIds,
+                                beBlockedList: homeViewModel.currentUserBlockList.beBlockedBy,
+                                comments: commentArray
+                            )
+                            
+                            // Update the value in your model with the filtered comments (if needed)
+                            homeViewModel.fetchedCommentsByPostId[post.id] = Set(filteredComments)
+                        }
+
                     } else {
                         selectedPost = post
                         homeViewModel.isOpenCommentViewOnIphone.toggle()
@@ -317,7 +333,7 @@ struct PostView: View {
                             .resizable()
                             .aspectRatio(contentMode: .fit)
                             .frame(width: homeViewModel.postStatsImageSize)
-                            .foregroundColor(.black)
+                            .foregroundColor(tabVM.userSetting.darkModeEnabled ? .gray : .black)
                     }
                 }
                 
@@ -350,7 +366,7 @@ struct PostView: View {
                                     .resizable()
                                     .aspectRatio(contentMode: .fit)
                                     .frame(width: homeViewModel.postStatsImageSize)
-                                    .foregroundColor(isArchive ? .black : .black)
+                                    .foregroundColor(tabVM.userSetting.darkModeEnabled ? .gray : .black)
                             )
                     }
                     .padding(.trailing)
@@ -383,6 +399,7 @@ struct PostView: View {
                         .resizable()
                         .aspectRatio(contentMode: .fill)
                         .frame(width: 40, height: 40)
+                        
                 }
                 
                 Button(action: {
@@ -407,7 +424,7 @@ struct PostView: View {
                     }
                     .background(
                         RoundedRectangle(cornerRadius: homeViewModel.commentTextFieldCornerRadius)
-                            .fill(Color.gray.opacity(0.1))
+                            .fill(Color.gray.opacity(tabVM.userSetting.darkModeEnabled ? 0.7 : 0.1))
                     )
                     .foregroundColor(.primary) // Customize text color
                     .contentShape(Rectangle()) // Make the entire button area tappable
@@ -420,6 +437,7 @@ struct PostView: View {
             }
             .padding(.horizontal)
         }
+        .foregroundColor(tabVM.userSetting.darkModeEnabled ? .white :  .black)
         .onAppear {
             homeViewModel.getLikeCount(forPostID: post.id) { totalCount in
                 currentLike = totalCount

@@ -69,8 +69,8 @@ class HomeViewModel: ObservableObject {
     // Fetched values
     @Published var fetchedCommentsByPostId = [String: Set<Comment>]()
     @Published var currentUserBlockList = UserBlockList(blockedIds: [], beBlockedBy: [])
-    @Published var currentUserFollowList = [UserFollowList]()
-    @Published var currentUserRestrictList = [UserRestrictList]()
+    @Published var currentUserFollowList = UserFollowList(followIds: [], beFollowedBy: [])
+    @Published var currentUserRestrictList = UserRestrictList(restrictIds: [])
     @Published var fetchedAllPosts = [Post]()
     @Published var fetchedAllStories = [Story]()
     @Published var currentUserFavouritePost = [FavouritePost]()
@@ -281,8 +281,8 @@ class HomeViewModel: ObservableObject {
             }
             
             // Convert query results to UserRestrictList objects
-            self.currentUserRestrictList = documents.compactMap { queryDocumentSnapshot in
-                try? queryDocumentSnapshot.data(as: UserRestrictList.self)
+            if let userRestrictList = documents.first.flatMap({ try? $0.data(as: UserRestrictList.self) }) {
+                self.currentUserRestrictList = userRestrictList
             }
         }
     }
@@ -302,10 +302,9 @@ class HomeViewModel: ObservableObject {
                 print("No documents")
                 return
             }
-            
-            // Convert query results to UserFollowList objects
-            self.currentUserFollowList = documents.compactMap { queryDocumentSnapshot in
-                try? queryDocumentSnapshot.data(as: UserFollowList.self)
+
+            if let userFollowList = documents.first.flatMap({ try? $0.data(as: UserFollowList.self) }) {
+                self.currentUserFollowList = userFollowList
             }
         }
     }
@@ -653,7 +652,7 @@ class HomeViewModel: ObservableObject {
             
             // Sort the fetched posts by time in descending order
             fetchedAllPosts = sortPostByTime(order: "desc", posts: fetchedAllPosts)
-            
+            fetchedAllPosts = filterPostsByLists(restrictedList: currentUserRestrictList.restrictIds, blockedList: currentUserBlockList.blockedIds, beBlockedList: currentUserBlockList.beBlockedBy, posts: fetchedAllPosts)
             // Fetch user for each post's owner
             for i in 0..<fetchedAllPosts.count {
                 let post = fetchedAllPosts[i]
@@ -801,9 +800,8 @@ class HomeViewModel: ObservableObject {
     }
     
     // Filter posts and comments based on restricted and blocked lists for the current user
-    func filterPostsAndCommentsByLists(restrictedList: [String], blockedList: [String], posts: [Post], comments: [Comment]) -> ([Post], [Comment]) {
+    func filterPostsByLists(restrictedList: [String], blockedList: [String], beBlockedList: [String], posts: [Post]) -> ([Post]) {
         var filteredPosts: [Post] = []
-        var filteredComments: [Comment] = []
         
         for post in posts {
             // Check if the post owner's ID is not in the restricted or blocked list
@@ -812,27 +810,12 @@ class HomeViewModel: ObservableObject {
             }
         }
         
-        for comment in comments {
-            // Check if the commenter's ID is not in the restricted or blocked list
-            if !restrictedList.contains(comment.commenterId) && !blockedList.contains(comment.commenterId) {
-                filteredComments.append(comment)
-            }
-        }
-        
-        return (filteredPosts, filteredComments)
+        return (filteredPosts)
     }
     
     // Filter posts and comments to prevent interactions between blocked users
-    func filterPostsAndCommentsByLists(beBlockedList: [String], posts: [Post], comments: [Comment]) -> ([Post], [Comment]) {
-        var filteredPosts: [Post] = []
+    func filterCommentsByLists(restrictedList: [String], blockedList: [String], beBlockedList: [String], comments: [Comment]) -> ([Comment]) {
         var filteredComments: [Comment] = []
-        
-        for post in posts {
-            // Check if the post owner's ID is not in the restricted or blocked list
-            if !beBlockedList.contains(post.ownerID) {
-                filteredPosts.append(post)
-            }
-        }
         
         for comment in comments {
             // Check if the commenter's ID is not in the restricted or blocked list
@@ -841,7 +824,7 @@ class HomeViewModel: ObservableObject {
             }
         }
         
-        return (filteredPosts, filteredComments)
+        return (filteredComments)
     }
     
     

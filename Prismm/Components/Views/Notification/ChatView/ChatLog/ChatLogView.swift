@@ -22,7 +22,7 @@ struct ChatLogView: View {
     @State var isUserActive : Bool = true
     
     @EnvironmentObject var manager : AppManager
-    
+    @EnvironmentObject var tabVM : TabBarViewModel
     var body: some View {
         VStack {
             Spacer()
@@ -129,6 +129,7 @@ struct ChatLogView: View {
             vm.firestoreListener?.remove()
             manager.isChat = false
         }
+        .background(tabVM.userSetting.darkModeEnabled ? .black : .white)
     }
 }
 

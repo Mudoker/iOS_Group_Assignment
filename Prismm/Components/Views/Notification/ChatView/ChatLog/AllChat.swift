@@ -34,6 +34,7 @@ struct AllChat : View {
     @State var showNewMessageScreen = false
     
     @EnvironmentObject var manager : AppManager
+    @EnvironmentObject var tabVM : TabBarViewModel
     
     var body: some View {
         NavigationStack{
@@ -116,11 +117,11 @@ struct AllChat : View {
                                                             }
                                                         
                                                         VStack{
-                                                            Text(recentMessage.email.replacingOccurrences(of: "@gmail.com", with: ""))
+                                                            Text(recentMessage.email)
                                                                 .font(.system(size: 16, weight: .none))
-                                                                .foregroundColor(Color(.label))
+                                                                .foregroundColor(tabVM.userSetting.darkModeEnabled ?.white : .black)
                                                         }
-                                                        .frame(width: 80)
+                                                        .frame(width: 90)
                                                     }
                                                 }
                                             }
@@ -134,13 +135,20 @@ struct AllChat : View {
                             //Message
                             VStack(spacing: 15){
                                 HStack{
-                                    Text("Message (\(vm.recentMessages.count))")
-                                        .foregroundColor(.blue)
-                                    
+                                    HStack(spacing: 4){
+                                        Text("Message")
+                                            .foregroundColor(.blue)
+                                        Text("(\(vm.recentMessages.count))")
+                                            .foregroundColor(.blue)
+                                    }
                                     Spacer()
-                                    
-                                    Text("Request (0)")
-                                        .foregroundColor(.blue)
+                                    HStack(spacing: 4){
+                                        Text("Request")
+                                            .foregroundColor(.blue)
+                                        
+                                        Text("(0)")
+                                            .foregroundColor(.blue)
+                                    }
                                 }
                                 
                                 // Message List
@@ -191,9 +199,9 @@ struct AllChat : View {
                                                     
                                                     VStack(alignment: .leading, spacing: 8) {
                                                         HStack{
-                                                            Text(recentMessage.email.replacingOccurrences(of: "@gmail.com", with: ""))
+                                                            Text(recentMessage.email)
                                                                 .font(.system(size: 16, weight: .bold))
-                                                                .foregroundColor(Color(.label))
+                                                                .foregroundColor(tabVM.userSetting.darkModeEnabled ? .white : .black)
                                                             Spacer()
                                                             Text("\(recentMessage.timeAgo )")
                                                                 .font(.system(size: 14, weight: .semibold))
@@ -212,7 +220,7 @@ struct AllChat : View {
                                                                     .font(.system(size: 14))
                                                                     .multilineTextAlignment(.leading)
                                                                     .fontWeight(recentMessage.isSeen ? .regular : .bold)
-                                                                    .foregroundColor(recentMessage.isSeen ? Color(.darkGray): Color(.black))
+                                                                    .foregroundColor(recentMessage.isSeen ? Color(.darkGray): (tabVM.userSetting.darkModeEnabled ? .white : .black))
                                                                 Spacer()
                                                                 if (!recentMessage.isSeen){
                                                                     Circle()
@@ -241,6 +249,7 @@ struct AllChat : View {
                         //                        .frame(width: geometry.size.width)
                         
                     }
+                  
                     .frame(maxWidth: .infinity)
                     //                    .padding(.horizontal,190)
                     
@@ -255,14 +264,17 @@ struct AllChat : View {
                                 
                                 HStack(spacing: 10){
                                     Text(tabbarVM.currentUser.username)
+                                        .foregroundColor(tabVM.userSetting.darkModeEnabled ? .white : .black)
                                         .font(.title3)
                                         .fontWeight(.semibold)
                                         .onTapGesture {
                                             print(vm.recentMessages)
                                         }
+                                    
                                     VStack{
                                         Image(systemName: "chevron.down")
                                             .scaleEffect(0.6)
+                                            .foregroundColor(tabVM.userSetting.darkModeEnabled ?.white : .black)
                                     }
                                     .frame(width: 5, height: 5)
                                     
@@ -280,6 +292,7 @@ struct AllChat : View {
                 .padding(.horizontal,10)
             }
         }
+        .background(tabVM.userSetting.darkModeEnabled ?.black : .white)
         .onAppear{
             Task{
                 await vm.setMessageData()
@@ -295,7 +308,7 @@ struct AllChat : View {
             showNewMessageScreen.toggle()
         } label : {
             Image(systemName: "pencil.line")
-                .foregroundColor(.black)
+                .foregroundColor(tabVM.userSetting.darkModeEnabled ?.white : .black)
         }
         .fullScreenCover(isPresented: $showNewMessageScreen){
             CreateNewMessageView(didSelectChatUser: { user in

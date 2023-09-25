@@ -200,30 +200,6 @@ struct SettingView : View {
                                 Divider()
                                     .overlay(tabVM.userSetting.darkModeEnabled ? .gray : .gray)
 
-                                HStack {
-                                    Image(systemName: "message")
-                                        .resizable()
-                                        .aspectRatio(contentMode: .fill)
-                                        .frame(width: settingVM.iconSize, height: settingVM.iconSize)
-                                    
-                                    Text("Message Notification")
-                                        .font(settingVM.contentFont)
-                                    
-                                    Spacer()
-                                    
-                                    Toggle("", isOn: $settingVM.isMessageNotificationEnabled)
-                                        .padding(.vertical)
-                                        .onChange(of: settingVM.isMessageNotificationEnabled) { newValue in
-                                            tabVM.userSetting.messageNotificationsEnabled = newValue
-                                            
-                                            Task{
-                                                await
-                                                settingVM.updateSettings(userSetting: tabVM.userSetting)
-                                            }
-                                            
-                                        }
-                                }
-                                .padding(.bottom)
                                 
                             }
                             .padding(.horizontal)
@@ -293,39 +269,7 @@ struct SettingView : View {
                             )
                             .padding(.bottom)
                             
-                            VStack(alignment: .leading) {
-                                Text("Info")
-                                    .bold()
-                                    .padding(.bottom)
-                                    .font(settingVM.contentFont)
-                                
-                                HStack {
-                                    Button(action: {}) {
-                                        Image(systemName: "info.circle")
-                                            .resizable()
-                                            .aspectRatio(contentMode: .fill)
-                                            .frame(width: settingVM.iconSize, height: settingVM.iconSize)
-                                        
-                                        Text("About us")
-                                            .font(settingVM.contentFont)
-                                        
-                                        Spacer()
-                                        
-                                        Image(systemName: "arrow.right.square")
-                                            .resizable()
-                                            .aspectRatio(contentMode: .fill)
-                                            .frame(width: settingVM.iconSize, height: settingVM.iconSize)
-                                            .padding(.vertical)
-                                    }
-                                    .padding(.bottom)
-                                }
-                            }
-                            .padding(.horizontal)
-                            .padding(.top)
-                            .background(RoundedRectangle(cornerRadius: proxy.size.width/40)
-                                .fill(!tabVM.userSetting.darkModeEnabled ? .gray.opacity(0.1) : .gray.opacity(0.4))
-                            )
-                            .padding(.bottom)
+                            
                             
                             Spacer()
                             

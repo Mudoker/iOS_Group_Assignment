@@ -20,6 +20,8 @@ struct NotificationView: View {
     // Control state
     @ObservedObject var notiVM: NotificationViewModel
     @State var isDarkMode = false
+    @EnvironmentObject var tabVM : TabBarViewModel
+    
     var body: some View {
         GeometryReader { proxy in
             ZStack {
@@ -48,9 +50,9 @@ struct NotificationView: View {
                     Spacer()
                 }
             }
-            .foregroundColor(!isDarkMode ? .black : .white)
-            .background(isDarkMode ? .black : .white)
-            .preferredColorScheme(isDarkMode ? .dark : .light)
+            .foregroundColor(tabVM.userSetting.darkModeEnabled ? .white : .black)
+            .background(tabVM.userSetting.darkModeEnabled ? .black : .white)
+            .preferredColorScheme(tabVM.userSetting.darkModeEnabled ? .dark : .light)
         }
     }
 }
@@ -61,7 +63,8 @@ struct NotificationRow: View {
     @State var unwrapPost = Post(id: "", ownerID: "", creationDate: Timestamp(), isAllowComment: false)
     @Binding var isDarkMode: Bool
     @State var isShowPost = false
-
+    @EnvironmentObject var tabVM : TabBarViewModel
+    
     var body: some View {
         Button (action: {
             Task {
@@ -91,8 +94,8 @@ struct NotificationRow: View {
 
                 }
             }
-            .foregroundColor(!isDarkMode ? .black : .white)
-            .background(isDarkMode ? .black : .white)
+            .foregroundColor(tabVM.userSetting.darkModeEnabled ? .white : .black)
+            .background(tabVM.userSetting.darkModeEnabled ? .black : .white)
         }
 //        .navigationDestination(isPresented: $isShowPost, destination: PostView(post: unwrapPost, currentUser: , userSetting: <#T##Binding<UserSetting>#>, homeViewModel: <#T##HomeViewModel#>, notiVM: <#T##NotificationViewModel#>, selectedPost: <#T##Binding<Post>#>, isAllowComment: <#T##Binding<Bool>#>))
     }

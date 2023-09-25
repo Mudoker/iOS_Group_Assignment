@@ -10,9 +10,8 @@ import SwiftUI
 import Firebase
 
 class DiscoverViewModel : ObservableObject{
+  
     @Published var isOpenFilterOnIphone = false
-    
-    
     
     @Published var isSelectedPostAllowComment = false
     
@@ -96,6 +95,7 @@ class DiscoverViewModel : ObservableObject{
         
         return sortedPosts
     }
+    
     @MainActor
     func getDefaultPostList() {
         if postList.count > 6{
@@ -105,9 +105,10 @@ class DiscoverViewModel : ObservableObject{
         }
         else{
             for i in 0..<postList.count{
-                defaultPeople.append(allUser[i])
+                defaultPost.append(postList[i])
             }
         }
+    
     }
     
     @MainActor
@@ -124,7 +125,7 @@ class DiscoverViewModel : ObservableObject{
         
         for index in randomIndices {
             defaultPost.append(postList[index])
-            print(index)
+            print("\(index)1212")
         }
     }
     

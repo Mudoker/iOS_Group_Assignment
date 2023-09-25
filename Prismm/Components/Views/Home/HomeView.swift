@@ -35,7 +35,7 @@ struct HomeView: View {
                     ZStack(alignment: .top) {
                         // App logo
                         HStack {
-                            Image("logolight.text")
+                            Image(tabVM.userSetting.darkModeEnabled ? "logodark.text" : "logolight.text")
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
                                 .frame(width: homeViewModel.appLogoSize, height: homeViewModel.appLogoSize)
@@ -58,7 +58,7 @@ struct HomeView: View {
                                         .resizable()
                                         .aspectRatio(contentMode: .fit)
                                         .frame(width: homeViewModel.messageLogoSize, height: homeViewModel.messageLogoSize)
-                                        .foregroundColor(.pink.opacity(0.8))
+                                        .foregroundColor(tabVM.userSetting.darkModeEnabled ? Constants.darkThemeColor.opacity(0.8) : Constants.lightThemeColor.opacity(0.8))
                                         .padding()
                                 }
                                 else{
@@ -66,7 +66,7 @@ struct HomeView: View {
                                         .resizable()
                                         .aspectRatio(contentMode: .fit)
                                         .frame(width:homeViewModel.messageLogoSize , height: homeViewModel.messageLogoSize)
-                                        .foregroundColor(.pink.opacity(0.8))
+                                        .foregroundColor(tabVM.userSetting.darkModeEnabled ? Constants.darkThemeColor.opacity(0.8) : Constants.lightThemeColor.opacity(0.8))
                                         .padding()
                                 }
                             }
@@ -76,18 +76,8 @@ struct HomeView: View {
                         
                     }
                     ScrollView(.vertical, showsIndicators: false) {
-                        Divider()
-                        
-                        // Story view
-                        ScrollView(.horizontal, showsIndicators: false) {
-                            HStack(spacing: 40) {
-                                ForEach(0..<5, id: \.self) { _ in
-                                    StoryView(homeVM: homeViewModel)
-                                        .frame(width: homeViewModel.storyViewWidth, height: homeViewModel.storyViewHeight)
-                                }
-                            }
-                            .padding()
-                        }
+
+                       
                         
                         // Post view
                         if !homeViewModel.isFetchingPost {
@@ -118,7 +108,7 @@ struct HomeView: View {
                                 
                                 Text("You have caught up !")
                                     .font(.title)
-                                    .foregroundColor(.pink)
+                                    .foregroundColor(tabVM.userSetting.darkModeEnabled ? Constants.darkThemeColor :  Constants.lightThemeColor )
                                 
                                 Text("You've seen all new posts")
                                     .opacity(0.5)
@@ -163,6 +153,7 @@ struct HomeView: View {
                 
             }
         }
+        .background(tabVM.userSetting.darkModeEnabled ?.black: .white)
         .alert("Block this user?", isPresented: $homeViewModel.isBlockUserAlert) {
             Button("Cancel", role: .cancel) {
             }
