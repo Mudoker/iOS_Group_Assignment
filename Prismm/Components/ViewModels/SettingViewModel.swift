@@ -49,6 +49,8 @@ class SettingViewModel: ObservableObject {
     @Published var newProfileGmail: String = ""
     @Published var newProfileLinkedIn: String = ""
     
+    @Published var isUpdateProfile = false
+    
     func setValue(setting: UserSetting) {
         self.isDarkModeEnabled = setting.darkModeEnabled
         self.isFaceIdEnabled = setting.faceIdEnabled

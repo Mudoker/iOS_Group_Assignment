@@ -152,8 +152,9 @@ struct ProfileView: View {
                                 .frame(height: profileVM.tabIconHeight) //not responsive
                                 .foregroundColor(profileVM.isShowAllUserPost == 1 ? (tabVM.userSetting.darkModeEnabled ? .white : .black) : .gray)
                         }
-//                        .frame(width: profileVM.tabButtonSize)
+                        
                     }
+                    .frame(width: profileVM.tabButtonSize)
                     
                     Button {
                         withAnimation {

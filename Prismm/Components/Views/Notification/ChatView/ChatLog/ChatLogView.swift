@@ -21,6 +21,8 @@ struct ChatLogView: View {
     @ObservedObject var vm : ChatLogViewModel
     @State var isUserActive : Bool = true
     
+    @EnvironmentObject var manager : AppManager
+    
     var body: some View {
         VStack {
             Spacer()
@@ -120,8 +122,12 @@ struct ChatLogView: View {
         }
         .toolbar(.hidden, for: .tabBar)
         .navigationBarTitleDisplayMode(.inline)
+//        .onAppear{
+//            
+//        }
         .onDisappear{
             vm.firestoreListener?.remove()
+            manager.isChat = false
         }
     }
 }

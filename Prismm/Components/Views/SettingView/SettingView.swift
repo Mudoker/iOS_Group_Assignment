@@ -118,7 +118,7 @@ struct SettingView : View {
                                     .pickerStyle(MenuPickerStyle())
                                     .onChange(of: settingVM.selectedLanguage) { newValue in
                                         tabVM.userSetting.language = newValue
-                                        
+                                        print("new language: \(tabVM.userSetting.language)")
                                         Task{
                                             await
                                             settingVM.updateSettings(userSetting: tabVM.userSetting)

@@ -33,23 +33,16 @@ struct AllChat : View {
     @State var chatUser: User?
     @State var showNewMessageScreen = false
     
+    @EnvironmentObject var manager : AppManager
     
     var body: some View {
         NavigationStack{
-            
             mainMessageScreen
             NavigationLink("", isActive: $showChatLogVIew){
                 ChatLogView(vm: chatLogViewModal)
             }
+        }
 
-            
-        }
-        .onAppear{
-//            Task{
-//                currentUser = try await APIService.fetchCurrentUserData()!
-//                currentSetting = try await APIService.fetchCurrentSettingData()!
-//            }
-        }
     }
     
     
@@ -167,7 +160,10 @@ struct AllChat : View {
                                                     if let firstMessage = vm.recentMessages.first {
                                                         vm.updateIsSeen(forMessageWithID: firstMessage.id!)
                                                         
+                                                        
+                                                        
                                                     }
+                                                    
                                                 }
                                                 
                                                 
@@ -295,6 +291,7 @@ struct AllChat : View {
     
     var newMessageButton : some View{
         Button{
+            
             showNewMessageScreen.toggle()
         } label : {
             Image(systemName: "pencil.line")
