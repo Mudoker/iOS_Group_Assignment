@@ -55,30 +55,26 @@ struct APIService {
     // Fetch current user data from Firebase
     @MainActor
     static func fetchCurrentUserData() async throws -> User? {
-        // Get the current authenticated user
-        guard let currentUser = Auth.auth().currentUser else { return nil }
-        
-        // Fetch user data from Firestore
-        guard let userSnapshot = try? await Firestore.firestore().collection("users").document(currentUser.uid).getDocument() else { return nil }
-        
-        // Check if the user data exists
-        if !userSnapshot.exists {
-            do {
-                // Create new user data if it not exist
-                let newUser = User(id: currentUser.uid, account: currentUser.email!)
-                
-                let encodedUser = try Firestore.Encoder().encode(newUser)
-                try await Firestore.firestore().collection("users").document(currentUser.uid).setData(encodedUser)
-                
-                return newUser
-            } catch {
-                print("ERROR: Fail to add user data")
+        do {
+            // Get the current authenticated user
+            guard let currentUser = Auth.auth().currentUser else { return nil }
+            
+            let docRef = Firestore.firestore().collection("users").document(currentUser.uid)
+            
+            // Use async/await to fetch user data from Firestore
+            let documentSnapshot = try await docRef.getDocument()
+            
+            if documentSnapshot.exists{
+                let data = try documentSnapshot.data(as: User.self)
+                return data
+            } else {
+                print("Document does not exist")
+                return nil
             }
-        } else {
-            return try userSnapshot.data(as: User.self)
+        } catch {
+            print("Error fetching document: \(error)")
+            throw error
         }
-        
-        return nil
     }
     
     
@@ -319,6 +315,67 @@ struct APIService {
         }
     }
     
+    static func removeFollowOtherUser(forUserID userIDToUnFollow: String) async throws {
+        // Unblock (start receiving notifications + access to post/story + send messages + others can see your post)
+            do {
+                let userFollowListCollection = Firestore.firestore().collection("test_follow")
+                let currentUserID =  Auth.auth().currentUser?.uid ?? "ZMSfvuGAW9OOSfM4mLVG10kAJJk2"
+                
+
+                // Get the block list of the current user
+                let snapshotCurrentUserFollowList = try await userFollowListCollection.document(currentUserID).getDocument()
+                let snapshotTargetUserFollowList = try await userFollowListCollection.document(userIDToUnFollow).getDocument()
+                
+
+                // If the block list exists, remove the user ID from the blockedIds array
+                if snapshotTargetUserFollowList.exists {
+
+                    var existingFollowedIds = snapshotTargetUserFollowList["followIds"] as? [String] ?? []
+                    
+                    if let indexToRemove = existingFollowedIds.firstIndex(of: currentUserID) {
+                        existingFollowedIds.remove(at: indexToRemove)
+                        try await userFollowListCollection.document(userIDToUnFollow).updateData(["followIds": existingFollowedIds])
+                    }
+                    
+                }
+                
+                // If the block list exists, remove the user ID from the blockedIds array
+                
+                if snapshotCurrentUserFollowList.exists {
+                    var existingFollowedIds = snapshotCurrentUserFollowList["beFollowedBy"] as? [String] ?? []
+                    if let indexToRemove = existingFollowedIds.firstIndex(of: userIDToUnFollow) {
+                        existingFollowedIds.remove(at: indexToRemove)
+                        try await userFollowListCollection.document(currentUserID).updateData(["beFollowedBy": existingFollowedIds])
+                    }
+                    
+                }
+            } catch {
+                throw error
+        }
+    }
+    
+    static func changePassword(withEmail email: String, password: String, newpassword: String) {
+        let user = Auth.auth().currentUser
+        
+        let credential = EmailAuthProvider.credential(withEmail: email, password: password)
+
+        // Prompt the user to re-provide their sign-in credentials
+ 
+        user?.reauthenticate(with: credential) { result,error  in
+          if let error = error {
+            print("Wrong current password")
+            return
+          } else {
+            // User re-authenticated.
+              Auth.auth().currentUser?.updatePassword(to: newpassword) { (error) in
+                return
+              }
+              print("success")
+          }
+        }
+    }
+    
+    
     @MainActor
     static func fetchCurrentUserFollowList() async throws-> UserFollowList? {
         guard let currentUser = Auth.auth().currentUser else { return nil }
@@ -328,6 +385,7 @@ struct APIService {
         print("got snapshot")
         if !snapshot.exists{
             do {
+                print("got new follow")
                 let newUserFollowList = UserFollowList(followIds: [], beFollowedBy: [])
                 
                 let encodedList = try Firestore.Encoder().encode(newUserFollowList)

@@ -4,9 +4,10 @@ import AVKit
 
 struct PostGridView: View {
     // Control state
-    @Binding var currentUser: User
-    @Binding var userSetting: UserSetting
+//    @Binding var currentUser: User
+//    @Binding var userSetting: UserSetting
     @ObservedObject var profileVM: ProfileViewModel
+    @EnvironmentObject var tabVM : TabBarViewModel
 
     var columnsGrid: [GridItem] = [
         GridItem(.fixed((UIScreen.main.bounds.width/3) - 2), spacing: 2),
@@ -44,7 +45,7 @@ struct PostGridView: View {
                             }
                         } else {
                             // Handle the case where the media URL is invalid or empty.
-                            Image(userSetting.darkModeEnabled ? "logodark" : "logolight")
+                            Image(tabVM.userSetting.darkModeEnabled ? "logodark" : "logolight")
                         }
                     }
                 } else {
@@ -74,7 +75,7 @@ struct PostGridView: View {
                             }
                         } else {
                             // Handle the case where the media URL is invalid or empty.
-                            Image(userSetting.darkModeEnabled ? "logodark" : "logolight")
+                            Image(tabVM.userSetting.darkModeEnabled ? "logodark" : "logolight")
                         }
                     }
                 }

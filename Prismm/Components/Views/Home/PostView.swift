@@ -24,8 +24,8 @@ import FirebaseAuth
 struct PostView: View {
     // Control state
     var post: Post
-    @Binding var currentUser:User
-    @Binding var userSetting:UserSetting
+//    @Binding var currentUser:User
+//    @Binding var userSetting:UserSetting
     @ObservedObject var homeViewModel: HomeViewModel
     @ObservedObject var notiVM: NotificationViewModel
     @Binding var selectedPost: Post
@@ -35,15 +35,17 @@ struct PostView: View {
     @State var currentLike = 0
     @State var isArchive = false
     
+    @EnvironmentObject var tabVM: TabBarViewModel
+    
     var body: some View {
         VStack {
             //Post info.
             HStack
             {
             NavigationLink {
-                if(post.unwrappedOwner!.id == currentUser.id){
+                if(post.unwrappedOwner!.id == tabVM.currentUser.id){
                     ProfileView()
-                }else{
+                } else {
                     GuestProfileView(user: post.unwrappedOwner!)
                 }
                 
@@ -88,10 +90,10 @@ struct PostView: View {
                 }
                 
             }
-            .foregroundColor(userSetting.darkModeEnabled ? .white : .black)
+            .foregroundColor(tabVM.userSetting.darkModeEnabled ? .white : .black)
             
             Menu {
-                if (currentUser.id != post.ownerID) {
+                if (tabVM.currentUser.id != post.ownerID) {
                     Button(action: {
                         selectedPost = post
                         homeViewModel.isBlockUserAlert = true
@@ -138,7 +140,7 @@ struct PostView: View {
                 }
                 
                 
-                if (currentUser.id == post.ownerID) {
+                if (tabVM.currentUser.id == post.ownerID) {
                     // Delete post
                     Button(action: {
                         selectedPost = post
@@ -264,13 +266,13 @@ struct PostView: View {
                 Button(action: {
                     if isLike == false {
                         Task {
-                            try await homeViewModel.likePost(likerId: currentUser.id, postId: post.id)
-                            _ = try await notiVM.createInAppNotification(senderId: currentUser.id, receiverId: post.ownerID, senderName: currentUser.username, message: Constants.notiReact, postId: post.id, category: .react, blockedByList: [], blockedList: [])
+                            try await homeViewModel.likePost(likerId: tabVM.currentUser.id, postId: post.id)
+                            _ = try await notiVM.createInAppNotification(senderId: tabVM.currentUser.id, receiverId: post.ownerID, senderName: tabVM.currentUser.username, message: Constants.notiReact, postId: post.id, category: .react, blockedByList: [], blockedList: [])
                         }
                         isLike = true
                     } else {
                         Task {
-                            try await homeViewModel.unLikePost(likerId: currentUser.id, postId: post.id)
+                            try await homeViewModel.unLikePost(likerId: tabVM.currentUser.id, postId: post.id)
                         }
                         isLike = false
                     }
@@ -326,12 +328,12 @@ struct PostView: View {
                 Button(action: {
                     if isArchive {
                         Task {
-                            try await homeViewModel.unFavorPost(ownerId: currentUser.id ,postId: post.id)
+                            try await homeViewModel.unFavorPost(ownerId: tabVM.currentUser.id ,postId: post.id)
                         }
                         isArchive = false
                     } else {
                         Task {
-                            try await homeViewModel.favorPost(ownerId: currentUser.id ,postId: post.id)
+                            try await homeViewModel.favorPost(ownerId: tabVM.currentUser.id ,postId: post.id)
                         }
                         isArchive = true
                     }
@@ -423,11 +425,12 @@ struct PostView: View {
                 currentLike = totalCount
             }
             
-            homeViewModel.isUserLikePost(forPostID: post.id, withUserId: currentUser.id) {isLikePost in
+            homeViewModel.isUserLikePost(forPostID: post.id, withUserId: tabVM.currentUser.id) {isLikePost in
                 isLike = isLikePost
             }
             
-            isArchive = homeViewModel.isUserFavouritePost(withPostId: post.id, withUserId: currentUser.id)
+            isArchive = homeViewModel.isUserFavouritePost(withPostId: post.id, withUserId: tabVM.currentUser.id)
+            print(isArchive)
             
             isAllowComment = post.isAllowComment
         }

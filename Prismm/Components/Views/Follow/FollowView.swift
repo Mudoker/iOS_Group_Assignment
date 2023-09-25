@@ -19,8 +19,11 @@ import SwiftUI
 struct FollowView: View {
     //Control state
     @ObservedObject var fvm : FollowViewModel
-    @Binding var currentUser : User
-    @Binding var userSetting : UserSetting
+//    @Binding var currentUser : User
+//    @Binding var userSetting : UserSetting
+    
+    @EnvironmentObject var tabVM:TabBarViewModel
+    
     var body: some View {
         ZStack {
             // Theme
@@ -30,7 +33,7 @@ struct FollowView: View {
             VStack(alignment: .center) {
                 //Navigation and Username
                 HStack{
-                    Text("\(currentUser.username)")
+                    Text("\(tabVM.currentUser.username)")
                         .font(.system(size: CGFloat(fvm.userNameFontSize)))
                         .fontWeight(.bold)
                     
@@ -104,9 +107,9 @@ struct FollowView: View {
     }
 }
 
-struct FollowView_Previews: PreviewProvider {
-    static var previews: some View {
-        FollowView(fvm: FollowViewModel(), currentUser: .constant(User(id: "1231231313", account: "tranvuquanganh87@gmailcom")), userSetting: .constant(UserSetting(id: "123131", darkModeEnabled: false, language: "en", faceIdEnabled: true, pushNotificationsEnabled: true, messageNotificationsEnabled: true)))
-        
-    }
-}
+//struct FollowView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        FollowView(fvm: FollowViewModel(), currentUser: .constant(User(id: "1231231313", account: "tranvuquanganh87@gmailcom")), userSetting: .constant(UserSetting(id: "123131", darkModeEnabled: false, language: "en", faceIdEnabled: true, pushNotificationsEnabled: true, messageNotificationsEnabled: true)))
+//        
+//    }
+//}

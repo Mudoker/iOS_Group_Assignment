@@ -18,8 +18,10 @@ import SwiftUI
 import Firebase
 
 struct AllChat : View {
-    @State var currentUser = User(id: "default", account: "default@gmail.com")
-    @State var currentSetting = UserSetting(id: "default", darkModeEnabled: false, language: "en", faceIdEnabled: true, pushNotificationsEnabled: true, messageNotificationsEnabled: false)
+//    @State var currentUser = User(id: "default", account: "default@gmail.com")
+//    @State var currentSetting = UserSetting(id: "default", darkModeEnabled: false, language: "en", faceIdEnabled: true, pushNotificationsEnabled: true, messageNotificationsEnabled: false)
+    
+    @EnvironmentObject var tabbarVM: TabBarViewModel
     
     @State var searchTerm : String = ""
     @State var searchState : Bool = true
@@ -43,10 +45,10 @@ struct AllChat : View {
             
         }
         .onAppear{
-            Task{
-                currentUser = try await APIService.fetchCurrentUserData()!
-                currentSetting = try await APIService.fetchCurrentSettingData()!
-            }
+//            Task{
+//                currentUser = try await APIService.fetchCurrentUserData()!
+//                currentSetting = try await APIService.fetchCurrentSettingData()!
+//            }
         }
     }
     
@@ -256,7 +258,7 @@ struct AllChat : View {
                                 //                                }
                                 
                                 HStack(spacing: 10){
-                                    Text(currentUser.username)
+                                    Text(tabbarVM.currentUser.username)
                                         .font(.title3)
                                         .fontWeight(.semibold)
                                         .onTapGesture {

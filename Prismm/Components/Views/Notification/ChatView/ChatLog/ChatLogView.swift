@@ -118,7 +118,7 @@ struct ChatLogView: View {
                 }
             }
         }
-//        .navigationTitle(vm.chatUser?.email.replacingOccurrences(of: "@gmail.com", with: "")  ?? "")
+        .toolbar(.hidden, for: .tabBar)
         .navigationBarTitleDisplayMode(.inline)
         .onDisappear{
             vm.firestoreListener?.remove()

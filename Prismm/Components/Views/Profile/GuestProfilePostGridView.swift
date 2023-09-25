@@ -4,10 +4,10 @@ import AVKit
 
 struct GuestProfilePostGridView: View {
     // Control state
-    @Binding var currentUser: User
-    @Binding var userSetting: UserSetting
+//    @Binding var currentUser: User
+//    @Binding var userSetting: UserSetting
     @ObservedObject var profileVM: GuestProfileViewModel
-    
+    @EnvironmentObject var tabVM: TabBarViewModel
     
 
     var columnsGrid: [GridItem] = [
@@ -46,7 +46,7 @@ struct GuestProfilePostGridView: View {
                             }
                         } else {
                             // Handle the case where the media URL is invalid or empty.
-                            Image(userSetting.darkModeEnabled ? "logodark" : "logolight")
+                            Image(tabVM.userSetting.darkModeEnabled ? "logodark" : "logolight")
                         }
                     }
                 } else {
@@ -76,7 +76,7 @@ struct GuestProfilePostGridView: View {
                             }
                         } else {
                             // Handle the case where the media URL is invalid or empty.
-                            Image(userSetting.darkModeEnabled ? "logodark" : "logolight")
+                            Image(tabVM.userSetting.darkModeEnabled ? "logodark" : "logolight")
                         }
                     }
                 }

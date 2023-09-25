@@ -13,17 +13,20 @@ import FirebaseAuth
 
 @main
 struct PrismmApp: App {
-    @StateObject var manager = AppManager(isSignIn: Auth.auth().currentUser != nil ? true : false )
+    @StateObject var manager = AppManager(isSignIn:  Auth.auth().currentUser != nil ? true : false )
     @StateObject var notiVM = NotificationViewModel()
+    @StateObject var tabVM = TabBarViewModel()
     
     var body: some Scene {
         WindowGroup {
             if !manager.isSignIn {
                 Login()
                     .environmentObject(manager)
+                    
             } else {
                 TabBar()
                     .environmentObject(manager)
+                    .environmentObject(tabVM)
             }
         }
         

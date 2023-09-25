@@ -149,7 +149,7 @@ class SettingViewModel: ObservableObject {
     }
     
     // update user information
-    func updateProfile() async -> User? {
+    func updateProfile() async throws -> User? {
         // get current user id
         let userID = Auth.auth().currentUser?.uid ?? ""
         
@@ -190,12 +190,10 @@ class SettingViewModel: ObservableObject {
             let encodedUser = try Firestore.Encoder().encode(updatedUser)
             
             // Create or update user data in Firestore
-            if !userSnapshot.exists {
+            
                 try await Firestore.firestore().collection("users").document(userID).setData(encodedUser)
-            } else {
-                try await Firestore.firestore().collection("users").document(userID).updateData(encodedUser)
-                print("User data updated successfully to \(userID)")
-            }
+            
+          
             
             return updatedUser
         } catch {

@@ -13,6 +13,7 @@
 		2F6A329F2ABD95920043946A /* AppManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F6A329E2ABD95920043946A /* AppManager.swift */; };
 		2F6A32A12ABDFEE10043946A /* BlockView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F6A32A02ABDFEE10043946A /* BlockView.swift */; };
 		2FA272402AC03D3900BBDE37 /* EditPostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FA2723F2AC03D3900BBDE37 /* EditPostView.swift */; };
+		2FA272422AC0D66C00BBDE37 /* TabBarViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FA272412AC0D66C00BBDE37 /* TabBarViewModel.swift */; };
 		2FB5DC832ABE94E000ED47DF /* BlockViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FB5DC822ABE94E000ED47DF /* BlockViewModel.swift */; };
 		2FB5DC852ABE9F5600ED47DF /* BlockListRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FB5DC842ABE9F5500ED47DF /* BlockListRow.swift */; };
 		2FB5DC872ABEA72000ED47DF /* RestrictedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FB5DC862ABEA72000ED47DF /* RestrictedView.swift */; };
@@ -116,6 +117,7 @@
 		2F6A329E2ABD95920043946A /* AppManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppManager.swift; sourceTree = "<group>"; };
 		2F6A32A02ABDFEE10043946A /* BlockView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = BlockView.swift; path = Prismm/Utilities/Service/BlockView.swift; sourceTree = SOURCE_ROOT; };
 		2FA2723F2AC03D3900BBDE37 /* EditPostView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditPostView.swift; sourceTree = "<group>"; };
+		2FA272412AC0D66C00BBDE37 /* TabBarViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarViewModel.swift; sourceTree = "<group>"; };
 		2FB5DC822ABE94E000ED47DF /* BlockViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = BlockViewModel.swift; path = Prismm/Components/Views/SettingView/BlockViewModel.swift; sourceTree = SOURCE_ROOT; };
 		2FB5DC842ABE9F5500ED47DF /* BlockListRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockListRow.swift; sourceTree = SOURCE_ROOT; };
 		2FB5DC862ABEA72000ED47DF /* RestrictedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestrictedView.swift; sourceTree = "<group>"; };
@@ -440,6 +442,7 @@
 				2FB5DC9A2AC0369800ED47DF /* DiscoverViewModel.swift */,
 				2FB5DC8A2ABEBA0500ED47DF /* RestrictViewModel.swift */,
 				2FB5DC952AC0178E00ED47DF /* GuestProfileViewModel.swift */,
+				2FA272412AC0D66C00BBDE37 /* TabBarViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -693,6 +696,7 @@
 				E17E8CE32AAC6B5200EF5EFB /* PostModel.swift in Sources */,
 				E1C665302AB171180095B388 /* EditSecurityField.swift in Sources */,
 				E1BB6F302AAEC1C700051687 /* FollowView.swift in Sources */,
+				2FA272422AC0D66C00BBDE37 /* TabBarViewModel.swift in Sources */,
 				E1BB6F2F2AAEC1C700051687 /* FollowerRow.swift in Sources */,
 				E10C0E412AAAF53E00AEB220 /* CustomTextField.swift in Sources */,
 				E1C6653D2AB19BF10095B388 /* Test+ScrollView.swift in Sources */,

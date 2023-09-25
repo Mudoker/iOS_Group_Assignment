@@ -19,10 +19,12 @@ import Firebase
 
 struct EditSecurityField: View {
     // Control state
-    @Binding var currentUser:User
-    @Binding var userSetting:UserSetting
+//    @Binding var currentUser:User
+//    @Binding var userSetting:UserSetting
+    
     @ObservedObject var settingVM:SettingViewModel
     @Environment(\.presentationMode) var presentationMode
+    @EnvironmentObject var tabVM: TabBarViewModel
     
     @State var isGoogleSignIn: Bool = false
     
@@ -57,7 +59,7 @@ struct EditSecurityField: View {
                     textFieldBorderWidth: 1,
                     isPassword: true,
                     textFieldPlaceHolderFont: .body,
-                    isDarkModeEnabled: userSetting.darkModeEnabled
+                    isDarkModeEnabled: tabVM.userSetting.darkModeEnabled
                 )
                 .padding(.bottom)
                 .onChange(of: settingVM.changePasswordNewPassword) { _ in
@@ -78,7 +80,7 @@ struct EditSecurityField: View {
                     textFieldBorderWidth: 1,
                     isPassword: true,
                     textFieldPlaceHolderFont: .body,
-                    isDarkModeEnabled: userSetting.darkModeEnabled
+                    isDarkModeEnabled: tabVM.userSetting.darkModeEnabled
                 )
                 .padding(.bottom)
                 .onChange(of: settingVM.changePasswordNewPassword) { _ in
@@ -118,7 +120,7 @@ struct EditSecurityField: View {
                                 settingVM.hasSecuritySettingChanged = false
                             }
                             Task{
-                                await settingVM.updateSettings(userSetting: userSetting)
+                                await settingVM.updateSettings(userSetting: tabVM.userSetting)
                             }
                         }
                 }
@@ -132,6 +134,10 @@ struct EditSecurityField: View {
                     Spacer()
                     
                     Button(action: {
+                        
+                        APIService.changePassword(withEmail: tabVM.currentUser.account!, password: settingVM.changePasswordCurrentPassword, newpassword: settingVM.changePasswordNewPassword)
+                        
+                        
                         settingVM.hasSecuritySettingChanged.toggle()
                     }) {
                         Text("Confirm")
@@ -149,8 +155,8 @@ struct EditSecurityField: View {
                 
                 Spacer()
             }
-            .foregroundColor(userSetting.darkModeEnabled ? .white : .black)
-            .background(!userSetting.darkModeEnabled ? .white : .black)
+            .foregroundColor(tabVM.userSetting.darkModeEnabled ? .white : .black)
+            .background(!tabVM.userSetting.darkModeEnabled ? .white : .black)
             .onAppear{
                isGoogleSignIn = (Auth.auth().currentUser?.providerData[0].providerID == "google.com")
             }

@@ -55,6 +55,8 @@ class HomeViewModel: ObservableObject {
     @Published var isEditNewPostOnIphone = false
     @Published var editPostCaption = ""
     @Published var editSelectedPostTag: [String] = []
+    
+    @Published var selectedPost = Post(id: "", ownerID: "", creationDate: Timestamp(), isAllowComment: true)
 
     // Firebase Listener
     private var commentListenerRegistration: ListenerRegistration?

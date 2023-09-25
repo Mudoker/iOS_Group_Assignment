@@ -22,13 +22,18 @@ struct TabBar: View {
     @StateObject var notiVM = NotificationViewModel()
     @StateObject var homeVM = HomeViewModel()
     
+    
+//    @State var currentUser = User(id: "default", account: "default@gmail.com")
+//    @State var userSetting = UserSetting(id: "default", darkModeEnabled: false, language: "en", faceIdEnabled: true, pushNotificationsEnabled: true, messageNotificationsEnabled: false)
+    
     @EnvironmentObject var manager: AppManager
+    @EnvironmentObject var tabVM: TabBarViewModel
     
     // Localization
     @AppStorage("selectedLanguage") var selectedLanguage = "vi"
     
     var body: some View {
-        if UIDevice.current.userInterfaceIdiom == .phone{
+        if UIDevice.current.userInterfaceIdiom == .phone {
             TabView(selection: $tabSelection) {
                 NavigationView {
                     HomeView(homeViewModel: homeVM, notiVM: notiVM)
@@ -61,8 +66,11 @@ struct TabBar: View {
                 UITabBar.appearance().scrollEdgeAppearance = tabBarAppearance
                 Task {
                     print("OK")
+                        tabVM.currentUser = try await APIService.fetchCurrentUserData() ?? User(id: "default", account: "default@gmail.com")
+                    tabVM.userSetting = try await APIService.fetchCurrentSettingData() ?? UserSetting(id: "default", darkModeEnabled: false, language: "en", faceIdEnabled: false, pushNotificationsEnabled: false, messageNotificationsEnabled: false)
+                    
                     homeVM.isFetchingPost = true
-                    homeVM.fetchUserFavouritePost(forUserId: Constants.currentUserID)
+                    homeVM.fetchUserFavouritePost(forUserId: tabVM.currentUser.id)
                     try await homeVM.fetchPosts()
                     homeVM.isFetchingPost = false
                 }
@@ -84,7 +92,7 @@ struct TabBar: View {
                             .onAppear {
                                 Task {
                                     homeVM.isFetchingPost = true
-                                    homeVM.fetchUserFavouritePost(forUserId: Constants.currentUserID)
+                                    homeVM.fetchUserFavouritePost(forUserId: tabVM.currentUser.id)
                                     try await homeVM.fetchPosts()
                                     homeVM.isFetchingPost = false
                                     
@@ -119,8 +127,11 @@ struct TabBar: View {
                     UITabBar.appearance().scrollEdgeAppearance = tabBarAppearance
                     Task {
                         print("OK")
+                        tabVM.currentUser = try await APIService.fetchCurrentUserData() ?? User(id: "default", account: "default@gmail.com")
+                        tabVM.userSetting = try await APIService.fetchCurrentSettingData() ?? UserSetting(id: "default", darkModeEnabled: false, language: "en", faceIdEnabled: false, pushNotificationsEnabled: false, messageNotificationsEnabled: false)
+                        
                         homeVM.isFetchingPost = true
-                        homeVM.fetchUserFavouritePost(forUserId: Constants.currentUserID)
+                        homeVM.fetchUserFavouritePost(forUserId: tabVM.currentUser.id)
                         try await homeVM.fetchPosts()
                         homeVM.isFetchingPost = false
                     }
@@ -198,6 +209,7 @@ struct CustomTabbar: View {
             }
             .edgesIgnoringSafeArea(.all)
         }
+        
         .environment(\.locale, Locale(identifier: selectedLanguage)) // Localization
     }
 }

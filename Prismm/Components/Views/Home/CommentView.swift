@@ -22,8 +22,8 @@ import FirebaseAuth
 struct CommentView: View {
     // control state
     @Binding var isShowComment: Bool
-    @Binding var currentUser:User
-    @Binding var userSetting:UserSetting
+//    @Binding var currentUser:User
+//    @Binding var userSetting:UserSetting
     @Binding var isAllowComment: Bool
     @ObservedObject var homeVM: HomeViewModel
     @ObservedObject var notiVM: NotificationViewModel
@@ -36,6 +36,8 @@ struct CommentView: View {
     }
     @FocusState private var focusedField: FocusedField?
 
+    @EnvironmentObject var tabVM: TabBarViewModel
+    
     var isDarkModeEnabled: Bool
     var post: Post
     let emojis = ["👍", "❤️", "😍", "🤣", "😯", "😭", "😡", "👽", "💩", "💀"]
@@ -109,7 +111,7 @@ struct CommentView: View {
                                             
                                             Spacer()
                                             
-                                            if comment.commenterId == currentUser.id {
+                                            if comment.commenterId == tabVM.currentUser.id {
                                                 Button(action: {
                                                     selectedCommentId = comment.id
                                                     isOpenCommentEditSheet = true
@@ -174,7 +176,7 @@ struct CommentView: View {
                                             }
                                         }
                                         
-                                        if (isEditComment && comment.commenterId == currentUser.id && comment.id == selectedCommentId) {
+                                        if (isEditComment && comment.commenterId == tabVM.currentUser.id && comment.id == selectedCommentId) {
                                             HStack {
                                                 TextField("", text: $homeVM.editCommentContent, prompt:  Text(comment.content ?? "").foregroundColor(isDarkModeEnabled ? .white.opacity(0.5) : .black.opacity(0.5))
                                                 )
@@ -325,7 +327,7 @@ struct CommentView: View {
                             Button(action: {
                                 Task {
                                     _ = try await homeVM.createComment(content: homeVM.commentContent, commentor: (Auth.auth().currentUser?.uid)! , postId: post.id)
-                                    _ = try await notiVM.createInAppNotification(senderId: currentUser.id, receiverId: post.ownerID, senderName: currentUser.username, message: Constants.notiComment, postId: post.id, category: .comment, blockedByList: [], blockedList: [])
+                                    _ = try await notiVM.createInAppNotification(senderId: tabVM.currentUser.id, receiverId: post.ownerID, senderName: tabVM.currentUser.username, message: Constants.notiComment, postId: post.id, category: .comment, blockedByList: [], blockedList: [])
                                     
                                     homeVM.commentContent = ""
                                 }
